@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barnatore Meld Pharm</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</head>
+<body data-user-logged-in="{{ 'true' if current_user.is_authenticated else 'false' }}">
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="{{ url_for('main.index') }}" class="logo">Meld <span class="highlight">Pharm</span></a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('main.index') }}">Ballina</a></li>
+                <li><a href="{{ url_for('main.products') }}">Dyqani</a></li>
+                <li><a href="{{ url_for('main.about') }}">Rreth Nesh</a></li>
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                <li><a href="{{ url_for('admin.dashboard') }}">Admin</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('main.profile') }}">Profili</a></li>
+                <li>
+                    <a href="{{ url_for('cart.view_cart') }}" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        {% if cart_count and cart_count > 0 %}
+                            <span class="cart-badge">{{ cart_count }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div class="main-content">
+        <!-- Flashed messages are now handled via Toasts at the bottom of the page -->
+        {% block content %}{% endblock %}
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Meld Pharm</h3>
+                    <p>Burimi juaj i besuar për përkujdesje ndaj lëkurës dhe vitamina.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Kontakt</h3>
+                    <p>Rr. Nënë Tereza, Prishtinë</p>
+                    <p>info@meldpharm.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Barnatore Meld Pharm. Të gjitha të drejtat e rezervuara.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Logic for Flask Flash Messages -->
+    <div id="flash-messages" data-messages='{{ get_flashed_messages(with_categories=true) | tojson | safe }}' style="display: none;"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+             const flashEl = document.getElementById('flash-messages');
+             if (flashEl) {
+                 try {
+                     const messages = JSON.parse(flashEl.dataset.messages);
+                     messages.forEach(([category, message], index) => {
+                         setTimeout(() => {
+                             if (typeof showToast === 'function') {
+                                showToast(message, category);
+                             }
+                         }, index * 500);
+                     });
+                 } catch (e) {
+                     console.error("Failed to parse flash messages:", e);
+                 }
+             }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container section">
+    <div class="form-container" style="max-width: 800px; display: flex; flex-direction: column; align-items: center; text-align: center; margin-top: 2rem;">
+        <div style="width: 100px; height: 100px; background: var(--primary-light); color: var(--primary); font-size: 3rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 2rem;">
+            <i class="fas fa-user"></i>
+        </div>
+        
+        <h2 class="mb-4">Mirësevini, {{ current_user.username }}!</h2>
+        
+        <div style="background: var(--bg-body); padding: 2rem; border-radius: var(--radius-md); width: 100%; margin-bottom: 2rem; text-align: left;">
+            <p><strong>Email:</strong> {{ current_user.email }}</p>
+            <p><strong>Statusi:</strong> Anëtar Aktiv</p>
+        </div>
+
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-sm" style="background-color: #ef4444; color: white; border: none;" data-confirm="A jeni i sigurt që doni të dilni?">
+            <i class="fas fa-sign-out-alt"></i> Dilni
+        </a>
+    </div>
+</div>
+{% endblock %}

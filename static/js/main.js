@@ -1,0 +1,361 @@
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Sticky Navbar Effect
+    const navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // 2. Intersection Observer for Fade-in Animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in');
+            }
+        });
+    });
+
+    document.querySelectorAll('.product-card, .feature-item, .hero-text, .section-title').forEach((el) => observer.observe(el));
+
+    // 3. Product Search Filter (Front-end only for demo/smoothness)
+    const searchInput = document.getElementById('productSearch');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const productCards = document.querySelectorAll('.product-card');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            filterProducts(term, getActiveCategory());
+        });
+    }
+
+    if (filterBtns) {
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Add to clicked
+                btn.classList.add('active');
+                
+                const category = btn.getAttribute('data-filter');
+                filterProducts(searchInput ? searchInput.value.toLowerCase() : '', category);
+            });
+        });
+    }
+
+    function getActiveCategory() {
+        const activeBtn = document.querySelector('.filter-btn.active');
+        return activeBtn ? activeBtn.getAttribute('data-filter') : 'all';
+    }
+
+    function filterProducts(searchTerm, category) {
+        productCards.forEach(card => {
+            const name = card.querySelector('h3').textContent.toLowerCase();
+            const cardCategory = card.getAttribute('data-category'); // Needs to be added to HTML
+            
+            const matchesSearch = name.includes(searchTerm);
+            const matchesCategory = category === 'all' || cardCategory === category;
+
+            if (matchesSearch && matchesCategory) {
+                // Only animate if it was previously hidden to prevent flickering while typing
+                if (card.style.display === 'none') {
+                    card.style.display = 'flex';
+                    card.style.animation = 'fadeIn 0.5s ease-out forwards';
+                }
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // 4. Toast Notification System
+    window.showToast = function(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        if (!container) return; // Should be in base.html
+
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+        
+        toast.innerHTML = `
+            <i class="fas ${icon}"></i>
+            <span>${message}</span>
+            <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+        `;
+        
+        container.appendChild(toast);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    };
+
+    // 5. Add to Cart Buttons
+    // Find buttons that say "Shto në Shportë" or have a specific class. 
+    // I'll assume I add a class 'add-to-cart-btn' to them in templates
+    document.querySelectorAll('.btn-primary').forEach(btn => {
+        if(btn.textContent.includes('Shto në Shportë') || btn.textContent.includes('Add to Cart')) {
+            btn.addEventListener('click', (e) => {
+                // e.preventDefault(); // If it's a link, maybe prevents navigation?
+                // If it's a real form submit, we might want to let it happen or hijack it.
+                // For now, let's just show the toast. 
+                showToast('Produkti u shtua në shportë!');
+            });
+        }
+    });
+
+    // 6. Favorite Button Logic
+    window.toggleFavorite = function(btn) {
+        btn.classList.toggle('active');
+        const icon = btn.querySelector('i');
+        
+        if (btn.classList.contains('active')) {
+            icon.classList.remove('far'); // Outline
+            icon.classList.add('fas');    // Solid
+            showToast('Produkti u shtua në të preferuarat!', 'success');
+        } else {
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+            showToast('Produkti u largua nga të preferuarat', 'info');
+        }
+    }
+});
+
+// Quantity Selector Logic
+document.addEventListener('DOMContentLoaded', () => {
+    const qtyInputs = document.querySelectorAll('.quantity-selector');
+    
+    qtyInputs.forEach(selector => {
+        const input = selector.querySelector('.qty-input');
+        const minusBtn = selector.querySelector('.minus');
+        const plusBtn = selector.querySelector('.plus');
+        
+        minusBtn.addEventListener('click', () => {
+            let val = parseInt(input.value);
+            if (val > 1) {
+                input.value = val - 1;
+            }
+        });
+        
+        plusBtn.addEventListener('click', () => {
+            let val = parseInt(input.value);
+            input.value = val + 1;
+        });
+    });
+});
+
+// AJAX Cart Actions & Confirmations
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // Helper to update cart badge
+    const updateCartBadge = (count) => {
+        const badge = document.querySelector('.cart-badge');
+        if (badge) {
+            badge.textContent = count;
+            if (count > 0) badge.style.display = 'block';
+            else badge.style.display = 'none';
+        } else if (count > 0) {
+            const icon = document.querySelector('.cart-icon');
+            if (icon) {
+                const newBadge = document.createElement('span');
+                newBadge.className = 'cart-badge';
+                newBadge.textContent = count;
+                icon.appendChild(newBadge);
+            }
+        }
+    };
+
+    // Generic form submit handler for Add to Cart forms
+    document.body.addEventListener('submit', async (e) => {
+        // Handle Checkout Form
+        if (e.target.id === 'checkout-form') {
+            e.preventDefault();
+            const result = await Swal.fire({
+                title: 'Konfirmo Porosinë',
+                text: "A jeni të sigurt që të dhënat janë të sakta?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Po, Dërgo',
+                cancelButtonText: 'Anulo',
+                confirmButtonColor: '#10b981'
+            });
+            if (result.isConfirmed) e.target.submit();
+            return;
+        }
+
+        const isAdd = e.target.matches('form[action*="/cart/add/"]');
+        const isUpdate = e.target.matches('form[action*="/cart/update/"]');
+        const isRemove = e.target.matches('form[action*="/cart/remove/"]');
+        
+        if (!isAdd && !isUpdate && !isRemove) return;
+        
+        e.preventDefault();
+        const form = e.target;
+
+        // Confirmation for remove
+        if (isRemove) {
+            const result = await Swal.fire({
+                title: 'A jeni i sigurt?',
+                text: "Dëshironi ta largoni këtë produkt nga shporta?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#3b82f6',
+                confirmButtonText: 'Po, largoje!',
+                cancelButtonText: 'Anulo'
+            });
+            if (!result.isConfirmed) return;
+        }
+
+        // Setup UI for loading
+        let btn = form.querySelector('button[type="submit"]');
+        let originalContent = btn ? btn.innerHTML : '';
+        if (btn && isAdd) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        }
+
+        try {
+            const formData = new FormData(form);
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                if (isAdd) {
+                    showToast(data.message, 'success');
+                    updateCartBadge(data.cart_count);
+                } else if (isRemove && data.removed) {
+                    const row = form.closest('tr');
+                    row.style.opacity = '0';
+                    setTimeout(() => {
+                        row.remove();
+                        if (document.querySelectorAll('tbody tr').length === 0) {
+                            location.reload(); 
+                        }
+                    }, 300);
+                    showToast(data.message, 'info');
+                    // Update totals
+                    const totalEl = document.querySelector('.cart-summary h3');
+                    if (totalEl) totalEl.textContent = 'Totali: €' + data.total_price.toFixed(2);
+                    updateCartBadge(data.cart_count);
+
+                } else if (isUpdate) {
+                     // Update quantity input and item total
+                    const row = form.closest('tr');
+                    if (row) {
+                        const qtyInput = row.querySelector('.qty-input');
+                        if (qtyInput) qtyInput.value = data.quantity;
+                        
+                        const itemTotal = row.querySelector('td:nth-child(4)'); // 4th column is subtotal
+                        if (itemTotal) itemTotal.textContent = '€' + data.item_total.toFixed(2);
+                        
+                        const minusBtn = row.querySelector('.minus');
+                        if (minusBtn) minusBtn.disabled = data.quantity <= 1;
+                    }
+                    // Update global totals
+                    const totalEl = document.querySelector('.cart-summary h3');
+                    if (totalEl) totalEl.textContent = 'Totali: €' + data.total_price.toFixed(2);
+                    updateCartBadge(data.cart_count);
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            if (!isRemove) showToast('Ndodhi një gabim.', 'danger');
+        } finally {
+            if (btn && isAdd) {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+            }
+        }
+    });
+
+    // Handle Link Confirmations (Logout, Clear Cart)
+    document.body.addEventListener('click', async (e) => {
+        const trigger = e.target.closest('[data-confirm]');
+        if (!trigger) return;
+
+        e.preventDefault();
+        const message = trigger.dataset.confirm || "A jeni i sigurt?";
+        const href = trigger.getAttribute('href');
+
+        const result = await Swal.fire({
+            title: 'Konfirmim',
+            text: message,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Po',
+            cancelButtonText: 'Jo'
+        });
+
+        if (result.isConfirmed) {
+            window.location.href = href;
+        }
+    });
+
+    // 6. Checkout Login Check
+    const checkoutBtn = document.querySelector('.checkout-btn');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', (e) => {
+            const isLoggedIn = document.body.dataset.userLoggedIn === 'true';
+            
+            if (!isLoggedIn) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Kërkohet Hyrja',
+                    text: 'Ju lutemi kyçuni ose regjistrohuni për të vazhduar me pagesën.',
+                    icon: 'info',
+                    showCancelButton: true,
+                    showDenyButton: true,
+                    confirmButtonText: 'Kyçu',
+                    denyButtonText: 'Regjistrohu',
+                    cancelButtonText: 'Anulo',
+                    confirmButtonColor: 'var(--primary)',
+                    denyButtonColor: 'var(--primary-dark)',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/login?next=' + encodeURIComponent(window.location.pathname);
+                    } else if (result.isDenied) {
+                        window.location.href = '/register';
+                    }
+                });
+            }
+        });
+    }
+
+});
+
+// Make entire product card clickable
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', (e) => {
+            // Do nothing if clicked on button, link, or form
+            if (e.target.closest('button') || e.target.closest('a') || e.target.closest('form')) {
+                return;
+            }
+            
+            // Find the detail link
+            const detailLink = card.querySelector('a[href*="/product/"]');
+            if (detailLink) {
+                window.location.href = detailLink.href;
+            }
+        });
+    });
+});

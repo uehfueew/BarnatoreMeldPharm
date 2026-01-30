@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Të gjitha Produktet</h2>
+        
+        <!-- Search and Filter Bar -->
+        <div class="filter-bar">
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="productSearch" placeholder="Kërko produkte...">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Të Gjitha</button>
+                <button class="filter-btn" data-filter="skincare">Skincare</button>
+                <button class="filter-btn" data-filter="vitamins">Vitamina</button>
+            </div>
+        </div>
+
+        <div class="product-grid">
+            {% for product in products %}
+                <div class="product-card" data-category="{{ product.category }}">
+                    <div class="product-image">
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                        {% if product.discount_price %}
+                            <span class="badge sale">Zbritje -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
+                        {% endif %}
+                        <button class="btn-favorite" onclick="toggleFavorite(this)">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="product-info">
+                        <h3>{{ product.name }}</h3>
+                        <p class="category-tag">{{ product.category }}</p>
+                        <div class="price-container">
+                            {% if product.discount_price %}
+                                <span class="price original">€{{ product.price }}</span>
+                                <span class="price discounted">€{{ product.discount_price }}</span>
+                            {% else %}
+                                <span class="price">€{{ product.price }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="margin-bottom: 0.5rem; width: 100%;">
+                             <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                                <i class="fas fa-shopping-bag" style="margin-right: 0.5rem;"></i> Shto në Shportë
+                             </button>
+                        </form>
+
+                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-sm" style="width: 100%; justify-content: center;">Shiko Detajet</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% if not products %}
+            <p style="text-align: center;">Nuk u gjetën produkte.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

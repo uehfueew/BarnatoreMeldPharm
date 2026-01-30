@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container section">
+    <div class="section-container" style="max-width: 800px; margin: 0 auto;">
+        <div style="margin-bottom: 2rem;">
+            <a href="{{ url_for('cart.view_cart') }}" class="btn btn-sm btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-arrow-left"></i> Kthehu në Shportë
+            </a>
+        </div>
+        
+        <h1 class="section-title">Përfundo Porosinë</h1>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+            <!-- Checkout Form -->
+            <div class="checkout-form">
+                <form action="{{ url_for('cart.place_order') }}" method="POST" id="checkout-form">
+                    <h3 style="margin-bottom: 1.5rem;">Të dhënat e dërgesës</h3>
+                    
+                    <div class="form-group">
+                        <label for="fullname">Emri dhe Mbiemri</label>
+                        <input type="text" id="fullname" name="fullname" class="form-control" required placeholder="psh. Agim Gashi">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Adresa</label>
+                        <input type="text" id="address" name="address" class="form-control" required placeholder="Rruga, Numri i hymjes...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">Qyteti</label>
+                        <input type="text" id="city" name="city" class="form-control" required placeholder="Prishtinë">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Numri i Telefonit</label>
+                        <input type="tel" id="phone" name="phone" class="form-control" required placeholder="+383 4X XXX XXX">
+                    </div>
+
+                    <h3 style="margin-top: 2rem; margin-bottom: 1.5rem;">Mënyra e Pagesës</h3>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid #e5e7eb; border-radius: var(--radius-md); cursor: pointer;">
+                            <input type="radio" name="payment_method" value="cash" checked onchange="toggleCardPayment(false)">
+                            <i class="fas fa-money-bill-wave" style="color: var(--primary); font-size: 1.2rem;"></i>
+                            <div>
+                                <span style="font-weight: 600; display: block;">Paguj në Dorëzim</span>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Paguani kur të arrin porosia</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <label style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid #e5e7eb; border-radius: var(--radius-md); cursor: pointer;">
+                            <input type="radio" name="payment_method" value="card" onchange="toggleCardPayment(true)">
+                            <i class="far fa-credit-card" style="color: var(--text-muted); font-size: 1.2rem;"></i>
+                            <div>
+                                <span style="font-weight: 600; display: block;">Kartë Bankare (Stripe)</span>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Visa, Mastercard, etj.</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Placeholder for Card Element -->
+                    <div id="card-element-container" style="display: none; padding: 1rem; background: #f9fafb; border-radius: var(--radius-md); margin-bottom: 2rem;">
+                         <p style="color: var(--text-muted); font-size: 0.9rem;">
+                             <i class="fas fa-info-circle"></i> Pagesat me kartë janë duke u konfiguruar dhe do të jenë së shpejti në dispozicion. Ju lutem zgjedhni "Paguj në Dorëzim".
+                         </p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem;">
+                        Konfirmo Porosinë
+                    </button>
+                </form>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary" style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius-lg); height: fit-content; box-shadow: var(--shadow-sm);">
+                <h3 style="margin-bottom: 1.5rem;">Përmbledhja</h3>
+                
+                <div style="margin-bottom: 2rem;">
+                    {% for item in cart_items %}
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;">
+                        <div style="position: relative;">
+                            <img src="{{ item.image_url }}" alt="{{ item.name }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-sm);">
+                            <span style="position: absolute; top: -8px; right: -8px; background: var(--primary); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">{{ item.quantity }}</span>
+                        </div>
+                        <div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 0.25rem;">{{ item.name }}</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">€{{ "%.2f"|format(item.item_total) }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div style="border-top: 2px solid #eee; padding-top: 1rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Nëntotali</span>
+                        <span>€{{ "%.2f"|format(total_price) }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <span>Dërgesa</span>
+                        {% if shipping_cost == 0 %}
+                            <span style="color: var(--primary);">Falas (Mbi €50)</span>
+                        {% else %}
+                            <span>€{{ "%.2f"|format(shipping_cost) }}</span>
+                        {% endif %}
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.2rem;">
+                        <span>Totali</span>
+                        <span>€{{ "%.2f"|format(grand_total) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleCardPayment(show) {
+        const container = document.getElementById('card-element-container');
+        const btn = document.querySelector('button[type="submit"]');
+        
+        if (show) {
+            container.style.display = 'block';
+            btn.disabled = true; // Disable until we actually implement Stripe
+            btn.textContent = "Së Shpejti...";
+        } else {
+            container.style.display = 'none';
+            btn.disabled = false;
+            btn.textContent = "Konfirmo Porosinë";
+        }
+    }
+</script>
+{% endblock %}

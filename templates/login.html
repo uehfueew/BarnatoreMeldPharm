@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <h2 style="text-align: center; margin-bottom: 20px;">Kycuni</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Fjalëkalimi</label>
+            <input type="password" name="password" id="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Kycuni</button>
+    </form>
+    <p style="margin-top: 15px; text-align: center;">Nuk keni llogari? <a href="{{ url_for('auth.register') }}" style="color: var(--primary-color);">Regjistrohuni</a></p>
+</div>
+{% endblock %}

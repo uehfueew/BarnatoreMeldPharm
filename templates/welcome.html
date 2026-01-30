@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirësevini - Meld Pharm</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #d1fae5 0%, #ffffff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .welcome-wrapper {
+            display: flex;
+            gap: 4rem;
+            align-items: center;
+            max-width: 1200px;
+            width: 100%;
+        }
+        .welcome-text {
+            flex: 1;
+        }
+        .welcome-text h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--text-main), var(--primary));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: var(--text-main);
+        }
+        .welcome-text p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 900px) {
+            .welcome-wrapper {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="welcome-wrapper fade-in">
+        <div class="welcome-text">
+            <h1>Meld Pharm</h1>
+            <p>Zbuloni fuqinë e natyrës për shëndetin dhe bukurinë tuaj.</p>
+            
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                 <i class="fas fa-leaf" style="color: var(--primary); font-size: 2rem;"></i>
+                 <i class="fas fa-heart" style="color: var(--primary); font-size: 2rem;"></i>
+                 <i class="fas fa-star" style="color: var(--primary); font-size: 2rem;"></i>
+            </div>
+        </div>
+
+        <div class="form-container" style="margin: 0;">
+            <h2 class="text-center mb-4">Filloni</h2>
+            
+            <!-- Tab Navigation -->
+            <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem;">
+                <button onclick="showTab('login')" id="login-tab-btn" class="btn-tab" style="background:none; border:none; cursor:pointer; color: var(--primary); font-weight: 600; border-bottom: 2px solid var(--primary);">Kycuni</button>
+                <button onclick="showTab('register')" id="register-tab-btn" class="btn-tab" style="background:none; border:none; cursor:pointer; color: var(--text-muted);">Regjistrohuni</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-tab">
+                <form method="POST" action="{{ url_for('auth.login') }}">
+                    <div class="form-group">
+                        <label for="login_email">Email</label>
+                        <input type="email" name="email" id="login_email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login_password">Fjalëkalimi</label>
+                        <input type="password" name="password" id="login_password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        Kycuni <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-tab" style="display: none;">
+                <form method="POST" action="{{ url_for('auth.register') }}">
+                    <div class="form-group">
+                        <label for="reg_username">Përdoruesi</label>
+                        <input type="text" name="username" id="reg_username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg_email">Email</label>
+                        <input type="email" name="email" id="reg_email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg_password">Fjalëkalimi</label>
+                        <input type="password" name="password" id="reg_password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        Regjistrohuni <i class="fas fa-user-plus"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="mt-4 text-center" style="border-top: 1px solid #e5e7eb; padding-top: 1.5rem;">
+                <a href="{{ url_for('main.guest_login') }}" style="color: var(--text-muted); font-size: 0.9rem;">
+                    Vazhdoni si Mysafir
+                </a>
+            </div>
+            
+            <div style="margin-top: 1rem;">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}" style="font-size: 0.875rem;">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+
+<script>
+function showTab(tabName) {
+    document.getElementById('login-tab').style.display = tabName === 'login' ? 'block' : 'none';
+    document.getElementById('register-tab').style.display = tabName === 'register' ? 'block' : 'none';
+    
+    const loginBtn = document.getElementById('login-tab-btn');
+    const regBtn = document.getElementById('register-tab-btn');
+    
+    if (tabName === 'login') {
+        loginBtn.style.color = 'var(--primary)';
+        loginBtn.style.borderBottom = '2px solid var(--primary)';
+        regBtn.style.color = 'var(--text-muted)';
+        regBtn.style.borderBottom = 'none';
+    } else {
+        regBtn.style.color = 'var(--primary)';
+        regBtn.style.borderBottom = '2px solid var(--primary)';
+        loginBtn.style.color = 'var(--text-muted)';
+        loginBtn.style.borderBottom = 'none';
+    }
+}
+</script>
+</body>
+</html>

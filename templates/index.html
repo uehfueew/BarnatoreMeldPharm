@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="hero">
+    <div class="container hero-container">
+        <div class="hero-text">
+            <h1>Bukuri Natyrale & Mirëqenie</h1>
+            <p>Përkujdesje premium për lëkurën dhe suplemente për t'ju bërë të dukeni dhe të ndiheni më së miri.</p>
+            <a href="{{ url_for('main.products') }}" class="btn btn-primary">Bli Tani</a>
+        </div>
+        <div class="hero-image">
+            <!-- Placeholder for hero image -->
+            <div class="image-placeholder"></div>
+        </div>
+    </div>
+</header>
+
+<section class="section featured">
+    <div class="container">
+        <h2 class="section-title">Ofertat Speciale</h2>
+        <div class="product-grid">
+            {% for product in featured_products %}
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                        {% if product.discount_price %}
+                            <span class="badge sale">Zbritje -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <h3>{{ product.name }}</h3>
+                        <div class="price-container">
+                            {% if product.discount_price %}
+                                <span class="price original">€{{ product.price }}</span>
+                                <span class="price discounted">€{{ product.discount_price }}</span>
+                            {% else %}
+                                <span class="price">€{{ product.price }}</span>
+                            {% endif %}
+                        </div>
+
+                        <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="margin-bottom: 0.5rem; width: 100%;">
+                             <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                                <i class="fas fa-shopping-bag" style="margin-right: 0.5rem;"></i> Shto në Shportë
+                             </button>
+                        </form>
+
+                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-sm" style="width: 100%; justify-content: center;">Shiko Detajet</a>
+                    </div>
+                </div>
+            {% else %}
+                 <p>Nuk ka produkte të veçuara momentalisht.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section features">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-item">
+                <i class="fas fa-leaf"></i>
+                <h3>Përbërës Natyral</h3>
+                <p>100% produkte organike dhe të sigurta.</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-shipping-fast"></i>
+                <h3>Dërgesë e Shpejtë</h3>
+                <p>Dërgesë brenda 24 orëve.</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-user-md"></i>
+                <h3>Këshilla Ekspertësh</h3>
+                <p>Konsultohuni me farmacistët tanë.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

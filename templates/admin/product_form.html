@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Ndrysho Produktin' if product else 'Shto Produkt Të Ri' }}{% endblock %}
+
+{% block content %}
+<div class="form-container section-container">
+    <h1 class="section-title">{{ 'Ndrysho Produktin' if product else 'Shto Produkt Të Ri' }}</h1>
+    
+    <form method="POST" class="auth-form product-form">
+        <div class="form-group">
+            <label for="name">Emri i Produktit</label>
+            <input type="text" id="name" name="name" class="form-control" value="{{ product.name if product else '' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="category">Kategoria</label>
+            <select id="category" name="category" class="form-control">
+                <option value="Pain Relief" {% if product and product.category == 'Pain Relief' %}selected{% endif %}>Pain Relief</option>
+                <option value="Vitamins" {% if product and product.category == 'Vitamins' %}selected{% endif %}>Vitamins</option>
+                <option value="Antibiotics" {% if product and product.category == 'Antibiotics' %}selected{% endif %}>Antibiotics</option>
+                <option value="First Aid" {% if product and product.category == 'First Aid' %}selected{% endif %}>First Aid</option>
+                <option value="Skincare" {% if product and product.category == 'Skincare' %}selected{% endif %}>Skincare</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="price">Çmimi</label>
+            <input type="number" id="price" name="price" step="0.01" class="form-control" value="{{ product.price if product else '' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="discount_price">Çmimi me Zbritje (Opsionale)</label>
+            <input type="number" id="discount_price" name="discount_price" step="0.01" class="form-control" value="{{ product.discount_price if product else '' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="image_url">Linku i imazhit (URL)</label>
+            <input type="url" id="image_url" name="image_url" class="form-control" value="{{ product.image_url if product else '' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Përshkrimi</label>
+            <textarea id="description" name="description" class="form-control" rows="4">{{ product.description if product else '' }}</textarea>
+        </div>
+        
+        <div class="form-group checkbox-group">
+            <input type="checkbox" id="featured" name="featured" {% if product and product.featured %}checked{% endif %}>
+            <label for="featured">Featured Product?</label>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">{{ 'Përditëso' if product else 'Krijo' }}</button>
+    </form>
+</div>
+{% endblock %}

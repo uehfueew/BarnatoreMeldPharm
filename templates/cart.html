@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="cart-container section-container">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+        <h1 class="section-title" style="margin-bottom: 0;">Shporta Juaj</h1>
+        <a href="{{ url_for('main.products') }}" class="btn btn-sm btn-secondary">
+            <i class="fas fa-arrow-left"></i> Vazhdo Blerjen
+        </a>
+    </div>
+    
+    {% if cart_items %}
+        <div class="table-responsive">
+            <table class="table cart-table">
+                <thead>
+                    <tr>
+                        <th>Produkti</th>
+                        <th>Çmimi</th>
+                        <th>Sasia</th>
+                        <th>Nëntotali</th>
+                        <th>Veprime</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td>
+                            <div class="cart-product-info">
+                                <img src="{{ item.image_url }}" alt="{{ item.name }}" class="cart-thumb">
+                                <span>{{ item.name }}</span>
+                            </div>
+                        </td>
+                        <td>€{{ item.discount_price if item.discount_price else item.price }}</td>
+                        <td>
+                            <div class="quantity-selector">
+                                <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='decrease') }}" method="POST">
+                                    <button type="submit" class="qty-btn minus" {{ 'disabled' if item.quantity <= 1 }}>
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </form>
+                                <input type="text" class="qty-input" value="{{ item.quantity }}" readonly>
+                                <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='increase') }}" method="POST">
+                                    <button type="submit" class="qty-btn plus">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                        <td>€{{ "%.2f"|format(item.item_total) }}</td>
+                        <td>
+                            <form action="{{ url_for('cart.remove_from_cart', product_id=item._id) }}" method="POST">
+                                <button type="submit" class="btn-icon" title="Fshije">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="cart-summary">
+            <h3>Totali: €{{ "%.2f"|format(total_price) }}</h3>
+            <div class="cart-actions">
+                <a href="{{ url_for('cart.clear_cart') }}" class="btn btn-secondary" data-confirm="A jeni i sigurt që doni të pastroni shportën?">
+                    <i class="fas fa-trash" style="margin-right: 0.5rem;"></i> Pastro Shportën
+                </a>
+                <a href="{{ url_for('cart.checkout') }}" class="btn btn-primary checkout-btn">
+                    Parguaj <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-cart-msg">
+            <div style="margin-bottom: 1.5rem;">
+                <i class="fas fa-shopping-cart" style="font-size: 3rem; color: var(--text-muted); opacity: 0.5;"></i>
+            </div>
+            <p>Shporta juaj është e zbrazët.</p>
+            <a href="{{ url_for('main.products') }}" class="btn btn-primary">
+                Fillo Blerjen <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

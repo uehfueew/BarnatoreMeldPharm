@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container section">
+    <a href="{{ url_for('main.products') }}" class="btn btn-sm btn-secondary" style="margin-bottom: 2rem; display: inline-flex; align-items: center; gap: 0.5rem;">
+        <i class="fas fa-arrow-left"></i> Kthehu tek Produktet
+    </a>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 4rem; align-items: start;">
+        
+        <!-- Image Section -->
+        <div class="product-image" style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg);">
+            <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 100%; height: auto; display: block;">
+        </div>
+
+        <!-- Info Section -->
+        <div class="product-info-detail">
+            <span class="category-tag" style="display: inline-block; margin-bottom: 1rem; background: var(--primary-light); color: var(--primary-dark); padding: 0.25rem 1rem; border-radius: var(--radius-full); font-weight: 600; font-size: 0.875rem;">{{ product.category }}</span>
+            
+            <h1 style="font-size: 3rem; line-height: 1.1; margin-bottom: 1.5rem;">{{ product.name }}</h1>
+            
+            <div class="price-container" style="font-size: 1.5rem; margin-bottom: 2rem;">
+                {% if product.discount_price %}
+                    <span class="price original" style="font-size: 1.25rem;">€{{ product.price }}</span>
+                    <span class="price discounted" style="font-size: 2rem;">€{{ product.discount_price }}</span>
+                {% else %}
+                    <span class="price" style="font-size: 2rem;">€{{ product.price }}</span>
+                {% endif %}
+            </div>
+            
+            <div style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius-lg); margin-bottom: 2rem; border: 1px solid rgba(0,0,0,0.05);">
+                <h3 style="margin-bottom: 1rem;">Përshkrimi</h3>
+                <p style="font-size: 1.1rem; color: var(--text-muted);">{{ product.description }}</p>
+            </div>
+            
+            <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="display: flex; gap: 1rem; align-items: center;">
+                <div class="quantity-selector">
+                    <button type="button" class="qty-btn minus"><i class="fas fa-minus"></i></button>
+                    <input type="number" name="quantity" value="1" min="1" class="qty-input" readonly>
+                    <button type="button" class="qty-btn plus"><i class="fas fa-plus"></i></button>
+                </div>
+                <button type="submit" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem; flex: 1;">
+                    <i class="fas fa-shopping-cart"></i> Shto në Shportë
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% if related_products %}
+    <div class="related-products" style="margin-top: 5rem;">
+        <h2 class="section-title">Produkte të Ngjashme</h2>
+        <div class="product-grid">
+            {% for related in related_products %}
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="{{ related.image_url }}" alt="{{ related.name }}">
+                    {% if related.discount_price %}
+                        <span class="badge sale">Zbritje -{{ ((related.price - related.discount_price) / related.price * 100)|round|int }}%</span>
+                    {% endif %}
+                    <button class="btn-favorite" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">{{ related.name }}</h3>
+                    <p class="category-tag">{{ related.category }}</p>
+                    <div class="price-container">
+                        {% if related.discount_price %}
+                            <span class="price original">€{{ related.price }}</span>
+                            <span class="price discounted">€{{ related.discount_price }}</span>
+                        {% else %}
+                            <span class="price">€{{ related.price }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <form action="{{ url_for('cart.add_to_cart', product_id=related._id) }}" method="POST" style="margin-bottom: 0.5rem; width: 100%;">
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                           <i class="fas fa-shopping-bag" style="margin-right: 0.5rem;"></i> Shto në Shportë
+                        </button>
+                   </form>
+
+                    <a href="{{ url_for('main.product_detail', product_id=related._id) }}" class="btn btn-sm" style="width: 100%; justify-content: center;">Shiko Detajet</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
