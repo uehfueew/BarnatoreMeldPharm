@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container section">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2 class="section-title" style="margin-bottom: 0;">Menaxhimi i Porosive</h2>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Kthehu te Paneli</a>
+    </div>
+    
+    {% if orders %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Klienti</th>
+                        <th>Data</th>
+                        <th>Totali</th>
+                        <th>Statusi</th>
+                        <th>Veprime</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td><small>#{{ order._id|string|truncate(6, True, '') }}</small></td>
+                        <td>{{ order.fullname }}<br><small>{{ order.email if order.email else order.city }}</small></td>
+                        <td>{{ order.created_at.strftime('%d-%m-%Y %H:%M') }}</td>
+                        <td>€{{ "%.2f"|format(order.grand_total) }}</td>
+                        <td>
+                            <form action="{{ url_for('admin.update_order_status', order_id=order._id) }}" method="POST" style="display: flex; align-items: center; gap: 0.5rem;">
+                                <select name="status" class="form-select status-select" onchange="this.form.submit()">
+                                    <option value="Delivering" {{ 'selected' if order.status == 'Delivering' else '' }}>Delivering</option>
+                                    <option value="Received" {{ 'selected' if order.status == 'Received' else '' }}>Received</option>
+                                    <option value="Cancelled" {{ 'selected' if order.status == 'Cancelled' else '' }}>Cancelled</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="toggleDetails('{{ order._id }}')">
+                                Detajet
+                            </button>
+                        </td>
+                    </tr>
+                    <tr id="details-{{ order._id }}" style="display: none; background-color: #f8fafc;">
+                        <td colspan="6">
+                            <div style="padding: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                                <div>
+                                    <h5>Informacionet e Dërgesës</h5>
+                                    <p><strong>Klienti:</strong> {{ order.fullname }}</p>
+                                    <p><strong>Email:</strong> {{ order.email }}</p>
+                                    <p><strong>Adresa:</strong> {{ order.address }}</p>
+                                    <p><strong>Qyteti:</strong> {{ order.city }}</p>
+                                    <p><strong>Telefoni:</strong> {{ order.phone }}</p>
+                                    <p><strong>Mënyra e Pagesës:</strong> {{ order.payment_method }}</p>
+                                </div>
+                                <div>
+                                    <h5>Produktet e Porositura</h5>
+                                    <ul style="list-style: none; padding: 0;">
+                                        {% for item in order['items'] %}
+                                            <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                                                <div style="display: flex; justify-content: space-between;">
+                                                    <span>{{ item.quantity }}x {{ item.name }}</span>
+                                                    <strong>€{{ "%.2f"|format(item.item_total) }}</strong>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                        <li style="padding-top: 1rem; text-align: right;">
+                                            <strong>Total: €{{ "%.2f"|format(order.grand_total) }}</strong>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>Nuk ka asnjë porosi në sistem.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function toggleDetails(id) {
+    const el = document.getElementById('details-' + id);
+    if (el.style.display === 'none') {
+        el.style.display = 'table-row';
+    } else {
+        el.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

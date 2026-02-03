@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, session, redirect, url_for
+from flask import Blueprint, render_template, session, redirect, url_for, request, jsonify
 from models.product import Product
+from models.order import Order
 from flask_login import current_user, login_required
 
 main = Blueprint('main', __name__)
@@ -19,6 +20,11 @@ def guest_login():
     session['guest_mode'] = True
     return redirect(url_for('main.index'))
 
+@main.route('/exit_guest')
+def exit_guest():
+    session.pop('guest_mode', None)
+    return redirect(url_for('main.index'))
+
 @main.route('/products')
 def products():
     # Ensure user is allowed to see this page
@@ -30,6 +36,8 @@ def products():
     print(f"Products found: {len(products)}")
     return render_template('products.html', products=products)
 
+from models.user import User
+
 @main.route('/product/<product_id>')
 def product_detail(product_id):
     if not (current_user.is_authenticated or session.get('guest_mode')):
@@ -39,8 +47,15 @@ def product_detail(product_id):
     if not product:
         return render_template('index.html') # Should be 404
     
+    favorite_usernames = []
+    if product.get('favorites'):
+        for uid in product.get('favorites'):
+            u = User.get_by_id(uid)
+            if u:
+                favorite_usernames.append(u.username)
+
     related_products = Product.get_related(product.get('category'), product.get('_id'))
-    return render_template('product_detail.html', product=product, related_products=related_products)
+    return render_template('product_detail.html', product=product, related_products=related_products, favorite_usernames=favorite_usernames)
 
 @main.route('/about')
 def about():
@@ -59,3 +74,23 @@ def cart():
     if not (current_user.is_authenticated or session.get('guest_mode')):
          return redirect(url_for('main.index'))
     return render_template('cart.html')
+
+@main.route('/orders')
+def orders():
+    if not current_user.is_authenticated:
+        # If guest mode, show page but with "Login needed" message inside.
+        # Or redirect if not guest either.
+        if not session.get('guest_mode'):
+             return redirect(url_for('main.index'))
+        return render_template('orders.html', orders=[], guest_access=True)
+        
+    user_orders = Order.get_by_user(current_user.id)
+    return render_template('orders.html', orders=user_orders)
+
+@main.route('/product/favorite/<product_id>', methods=['POST'])
+@login_required
+def toggle_favorite(product_id):
+    action = Product.toggle_favorite(product_id, current_user.id)
+    if action:
+        return jsonify({'success': True, 'action': action})
+    return jsonify({'success': False}), 400

@@ -42,7 +42,22 @@
                 <button type="submit" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem; flex: 1;">
                     <i class="fas fa-shopping-cart"></i> Shto në Shportë
                 </button>
+                <button type="button" class="btn btn-favorite-detail" onclick="toggleFavorite(this, '{{ product._id }}')" 
+                        style="border: 1px solid #e2e8f0; background: white; padding: 1rem 1.25rem; border-radius: var(--radius-md); color: #ef4444; font-size: 1.25rem; cursor: pointer; transition: all 0.3s;"
+                        title="Shto në të preferuarat">
+                    <i class="{{ 'fas' if product.favorites and current_user.id in product.favorites else 'far' }} fa-heart"></i>
+                </button>
             </form>
+
+            <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e2e8f0;">
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    <i class="fas fa-heart" style="color: #ef4444; margin-right: 0.5rem;"></i>
+                    <strong>Pëlqyer nga {{ favorite_usernames|length }} përdorues{{ ':' if favorite_usernames else '.' }}</strong> 
+                    {% if favorite_usernames %}
+                        {{ favorite_usernames|join(', ') }}
+                    {% endif %}
+                </p>
+            </div>
         </div>
     </div>
 

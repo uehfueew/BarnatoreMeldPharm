@@ -9,7 +9,17 @@
         </a>
     </div>
     
-    {% if cart_items %}
+    {% if guest_access %}
+        <div class="empty-cart-msg">
+            <div style="margin-bottom: 1.5rem;">
+                <i class="fas fa-lock" style="font-size: 3rem; color: var(--text-muted); opacity: 0.5;"></i>
+            </div>
+            <p>Ju lutem kyçuni për të menaxhuar shportën tuaj.</p>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
+                Kyçuni Këtu <i class="fas fa-sign-in-alt" style="margin-left: 0.5rem;"></i>
+            </a>
+        </div>
+    {% elif cart_items %}
         <div class="table-responsive">
             <table class="table cart-table">
                 <thead>

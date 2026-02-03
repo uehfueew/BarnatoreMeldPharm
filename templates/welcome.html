@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mirësevini - Meld Pharm</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=2) }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -67,8 +67,8 @@
             
             <!-- Tab Navigation -->
             <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem;">
-                <button onclick="showTab('login')" id="login-tab-btn" class="btn-tab" style="background:none; border:none; cursor:pointer; color: var(--primary); font-weight: 600; border-bottom: 2px solid var(--primary);">Kycuni</button>
-                <button onclick="showTab('register')" id="register-tab-btn" class="btn-tab" style="background:none; border:none; cursor:pointer; color: var(--text-muted);">Regjistrohuni</button>
+                <button onclick="showTab('login')" id="login-tab-btn" class="btn-tab hover-underline" style="background:none; border:none; cursor:pointer; color: var(--primary); font-weight: 600; border-bottom: 2px solid var(--primary);">Kycuni</button>
+                <button onclick="showTab('register')" id="register-tab-btn" class="btn-tab hover-underline" style="background:none; border:none; cursor:pointer; color: var(--text-muted);">Regjistrohuni</button>
             </div>
 
             <!-- Login Form -->
@@ -110,7 +110,7 @@
             </div>
 
             <div class="mt-4 text-center" style="border-top: 1px solid #e5e7eb; padding-top: 1.5rem;">
-                <a href="{{ url_for('main.guest_login') }}" style="color: var(--text-muted); font-size: 0.9rem;">
+                <a href="{{ url_for('main.guest_login') }}" class="hover-underline" style="color: var(--text-muted); font-size: 0.9rem;">
                     Vazhdoni si Mysafir
                 </a>
             </div>

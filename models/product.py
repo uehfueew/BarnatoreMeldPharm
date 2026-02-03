@@ -45,6 +45,33 @@ class Product:
             {"_id": ObjectId(product_id)},
             {"$set": data}
         )
+    
+    @staticmethod
+    def toggle_favorite(product_id, user_id):
+        try:
+            pid = ObjectId(product_id)
+            product = mongo.db.products.find_one({"_id": pid})
+            if not product:
+                return None
+            
+            favorites = product.get('favorites', [])
+            action = 'added'
+            
+            if user_id in favorites:
+                mongo.db.products.update_one(
+                    {"_id": pid}, 
+                    {"$pull": {"favorites": user_id}}
+                )
+                action = 'removed'
+            else:
+                mongo.db.products.update_one(
+                    {"_id": pid}, 
+                    {"$addToSet": {"favorites": user_id}}
+                )
+                
+            return action
+        except:
+            return None
 
     @staticmethod
     def delete(product_id):

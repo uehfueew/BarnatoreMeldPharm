@@ -97,33 +97,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     };
 
-    // 5. Add to Cart Buttons
-    // Find buttons that say "Shto në Shportë" or have a specific class. 
-    // I'll assume I add a class 'add-to-cart-btn' to them in templates
-    document.querySelectorAll('.btn-primary').forEach(btn => {
-        if(btn.textContent.includes('Shto në Shportë') || btn.textContent.includes('Add to Cart')) {
-            btn.addEventListener('click', (e) => {
-                // e.preventDefault(); // If it's a link, maybe prevents navigation?
-                // If it's a real form submit, we might want to let it happen or hijack it.
-                // For now, let's just show the toast. 
-                showToast('Produkti u shtua në shportë!');
-            });
-        }
-    });
+    // 5. Add to Cart Buttons logic removed to prevent double toasts (handled by AJAX form submit below)
 
     // 6. Favorite Button Logic
-    window.toggleFavorite = function(btn) {
-        btn.classList.toggle('active');
-        const icon = btn.querySelector('i');
+    window.toggleFavorite = async function(btn, productId) {
+        if (!productId) return;
         
-        if (btn.classList.contains('active')) {
-            icon.classList.remove('far'); // Outline
-            icon.classList.add('fas');    // Solid
-            showToast('Produkti u shtua në të preferuarat!', 'success');
-        } else {
-            icon.classList.remove('fas');
-            icon.classList.add('far');
-            showToast('Produkti u largua nga të preferuarat', 'info');
+        try {
+            const response = await fetch(`/product/favorite/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                const icon = btn.querySelector('i');
+                if (data.action === 'added') {
+                    btn.classList.add('active');
+                    if (icon) {
+                        icon.classList.remove('far'); // Outline
+                        icon.classList.add('fas');    // Solid
+                    }
+                    showToast('Produkti u shtua në të preferuarat!', 'success');
+                } else {
+                    btn.classList.remove('active');
+                    if (icon) {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                    }
+                    showToast('Produkti u largua nga të preferuarat', 'info');
+                }
+                
+                // Reload to update the list of users who liked it (optional, but requested to show "who")
+                if (window.location.pathname.includes('/product/')) {
+                    setTimeout(() => window.location.reload(), 1000);
+                }
+            } else {
+                showToast('Duhet të jeni të kyçur për të ruajtur produktet.', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showToast('Ndodhi një gabim.', 'error');
         }
     }
 });
@@ -159,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const badge = document.querySelector('.cart-badge');
         if (badge) {
             badge.textContent = count;
-            if (count > 0) badge.style.display = 'block';
+            if (count > 0) badge.style.display = 'flex';
             else badge.style.display = 'none';
         } else if (count > 0) {
             const icon = document.querySelector('.cart-icon');
@@ -271,7 +288,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (totalEl) totalEl.textContent = 'Totali: €' + data.total_price.toFixed(2);
                     updateCartBadge(data.cart_count);
                 }
+            } else {
+                // Handle error (e.g., login required)
+                if (response.status === 401 || !data.success) {
+                    Swal.fire({
+                        title: 'Kërkohet Kyçja!',
+                        text: data.message || 'Ju duhet të kyçeni për ta kryer këtë veprim.',
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonText: 'Kyçu',
+                        cancelButtonText: 'Anulo',
+                        confirmButtonColor: '#059669'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/login';
+                        }
+                    });
+                } else {
+                     showToast(data.message || 'Ndodhi një gabim.', 'danger');
+                }
             }
+        } catch (error) {
         } catch (error) {
             console.error('Error:', error);
             if (!isRemove) showToast('Ndodhi një gabim.', 'danger');

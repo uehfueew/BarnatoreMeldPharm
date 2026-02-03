@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barnatore Meld Pharm</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=2) }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -18,10 +18,14 @@
                 <li><a href="{{ url_for('main.index') }}">Ballina</a></li>
                 <li><a href="{{ url_for('main.products') }}">Dyqani</a></li>
                 <li><a href="{{ url_for('main.about') }}">Rreth Nesh</a></li>
-                {% if current_user.is_authenticated and current_user.is_admin %}
-                <li><a href="{{ url_for('admin.dashboard') }}">Admin</a></li>
+                {% if current_user.is_authenticated or session.get('guest_mode') %}
+                    <li><a href="{{ url_for('main.orders') }}">Porositë</a></li>
                 {% endif %}
-                <li><a href="{{ url_for('main.profile') }}">Profili</a></li>
+                {% if current_user.is_authenticated %}
+                    {% if current_user.is_admin %}
+                        <li><a href="{{ url_for('admin.dashboard') }}">Admin</a></li>
+                    {% endif %}
+                {% endif %}
                 <li>
                     <a href="{{ url_for('cart.view_cart') }}" class="cart-icon">
                         <i class="fas fa-shopping-cart"></i>
@@ -30,6 +34,11 @@
                         {% endif %}
                     </a>
                 </li>
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('auth.logout') }}">Dilni</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.login') }}">Kyçu</a></li>
+                {% endif %}
             </ul>
         </div>
     </nav>

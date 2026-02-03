@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from models.product import Product
+from models.order import Order
 from functools import wraps
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
@@ -13,6 +14,23 @@ def admin_required(f):
             return redirect(url_for('main.index'))
         return f(*args, **kwargs)
     return decorated_function
+
+@admin.route('/orders')
+@login_required
+@admin_required
+def orders():
+    orders = Order.get_all()
+    return render_template('admin/orders.html', orders=orders)
+
+@admin.route('/order/update_status/<order_id>', methods=['POST'])
+@login_required
+@admin_required
+def update_order_status(order_id):
+    new_status = request.form.get('status')
+    if new_status:
+        Order.update_status(order_id, new_status)
+        flash(f'Statusi i porosisë u ndryshua në {new_status}.', 'success')
+    return redirect(url_for('admin.orders'))
 
 @admin.route('/dashboard')
 @login_required

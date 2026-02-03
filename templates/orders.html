@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container section">
+    <h2 class="section-title">Porositë e Mia</h2>
+    
+    {% if guest_access %}
+        <div class="empty-state">
+            <i class="fas fa-lock" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+            <p>Ju lutem kyçuni për të parë historinë e porosive.</p>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Kyçuni Këtu</a>
+        </div>
+    {% elif orders %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID Porosisë</th>
+                        <th>Data</th>
+                        <th>Totali</th>
+                        <th>Statusi</th>
+                        <th>Detajet</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ order._id|string|truncate(8, True, '') }}</td>
+                        <td>{{ order.created_at.strftime('%d-%m-%Y %H:%M') }}</td>
+                        <td>€{{ "%.2f"|format(order.grand_total) }}</td>
+                        <td>
+                            <span class="badge badge-{{ 'success' if order.status == 'Received' else ('danger' if order.status == 'Cancelled' else 'warning') }}">
+                                {{ order.status|title }}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-secondary" onclick="toggleDetails('{{ order._id }}')">
+                                <i class="fas fa-eye"></i> Shiko
+                            </button>
+                        </td>
+                    </tr>
+                    <tr id="details-{{ order._id }}" style="display: none; background-color: #f9fafb;">
+                        <td colspan="5">
+                            <div style="padding: 1rem;">
+                                <h4>Informacionet</h4>
+                                <p><strong>Klienti:</strong> {{ order.fullname }}<br>
+                                   <strong>Email:</strong> {{ order.email }}</p>
+                                <p><strong>Adresa:</strong> {{ order.address }}, {{ order.city }}</p>
+                                <p><strong>Telefoni:</strong> {{ order.phone }}</p>
+                                <h4 style="margin-top: 1rem;">Produktet</h4>
+                                <ul>
+                                    {% for item in order['items'] %}
+                                        <li>{{ item.quantity }}x {{ item.name }} - €{{ "%.2f"|format(item.item_total) }}</li>
+                                    {% endfor %}
+                                </ul>
+                                <p style="margin-top: 0.5rem;"><strong>Pagesa:</strong> {{ order.payment_method }}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>Nuk keni bërë asnjë porosi ende.</p>
+            <a href="{{ url_for('main.products') }}" class="btn btn-primary">Fillo Blerjen</a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function toggleDetails(id) {
+    const el = document.getElementById('details-' + id);
+    if (el.style.display === 'none') {
+        el.style.display = 'table-row';
+    } else {
+        el.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

@@ -31,6 +31,12 @@ def load_user(user_id):
 @app.context_processor
 def inject_cart_count():
     from flask import session
+    from flask_login import current_user
+    
+    # Only show cart count if user is logged in
+    if not current_user.is_authenticated:
+        return dict(cart_count=0)
+
     cart = session.get('cart', {})
     count = sum(int(v) for v in cart.values())
     return dict(cart_count=count)

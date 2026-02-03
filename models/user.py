@@ -38,3 +38,18 @@ class User(UserMixin):
         if user_data:
             return User(user_data)
         return None
+
+    @staticmethod
+    def update_cart(user_id, cart):
+        mongo.db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": {"cart": cart}}
+        )
+
+    @staticmethod
+    def get_cart(user_id):
+        try:
+            user_data = mongo.db.users.find_one({"_id": ObjectId(user_id)}, {"cart": 1})
+            return user_data.get('cart', {}) if user_data else {}
+        except:
+            return {}

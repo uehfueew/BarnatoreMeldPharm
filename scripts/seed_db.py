@@ -51,6 +51,42 @@ def seed_products():
             "image_url": "https://placehold.co/400x400/2c7a7b/ffffff?text=Krem+Retinol",
             "category": "skincare",
             "featured": False
+        },
+        {
+            "name": "Magnezium + B6",
+            "price": 12.50,
+            "discount_price": None,
+            "description": "Redukton lodhjen dhe përmirëson funksionin e sistemit nervor. 60 tableta.",
+            "image_url": "https://placehold.co/400x400/319795/ffffff?text=Magnezium+B6",
+            "category": "vitamins",
+            "featured": False
+        },
+        {
+            "name": "Krem Kundër Diellit SPF 50",
+            "price": 22.00,
+            "discount_price": 18.50,
+            "description": "Mbrojtje e lartë nga rrezet UVA/UVB. Rezistent ndaj ujit dhe nuk lë shenja të bardha.",
+            "image_url": "https://placehold.co/400x400/2c7a7b/ffffff?text=SPF+50",
+            "category": "skincare",
+            "featured": True
+        },
+        {
+            "name": "Probiotikë Digjestiv",
+            "price": 28.00,
+            "discount_price": None,
+            "description": "Për shëndetin e zorrëve dhe sistemin imunitar. 30 kapsula.",
+            "image_url": "https://placehold.co/400x400/319795/ffffff?text=Probiotikë",
+            "category": "vitamins",
+            "featured": False
+        },
+        {
+            "name": "Xhel Larës Fytyre",
+            "price": 15.00,
+            "discount_price": 12.00,
+            "description": "Pastron thellësisht pa tharë lëkurën. I përshtatshëm për lëkurë të ndjeshme.",
+            "image_url": "https://placehold.co/400x400/2c7a7b/ffffff?text=Larës+Fytyre",
+            "category": "skincare",
+            "featured": False
         }
     ]
 
@@ -92,5 +128,5 @@ def seed_admin():
 
 if __name__ == "__main__":
     with app.app_context():
-        # seed_products() # Uncomment if you want to reset products
+        seed_products() 
         seed_admin()

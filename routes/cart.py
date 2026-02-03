@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, session, redirect, url_for, request, flash, jsonify
 from models.product import Product
-
+from models.order import Order
+from models.user import User
+from flask_login import current_user
 cart_bp = Blueprint('cart', __name__, url_prefix='/cart')
 
 def calculate_cart_totals(cart):
@@ -16,6 +18,9 @@ def calculate_cart_totals(cart):
 
 @cart_bp.route('/')
 def view_cart():
+    if not current_user.is_authenticated:
+        return render_template('cart.html', guest_access=True, cart_items=[], total_price=0)
+
     # session['cart'] structure: {'product_id': quantity, ...}
     cart = session.get('cart', {})
     cart_items = []
@@ -35,6 +40,12 @@ def view_cart():
 
 @cart_bp.route('/add/<product_id>', methods=['POST'])
 def add_to_cart(product_id):
+    if not current_user.is_authenticated:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'Ju lutem kyçuni për të shtuar produkte.'}), 401
+        flash('Ju lutem kyçuni për të shtuar produkte.', 'warning')
+        return redirect(url_for('auth.login'))
+
     cart = session.get('cart', {})
     quantity = int(request.form.get('quantity', 1))
     
@@ -44,6 +55,8 @@ def add_to_cart(product_id):
         cart[product_id] = quantity
         
     session['cart'] = cart
+    if current_user.is_authenticated:
+        User.update_cart(current_user.id, cart)
     
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         total_price, total_items = calculate_cart_totals(cart)
@@ -70,6 +83,8 @@ def update_quantity(product_id, action):
                 cart[product_id] = current_qty - 1
         
         session['cart'] = cart
+        if current_user.is_authenticated:
+            User.update_cart(current_user.id, cart)
     
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         total_price, total_items = calculate_cart_totals(cart)
@@ -96,6 +111,8 @@ def remove_from_cart(product_id):
     if product_id in cart:
         del cart[product_id]
         session['cart'] = cart
+        if current_user.is_authenticated:
+            User.update_cart(current_user.id, cart)
         
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             total_price, total_items = calculate_cart_totals(cart)
@@ -113,6 +130,8 @@ def remove_from_cart(product_id):
 @cart_bp.route('/clear')
 def clear_cart():
     session.pop('cart', None)
+    if current_user.is_authenticated:
+        User.update_cart(current_user.id, {})
     flash('Shporta u pastrua.', 'info')
     return redirect(url_for('cart.view_cart'))
 
@@ -143,17 +162,61 @@ def checkout():
 
 @cart_bp.route('/place_order', methods=['POST'])
 def place_order():
-    # Here you would normally save the order to the database
-    # For now, we will simulate it
-    
     method = request.form.get('payment_method')
     fullname = request.form.get('fullname')
+    email = request.form.get('email')
+    address = request.form.get('address')
+    city = request.form.get('city')
+    phone = request.form.get('phone')
     
     if method == 'card':
         flash('Pagesat me kartë nuk janë ende aktive.', 'warning')
         return redirect(url_for('cart.checkout'))
+
+    # Re-calculate Cart items for the order record
+    cart = session.get('cart', {})
+    if not cart:
+        flash('Shporta është e zbrazët.', 'error')
+        return redirect(url_for('main.products'))
+
+    order_items = []
+    total_price = 0
+    
+    for product_id, quantity in cart.items():
+        product = Product.get_by_id(product_id)
+        if product:
+            price = product.get('discount_price') if product.get('discount_price') else product.get('price')
+            item_total = price * int(quantity)
+            total_price += item_total
+            order_items.append({
+                "product_id": str(product['_id']),
+                "name": product['name'],
+                "price": price,
+                "quantity": int(quantity),
+                "item_total": item_total
+            })
+            
+    shipping_cost = 0 if total_price >= 50 else 3.00
+    grand_total = total_price + shipping_cost
+
+    # Save to MongoDB
+    Order.create({
+        "fullname": fullname,
+        "email": email,
+        "address": address,
+        "city": city,
+        "phone": phone,
+        "payment_method": method,
+        "items": order_items,
+        "total_price": total_price,
+        "shipping_cost": shipping_cost,
+        "grand_total": grand_total,
+        "user_id": current_user.get_id() if current_user.is_authenticated else None
+    })
         
     # Process Cash on Delivery
     session.pop('cart', None)
+    if current_user.is_authenticated:
+        User.update_cart(current_user.id, {})
     flash(f'Faleminderit {fullname}, porosia u realizua me sukses!', 'success')
     return redirect(url_for('main.index'))

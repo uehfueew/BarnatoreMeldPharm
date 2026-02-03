@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from flask_login import login_user, logout_user, login_required
 from models.user import User
 from flask_bcrypt import Bcrypt
@@ -19,6 +19,20 @@ def login():
         
         if user and bcrypt.check_password_hash(user.password, password):
             login_user(user)
+
+            # Sync Cart
+            db_cart = User.get_cart(user.id)
+            session_cart = session.get('cart', {})
+            
+            for pid, qty in session_cart.items():
+                if pid in db_cart:
+                    db_cart[pid] = int(db_cart[pid]) + int(qty)
+                else:
+                    db_cart[pid] = int(qty)
+            
+            User.update_cart(user.id, db_cart)
+            session['cart'] = db_cart
+
             flash('Kycja ishte e suksesshme!', 'success')
             return redirect(url_for('main.index'))
         else:
@@ -39,9 +53,16 @@ def register():
             return redirect(url_for('auth.register'))
             
         hashed_pw = bcrypt.generate_password_hash(password).decode('utf-8')
-        User.create(username, email, hashed_pw)
-        flash('Llogaria u krijua! Tani mund të kyçeni.', 'success')
-        return redirect(url_for('auth.login'))
+        user = User.create(username, email, hashed_pw)
+        login_user(user)
+
+        # Sync Cart for new user if they added items before registering
+        session_cart = session.get('cart', {})
+        if session_cart:
+            User.update_cart(user.id, session_cart)
+
+        flash('Llogaria u krijua! Mirë se erdhet.', 'success')
+        return redirect(url_for('main.index'))
         
     return render_template('register.html')
 
@@ -49,5 +70,6 @@ def register():
 @login_required
 def logout():
     logout_user()
-    flash('Ju jeni çkyçur.', 'info')
+    session.pop('guest_mode', None)
+    session.pop('cart', None)
     return redirect(url_for('main.index'))
