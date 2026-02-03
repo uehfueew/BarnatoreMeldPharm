@@ -22,7 +22,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev_secret_key')
 app.config['MONGO_URI'] = os.getenv('MONGO_URI', 'mongodb://localhost:27017/meldpharm')
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-# app.config['SESSION_COOKIE_SECURE'] = True # Uncomment when HTTPS is available
+app.config['SESSION_COOKIE_SECURE'] = True # Uncomment when HTTPS is available
 
 # Initialize Extensions
 csrf.init_app(app)
