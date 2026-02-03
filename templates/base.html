@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Security: CSRF Token for AJAX -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barnatore Meld Pharm</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=2) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=5) }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -60,8 +62,21 @@
                 </div>
                 <div class="footer-section">
                     <h3>Kontakt</h3>
-                    <p>Rr. Nënë Tereza, Prishtinë</p>
-                    <p>info@meldpharm.com</p>
+                    <p><strong>Lokacioni:</strong><br>72 Eqrem Çabej, Prishtina 10000</p>
+                    <p><strong>Email:</strong><br>meldpharm@gmail.com</p>
+                    
+                    <p style="margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Na kontaktoni në mediat sociale:</p>
+                    <div style="display: flex; gap: 1rem;">
+                        <a href="https://www.instagram.com/barnatoremeld/" target="_blank" class="social-icon instagram" title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=100067645081992" target="_blank" class="social-icon facebook" title="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@barnatore.meld.ph" target="_blank" class="social-icon tiktok" title="TikTok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="footer-bottom">

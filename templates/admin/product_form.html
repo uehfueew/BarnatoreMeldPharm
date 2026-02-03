@@ -7,6 +7,7 @@
     <h1 class="section-title">{{ 'Ndrysho Produktin' if product else 'Shto Produkt Të Ri' }}</h1>
     
     <form method="POST" class="auth-form product-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="form-group">
             <label for="name">Emri i Produktit</label>
             <input type="text" id="name" name="name" class="form-control" value="{{ product.name if product else '' }}" required>

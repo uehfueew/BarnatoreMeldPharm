@@ -103,11 +103,14 @@ document.addEventListener('DOMContentLoaded', () => {
     window.toggleFavorite = async function(btn, productId) {
         if (!productId) return;
         
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
         try {
             const response = await fetch(`/product/favorite/${productId}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
                 }
             });
             
@@ -132,9 +135,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 // Reload to update the list of users who liked it (optional, but requested to show "who")
-                if (window.location.pathname.includes('/product/')) {
-                    setTimeout(() => window.location.reload(), 1000);
-                }
+                // if (window.location.pathname.includes('/product/')) {
+                //    setTimeout(() => window.location.reload(), 1000);
+                // }
             } else {
                 showToast('Duhet të jeni të kyçur për të ruajtur produktet.', 'error');
             }
@@ -308,7 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
                      showToast(data.message || 'Ndodhi një gabim.', 'danger');
                 }
             }
-        } catch (error) {
         } catch (error) {
             console.error('Error:', error);
             if (!isRemove) showToast('Ndodhi një gabim.', 'danger');

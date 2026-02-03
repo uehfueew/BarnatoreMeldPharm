@@ -88,9 +88,23 @@ def orders():
     return render_template('orders.html', orders=user_orders)
 
 @main.route('/product/favorite/<product_id>', methods=['POST'])
-@login_required
 def toggle_favorite(product_id):
-    action = Product.toggle_favorite(product_id, current_user.id)
+    if current_user.is_authenticated:
+        action = Product.toggle_favorite(product_id, current_user.id)
+    else:
+        # Guest User Logic
+        liked_products = session.get('liked_products', [])
+        
+        if product_id in liked_products:
+            liked_products.remove(product_id)
+            action = 'removed'
+        else:
+            liked_products.append(product_id)
+            action = 'added'
+        
+        session['liked_products'] = liked_products
+        session.modified = True
+    
     if action:
         return jsonify({'success': True, 'action': action})
     return jsonify({'success': False}), 400

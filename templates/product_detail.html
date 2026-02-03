@@ -9,8 +9,12 @@
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 4rem; align-items: start;">
         
         <!-- Image Section -->
-        <div class="product-image" style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg);">
+        <div class="product-image" style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); position: relative;">
             <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 100%; height: auto; display: block;">
+            
+            <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
+                <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
+            </button>
         </div>
 
         <!-- Info Section -->
@@ -34,6 +38,7 @@
             </div>
             
             <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="display: flex; gap: 1rem; align-items: center;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="quantity-selector">
                     <button type="button" class="qty-btn minus"><i class="fas fa-minus"></i></button>
                     <input type="number" name="quantity" value="1" min="1" class="qty-input" readonly>
@@ -42,22 +47,7 @@
                 <button type="submit" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem; flex: 1;">
                     <i class="fas fa-shopping-cart"></i> Shto në Shportë
                 </button>
-                <button type="button" class="btn btn-favorite-detail" onclick="toggleFavorite(this, '{{ product._id }}')" 
-                        style="border: 1px solid #e2e8f0; background: white; padding: 1rem 1.25rem; border-radius: var(--radius-md); color: #ef4444; font-size: 1.25rem; cursor: pointer; transition: all 0.3s;"
-                        title="Shto në të preferuarat">
-                    <i class="{{ 'fas' if product.favorites and current_user.id in product.favorites else 'far' }} fa-heart"></i>
-                </button>
             </form>
-
-            <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e2e8f0;">
-                <p style="color: var(--text-muted); font-size: 0.9rem;">
-                    <i class="fas fa-heart" style="color: #ef4444; margin-right: 0.5rem;"></i>
-                    <strong>Pëlqyer nga {{ favorite_usernames|length }} përdorues{{ ':' if favorite_usernames else '.' }}</strong> 
-                    {% if favorite_usernames %}
-                        {{ favorite_usernames|join(', ') }}
-                    {% endif %}
-                </p>
-            </div>
         </div>
     </div>
 
@@ -72,8 +62,8 @@
                     {% if related.discount_price %}
                         <span class="badge sale">Zbritje -{{ ((related.price - related.discount_price) / related.price * 100)|round|int }}%</span>
                     {% endif %}
-                    <button class="btn-favorite" onclick="toggleFavorite(this)">
-                        <i class="far fa-heart"></i>
+                    <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and related.favorites and current_user.id in related.favorites) or (not current_user.is_authenticated and related._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ related._id }}')">
+                        <i class="{{ 'fas' if (current_user.is_authenticated and related.favorites and current_user.id in related.favorites) or (not current_user.is_authenticated and related._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
                     </button>
                 </div>
                 <div class="product-info">
@@ -89,6 +79,7 @@
                     </div>
                     
                     <form action="{{ url_for('cart.add_to_cart', product_id=related._id) }}" method="POST" style="margin-bottom: 0.5rem; width: 100%;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
                            <i class="fas fa-shopping-bag" style="margin-right: 0.5rem;"></i> Shto në Shportë
                         </button>

@@ -967,10 +967,6 @@ button.hover-underline:hover {
     z-index: 5;
 }
 
-/* Fix corrupted badge css if any */
-.badge {
-     position: absolute;
-}
 
 /* Enhanced Delete Icon in Cart */
 .btn-icon {
@@ -1126,4 +1122,40 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     outline: none;
     border-color: var(--primary) !important;
     box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* Social Icons Interaction */
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: white !important;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    text-decoration: none !important;
+}
+
+.social-icon:hover {
+    transform: translateY(-5px);
+    background: white;
+}
+
+.social-icon.instagram:hover {
+    color: #E1306C !important;
+    box-shadow: 0 4px 15px rgba(225, 48, 108, 0.4);
+}
+
+.social-icon.facebook:hover {
+    color: #1877F2 !important;
+    box-shadow: 0 4px 15px rgba(24, 119, 242, 0.4);
+}
+
+.social-icon.tiktok:hover {
+    color: #000000 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }

@@ -4,6 +4,7 @@
 <div class="form-container">
     <h2 style="text-align: center; margin-bottom: 20px;">Regjistrohuni</h2>
     <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="form-group">
             <label for="username">Përdoruesi</label>
             <input type="text" name="username" id="username" class="form-control" required>

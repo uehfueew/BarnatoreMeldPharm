@@ -44,12 +44,14 @@
                         <td>
                             <div class="quantity-selector">
                                 <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='decrease') }}" method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                     <button type="submit" class="qty-btn minus" {{ 'disabled' if item.quantity <= 1 }}>
                                         <i class="fas fa-minus"></i>
                                     </button>
                                 </form>
                                 <input type="text" class="qty-input" value="{{ item.quantity }}" readonly>
                                 <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='increase') }}" method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                     <button type="submit" class="qty-btn plus">
                                         <i class="fas fa-plus"></i>
                                     </button>
@@ -59,6 +61,7 @@
                         <td>€{{ "%.2f"|format(item.item_total) }}</td>
                         <td>
                             <form action="{{ url_for('cart.remove_from_cart', product_id=item._id) }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                 <button type="submit" class="btn-icon" title="Fshije">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>

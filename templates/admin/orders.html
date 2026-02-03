@@ -13,7 +13,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Klienti</th>
+                        <th>Emri dhe Mbiemri</th>
                         <th>Data</th>
                         <th>Totali</th>
                         <th>Statusi</th>
@@ -29,6 +29,7 @@
                         <td>€{{ "%.2f"|format(order.grand_total) }}</td>
                         <td>
                             <form action="{{ url_for('admin.update_order_status', order_id=order._id) }}" method="POST" style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                 <select name="status" class="form-select status-select" onchange="this.form.submit()">
                                     <option value="Delivering" {{ 'selected' if order.status == 'Delivering' else '' }}>Delivering</option>
                                     <option value="Received" {{ 'selected' if order.status == 'Received' else '' }}>Received</option>
@@ -47,7 +48,7 @@
                             <div style="padding: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                                 <div>
                                     <h5>Informacionet e Dërgesës</h5>
-                                    <p><strong>Klienti:</strong> {{ order.fullname }}</p>
+                                    <p><strong>Emri dhe Mbiemri:</strong> {{ order.fullname }}</p>
                                     <p><strong>Email:</strong> {{ order.email }}</p>
                                     <p><strong>Adresa:</strong> {{ order.address }}</p>
                                     <p><strong>Qyteti:</strong> {{ order.city }}</p>
