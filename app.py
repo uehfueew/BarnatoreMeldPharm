@@ -4,6 +4,7 @@ from flask import Flask, render_template, session
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, current_user
 from flask_wtf.csrf import CSRFProtect
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from models.db import init_db
 from models.user import User
@@ -17,12 +18,18 @@ csrf = CSRFProtect()
 load_dotenv()
 
 app = Flask(__name__)
+
+# Trust headers from Render's proxy (Crucial for HTTPS)
+if os.getenv('RENDER'):
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+
 # Security Configuration
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev_secret_key')
 app.config['MONGO_URI'] = os.getenv('MONGO_URI', 'mongodb://localhost:27017/meldpharm')
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-app.config['SESSION_COOKIE_SECURE'] = True # Uncomment when HTTPS is available
+# Secure cookies only if explicit or safely on Render (HTTPS)
+app.config['SESSION_COOKIE_SECURE'] = os.getenv('RENDER') is not None 
 
 # Initialize Extensions
 csrf.init_app(app)
