@@ -1159,3 +1159,65 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     color: #000000 !important;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
+
+/* Animation Initial States */
+.hero-text, .section-title, .product-card, .feature-item {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-in {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+.live-gradient-bg { background: linear-gradient(-45deg, #ffffff, #f0fdf4, #eff6ff, #fdf2f8); background-size: 400% 400%; animation: gradientBG 15s ease infinite; transition: background 0.5s ease; }
+
+@keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+/* --- Animation Utilities --- */
+.fade-in-section {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    will-change: opacity, transform;
+}
+
+.fade-in-section.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Staggered delay for child cards if needed */
+.product-card {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out, box-shadow 0.3s ease, transform 0.3s ease; 
+    /* specific hover transform is separate from scroll transform, might need conflict resolution */
+}
+
+.product-card.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Hover effect should still work once visible */
+.product-card.is-visible:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* Live Gradient Background */
+.live-bg {
+    background: linear-gradient(-45deg, #f0fdf4, #ecfdf5, #f0f9ff, #f8fafc);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+. f a d e - i n - s e c t i o n . f a d e - i n   {   o p a c i t y :   1 ;   t r a n s f o r m :   t r a n s l a t e Y ( 0 ) ;   }  
+ 

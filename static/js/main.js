@@ -9,16 +9,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 2. Intersection Observer for Fade-in Animations
-    const observer = new IntersectionObserver((entries) => {
+    // 2. Live Action Scroll Observer
+    const observerOptions = {
+        threshold: 0.15
+    };
+
+    const liveObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('fade-in');
             }
         });
-    });
+    }, observerOptions);
 
-    document.querySelectorAll('.product-card, .feature-item, .hero-text, .section-title').forEach((el) => observer.observe(el));
+    document.querySelectorAll('.product-card, .feature-item, .hero-text, .section-title, .fade-in-section').forEach((el) => liveObserver.observe(el));
 
     // 3. Product Search Filter (Front-end only for demo/smoothness)
     const searchInput = document.getElementById('productSearch');
@@ -60,13 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const matchesCategory = category === 'all' || cardCategory === category;
 
             if (matchesSearch && matchesCategory) {
-                // Only animate if it was previously hidden to prevent flickering while typing
-                if (card.style.display === 'none') {
-                    card.style.display = 'flex';
-                    card.style.animation = 'fadeIn 0.5s ease-out forwards';
-                }
+                card.style.display = 'flex';
             } else {
                 card.style.display = 'none';
+                card.classList.remove('is-visible');
             }
         });
     }

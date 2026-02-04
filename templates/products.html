@@ -1,10 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Shop Hero Section (Matching Home Page) -->
+<header class="hero" style="padding: 4rem 0; min-height: auto;">
+    <div class="container hero-container" style="gap: 2rem;">
+        <div class="hero-text" style="text-align: center; margin: 0 auto; max-width: 800px;">
+            <span class="category-tag" style="margin: 0 auto 1rem; display: inline-block;">Farmacia Online</span>
+            <h1>Dyqani Ynë</h1>
+            <p>Zbuloni përzgjedhjen tonë të produkteve farmaceutike, produkteve natyrale për kujdes dhe suplementeve për shëndetin tuaj.</p>
+        </div>
+    </div>
+</header>
+
 <section class="section">
-    <div class="container">
-        <h2 class="section-title">Të gjitha Produktet</h2>
-        
+    <div class="container fade-in-section">
         <!-- Search and Filter Bar -->
         <div class="filter-bar">
             <div class="search-wrapper">
@@ -15,6 +24,8 @@
                 <button class="filter-btn active" data-filter="all">Të Gjitha</button>
                 <button class="filter-btn" data-filter="skincare">Skincare</button>
                 <button class="filter-btn" data-filter="vitamins">Vitamina</button>
+                <button class="filter-btn" data-filter="Pain Relief">Dhimbje</button>
+                <button class="filter-btn" data-filter="First Aid">Ndihma e parë</button>
             </div>
         </div>
 
