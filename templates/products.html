@@ -57,6 +57,27 @@
         {% if not products %}
             <p style="text-align: center;">Nuk u gjetën produkte.</p>
         {% endif %}
+
+        <!-- Pagination Controls -->
+        {% if total_pages > 1 %}
+        <div class="pagination-container" style="display: flex; justify-content: center; margin-top: 3rem; gap: 0.5rem;">
+            {% if page > 1 %}
+            <a href="{{ url_for('main.products', page=page-1) }}" class="btn btn-sm btn-secondary" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0;">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+            {% endif %}
+            
+            {% for p in range(1, total_pages + 1) %}
+                <a href="{{ url_for('main.products', page=p) }}" class="btn btn-sm {{ 'btn-primary' if p == page else 'btn-secondary' }}" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0;">{{ p }}</a>
+            {% endfor %}
+
+            {% if page < total_pages %}
+            <a href="{{ url_for('main.products', page=page+1) }}" class="btn btn-sm btn-secondary" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0;">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

@@ -35,8 +35,13 @@
         </div>
         
         <div class="form-group">
-            <label for="image_url">Linku i imazhit (URL)</label>
+            <label for="image_url">Linku i imazhit kryesor (URL)</label>
             <input type="url" id="image_url" name="image_url" class="form-control" value="{{ product.image_url if product else '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="additional_images">Imazhe shtesë (URL, një në cdo rresht)</label>
+            <textarea id="additional_images" name="additional_images" class="form-control" rows="4" placeholder="https://example.com/image2.jpg&#10;https://example.com/image3.jpg">{% if product and product.images %}{% for img in product.images %}{% if img != product.image_url %}{{ img }}&#10;{% endif %}{% endfor %}{% endif %}</textarea>
         </div>
         
         <div class="form-group">

@@ -31,10 +31,14 @@ def products():
     if not (current_user.is_authenticated or session.get('guest_mode')):
          return redirect(url_for('main.index'))
          
-    products = Product.get_all()
+    page = request.args.get('page', 1, type=int)
+    per_page = 20
+    
+    products, total_pages = Product.get_paginated(page, per_page)
+    
     # Debug print
-    print(f"Products found: {len(products)}")
-    return render_template('products.html', products=products)
+    print(f"Products found: {len(products)} on page {page}")
+    return render_template('products.html', products=products, page=page, total_pages=total_pages)
 
 from models.user import User
 

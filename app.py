@@ -15,7 +15,7 @@ from routes.admin import admin
 
 csrf = CSRFProtect()
 
-load_dotenv()
+load_dotenv(override=True)
 
 app = Flask(__name__)
 
@@ -72,4 +72,4 @@ def internal_server_error(e):
     return render_template('errors/500.html'), 500
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)

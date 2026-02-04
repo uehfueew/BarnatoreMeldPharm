@@ -8,6 +8,21 @@ class Product:
         return list(mongo.db.products.find())
 
     @staticmethod
+    def get_paginated(page=1, per_page=20):
+        total_products = mongo.db.products.count_documents({})
+        
+        # Calculate safe skip
+        if page < 1: page = 1
+        skip = (page - 1) * per_page
+        
+        products = list(mongo.db.products.find().skip(skip).limit(per_page))
+        
+        import math
+        total_pages = math.ceil(total_products / per_page)
+        
+        return products, total_pages
+
+    @staticmethod
     def get_by_category(category):
         return list(mongo.db.products.find({"category": category}))
 

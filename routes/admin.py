@@ -44,13 +44,24 @@ def dashboard():
 @admin_required
 def new_product():
     if request.method == 'POST':
+        # Process images
+        main_img = request.form.get('image_url')
+        additional_str = request.form.get('additional_images', '')
+        images = [main_img]
+        if additional_str:
+            extras = [x.strip() for x in additional_str.replace(',', '\n').split('\n') if x.strip()]
+            for img in extras:
+                if img != main_img:
+                    images.append(img)
+
         product_data = {
             "name": request.form.get('name'),
             "category": request.form.get('category'),
             "price": float(request.form.get('price')),
             "discount_price": float(request.form.get('discount_price')) if request.form.get('discount_price') else None,
             "description": request.form.get('description'),
-            "image_url": request.form.get('image_url'),
+            "image_url": main_img,
+            "images": images,
             "featured": request.form.get('featured') == 'on'
         }
         Product.create(product_data)
@@ -68,13 +79,24 @@ def edit_product(product_id):
         return redirect(url_for('admin.dashboard'))
         
     if request.method == 'POST':
+        # Process images
+        main_img = request.form.get('image_url')
+        additional_str = request.form.get('additional_images', '')
+        images = [main_img]
+        if additional_str:
+            extras = [x.strip() for x in additional_str.replace(',', '\n').split('\n') if x.strip()]
+            for img in extras:
+                if img != main_img:
+                    images.append(img)
+
         product_data = {
             "name": request.form.get('name'),
             "category": request.form.get('category'),
             "price": float(request.form.get('price')),
             "discount_price": float(request.form.get('discount_price')) if request.form.get('discount_price') else None,
             "description": request.form.get('description'),
-            "image_url": request.form.get('image_url'),
+            "image_url": main_img,
+            "images": images,
             "featured": request.form.get('featured') == 'on'
         }
         Product.update(product_id, product_data)
