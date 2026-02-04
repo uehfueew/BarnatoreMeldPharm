@@ -1,28 +1,165 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container section">
-    <div class="form-container" style="max-width: 800px; display: flex; flex-direction: column; align-items: center; text-align: center; margin-top: 2rem;">
-        <div style="width: 100px; height: 100px; background: var(--primary-light); color: var(--primary); font-size: 3rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 2rem;">
-            <i class="fas fa-user"></i>
-        </div>
+<div class="container section" style="padding-top: 3rem; min-height: 80vh;">
+    <div class="profile-wrapper" style="display: grid; grid-template-columns: 300px 1fr; gap: 3rem; align-items: start;">
         
-        <h2 class="mb-4">Mirësevini, {{ current_user.username }}!</h2>
-        
-        <div style="background: var(--bg-body); padding: 2rem; border-radius: var(--radius-md); width: 100%; margin-bottom: 2rem; text-align: left;">
-            <p><strong>Email:</strong> {{ current_user.email }}</p>
-            <p><strong>Statusi:</strong> Anëtar Aktiv</p>
-        </div>
+        <!-- Sidebar: User Info -->
+        <aside class="profile-sidebar" style="position: sticky; top: 120px;">
+            {% if current_user.is_authenticated %}
+                <div class="card user-card fade-in-section is-visible" style="padding: 2rem; text-align: center; border-radius: 1rem; box-shadow: var(--shadow-md); background: white;">
+                    <div class="avatar" style="width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 2.5rem;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">{{ current_user.username }}</h3>
+                    <p class="text-muted" style="margin-bottom: 1.5rem; font-size: 0.9rem; word-break: break-all;">{{ current_user.email }}</p>
+                    
+                    {% if current_user.is_admin %}
+                        <div style="margin-bottom: 1.5rem;">
+                            <span class="badge" style="background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.8rem;">Administrator</span>
+                        </div>
+                    {% endif %}
 
-        {% if current_user.is_authenticated %}
-        <a href="{{ url_for('auth.logout') }}" class="btn btn-sm" style="background-color: #ef4444; color: white; border: none;" data-confirm="A jeni i sigurt që doni të dilni?">
-            <i class="fas fa-sign-out-alt"></i> Dilni
-        </a>
-        {% else %}
-        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
-            <i class="fas fa-sign-in-alt"></i> Kyçuni
-        </a>
-        {% endif %}
+                    <div class="d-grid" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <a href="{{ url_for('main.orders') }}" class="btn btn-outline-primary btn-sm"><i class="fas fa-box"></i> Porositë e Mia</a>
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-sm"><i class="fas fa-sign-out-alt"></i> Dilni</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card guest-card fade-in-section is-visible" style="padding: 2rem; text-align: center; border-radius: 1rem; box-shadow: var(--shadow-md); background: white;">
+                    <div style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <h3 style="font-size: 1.25rem;">Mirë se vini</h3>
+                    <p class="text-muted" style="margin-bottom: 1.5rem; font-size: 0.9rem;">Kyçuni për të ruajtur të dhënat.</p>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-sm">Kyçu</a>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-sm">Regjistrohu</a>
+                    </div>
+                </div>
+            {% endif %}
+        </aside>
+
+        <!-- Main Content: Favorites -->
+        <main class="profile-main">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+                <h2 style="font-size: 1.5rem; display: flex; align-items: center; gap: 0.75rem; margin: 0;">
+                    <i class="fas fa-heart" style="color: #e11d48;"></i> Të Preferuarat
+                </h2>
+                <span class="text-muted" style="font-size: 0.9rem;">{{ favorites|length }} produkte</span>
+            </div>
+
+            {% if favorites %}
+                <div class="favorites-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;">
+                    {% for product in favorites %}
+                        <div class="favorite-card fade-in-section is-visible" style="background: white; border-radius: 1rem; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid #f1f5f9; transition: all 0.3s ease; position: relative;">
+                            
+                            <!-- Remove Button (Absolute) -->
+                            <button class="remove-fav" onclick="removeFavorite(this, '{{ product._id }}')" style="position: absolute; top: 10px; right: 10px; background: white; border: none; width: 32px; height: 32px; border-radius: 50%; color: #ef4444; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 2; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                                <i class="fas fa-times"></i>
+                            </button>
+
+                            <!-- Image Area -->
+                            <a href="{{ url_for('main.product_detail', product_id=product._id) }}" style="display: block; height: 180px; overflow: hidden; background: #f8fafc;">
+                                <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: contain; padding: 1rem; transition: transform 0.3s;">
+                            </a>
+
+                            <!-- Info Area -->
+                            <div class="fav-info" style="padding: 1rem;">
+                                <h4 style="font-size: 1rem; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500;">
+                                    <a href="{{ url_for('main.product_detail', product_id=product._id) }}" style="text-decoration: none;">{{ product.name }}</a>
+                                </h4>
+                                <div class="price" style="font-weight: 700; color: var(--primary); margin-bottom: 1rem; font-size: 1.1rem;">
+                                    {% if product.discount_price %}
+                                        €{{ product.discount_price }} <small class="text-muted" style="text-decoration: line-through; font-weight: 400; font-size: 0.8rem; margin-left: 5px;">€{{ product.price }}</small>
+                                    {% else %}
+                                        €{{ product.price }}
+                                    {% endif %}
+                                </div>
+                                
+                                <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <button type="submit" class="btn btn-sm btn-primary" style="width: 100%; border-radius: 0.5rem; padding: 0.6rem;">
+                                        <i class="fas fa-shopping-bag" style="margin-right: 5px;"></i> Shto
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state" style="text-align: center; padding: 4rem 2rem; background: white; border-radius: 1rem; border: 2px dashed #cbd5e1;">
+                    <i class="far fa-heart" style="font-size: 3rem; color: #e2e8f0; margin-bottom: 1.5rem;"></i>
+                    <h4 style="color: var(--text-muted); margin-bottom: 0.5rem;">Ju nuk keni produkte të preferuara</h4>
+                    <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 1.5rem;">Filloni të eksploroni dhe ruani produktet që ju pëlqejnë.</p>
+                    <a href="{{ url_for('main.products') }}" class="btn btn-outline-primary">Shiko Dyqanin</a>
+                </div>
+            {% endif %}
+        </main>
     </div>
 </div>
+
+<style>
+    @media (max-width: 900px) {
+        .profile-wrapper {
+            grid-template-columns: 1fr !important;
+            gap: 2rem !important;
+        }
+        .profile-sidebar {
+            position: relative !important;
+            top: 0 !important;
+        }
+    }
+    .favorite-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+    }
+    .favorite-card:hover img {
+        transform: scale(1.05);
+    }
+    .remove-fav:hover {
+        background: #ef4444 !important;
+        color: white !important;
+        transform: rotate(90deg);
+    }
+</style>
+
+<script>
+    // Custom wrapper for remove to animate removal
+    async function removeFavorite(btn, productId) {
+        if(typeof window.toggleFavorite === 'function') {
+            const card = btn.closest(".favorite-card");
+            card.style.opacity = "0.5";
+            
+            const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+            try {
+                const response = await fetch(`/product/favorite/${productId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken
+                    }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    card.style.transform = "scale(0.8)";
+                    card.style.opacity = "0";
+                    setTimeout(() => {
+                        card.remove();
+                        if(document.querySelectorAll(".favorite-card").length === 0) {
+                            location.reload();
+                        }
+                    }, 300);
+                    showToast("Produkti u largua nga të preferuarat", "info");
+                } else {
+                    card.style.opacity = "1";
+                }
+            } catch (e) {
+                card.style.opacity = "1";
+                console.error(e);
+            }
+        }
+    }
+</script>
 {% endblock %}

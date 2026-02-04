@@ -36,9 +36,12 @@
                         {% endif %}
                     </a>
                 </li>
-                {% if current_user.is_authenticated %}
-                    <li><a href="{{ url_for('auth.logout') }}">Dilni</a></li>
-                {% else %}
+                <li>
+                    <a href="{{ url_for('main.profile') }}" class="profile-icon" title="Profili">
+                        <i class="fas fa-user"></i>
+                    </a>
+                </li>
+                {% if not current_user.is_authenticated %}
                     <li><a href="{{ url_for('auth.login') }}">Kyçu</a></li>
                 {% endif %}
             </ul>

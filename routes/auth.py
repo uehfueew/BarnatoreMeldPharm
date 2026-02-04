@@ -21,17 +21,29 @@ def login():
             login_user(user)
 
             # Sync Cart
-            db_cart = User.get_cart(user.id)
-            session_cart = session.get('cart', {})
-            
-            for pid, qty in session_cart.items():
-                if pid in db_cart:
-                    db_cart[pid] = int(db_cart[pid]) + int(qty)
-                else:
-                    db_cart[pid] = int(qty)
-            
-            User.update_cart(user.id, db_cart)
-            session['cart'] = db_cart
+            try:
+                db_cart = User.get_cart(user.id)
+                session_cart = session.get('cart', {})
+                
+                # Ensure db_cart is a dict
+                if not isinstance(db_cart, dict):
+                    db_cart = {}
+
+                # Merge session cart into db cart
+                for pid, qty in session_cart.items():
+                    if pid in db_cart:
+                        db_cart[pid] = int(db_cart[pid]) + int(qty)
+                    else:
+                        db_cart[pid] = int(qty)
+                
+                # Save merged cart back to DB and Session
+                User.update_cart(user.id, db_cart)
+                session['cart'] = db_cart
+                session.modified = True
+            except Exception as e:
+                print(f"Error syncing cart: {e}")
+                # Fallback: keep session cart if sync fails
+                pass
 
             flash('Kycja ishte e suksesshme!', 'success')
             return redirect(url_for('main.index'))

@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Live Action Scroll Observer
     const observerOptions = {
-        threshold: 0.15
+        threshold: 0.05,
+        rootMargin: "0px 0px -20px 0px" 
     };
 
     const liveObserver = new IntersectionObserver((entries) => {
@@ -23,6 +24,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }, observerOptions);
 
     document.querySelectorAll('.product-card, .feature-item, .hero-text, .section-title, .fade-in-section').forEach((el) => liveObserver.observe(el));
+
+    // Force initial check for elements already in view (fixes "must scroll to see" bug)
+    setTimeout(() => {
+        const itemsToForce = document.querySelectorAll('.product-card, .hero-text, .section-title, .fade-in-section');
+        itemsToForce.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight) {
+                el.classList.add('fade-in');
+            }
+        });
+    }, 100);
 
     // 3. Product Search Filter (Front-end only for demo/smoothness)
     const searchInput = document.getElementById('productSearch');

@@ -69,9 +69,16 @@ def about():
 
 @main.route('/profile')
 def profile():
-    # Access profile even if guest, but it will show login/register forms basically
-    # Or strict logic: if guest, show login/register. If logged in, show user info.
-    return render_template('profile.html')
+    favorites = []
+    if current_user.is_authenticated:
+        favorites = Product.get_favorites_by_user(current_user.id)
+    else:
+        # Check for guest favorites in session
+        liked_ids = session.get('liked_products', [])
+        if liked_ids:
+            favorites = Product.get_by_ids(liked_ids)
+            
+    return render_template('profile.html', favorites=favorites)
 
 @main.route('/cart')
 def cart():

@@ -55,6 +55,7 @@ def add_to_cart(product_id):
         cart[product_id] = quantity
         
     session['cart'] = cart
+    session.modified = True
     if current_user.is_authenticated:
         User.update_cart(current_user.id, cart)
     
@@ -83,6 +84,7 @@ def update_quantity(product_id, action):
                 cart[product_id] = current_qty - 1
         
         session['cart'] = cart
+        session.modified = True
         if current_user.is_authenticated:
             User.update_cart(current_user.id, cart)
     
