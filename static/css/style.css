@@ -1515,10 +1515,14 @@ html, body {
     /* Orders Date Optimization */
     .table-responsive .table th:nth-child(2),
     .table-responsive .table td:nth-child(2) {
-        min-width: 140px !important; 
+        min-width: 155px !important; 
         white-space: nowrap !important;
         overflow: visible !important;
-        font-size: 0.85rem !important;
+    }
+
+    .table-responsive .table th,
+    .table-responsive .table td {
+        font-size: 0.95rem !important;
     }
 
     /* Orders Detail Shrink */
@@ -1582,15 +1586,15 @@ html, body {
         height: 50px !important;
     }
 
-    /* Use pseudo-elements for labels */
-    .cart-table td:nth-child(2)::before { content: "Çmimi: "; float: left; font-weight: 600; color: var(--text-muted); }
-    .cart-table td:nth-child(3)::before { content: "Sasia: "; float: left; font-weight: 600; color: var(--text-muted); }
-    .cart-table td:nth-child(4)::before { content: "Total: "; float: left; font-weight: 600; color: var(--primary); }
+    /* Use pseudo-elements for labels with forced space */
+    .cart-table td:nth-child(2)::before { content: "Çmimi:\00a0"; float: left; font-weight: 600; color: var(--text-muted); }
+    .cart-table td:nth-child(3)::before { content: "Sasia:\00a0"; float: left; font-weight: 600; color: var(--text-muted); }
+    .cart-table td:nth-child(4)::before { content: "Total:\00a0"; float: left; font-weight: 600; color: var(--primary); }
     
     .cart-table td:nth-child(2),
     .cart-table td:nth-child(3),
     .cart-table td:nth-child(4) {
-        font-size: 0.85rem;
+        font-size: 0.82rem !important;
     }
 
     .cart-table td:nth-child(3) {

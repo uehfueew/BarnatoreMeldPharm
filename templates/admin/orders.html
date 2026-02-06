@@ -45,29 +45,28 @@
                     </tr>
                     <tr id="details-{{ order._id }}" style="display: none; background-color: #f8fafc;">
                         <td colspan="6">
-                            <div style="padding: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                            <div class="admin-order-details" style="padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; font-size: 0.82rem;">
                                 <div>
-                                    <h5>Informacionet e Dërgesës</h5>
-                                    <p><strong>Emri dhe Mbiemri:</strong> {{ order.fullname }}</p>
-                                    <p><strong>Email:</strong> {{ order.email }}</p>
-                                    <p><strong>Adresa:</strong> {{ order.address }}</p>
-                                    <p><strong>Qyteti:</strong> {{ order.city }}</p>
-                                    <p><strong>Telefoni:</strong> {{ order.phone }}</p>
-                                    <p><strong>Mënyra e Pagesës:</strong> {{ order.payment_method }}</p>
+                                    <h5 style="font-size: 0.95rem; margin-bottom: 0.5rem;">Informacionet e Dërgesës</h5>
+                                    <p style="margin-bottom: 0.25rem;"><strong>Emri:</strong> {{ order.fullname }}</p>
+                                    <p style="margin-bottom: 0.25rem;"><strong>Email:</strong> {{ order.email }}</p>
+                                    <p style="margin-bottom: 0.25rem;"><strong>Adresa:</strong> {{ order.address }}, {{ order.city }}</p>
+                                    <p style="margin-bottom: 0.25rem;"><strong>Telefoni:</strong> {{ order.phone }}</p>
+                                    <p style="margin-bottom: 0.25rem;"><strong>Pagesa:</strong> {{ order.payment_method }}</p>
                                 </div>
                                 <div>
-                                    <h5>Produktet e Porositura</h5>
-                                    <ul style="list-style: none; padding: 0;">
+                                    <h5 style="font-size: 0.95rem; margin-bottom: 0.5rem;">Produktet</h5>
+                                    <ul style="list-style: none; padding: 0; margin: 0;">
                                         {% for item in order['items'] %}
-                                            <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                                            <li style="padding: 0.3rem 0; border-bottom: 1px solid #e2e8f0; font-size: 0.8rem;">
                                                 <div style="display: flex; justify-content: space-between;">
                                                     <span>{{ item.quantity }}x {{ item.name }}</span>
                                                     <strong>€{{ "%.2f"|format(item.item_total) }}</strong>
                                                 </div>
                                             </li>
                                         {% endfor %}
-                                        <li style="padding-top: 1rem; text-align: right;">
-                                            <strong>Total: €{{ "%.2f"|format(order.grand_total) }}</strong>
+                                        <li style="padding-top: 0.75rem; text-align: right;">
+                                            <strong style="font-size: 0.9rem;">Total: €{{ "%.2f"|format(order.grand_total) }}</strong>
                                         </li>
                                     </ul>
                                 </div>

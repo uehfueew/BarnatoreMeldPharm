@@ -35,25 +35,25 @@
                         </td>
                         <td>
                             <button class="btn btn-sm btn-secondary" onclick="toggleDetails('{{ order._id }}')">
-                                <i class="fas fa-eye"></i> Shiko
+                                <i class="fas fa-eye"></i> Detajet
                             </button>
                         </td>
                     </tr>
                     <tr id="details-{{ order._id }}" style="display: none; background-color: #f9fafb;">
                         <td colspan="5">
-                            <div style="padding: 1rem;">
-                                <h4>Informacionet</h4>
-                                <p><strong>Emri dhe Mbiemri:</strong> {{ order.fullname }}<br>
+                            <div class="order-details-wrapper" style="padding: 1rem; font-size: 0.85rem;">
+                                <h4 style="font-size: 1rem; margin-bottom: 0.5rem;">Informacionet</h4>
+                                <p style="margin-bottom: 0.25rem;"><strong>Emri dhe Mbiemri:</strong> {{ order.fullname }}<br>
                                    <strong>Email:</strong> {{ order.email }}</p>
-                                <p><strong>Adresa:</strong> {{ order.address }}, {{ order.city }}</p>
-                                <p><strong>Telefoni:</strong> {{ order.phone }}</p>
-                                <h4 style="margin-top: 1rem;">Produktet</h4>
-                                <ul>
+                                <p style="margin-bottom: 0.25rem;"><strong>Adresa:</strong> {{ order.address }}, {{ order.city }}</p>
+                                <p style="margin-bottom: 0.5rem;"><strong>Telefoni:</strong> {{ order.phone }}</p>
+                                <h4 style="margin-top: 1rem; font-size: 1rem; margin-bottom: 0.5rem;">Produktet</h4>
+                                <ul style="padding-left: 1.2rem; margin-bottom: 0.5rem;">
                                     {% for item in order['items'] %}
-                                        <li>{{ item.quantity }}x {{ item.name }} - €{{ "%.2f"|format(item.item_total) }}</li>
+                                        <li style="margin-bottom: 0.25rem;">{{ item.quantity }}x {{ item.name }} - €{{ "%.2f"|format(item.item_total) }}</li>
                                     {% endfor %}
                                 </ul>
-                                <p style="margin-top: 0.5rem;"><strong>Pagesa:</strong> {{ order.payment_method }}</p>
+                                <p style="margin-top: 0.5rem; font-weight: 500;"><strong>Pagesa:</strong> {{ order.payment_method }}</p>
                             </div>
                         </td>
                     </tr>
