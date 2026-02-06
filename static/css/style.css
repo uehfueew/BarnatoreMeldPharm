@@ -1442,12 +1442,12 @@ html, body {
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(2px);
+        background: rgba(0, 0, 0, 0.5); /* Slightly darker */
+        backdrop-filter: blur(4px); /* More blur to indicate interaction is blocked */
         opacity: 0;
         visibility: hidden;
         transition: 0.3s ease;
-        z-index: 1500;
+        z-index: 1999; /* Just below the nav-links */
     }
 
     .menu-backdrop.active {
@@ -1473,6 +1473,30 @@ html, body {
         cursor: pointer;
         padding: 0;
         line-height: 1;
+    }
+
+    /* Checkout Mobile Optimization */
+    .checkout-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2.5rem !important;
+    }
+
+    .order-summary {
+        order: -1; /* Show summary at the top on mobile so they see what they buy */
+        padding: 1.5rem !important;
+    }
+
+    .checkout-form h3 {
+        font-size: 1.3rem;
+        margin-top: 1rem;
+    }
+    
+    /* Orders Date Optimization */
+    .table-responsive .table th:nth-child(2),
+    .table-responsive .table td:nth-child(2) {
+        min-width: 160px !important; 
+        white-space: nowrap !important;
+        overflow: visible !important;
     }
 
     /* Cart Mobile Optimization */

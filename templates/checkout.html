@@ -11,7 +11,7 @@
         
         <h1 class="section-title" style="margin-bottom: 3rem;">Përfundo Porosinë</h1>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+        <div class="checkout-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
             <!-- Checkout Form -->
             <div class="checkout-form">
                 <form action="{{ url_for('cart.place_order') }}" method="POST" id="checkout-form">

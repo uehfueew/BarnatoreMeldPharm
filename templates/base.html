@@ -13,6 +13,9 @@
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </head>
 <body data-user-logged-in="{{ 'true' if current_user.is_authenticated else 'false' }}">
+    <!-- Menu Overlay/Backdrop -->
+    <div class="menu-backdrop"></div>
+
     <nav class="navbar">
         <div class="container nav-container">
             <a href="{{ url_for('main.index') }}" class="logo">Meld <span class="highlight">Pharm</span></a>
@@ -23,9 +26,6 @@
                 <span></span>
                 <span></span>
             </button>
-
-            <!-- Menu Overlay/Backdrop -->
-            <div class="menu-backdrop"></div>
 
             <ul class="nav-links">
                 <!-- Mobile Header for Sidebar -->
