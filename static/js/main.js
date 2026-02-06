@@ -426,51 +426,41 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initCarouselSwipe() {
-    const tracks = document.querySelectorAll('.carousel-track');
+    const containers = document.querySelectorAll('.carousel-container');
     
-    tracks.forEach(track => {
-        let startX = 0;
-        let startY = 0;
-        let isHorizontalSwipe = false;
+    containers.forEach(container => {
+        let touchstartX = 0;
+        let touchendX = 0;
+        let touchstartY = 0;
+        let touchendY = 0;
+        
+        container.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].clientX;
+            touchstartY = e.changedTouches[0].clientY;
+        }, {passive: true});
 
-        track.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-            isHorizontalSwipe = false;
-        }, { passive: true });
+        container.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].clientX;
+            touchendY = e.changedTouches[0].clientY;
+            handleGesture();
+        }, {passive: true});
 
-        track.addEventListener('touchmove', (e) => {
-            const currentX = e.touches[0].clientX;
-            const currentY = e.touches[0].clientY;
-            const diffX = startX - currentX;
-            const diffY = startY - currentY;
-
-            // Determine if the user is swiping horizontally
-            if (!isHorizontalSwipe && Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
-                isHorizontalSwipe = true;
-            }
-
-            // If it is a horizontal swipe, prevent page scrolling
-            if (isHorizontalSwipe) {
-                if (e.cancelable) e.preventDefault();
-            }
-        }, { passive: false });
-
-        track.addEventListener('touchend', (e) => {
-            if (!isHorizontalSwipe) return;
+        function handleGesture() {
+            const deltaX = touchendX - touchstartX;
+            const deltaY = touchendY - touchstartY;
             
-            const endX = e.changedTouches[0].clientX;
-            const diff = startX - endX;
-            const threshold = 40;
-
-            if (Math.abs(diff) > threshold) {
-                if (diff > 0) {
-                    moveCarousel(null, track, 1);
-                } else {
-                    moveCarousel(null, track, -1);
+            // Reduced threshold to 30px for easier swiping on small cards
+            // Only trigger if horizontal movement is clearly dominant
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 30) {
+                if (deltaX < -30) {
+                    // Swiped Left -> Move Next
+                    moveCarousel(null, container, 1);
+                } else if (deltaX > 30) {
+                    // Swiped Right -> Move Prev
+                    moveCarousel(null, container, -1);
                 }
             }
-        }, { passive: true });
+        }
     });
 }
 

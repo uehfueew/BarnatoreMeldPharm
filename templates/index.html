@@ -129,13 +129,13 @@
                         </div>
 
                         <div class="product-actions">
-                            <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="flex: 2;">
+                            <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                 <button type="submit" class="btn btn-cart" {% if product.in_stock == False %}disabled{% endif %}>
                                     <i class="fas fa-shopping-basket"></i> Në Shportë
                                 </button>
                             </form>
-                            <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-details" style="flex: 1;">
+                            <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-details">
                                 Shiko Detajet
                             </a>
                         </div>
