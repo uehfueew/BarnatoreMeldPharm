@@ -19,23 +19,60 @@
     <div class="container">
         <!-- Search and Filter Bar -->
         <div class="filter-container">
-            <div class="filter-bar glass-card">
-                <div class="search-wrapper">
+            <div class="filter-bar glass-card" style="border-radius: var(--radius-xl);">
+                <div class="search-wrapper" style="flex: 1; max-width: 100%;">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="productSearch" placeholder="Kërko produkte sipas emrit ose markës..." autocomplete="off" value="{{ search_query or '' }}">
+                    <input type="text" id="productSearch" placeholder="Kërko produkte sipas emrit ose markës..." autocomplete="off" value="{{ search_query or '' }}" data-limit="5">
                     <div id="searchPreview" class="search-preview-dropdown"></div>
-                </div>
-                
-                <div class="category-filters">
-                    <button class="filter-btn {{ 'active' if current_category == 'all' else '' }}" data-filter="all">Të Gjitha</button>
-                    <button class="filter-btn {{ 'active' if current_category == 'Kozmetik' else '' }}" data-filter="Kozmetik">Kozmetik</button>
-                    <button class="filter-btn {{ 'active' if current_category == 'Vitamina' else '' }}" data-filter="Vitamina">Vitamina</button>
-                    <button class="filter-btn {{ 'active' if current_category == 'Pajisje ortopedike' else '' }}" data-filter="Pajisje ortopedike">Pajisje Ortopedike</button>
                 </div>
             </div>
         </div>
 
-        <div class="product-grid">
+        <!-- Modern Category & Subcategory Filter System -->
+        <div class="shop-filter-system">
+            <!-- Main Categories Row -->
+            <div class="category-pills-container">
+                <button type="button" class="category-pill filter-trigger {% if current_category == 'all' %}active{% endif %}" data-category="all">
+                    <i class="fas fa-th-large"></i>
+                    <span>Të Gjitha</span>
+                </button>
+                
+                {% set icons = {
+                    'Dermokozmetikë & Bukuri': 'fa-sparkles',
+                    'Suplemente & Vitamina': 'fa-capsules',
+                    'Kujdes Personal & Higjienë': 'fa-soap',
+                    'Pajisje Mjekësore': 'fa-stethoscope',
+                    'Nënë & Fëmijë': 'fa-baby-carriage',
+                    'Pajisje Ortopedike': 'fa-bone',
+                    'Produkte Natyrale & Bimore': 'fa-leaf'
+                } %}
+
+                {% for cat_name in categories.keys() %}
+                    <button type="button" 
+                       class="category-pill filter-trigger {% if current_category == cat_name %}active{% endif %}"
+                       data-category="{{ cat_name }}">
+                        <i class="fas {{ icons.get(cat_name, 'fa-tag') }}"></i>
+                        <span>{{ cat_name }}</span>
+                    </button>
+                {% endfor %}
+            </div>
+
+            <!-- Subcategories Row -->
+            <div id="subcategoryContainer" class="subcategory-chips-container" style="{% if current_category == 'all' %}display: none;{% endif %}">
+                {% if current_category != 'all' %}
+                    <button type="button" class="sub-chip filter-trigger {% if current_subcategory == 'all' %}active{% endif %}" data-category="{{ current_category }}" data-subcategory="all">
+                        Të Gjitha Në {{ current_category }}
+                    </button>
+                    {% for sub in categories[current_category] %}
+                        <button type="button" class="sub-chip filter-trigger {% if current_subcategory == sub %}active{% endif %}" data-category="{{ current_category }}" data-subcategory="{{ sub }}">
+                            {{ sub }}
+                        </button>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+        <div id="productGrid" class="product-grid">
             {% for product in products %}
                 <div class="product-card fade-in-section" data-category="{{ product.category }}">
                     <div class="product-image carousel-container" data-index="0">
@@ -79,10 +116,9 @@
                         <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
                     </div>
                     <div class="product-info">
-                        <span class="product-category">{{ product.category or 'Farmaci' }}</span>
-                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" style="text-decoration: none; color: inherit; position: relative; z-index: 5;">
-                            <h3>{{ product.name }}</h3>
-                        </a>
+                        <span class="product-category">{{ product.category }}{% if product.subcategory %} • {{ product.subcategory }}{% endif %}</span>
+                        <h3 class="product-title">{% if product.brand %}<span style="color: var(--primary); font-weight: 700;">{{ product.brand }}</span> {% endif %}{{ product.name }}</h3>
+                        {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
                         
                         <div class="price-container">
                             {% if product.discount_price %}
@@ -111,36 +147,290 @@
                     </div>
                 </div>
             {% endfor %}
+
+            {% if not products %}
+                <div class="empty-state" style="grid-column: 1/-1;">
+                    <i class="fas fa-search"></i>
+                    <p>Nuk u gjetën produkte në këtë kategori.</p>
+                </div>
+            {% endif %}
         </div>
-        
-        {% if not products %}
-            <div class="empty-state">
-                <i class="fas fa-search"></i>
-                <p>Nuk u gjetën produkte në këtë kategori.</p>
-                <a href="{{ url_for('main.products') }}" class="btn btn-primary">Rifillo Kërkimin</a>
-            </div>
-        {% endif %}
 
         <!-- Pagination Controls -->
-        {% if total_pages > 1 %}
-        <div class="pagination">
-            {% if page > 1 %}
-            <a href="{{ url_for('main.products', page=page-1, category=current_category, q=search_query) }}" class="page-btn">
-                <i class="fas fa-chevron-left"></i>
-            </a>
-            {% endif %}
-            
-            {% for p in range(1, total_pages + 1) %}
-                <a href="{{ url_for('main.products', page=p, category=current_category, q=search_query) }}" class="page-btn {{ 'active' if p == page else '' }}">{{ p }}</a>
-            {% endfor %}
+        <div id="paginationContainer">
+            {% if total_pages > 1 %}
+            <div class="pagination">
+                {% if page > 1 %}
+                <button class="page-btn filter-trigger" data-page="{{ page - 1 }}" data-category="{{ current_category }}" data-subcategory="{{ current_subcategory }}">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                {% endif %}
+                
+                {% for p in range(1, total_pages + 1) %}
+                    <button class="page-btn filter-trigger {{ 'active' if p == page else '' }}" data-page="{{ p }}" data-category="{{ current_category }}" data-subcategory="{{ current_subcategory }}">{{ p }}</button>
+                {% endfor %}
 
-            {% if page < total_pages %}
-            <a href="{{ url_for('main.products', page=page+1, category=current_category, q=search_query) }}" class="page-btn">
-                <i class="fas fa-chevron-right"></i>
-            </a>
+                {% if page < total_pages %}
+                <button class="page-btn filter-trigger" data-page="{{ page + 1 }}" data-category="{{ current_category }}" data-subcategory="{{ current_subcategory }}">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                {% endif %}
+            </div>
             {% endif %}
         </div>
-        {% endif %}
     </div>
 </section>
+
+<style>
+/* Modern Category Filter Styles */
+.shop-filter-system {
+    margin-bottom: 3rem;
+}
+
+.category-pills-container {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding: 0.5rem 0.25rem 1.5rem;
+    scrollbar-width: none; /* Hide scrollbar for clean look */
+    -ms-overflow-style: none;
+}
+
+.category-pills-container::-webkit-scrollbar {
+    display: none;
+}
+
+.category-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.75rem;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-xl);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    outline: none;
+}
+
+.category-pill i, .category-pill span {
+    pointer-events: none;
+}
+
+.category-pill i {
+    font-size: 1.1rem;
+    color: var(--primary);
+    transition: var(--transition);
+}
+
+.category-pill:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    color: var(--primary);
+    box-shadow: var(--shadow-md);
+}
+
+.category-pill.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    box-shadow: 0 10px 20px -5px rgba(5, 150, 105, 0.4);
+}
+
+.category-pill.active i {
+    color: white;
+}
+
+/* Subcategory Chips */
+.subcategory-chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    padding: 0 0.25rem;
+}
+
+.sub-chip {
+    padding: 0.6rem 1.25rem;
+    background: #f1f5f9;
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: var(--transition);
+    cursor: pointer;
+    outline: none;
+}
+
+.sub-chip:hover {
+    background: #e2e8f0;
+    color: var(--primary);
+}
+
+.sub-chip.active {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    border-color: var(--primary);
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .category-pill {
+        padding: 0.8rem 1.25rem;
+        font-size: 0.85rem;
+    }
+}
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const productGrid = document.getElementById('productGrid');
+        const subcategoryContainer = document.getElementById('subcategoryContainer');
+        const paginationContainer = document.getElementById('paginationContainer');
+
+        async function updateProducts(category = 'all', subcategory = 'all', page = 1) {
+            // Update URL without refreshing
+            const url = new URL(window.location);
+            url.searchParams.set('category', category);
+            url.searchParams.set('subcategory', subcategory);
+            url.searchParams.set('page', page);
+            window.history.pushState({}, '', url);
+
+            // Show loading state
+            productGrid.style.opacity = '0.5';
+            
+            try {
+                const response = await fetch(`/products?category=${encodeURIComponent(category)}&subcategory=${encodeURIComponent(subcategory)}&page=${page}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                const data = await response.json();
+
+                // Update Category UI
+                document.querySelectorAll('.category-pill').forEach(p => {
+                    p.classList.toggle('active', p.dataset.category === data.current_category);
+                });
+
+                // Update Subcategory UI
+                if (data.current_category === 'all') {
+                    subcategoryContainer.style.display = 'none';
+                    subcategoryContainer.innerHTML = '';
+                } else {
+                    subcategoryContainer.style.display = 'flex';
+                    let subHtml = `<button type="button" class="sub-chip filter-trigger ${data.current_subcategory === 'all' ? 'active' : ''}" data-category="${data.current_category}" data-subcategory="all">Të Gjitha Në ${data.current_category}</button>`;
+                    
+                    const subs = data.categories_config[data.current_category] || [];
+                    subs.forEach(sub => {
+                        subHtml += `<button type="button" class="sub-chip filter-trigger ${data.current_subcategory === sub ? 'active' : ''}" data-category="${data.current_category}" data-subcategory="${sub}">${sub}</button>`;
+                    });
+                    subcategoryContainer.innerHTML = subHtml;
+                }
+
+                // Update Products
+            if (data.products.length === 0) {
+                productGrid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <i class="fas fa-search"></i>
+                        <p>Nuk u gjetën produkte në këtë kategori.</p>
+                    </div>
+                `;
+            } else {
+                    productGrid.innerHTML = data.products.map(p => `
+                        <div class="product-card">
+                            <div class="product-image carousel-container" data-index="0">
+                                <div class="carousel-track">
+                                    <img src="${p.image_url}" alt="${p.name}">
+                                    ${p.images && p.images.length > 1 ? p.images.slice(1).map(img => `<img src="${img}" alt="${p.name}">`).join('') : ''}
+                                </div>
+                                ${p.images && p.images.length > 1 ? `
+                                    <button class="carousel-arrow prev" onclick="moveCarousel(event, this, -1)"><i class="fas fa-chevron-left"></i></button>
+                                    <button class="carousel-arrow next" onclick="moveCarousel(event, this, 1)"><i class="fas fa-chevron-right"></i></button>
+                                    <div class="carousel-indicators">
+                                        <div class="indicator-dot active"></div>
+                                        ${p.images.slice(1).map(() => `<div class="indicator-dot"></div>`).join('')}
+                                    </div>
+                                ` : ''}
+                                ${p.discount_price ? `<span class="badge sale">-${Math.round((p.price - p.discount_price) / p.price * 100)}%</span>` : ''}
+                                ${!p.in_stock ? `<div class="out-of-stock-overlay"><span>Jashtë Stokut</span></div>` : ''}
+                                <button class="btn-favorite ${p.is_favorite ? 'active' : ''}" onclick="toggleFavorite(this, '${p.id}')">
+                                    <i class="${p.is_favorite ? 'fas' : 'far'} fa-heart"></i>
+                                </button>
+                                <a href="/product/${p.id}" class="product-card-link-overlay"></a>
+                            </div>
+                            <div class="product-info">
+                                <span class="product-category">${p.category}${p.subcategory ? ' • ' + p.subcategory : ''}</span>
+                                <h3 class="product-title">${p.brand ? `<span style="color: var(--primary); font-weight: 700;">${p.brand}</span> ` : ''}${p.name}</h3>
+                                ${p.size ? `<span class="product-size">${p.size}</span>` : ''}
+                                <div class="price-container">
+                                    ${p.discount_price ? `
+                                        <span class="price discounted">€${p.discount_price}</span>
+                                        <span class="price original">€${p.price}</span>
+                                    ` : `<span class="price">€${p.price}</span>`}
+                                </div>
+                                <div class="product-actions">
+                                    <form action="/cart/add/${p.id}" method="POST">
+                                        <input type="hidden" name="csrf_token" value="${document.querySelector('meta[name="csrf-token"]').content}"/>
+                                        <button type="submit" class="btn btn-cart" ${!p.in_stock ? 'disabled' : ''}>
+                                            ${!p.in_stock ? 'Jashtë Stokut' : '<i class="fas fa-shopping-basket"></i> Në Shportë'}
+                                        </button>
+                                    </form>
+                                    <a href="/product/${p.id}" class="btn btn-details">Shiko Detajet</a>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // Update Pagination
+                if (data.total_pages > 1) {
+                    let pagHtml = `<div class="pagination">`;
+                    if (data.page > 1) {
+                        pagHtml += `<button class="page-btn filter-trigger" data-page="${data.page - 1}" data-category="${data.current_category}" data-subcategory="${data.current_subcategory}"><i class="fas fa-chevron-left"></i></button>`;
+                    }
+                    for (let i = 1; i <= data.total_pages; i++) {
+                        pagHtml += `<button class="page-btn filter-trigger ${i === data.page ? 'active' : ''}" data-page="${i}" data-category="${data.current_category}" data-subcategory="${data.current_subcategory}">${i}</button>`;
+                    }
+                    if (data.page < data.total_pages) {
+                        pagHtml += `<button class="page-btn filter-trigger" data-page="${data.page + 1}" data-category="${data.current_category}" data-subcategory="${data.current_subcategory}"><i class="fas fa-chevron-right"></i></button>`;
+                    }
+                    pagHtml += `</div>`;
+                    paginationContainer.innerHTML = pagHtml;
+                } else {
+                    paginationContainer.innerHTML = '';
+                }
+
+            } catch (err) {
+                console.error('Filter error:', err);
+                showToast('Ndodhi një gabim gjatë filtrimit.', 'error');
+            } finally {
+                productGrid.style.opacity = '1';
+            }
+        }
+
+        // Event Delegation for all filter triggers
+        document.body.addEventListener('click', (e) => {
+            const trigger = e.target.closest('.filter-trigger');
+            if (!trigger) return;
+
+            const category = trigger.dataset.category;
+            const subcategory = trigger.dataset.subcategory || 'all';
+            const page = trigger.dataset.page || 1;
+
+            updateProducts(category, subcategory, page);
+        });
+
+        // Initial scroll to active
+        const activePill = document.querySelector('.category-pill.active');
+        if (activePill) {
+            activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+    });
+</script>
 {% endblock %}

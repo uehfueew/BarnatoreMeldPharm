@@ -17,15 +17,20 @@ class Product:
 
 
     @staticmethod
-    def get_paginated(page=1, per_page=20, category=None, search_query=None):
+    def get_paginated(page=1, per_page=20, category=None, search_query=None, subcategory=None):
         query = {}
         if category and category != 'all':
             query["category"] = category
+        
+        if subcategory and subcategory != 'all':
+            query["subcategory"] = subcategory
             
         if search_query:
             query["$or"] = [
                 {"name": {"$regex": search_query, "$options": "i"}},
-                {"category": {"$regex": search_query, "$options": "i"}}
+                {"brand": {"$regex": search_query, "$options": "i"}},
+                {"category": {"$regex": search_query, "$options": "i"}},
+                {"subcategory": {"$regex": search_query, "$options": "i"}}
             ]
             
         total_products = mongo.db.products.count_documents(query)
@@ -76,6 +81,10 @@ class Product:
             "discount_price": {"$ne": None, "$gt": 0}
 
         }))
+
+    @staticmethod
+    def get_best_sellers(limit=8):
+        return list(mongo.db.products.find({"is_best_seller": True}).limit(limit))
 
     @staticmethod
     def get_regular(limit=8):

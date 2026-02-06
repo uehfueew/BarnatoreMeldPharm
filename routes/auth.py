@@ -36,10 +36,10 @@ def login():
             except Exception as e:
                 print(f"Error syncing cart: {e}")
 
-            flash('Kycja ishte e suksesshme!', 'success')
+            flash('Kyçja ishte e suksesshme!', 'success')
             return redirect(url_for('main.index'))
         else:
-            flash('Kycja dështoi. Kontrolloni emailin dhe fjalëkalimin.', 'danger')
+            flash('Kyçja dështoi. Kontrolloni emailin dhe fjalëkalimin.', 'danger')
             
     return render_template('login.html')
 
@@ -52,7 +52,7 @@ def register():
         
         existing_user = User.get_by_email(email)
         if existing_user:
-            flash('Email është rregjistruar tashmë.', 'warning')
+            flash('Email është regjistruar tashmë.', 'warning')
             return redirect(url_for('auth.register'))
             
         hashed_pw = bcrypt.generate_password_hash(password).decode('utf-8')

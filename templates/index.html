@@ -40,38 +40,82 @@
 </header>
 
 <!-- Categories Section -->
-<section class="section categories-preview bg-light">
+<section class="section categories-preview">
     <div class="container">
         <div class="section-center-header fade-in-section">
-            <span class="sub-title">Zgjidhni sipas kategorisë</span>
             <h2 class="section-title">Eksploro Sipas Nevojës</h2>
         </div>
         
         <div class="category-grid-v2">
-            <!-- Kozmetik -->
-            <a href="{{ url_for('main.products', category='Kozmetik') }}" class="category-card-v2 fade-in-section">
-                <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=800&auto=format&fit=crop" alt="Kozmetik" class="category-bg">
+            <!-- 1. Dermokozmetikë & Bukuri -->
+            <a href="{{ url_for('main.products', category='Dermokozmetikë & Bukuri') }}" class="category-card-v2 fade-in-section">
+                <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=800&auto=format&fit=crop" alt="Dermokozmetikë & Bukuri" class="category-bg">
                 <div class="category-overlay">
-                    <span class="category-title">Kozmetik</span>
-                    <span class="category-count">Kujdesi për bukuri</span>
+                    <span class="category-title">Dermokozmetikë</span>
+                    <span class="category-count">Kujdesi për bukurinë</span>
                 </div>
             </a>
 
-            <!-- Vitamina -->
-            <a href="{{ url_for('main.products', category='Vitamina') }}" class="category-card-v2 fade-in-section">
-                <img src="https://images.unsplash.com/photo-1556760544-74c27a059c12?q=80&w=800&auto=format&fit=crop" alt="Vitamina" class="category-bg">
+            <!-- 2. Suplemente & Vitamina -->
+            <a href="{{ url_for('main.products', category='Suplemente & Vitamina') }}" class="category-card-v2 fade-in-section">
+                <img src="https://images.unsplash.com/photo-1584017911766-d451b3d0e843?q=80&w=800&auto=format&fit=crop" alt="Suplemente & Vitamina" class="category-bg">
                 <div class="category-overlay">
                     <span class="category-title">Vitamina</span>
                     <span class="category-count">Suplemente & Shëndet</span>
                 </div>
             </a>
 
-            <!-- Pajisje ortopedike -->
-            <a href="{{ url_for('main.products', category='Pajisje ortopedike') }}" class="category-card-v2 fade-in-section">
-                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop" alt="Pajisje ortopedike" class="category-bg">
+            <!-- 3. Kujdes Personal & Higjienë -->
+            <a href="{{ url_for('main.products', category='Kujdes Personal & Higjienë') }}" class="category-card-v2 fade-in-section">
+                <img src="https://images.unsplash.com/photo-1559594412-e68a15f4e339?q=80&w=800&auto=format&fit=crop" alt="Kujdes Personal & Higjienë" class="category-bg">
                 <div class="category-overlay">
-                    <span class="category-title">Pajisje Ortopedike</span>
-                    <span class="category-count">Mbështetje & Rehabilitim</span>
+                    <span class="category-title">Higjienë</span>
+                    <span class="category-count">Kujdesi Personal</span>
+                </div>
+            </a>
+
+            <!-- 4. Pajisje Mjekësore -->
+            <a href="{{ url_for('main.products', category='Pajisje Mjekësore') }}" class="category-card-v2 fade-in-section">
+                <img src="https://images.unsplash.com/photo-1583947215259-38e31be8751f?q=80&w=800&auto=format&fit=crop" alt="Pajisje Mjekësore" class="category-bg">
+                <div class="category-overlay">
+                    <span class="category-title">Pajisje Mjekësore</span>
+                    <span class="category-count">Matës & Instrumente</span>
+                </div>
+            </a>
+
+            <!-- 5. Nënë & Fëmijë -->
+            <a href="{{ url_for('main.products', category='Nënë & Fëmijë') }}" class="category-card-v2 fade-in-section">
+                <img src="https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?q=80&w=800&auto=format&fit=crop" alt="Nënë & Fëmijë" class="category-bg">
+                <div class="category-overlay">
+                    <span class="category-title">Nënë & Fëmijë</span>
+                    <span class="category-count">Për më të vegjëlit</span>
+                </div>
+            </a>
+
+            <!-- 6. Pajisje Ortopedike -->
+            <a href="{{ url_for('main.products', category='Pajisje Ortopedike') }}" class="category-card-v2 fade-in-section">
+                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop" alt="Pajisje Ortopedike" class="category-bg">
+                <div class="category-overlay">
+                    <span class="category-title">Ortopedi</span>
+                    <span class="category-count">Mbështetje & Lëvizje</span>
+                </div>
+            </a>
+
+            <!-- 7. Produkte Natyrale & Bimore -->
+            <a href="{{ url_for('main.products', category='Produkte Natyrale & Bimore') }}" class="category-card-v2 fade-in-section">
+                <img src="https://images.unsplash.com/photo-1540324155974-7523202daa3f?q=80&w=800&auto=format&fit=crop" alt="Produkte Natyrale & Bimore" class="category-bg">
+                <div class="category-overlay">
+                    <span class="category-title">Bio & Natyrale</span>
+                    <span class="category-count">Çajra & Vajra</span>
+                </div>
+            </a>
+
+            <!-- 8. Shëndet & Mirëqenie -->
+            <a href="{{ url_for('main.products', category='Shëndet & Mirëqenie') }}" class="category-card-v2 fade-in-section">
+                <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800&auto=format&fit=crop" alt="Shëndet & Mirëqenie" class="category-bg">
+                <div class="category-overlay">
+                    <span class="category-title">Mirëqenie</span>
+                    <span class="category-count">Gjumë & Sport</span>
                 </div>
             </a>
         </div>
@@ -79,7 +123,7 @@
 </section>
 
 <!-- Popular Brands Section -->
-<section class="section brands-section">
+<section class="section brands-section bg-light">
     <div class="container">
         <div class="section-header fade-in-section">
             <div>
@@ -90,54 +134,54 @@
         
         <div class="brand-grid">
             <!-- Brand 1: Eucerin -->
-            <div class="brand-card fade-in-section">
+            <a href="{{ url_for('main.products', q='Eucerin') }}" class="brand-card fade-in-section" style="text-decoration: none;">
                 <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=800&auto=format&fit=crop" alt="Eucerin" class="brand-img">
                 <div class="brand-overlay">
-                    <h3 class="brand-name">Eucerin</h3>
-                    <a href="{{ url_for('main.products', q='Eucerin') }}" class="brand-link">
+                    <h3 class="brand-name" style="color: white;">Eucerin</h3>
+                    <div class="brand-link" style="color: white; opacity: 0.9;">
                         Shiko Produktet <i class="fas fa-chevron-right"></i>
-                    </a>
+                    </div>
                 </div>
-            </div>
+            </a>
 
             <!-- Brand 2: Vichy -->
-            <div class="brand-card fade-in-section">
+            <a href="{{ url_for('main.products', q='Vichy') }}" class="brand-card fade-in-section" style="text-decoration: none;">
                 <img src="https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=800&auto=format&fit=crop" alt="Vichy" class="brand-img">
                 <div class="brand-overlay">
-                    <h3 class="brand-name">Vichy</h3>
-                    <a href="{{ url_for('main.products', q='Vichy') }}" class="brand-link">
+                    <h3 class="brand-name" style="color: white;">Vichy</h3>
+                    <div class="brand-link" style="color: white; opacity: 0.9;">
                         Shiko Produktet <i class="fas fa-chevron-right"></i>
-                    </a>
+                    </div>
                 </div>
-            </div>
+            </a>
 
             <!-- Brand 3: La Roche-Posay -->
-            <div class="brand-card fade-in-section">
+            <a href="{{ url_for('main.products', q='La Roche-Posay') }}" class="brand-card fade-in-section" style="text-decoration: none;">
                 <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=800&auto=format&fit=crop" alt="La Roche-Posay" class="brand-img">
                 <div class="brand-overlay">
-                    <h3 class="brand-name">La Roche-Posay</h3>
-                    <a href="{{ url_for('main.products', q='La Roche-Posay') }}" class="brand-link">
+                    <h3 class="brand-name" style="color: white;">La Roche-Posay</h3>
+                    <div class="brand-link" style="color: white; opacity: 0.9;">
                         Shiko Produktet <i class="fas fa-chevron-right"></i>
-                    </a>
+                    </div>
                 </div>
-            </div>
+            </a>
 
             <!-- Brand 4: CeraVe -->
-            <div class="brand-card fade-in-section">
+            <a href="{{ url_for('main.products', q='CeraVe') }}" class="brand-card fade-in-section" style="text-decoration: none;">
                 <img src="https://images.unsplash.com/photo-1556229010-6c3f2c9ca4f8?q=80&w=800&auto=format&fit=crop" alt="CeraVe" class="brand-img">
                 <div class="brand-overlay">
-                    <h3 class="brand-name">CeraVe</h3>
-                    <a href="{{ url_for('main.products', q='CeraVe') }}" class="brand-link">
+                    <h3 class="brand-name" style="color: white;">CeraVe</h3>
+                    <div class="brand-link" style="color: white; opacity: 0.9;">
                         Shiko Produktet <i class="fas fa-chevron-right"></i>
-                    </a>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 </section>
 
 <!-- Featured Products Section -->
-<section id="featured" class="section featured-products bg-light">
+<section id="featured" class="section featured-products">
     <div class="container">
         <div class="section-header fade-in-section">
             <div>
@@ -149,7 +193,7 @@
         
         <div class="product-grid">
             {% for product in featured_products %}
-                <div class="product-card fade-in-section">
+                <div class="product-card fade-in-section" data-category="{{ product.category }}">
                     <div class="product-image carousel-container" data-index="0">
                         <div class="carousel-track">
                             <img src="{{ product.image_url }}" alt="{{ product.name }}">
@@ -191,10 +235,9 @@
                         <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
                     </div>
                     <div class="product-info">
-                        <span class="product-category">{{ product.category or 'Farmaci' }}</span>
-                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" style="text-decoration: none; color: inherit; position: relative; z-index: 5;">
-                            <h3>{{ product.name }}</h3>
-                        </a>
+                        <span class="product-category">{{ product.category }}{% if product.subcategory %} • {{ product.subcategory }}{% endif %}</span>
+                        <h3 class="product-title">{% if product.brand %}<span style="color: var(--primary); font-weight: 700;">{{ product.brand }}</span> {% endif %}{{ product.name }}</h3>
+                        {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
                         
                         <div class="price-container">
                             {% if product.discount_price %}
@@ -217,7 +260,7 @@
                                 </button>
                             </form>
                             <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-details">
-                                Shiko Detajet
+                                Detajet
                             </a>
                         </div>
                     </div>
@@ -227,6 +270,84 @@
                     <i class="fas fa-box-open"></i>
                     <p>Nuk ka produkte të veçuara momentalisht.</p>
                  </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Best Sellers Section -->
+<section class="section best-sellers bg-light">
+    <div class="container">
+        <div class="section-header fade-in-section">
+            <div>
+                <span class="sub-title">Trendet e Fundit</span>
+                <h2 class="section-title">Më të Shiturit</h2>
+            </div>
+            <a href="{{ url_for('main.products') }}" class="view-all"><span>Shiko të gjitha</span> <i class="fas fa-arrow-right"></i></a>
+        </div>
+        
+        <div class="product-grid">
+            {% for product in best_sellers %}
+                <div class="product-card fade-in-section" data-category="{{ product.category }}">
+                    <div class="product-image carousel-container" data-index="0">
+                        <div class="carousel-track">
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                            {% if product.images and product.images|length > 1 %}
+                                {% for extra_img in product.images[1:] %}
+                                    <img src="{{ extra_img }}" alt="{{ product.name }} {{ loop.index }}">
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        {% if product.images and product.images|length > 1 %}
+                            <button class="carousel-arrow prev" onclick="moveCarousel(event, this, -1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="carousel-arrow next" onclick="moveCarousel(event, this, 1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        {% endif %}
+
+                        {% if product.discount_price %}
+                            <span class="badge sale"> -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
+                        {% endif %}
+
+                        <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
+                            <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
+                        </button>
+                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">{{ product.category }}{% if product.subcategory %} • {{ product.subcategory }}{% endif %}</span>
+                        <h3 class="product-title">{% if product.brand %}<span style="color: var(--primary); font-weight: 700;">{{ product.brand }}</span> {% endif %}{{ product.name }}</h3>
+                        {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
+                        
+                        <div class="price-container">
+                            {% if product.discount_price %}
+                                <span class="price discounted">€{{ product.discount_price }}</span>
+                                <span class="price original">€{{ product.price }}</span>
+                            {% else %}
+                                <span class="price">€{{ product.price }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="product-actions">
+                            <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-cart" {% if product.in_stock == False %}disabled{% endif %}>
+                                    {% if product.in_stock == False %}
+                                        Jashtë Stokut
+                                    {% else %}
+                                        <i class="fas fa-shopping-basket"></i> Në Shportë
+                                    {% endif %}
+                                </button>
+                            </form>
+                            <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-details">
+                                Detajet
+                            </a>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
         </div>
     </div>
@@ -245,7 +366,7 @@
         
         <div class="product-grid">
             {% for product in regular_products %}
-                <div class="product-card fade-in-section">
+                <div class="product-card fade-in-section" data-category="{{ product.category }}">
                     <div class="product-image carousel-container" data-index="0">
                         <div class="carousel-track">
                             <img src="{{ product.image_url }}" alt="{{ product.name }}">
@@ -287,10 +408,9 @@
                         <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
                     </div>
                     <div class="product-info">
-                        <span class="product-category">{{ product.category or 'Farmaci' }}</span>
-                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" style="text-decoration: none; color: inherit; position: relative; z-index: 5;">
-                            <h3>{{ product.name }}</h3>
-                        </a>
+                        <span class="product-category">{{ product.category }}{% if product.subcategory %} • {{ product.subcategory }}{% endif %}</span>
+                        <h3 class="product-title">{% if product.brand %}<span style="color: var(--primary); font-weight: 700;">{{ product.brand }}</span> {% endif %}{{ product.name }}</h3>
+                        {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
                         
                         <div class="price-container">
                             {% if product.discount_price %}
@@ -313,7 +433,7 @@
                                 </button>
                             </form>
                             <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-details">
-                                Shiko Detajet
+                                Detajet
                             </a>
                         </div>
                     </div>

@@ -76,12 +76,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const term = e.target.value.toLowerCase();
             
             // Front-end filter for current page
-            // filterProducts(term, getActiveCategory()); // Disabling front-end filter to rely more on API search for better experience
+            if (typeof filterProducts === 'function') {
+                filterProducts(term, getActiveCategory());
+            }
 
             // Live search preview
             if (term.length >= 2) {
                 try {
-                    const response = await fetch(`/api/search?q=${encodeURIComponent(term)}`);
+                    const limit = searchInput.dataset.limit || 20;
+                    const response = await fetch(`/api/search?q=${encodeURIComponent(term)}&limit=${limit}`);
                     const products = await response.json();
                     
                     if (products.length > 0) {
@@ -90,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <img src="${p.image_url}" alt="${p.name}">
                                 <div class="preview-info">
                                     <span class="preview-name">${p.name}</span>
-                                    <span class="preview-category">${p.category}</span>
+                                    <span class="preview-category">${p.category}${p.subcategory ? ' • ' + p.subcategory : ''}</span>
                                     <div class="preview-price">
                                         ${p.discount_price ? `<span class="price">€${p.discount_price}</span> <span class="old-price">€${p.price}</span>` : `<span class="price">€${p.price}</span>`}
                                     </div>
@@ -253,16 +256,57 @@ document.addEventListener('DOMContentLoaded', () => {
         const minusBtn = selector.querySelector('.minus');
         const plusBtn = selector.querySelector('.plus');
         
+        plusBtn.addEventListener('click', () => {
+            let val = parseInt(input.value);
+            input.value = val + 1;
+            // Trigger change event for cart updates
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+
         minusBtn.addEventListener('click', () => {
             let val = parseInt(input.value);
             if (val > 1) {
                 input.value = val - 1;
+                // Trigger change event for cart updates
+                input.dispatchEvent(new Event('change', { bubbles: true }));
             }
         });
-        
-        plusBtn.addEventListener('click', () => {
+
+        // Handle manual input
+        input.addEventListener('focus', () => {
+            if (input.disabled) return;
+            input.select();
+        });
+
+        input.addEventListener('keydown', (e) => {
+            // Prevent decimal point, comma, 'e', and minus
+            if (['.', ',', 'e', 'E', '-'].includes(e.key)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Also block on paste
+        input.addEventListener('paste', (e) => {
+            const data = e.clipboardData.getData('text');
+            if (/[.,eE-]/.test(data)) {
+                e.preventDefault();
+            }
+        });
+
+        input.addEventListener('change', () => {
             let val = parseInt(input.value);
-            input.value = val + 1;
+            if (isNaN(val) || val < 1) {
+                input.value = 1;
+            } else {
+                input.value = Math.floor(val); // Ensure integer
+            }
+            
+            // If in cart (within a .qty-set-form), submit it
+            const setForm = input.closest('.qty-set-form');
+            if (setForm) {
+                setForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+            }
         });
     });
 });
@@ -308,9 +352,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isAdd = e.target.matches('form[action*="/cart/add/"]');
         const isUpdate = e.target.matches('form[action*="/cart/update/"]');
+        const isSet = e.target.matches('form[action*="/cart/set/"]');
         const isRemove = e.target.matches('form[action*="/cart/remove/"]');
         
-        if (!isAdd && !isUpdate && !isRemove) return;
+        if (!isAdd && !isUpdate && !isRemove && !isSet) return;
         
         e.preventDefault();
         const form = e.target;
@@ -369,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (totalEl) totalEl.textContent = 'Totali: €' + data.total_price.toFixed(2);
                     updateCartBadge(data.cart_count);
 
-                } else if (isUpdate) {
+                } else if (isUpdate || isSet) {
                      // Update quantity input and item total
                     const row = form.closest('tr');
                     if (row) {

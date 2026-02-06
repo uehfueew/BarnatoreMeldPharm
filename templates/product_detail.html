@@ -2,6 +2,23 @@
 
 {% block content %}
 <div class="container section product-detail-container" style="padding-top: 1rem;">
+    <!-- Product Breadcrumbs -->
+    <nav class="product-breadcrumbs">
+        <a href="{{ url_for('main.index') }}">Ballina</a>
+        <span>/</span>
+        <a href="{{ url_for('main.products') }}">Dyqani</a>
+        {% if product.category %}
+            <span>/</span>
+            <a href="{{ url_for('main.products', category=product.category) }}">{{ product.category }}</a>
+        {% endif %}
+        {% if product.subcategory %}
+            <span>/</span>
+            <a href="{{ url_for('main.products', category=product.category, subcategory=product.subcategory) }}">{{ product.subcategory }}</a>
+        {% endif %}
+        <span>/</span>
+        <span class="current">{{ product.name }}</span>
+    </nav>
+
     <a href="{{ url_for('main.products') }}" class="btn btn-outline btn-back" style="margin-bottom: 2rem; display: inline-flex; align-items: center; gap: 0.75rem; border-radius: 12px; padding: 0.6rem 1.2rem; font-size: 0.9rem;">
         <i class="fas fa-arrow-left"></i> Kthehu tek Dyqani
     </a>
@@ -61,15 +78,23 @@
 
         <!-- Info Section -->
         <div class="product-info-column" style="animation: slideUp 0.6s ease-out;">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-                <span class="product-category" style="font-size: 0.85rem; font-weight: 800;">{{ product.category }}</span>
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <span class="product-category" style="font-size: 0.85rem; font-weight: 800;">{{ product.category }}{% if product.subcategory %} • {{ product.subcategory }}{% endif %}</span>
                 <span style="width: 4px; height: 4px; background: #cbd5e1; border-radius: 50%;"></span>
                 <span style="color: {{ 'var(--primary)' if product.in_stock != False else '#ef4444' }}; font-size: 0.85rem; font-weight: 700;">
                     {{ 'Në Stok' if product.in_stock != False else 'Jashtë Stokut' }}
                 </span>
             </div>
             
-            <h1 class="product-title-detail" style="margin-bottom: 1.5rem; line-height: 1.1;">{{ product.name }}</h1>
+            <h1 class="product-title-detail" style="margin-bottom: 0.5rem; line-height: 1.1;">{{ product.name }}</h1>
+            
+            {% if product.brand %}
+                <div class="product-brand-detail" style="margin-bottom: 0.5rem; font-size: 1.25rem; font-weight: 700; color: var(--primary);">
+                    {{ product.brand }}
+                </div>
+            {% endif %}
+
+            {% if product.size %}<div class="product-size-detail" style="margin-bottom: 1.5rem; font-size: 1.1rem; color: #64748b; font-weight: 500;">{{ product.size }}</div>{% endif %}
             
             <div class="price-container" style="display: flex; align-items: flex-end; gap: 1rem; margin-bottom: 2.5rem;">
                 {% if product.discount_price %}
@@ -93,10 +118,10 @@
             
             <form id="addToCartForm" action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="display: flex; gap: 1.5rem; align-items: stretch; flex-wrap: wrap;">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <div class="quantity-selector" style="display: flex; align-items: center; background: #f1f5f9; border-radius: 12px; padding: 0.25rem;">
-                    <button type="button" class="qty-btn minus" style="width: 45px; height: 45px; border: none; cursor: pointer; color: var(--text-main); font-size: 0.9rem;" {% if product.in_stock == False %}disabled{% endif %}><i class="fas fa-minus"></i></button>
-                    <input type="number" name="quantity" value="1" min="1" class="qty-input" readonly style="width: 50px; text-align: center; border: none; background: transparent; font-weight: 700; font-size: 1.1rem; color: var(--text-main);">
-                    <button type="button" class="qty-btn plus" style="width: 45px; height: 45px; border: none; cursor: pointer; color: var(--text-main); font-size: 0.9rem;" {% if product.in_stock == False %}disabled{% endif %}><i class="fas fa-plus"></i></button>
+                <div class="quantity-selector qty-lg">
+                    <button type="button" class="qty-btn minus" {% if product.in_stock == False %}disabled{% endif %}><i class="fas fa-minus"></i></button>
+                    <input type="number" name="quantity" value="1" min="1" step="1" oninput="this.value = Math.round(this.value);" class="qty-input" {% if product.in_stock == False %}disabled{% endif %}>
+                    <button type="button" class="qty-btn plus" {% if product.in_stock == False %}disabled{% endif %}><i class="fas fa-plus"></i></button>
                 </div>
                 <button type="submit" class="btn btn-primary" style="padding: 0 3rem; font-size: 1.1rem; flex: 1; min-height: 60px; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.3);" {% if product.in_stock == False %}disabled{% endif %}>
                     {% if product.in_stock == False %}

@@ -3,6 +3,7 @@ from models.db import mongo
 from models.product import Product
 from models.order import Order
 from models.user import User
+from models.categories import CATEGORIES
 from flask_login import current_user, login_required
 
 main = Blueprint('main', __name__)
@@ -12,10 +13,13 @@ def index():
     # If user is logged in OR has chosen to continue as guest, show the main page (now called index template)
     if current_user.is_authenticated or session.get('guest_mode'):
         featured_products = Product.get_featured()
+        best_sellers = Product.get_best_sellers(limit=8)
         regular_products = Product.get_regular(limit=8)
         return render_template('index.html', 
                              featured_products=featured_products, 
-                             regular_products=regular_products)
+                             best_sellers=best_sellers,
+                             regular_products=regular_products,
+                             categories=CATEGORIES)
     
     # Otherwise, show the welcome screen
     return render_template('welcome.html')
@@ -38,25 +42,54 @@ def products():
          
     page = request.args.get('page', 1, type=int)
     category = request.args.get('category', 'all')
+    subcategory = request.args.get('subcategory', 'all')
     search_query = request.args.get('q', '')
     per_page = 20
     
-    products, total_pages = Product.get_paginated(page, per_page, category, search_query)
+    products, total_pages = Product.get_paginated(page, per_page, category, search_query, subcategory)
     
+    # If it's an AJAX request (from our new filter system)
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        results = []
+        for p in products:
+            results.append({
+                'id': str(p['_id']),
+                'name': p['name'],
+                'brand': p.get('brand', ''),
+                'price': p['price'],
+                'discount_price': p.get('discount_price'),
+                'image_url': p.get('image_url'),
+                'images': p.get('images', []),
+                'category': p.get('category'),
+                'subcategory': p.get('subcategory'),
+                'in_stock': p.get('in_stock', True),
+                'size': p.get('size', ''),
+                'is_favorite': (current_user.is_authenticated and p.get('favorites') and current_user.id in p.get('favorites')) or 
+                               (not current_user.is_authenticated and str(p['_id']) in session.get('liked_products', []))
+            })
+        
+        return jsonify({
+            'products': results,
+            'page': page,
+            'total_pages': total_pages,
+            'current_category': category,
+            'current_subcategory': subcategory,
+            'categories_config': CATEGORIES # To update subcategory choices
+        })
+
     # Debug print
-    print(f"Products found: {len(products)} on page {page} in category {category} search: {search_query}")
+    print(f"Products found: {len(products)} on page {page} in category {category} subcategory {subcategory} search: {search_query}")
     return render_template('products.html', 
                          products=products, 
                          page=page, 
-                         total_pages=total_pages, 
+                         total_pages=total_pages,
                          current_category=category,
-                         search_query=search_query)
+                         current_subcategory=subcategory,
+                         search_query=search_query,
+                         categories=CATEGORIES)
 
 @main.route('/product/<product_id>')
 def product_detail(product_id):
-    if not (current_user.is_authenticated or session.get('guest_mode')):
-         return redirect(url_for('main.index'))
-
     product = Product.get_by_id(product_id)
     if not product:
         return render_template('index.html') # Should be 404
@@ -133,18 +166,20 @@ def toggle_favorite(product_id):
 @main.route('/api/search')
 def search_api():
     query = request.args.get('q', '').strip()
+    limit = request.args.get('limit', 20, type=int)
     if not query or len(query) < 2:
         return jsonify([])
     
-    # Search in name or description
+    # Search in name, category, or subcategory
     search_query = {
         "$or": [
             {"name": {"$regex": query, "$options": "i"}},
-            {"category": {"$regex": query, "$options": "i"}}
+            {"category": {"$regex": query, "$options": "i"}},
+            {"subcategory": {"$regex": query, "$options": "i"}}
         ]
     }
     
-    products = list(mongo.db.products.find(search_query).limit(5))
+    products = list(mongo.db.products.find(search_query).limit(limit))
     
     results = []
     for p in products:
@@ -154,7 +189,8 @@ def search_api():
             'price': p['price'],
             'discount_price': p.get('discount_price'),
             'image_url': p.get('image_url'),
-            'category': p.get('category')
+            'category': p.get('category'),
+            'subcategory': p.get('subcategory')
         })
     
     return jsonify(results)

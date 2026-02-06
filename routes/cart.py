@@ -107,6 +107,42 @@ def update_quantity(product_id, action):
 
     return redirect(url_for('cart.view_cart'))
 
+@cart_bp.route('/set/<product_id>', methods=['POST'])
+def set_quantity(product_id):
+    if not current_user.is_authenticated:
+        return jsonify({'success': False, 'message': 'Ju lutem kyçuni.'}), 401
+    
+    cart = session.get('cart', {})
+    try:
+        new_qty = int(request.form.get('quantity', 1))
+        if new_qty < 1: new_qty = 1
+    except ValueError:
+        new_qty = 1
+        
+    if product_id in cart:
+        cart[product_id] = new_qty
+        session['cart'] = cart
+        session.modified = True
+        User.update_cart(current_user.id, cart)
+        
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        total_price, total_items = calculate_cart_totals(cart)
+        product = Product.get_by_id(product_id)
+        item_total = 0
+        if product:
+            price = product.get('discount_price') if product.get('discount_price') else product.get('price')
+            item_total = price * new_qty
+            
+        return jsonify({
+            'success': True,
+            'total_price': total_price,
+            'cart_count': total_items,
+            'item_total': item_total,
+            'quantity': new_qty
+        })
+        
+    return redirect(url_for('cart.view_cart'))
+
 @cart_bp.route('/remove/<product_id>', methods=['POST'])
 def remove_from_cart(product_id):
     cart = session.get('cart', {})

@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="form-container section-container">
-    <h1 class="section-title">{{ 'Ndrysho Produktin' if product else 'Shto Produkt Të Ri' }}</h1>
+    <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 2rem;">{{ 'Ndrysho Produktin' if product else 'Shto Produkt Të Ri' }}</h2>
     
     <form method="POST" class="auth-form product-form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
@@ -12,16 +12,35 @@
             <label for="name">Emri i Produktit</label>
             <input type="text" id="name" name="name" class="form-control" value="{{ product.name if product else '' }}" required>
         </div>
+
+        <div class="form-group">
+            <label for="brand">Marka (Brand)</label>
+            <input type="text" id="brand" name="brand" class="form-control" value="{{ product.brand if product else '' }}" required placeholder="Psh: Eucerin, Vichy, La Roche-Posay">
+        </div>
         
         <div class="form-group">
-            <label for="category">Kategoria</label>
-            <select id="category" name="category" class="form-control">
-                <option value="Pain Relief" {% if product and product.category == 'Pain Relief' %}selected{% endif %}>Pain Relief</option>
-                <option value="Vitamins" {% if product and product.category == 'Vitamins' %}selected{% endif %}>Vitamins</option>
-                <option value="Antibiotics" {% if product and product.category == 'Antibiotics' %}selected{% endif %}>Antibiotics</option>
-                <option value="First Aid" {% if product and product.category == 'First Aid' %}selected{% endif %}>First Aid</option>
-                <option value="Skincare" {% if product and product.category == 'Skincare' %}selected{% endif %}>Skincare</option>
+            <label for="category">Kategoria Kryesore</label>
+            <select id="category" name="category" class="form-control" required>
+                <option value="">Zgjidh Kategorinë</option>
+                {% for cat_name in categories.keys() %}
+                    <option value="{{ cat_name }}" {% if product and product.category == cat_name %}selected{% endif %}>{{ cat_name }}</option>
+                {% endfor %}
             </select>
+        </div>
+
+        <div class="form-group">
+            <label for="subcategory">Nënkategoria</label>
+            <select id="subcategory" name="subcategory" class="form-control" required>
+                <option value="">Së pari zgjidhni kategorinë</option>
+                {% if product and product.subcategory %}
+                    <option value="{{ product.subcategory }}" selected>{{ product.subcategory }}</option>
+                {% endif %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="size">Sasia (p.sh. 50ml, 200g, 30 Kapsula)</label>
+            <input type="text" id="size" name="size" class="form-control" value="{{ product.size if product else '' }}" placeholder="Psh: 50ml, 100g">
         </div>
         
         <div class="form-group">
@@ -56,10 +75,55 @@
         
         <div class="form-group checkbox-group">
             <input type="checkbox" id="featured" name="featured" {% if product and product.featured %}checked{% endif %}>
-            <label for="featured">Featured Product?</label>
+            <label for="featured">Produkt i Veçuar (Featured)?</label>
+        </div>
+
+        <div class="form-group checkbox-group">
+            <input type="checkbox" id="is_best_seller" name="is_best_seller" {% if product and product.is_best_seller %}checked{% endif %}>
+            <label for="is_best_seller">Më i Shituri (Best Seller)?</label>
         </div>
         
         <button type="submit" class="btn btn-primary btn-block">{{ 'Përditëso' if product else 'Krijo' }}</button>
     </form>
 </div>
+
+<script id="product-form-config" type="application/json">
+{
+    "categories": {{ categories|tojson | safe }},
+    "currentSubcategory": {{ (product.get('subcategory', '') if product else '') | tojson | safe }}
+}
+</script>
+
+<script>
+    const config = JSON.parse(document.getElementById('product-form-config').textContent);
+    const categoriesData = config.categories;
+    const categorySelect = document.getElementById('category');
+    const subcategorySelect = document.getElementById('subcategory');
+    const currentSubcategory = config.currentSubcategory;
+
+    function updateSubcategories() {
+        const selectedCategory = categorySelect.value;
+        const subcategories = categoriesData[selectedCategory] || [];
+        
+        // Clear previous options
+        subcategorySelect.innerHTML = '<option value="">Zgjidh Nënkategorinë</option>';
+        
+        subcategories.forEach(sub => {
+            const option = document.createElement('option');
+            option.value = sub;
+            option.textContent = sub;
+            if (sub === currentSubcategory) {
+                option.selected = true;
+            }
+            subcategorySelect.appendChild(option);
+        });
+    }
+
+    categorySelect.addEventListener('change', updateSubcategories);
+    
+    // Initialize on load if category already selected
+    if (categorySelect.value) {
+        updateSubcategories();
+    }
+</script>
 {% endblock %}

@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from models.product import Product
 from models.order import Order
+from models.categories import CATEGORIES
 from functools import wraps
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
@@ -56,19 +57,23 @@ def new_product():
 
         product_data = {
             "name": request.form.get('name'),
+            "brand": request.form.get('brand'),
             "category": request.form.get('category'),
+            "subcategory": request.form.get('subcategory'),
+            "size": request.form.get('size'),
             "price": float(request.form.get('price')),
             "discount_price": float(request.form.get('discount_price')) if request.form.get('discount_price') else None,
             "description": request.form.get('description'),
             "image_url": main_img,
             "images": images,
             "featured": request.form.get('featured') == 'on',
+            "is_best_seller": request.form.get('is_best_seller') == 'on',
             "in_stock": request.form.get('in_stock') == 'on'
         }
         Product.create(product_data)
         flash('Produkti u krijua me sukses!', 'success')
         return redirect(url_for('admin.dashboard'))
-    return render_template('admin/product_form.html', product=None)
+    return render_template('admin/product_form.html', product=None, categories=CATEGORIES)
 
 @admin.route('/product/edit/<product_id>', methods=['GET', 'POST'])
 @login_required
@@ -92,20 +97,24 @@ def edit_product(product_id):
 
         product_data = {
             "name": request.form.get('name'),
+            "brand": request.form.get('brand'),
             "category": request.form.get('category'),
+            "subcategory": request.form.get('subcategory'),
+            "size": request.form.get('size'),
             "price": float(request.form.get('price')),
             "discount_price": float(request.form.get('discount_price')) if request.form.get('discount_price') else None,
             "description": request.form.get('description'),
             "image_url": main_img,
             "images": images,
             "featured": request.form.get('featured') == 'on',
+            "is_best_seller": request.form.get('is_best_seller') == 'on',
             "in_stock": request.form.get('in_stock') == 'on'
         }
         Product.update(product_id, product_data)
         flash('Produkti u përditësua me sukses!', 'success')
         return redirect(url_for('admin.dashboard'))
         
-    return render_template('admin/product_form.html', product=product)
+    return render_template('admin/product_form.html', product=product, categories=CATEGORIES)
 
 @admin.route('/product/delete/<product_id>', methods=['POST'])
 @login_required

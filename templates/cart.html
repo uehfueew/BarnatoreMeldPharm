@@ -49,7 +49,10 @@
                                         <i class="fas fa-minus"></i>
                                     </button>
                                 </form>
-                                <input type="text" class="qty-input" value="{{ item.quantity }}" readonly>
+                                <form action="{{ url_for('cart.set_quantity', product_id=item._id) }}" method="POST" class="qty-set-form">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <input type="number" name="quantity" class="qty-input" value="{{ item.quantity }}" min="1" step="1" oninput="this.value = Math.round(this.value);" {% if item.in_stock == False %}disabled{% endif %}>
+                                </form>
                                 <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='increase') }}" method="POST">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                     <button type="submit" class="qty-btn plus">

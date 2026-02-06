@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="form-container">
-    <h2 style="text-align: center; margin-bottom: 20px;">Kycuni</h2>
+    <h2 style="text-align: center; margin-bottom: 20px;">Kyçuni</h2>
     <form method="POST">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="form-group">
@@ -13,7 +13,7 @@
             <label for="password">Fjalëkalimi</label>
             <input type="password" name="password" id="password" class="form-control" required>
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">Kycuni</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Kyçuni</button>
     </form>
     <p style="margin-top: 15px; text-align: center;">Nuk keni llogari? <a href="{{ url_for('auth.register') }}" class="hover-underline" style="color: var(--primary);">Regjistrohuni</a></p>
 </div>
