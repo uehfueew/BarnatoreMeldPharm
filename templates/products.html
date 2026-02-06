@@ -1,89 +1,134 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Shop Hero Section (Matching Home Page) -->
-<header class="hero" style="padding: 4rem 0; min-height: auto;">
-    <div class="container hero-container" style="gap: 2rem;">
-        <div class="hero-text" style="text-align: center; margin: 0 auto; max-width: 800px;">
-            <span class="category-tag" style="margin: 0 auto 1rem; display: inline-block;">Farmacia Online</span>
-            <h1>Dyqani Ynë</h1>
-            <p>Zbuloni përzgjedhjen tonë të produkteve farmaceutike, produkteve natyrale për kujdes dhe suplementeve për shëndetin tuaj.</p>
+<!-- Shop Hero Section -->
+<header class="hero shop-hero">
+    <div class="hero-bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+    <div class="container">
+        <div class="hero-text text-center">
+            <h1 class="gradient-headline">Eksploro Dyqanin</h1>
+            <p class="mx-auto" style="max-width: 600px;">Gjeni gjithçka që ju nevojitet për shëndetin dhe bukurinë tuaj në një vend me cilësinë më të lartë.</p>
         </div>
     </div>
 </header>
 
-<section class="section">
-    <div class="container fade-in-section">
+<section class="section shop-section">
+    <div class="container">
         <!-- Search and Filter Bar -->
-        <div class="filter-bar">
-            <div class="search-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" id="productSearch" placeholder="Kërko produkte...">
-            </div>
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="all">Të Gjitha</button>
-                <button class="filter-btn" data-filter="skincare">Skincare</button>
-                <button class="filter-btn" data-filter="vitamins">Vitamina</button>
-                <button class="filter-btn" data-filter="Pain Relief">Dhimbje</button>
-                <button class="filter-btn" data-filter="First Aid">Ndihma e parë</button>
+        <div class="filter-container">
+            <div class="filter-bar glass-card">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="productSearch" placeholder="Kërko produkte sipas emrit ose markës...">
+                </div>
+                
+                <div class="category-filters">
+                    <button class="filter-btn {{ 'active' if current_category == 'all' else '' }}" data-filter="all">Të Gjitha</button>
+                    <button class="filter-btn {{ 'active' if current_category == 'Skincare' else '' }}" data-filter="Skincare">Skincare</button>
+                    <button class="filter-btn {{ 'active' if current_category == 'Vitamina' else '' }}" data-filter="Vitamina">Vitamina</button>
+                    <button class="filter-btn {{ 'active' if current_category == 'Pain Relief' else '' }}" data-filter="Pain Relief">Dhimbje</button>
+                    <button class="filter-btn {{ 'active' if current_category == 'First Aid' else '' }}" data-filter="First Aid">Ndihma e parë</button>
+                </div>
             </div>
         </div>
 
         <div class="product-grid">
             {% for product in products %}
-                <div class="product-card" data-category="{{ product.category }}">
-                    <div class="product-image">
-                        <img src="{{ product.image_url }}" alt="{{ product.name }}">
-                        {% if product.discount_price %}
-                            <span class="badge sale">Zbritje -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
+                <div class="product-card fade-in-section" data-category="{{ product.category }}">
+                    <div class="product-image carousel-container" data-index="0">
+                        <div class="carousel-track">
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                            {% if product.images and product.images|length > 1 %}
+                                {% for extra_img in product.images[1:] %}
+                                    <img src="{{ extra_img }}" alt="{{ product.name }} {{ loop.index }}">
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        {% if product.images and product.images|length > 1 %}
+                            <button class="carousel-arrow prev" onclick="moveCarousel(event, this, -1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="carousel-arrow next" onclick="moveCarousel(event, this, 1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <div class="carousel-indicators">
+                                <div class="indicator-dot active"></div>
+                                {% for extra_img in product.images[1:] %}
+                                    <div class="indicator-dot"></div>
+                                {% endfor %}
+                            </div>
                         {% endif %}
+
+                        {% if product.discount_price %}
+                            <span class="badge sale"> -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
+                        {% endif %}
+
+                        {% if product.in_stock == False %}
+                            <div class="out-of-stock-overlay">
+                                <span>Jashtë Stokut</span>
+                            </div>
+                        {% endif %}
+
                         <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
                             <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
                         </button>
                     </div>
                     <div class="product-info">
+                        <span class="product-category">{{ product.category or 'Farmaci' }}</span>
                         <h3>{{ product.name }}</h3>
-                        <p class="category-tag">{{ product.category }}</p>
+                        
                         <div class="price-container">
                             {% if product.discount_price %}
-                                <span class="price original">€{{ product.price }}</span>
                                 <span class="price discounted">€{{ product.discount_price }}</span>
+                                <span class="price original">€{{ product.price }}</span>
                             {% else %}
                                 <span class="price">€{{ product.price }}</span>
                             {% endif %}
                         </div>
                         
-                        <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="margin-bottom: 0.5rem; width: 100%;">
-                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                             <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
-                                <i class="fas fa-shopping-bag" style="margin-right: 0.5rem;"></i> Shto në Shportë
-                             </button>
-                        </form>
-
-                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-sm" style="width: 100%; justify-content: center;">Shiko Detajet</a>
+                        <div class="product-actions">
+                            <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" class="w-100">
+                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                 <button type="submit" class="btn btn-cart" {% if product.in_stock == False %}disabled{% endif %}>
+                                    <i class="fas fa-shopping-basket"></i> {{ 'Jashtë Stokut' if product.in_stock == False else 'Shto në Shportë' }}
+                                 </button>
+                            </form>
+                            <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-details">
+                                Shiko Detajet
+                            </a>
+                        </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
+        
         {% if not products %}
-            <p style="text-align: center;">Nuk u gjetën produkte.</p>
+            <div class="empty-state">
+                <i class="fas fa-search"></i>
+                <p>Nuk u gjetën produkte në këtë kategori.</p>
+                <a href="{{ url_for('main.products') }}" class="btn btn-primary">Rifillo Kërkimin</a>
+            </div>
         {% endif %}
 
         <!-- Pagination Controls -->
         {% if total_pages > 1 %}
-        <div class="pagination-container" style="display: flex; justify-content: center; margin-top: 3rem; gap: 0.5rem;">
+        <div class="pagination">
             {% if page > 1 %}
-            <a href="{{ url_for('main.products', page=page-1) }}" class="btn btn-sm btn-secondary" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0;">
+            <a href="{{ url_for('main.products', page=page-1) }}" class="page-btn">
                 <i class="fas fa-chevron-left"></i>
             </a>
             {% endif %}
             
             {% for p in range(1, total_pages + 1) %}
-                <a href="{{ url_for('main.products', page=p) }}" class="btn btn-sm {{ 'btn-primary' if p == page else 'btn-secondary' }}" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0;">{{ p }}</a>
+                <a href="{{ url_for('main.products', page=p) }}" class="page-btn {{ 'active' if p == page else '' }}">{{ p }}</a>
             {% endfor %}
 
             {% if page < total_pages %}
-            <a href="{{ url_for('main.products', page=page+1) }}" class="btn btn-sm btn-secondary" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0;">
+            <a href="{{ url_for('main.products', page=page+1) }}" class="page-btn">
                 <i class="fas fa-chevron-right"></i>
             </a>
             {% endif %}

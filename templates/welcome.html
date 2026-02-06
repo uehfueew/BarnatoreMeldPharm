@@ -5,70 +5,305 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mirësevini - Meld Pharm</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=5) }}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.5);
+        }
+
         body {
-            background: linear-gradient(135deg, #d1fae5 0%, #ffffff 100%);
+            background: #f8fafc;
+            overflow-x: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            margin: 0;
             padding: 2rem;
+            font-family: 'Poppins', sans-serif;
         }
+
+        /* Animated Background Blobs */
+        .bg-blob {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            animation: float 20s infinite alternate;
+        }
+        .blob-1 { top: -100px; left: -100px; }
+        .blob-2 { bottom: -100px; right: -100px; animation-delay: -5s; }
+        .blob-3 { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: 300px; background: rgba(245, 158, 11, 0.05); }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
         .welcome-wrapper {
             display: flex;
-            gap: 4rem;
+            gap: 6rem;
             align-items: center;
             max-width: 1200px;
             width: 100%;
+            position: relative;
+            z-index: 1;
         }
+
         .welcome-text {
-            flex: 1;
+            flex: 1.2;
+            animation: slideRight 0.8s ease-out;
         }
-        .welcome-text h1 {
-            font-size: 4rem;
+
+        .welcome-text .brand-tag {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
             margin-bottom: 1.5rem;
-            background: linear-gradient(to right, var(--text-main), var(--primary));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            color: var(--text-main);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
+
+        .welcome-text h1 {
+            font-size: 5rem;
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        .welcome-text h1 span {
+            display: block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .welcome-text p {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .welcome-icons {
+            display: flex;
+            gap: 2rem;
         }
         
-        @media (max-width: 900px) {
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        
+        .icon-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            color: var(--primary);
+        }
+
+        .icon-box i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        /* Glassmorphism Card */
+        .form-container {
+            flex: 0.8;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+            animation: slideLeft 0.8s ease-out;
+            position: relative;
+        }
+
+        .tab-nav {
+            display: flex;
+            background: #f1f5f9;
+            padding: 0.4rem;
+            border-radius: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .btn-tab {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .btn-tab.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-control {
+            background: #f8fafc;
+            border: 2px solid #f1f5f9;
+            padding: 0.8rem 1.2rem;
+            border-radius: 0.8rem;
+            transition: all 0.2s ease;
+            width: 100%;
+            font-family: inherit;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 1rem;
+            font-weight: 600;
+            border-radius: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.3);
+        }
+
+        @keyframes slideRight {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideLeft {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 1024px) {
             .welcome-wrapper {
                 flex-direction: column;
+                gap: 4rem;
                 text-align: center;
+                padding-top: 4rem;
             }
+            .welcome-text p { margin: 0 auto 2.5rem; }
+            .welcome-icons { justify-content: center; }
+            .welcome-text h1 { font-size: 3.5rem; }
+            .form-container { width: 100%; max-width: 450px; }
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .alert-error, .alert-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .alert-info { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+
+        .btn-guest:hover {
+            text-decoration: underline !important;
+            color: var(--primary) !important;
         }
     </style>
 </head>
 <body>
 
-    <div class="welcome-wrapper fade-in">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
+
+    <div class="welcome-wrapper">
         <div class="welcome-text">
-            <h1>Meld Pharm</h1>
-            <p>Zbuloni fuqinë e natyrës për shëndetin dhe bukurinë tuaj.</p>
+            <h1>
+                <span>Meld Pharm</span>
+            </h1>
+            <p>Zbuloni fuqinë e natyrës për shëndetin dhe bukurinë tuaj me produkte të certifikuara.</p>
             
-            <div style="display: flex; gap: 1rem; align-items: center;">
-                 <i class="fas fa-leaf" style="color: var(--primary); font-size: 2rem;"></i>
-                 <i class="fas fa-heart" style="color: var(--primary); font-size: 2rem;"></i>
-                 <i class="fas fa-star" style="color: var(--primary); font-size: 2rem;"></i>
+            <div class="welcome-icons">
+                 <div class="icon-box" title="Bio">
+                     <i class="fas fa-leaf"></i>
+                 </div>
+                 <div class="icon-box" title="Health">
+                     <i class="fas fa-heart"></i>
+                 </div>
+                 <div class="icon-box" title="Natural">
+                     <i class="fas fa-seedling"></i>
+                 </div>
             </div>
         </div>
 
-        <div class="form-container" style="margin: 0;">
-            <h2 class="text-center mb-4">Filloni</h2>
-            
+        <div class="form-container">
+            <!-- Flash Messages -->
+            <div id="flash-messages">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
             <!-- Tab Navigation -->
-            <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem;">
-                <button onclick="showTab('login')" id="login-tab-btn" class="btn-tab hover-underline" style="background:none; border:none; cursor:pointer; color: var(--primary); font-weight: 600; border-bottom: 2px solid var(--primary);">Kycuni</button>
-                <button onclick="showTab('register')" id="register-tab-btn" class="btn-tab hover-underline" style="background:none; border:none; cursor:pointer; color: var(--text-muted);">Regjistrohuni</button>
+            <div class="tab-nav">
+                <button onclick="showTab('login')" id="login-tab-btn" class="btn-tab active">Kycuni</button>
+                <button onclick="showTab('register')" id="register-tab-btn" class="btn-tab">Regjistrohuni</button>
             </div>
 
             <!-- Login Form -->
@@ -77,13 +312,13 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <div class="form-group">
                         <label for="login_email">Email</label>
-                        <input type="email" name="email" id="login_email" class="form-control" required>
+                        <input type="email" name="email" id="login_email" class="form-control" placeholder="shembull@email.com" required>
                     </div>
                     <div class="form-group">
                         <label for="login_password">Fjalëkalimi</label>
-                        <input type="password" name="password" id="login_password" class="form-control" required>
+                        <input type="password" name="password" id="login_password" class="form-control" placeholder="••••••••" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <button type="submit" class="btn-primary">
                         Kycuni <i class="fas fa-arrow-right"></i>
                     </button>
                 </form>
@@ -95,60 +330,49 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <div class="form-group">
                         <label for="reg_username">Përdoruesi</label>
-                        <input type="text" name="username" id="reg_username" class="form-control" required>
+                        <input type="text" name="username" id="reg_username" class="form-control" placeholder="Emri juaj" required>
                     </div>
                     <div class="form-group">
                         <label for="reg_email">Email</label>
-                        <input type="email" name="email" id="reg_email" class="form-control" required>
+                        <input type="email" name="email" id="reg_email" class="form-control" placeholder="shembull@email.com" required>
                     </div>
                     <div class="form-group">
                         <label for="reg_password">Fjalëkalimi</label>
-                        <input type="password" name="password" id="reg_password" class="form-control" required>
+                        <input type="password" name="password" id="reg_password" class="form-control" placeholder="Krijo një fjalëkalim" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <button type="submit" class="btn-primary">
                         Regjistrohuni <i class="fas fa-user-plus"></i>
                     </button>
                 </form>
             </div>
 
-            <div class="mt-4 text-center" style="border-top: 1px solid #e5e7eb; padding-top: 1.5rem;">
-                <a href="{{ url_for('main.guest_login') }}" class="hover-underline" style="color: var(--text-muted); font-size: 0.9rem;">
-                    Vazhdo si Guest
+            <div class="text-center" style="border-top: 1px solid #f1f5f9; padding-top: 1.5rem; margin-top: 2rem; text-align: center;">
+                <a href="{{ url_for('main.guest_login') }}" class="btn-guest" style="font-size: 0.9rem; font-weight: 500; text-decoration: none; color: #64748b; transition: color 0.2s ease;">
+                    <i class="fas fa-user-secret" style="margin-right: 0.5rem;"></i> Vazhdo si Guest
                 </a>
-            </div>
-            
-            <div style="margin-top: 1rem;">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }}" style="font-size: 0.875rem;">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
             </div>
         </div>
     </div>
 
-<script>
-function showTab(tabName) {
-    document.getElementById('login-tab').style.display = tabName === 'login' ? 'block' : 'none';
-    document.getElementById('register-tab').style.display = tabName === 'register' ? 'block' : 'none';
-    
-    const loginBtn = document.getElementById('login-tab-btn');
-    const regBtn = document.getElementById('register-tab-btn');
-    
-    if (tabName === 'login') {
-        loginBtn.style.color = 'var(--primary)';
-        loginBtn.style.borderBottom = '2px solid var(--primary)';
-        regBtn.style.color = 'var(--text-muted)';
-        regBtn.style.borderBottom = 'none';
-    } else {
-        regBtn.style.color = 'var(--primary)';
-        regBtn.style.borderBottom = '2px solid var(--primary)';
-        loginBtn.style.color = 'var(--text-muted)';
-        loginBtn.style.borderBottom = 'none';
-    }
-}
-</script>
+    <script>
+        function showTab(tab) {
+            const loginTab = document.getElementById('login-tab');
+            const registerTab = document.getElementById('register-tab');
+            const loginBtn = document.getElementById('login-tab-btn');
+            const registerBtn = document.getElementById('register-tab-btn');
+
+            if (tab === 'login') {
+                loginTab.style.display = 'block';
+                registerTab.style.display = 'none';
+                loginBtn.classList.add('active');
+                registerBtn.classList.remove('active');
+            } else {
+                loginTab.style.display = 'none';
+                registerTab.style.display = 'block';
+                loginBtn.classList.remove('active');
+                registerBtn.classList.add('active');
+            }
+        }
+    </script>
 </body>
 </html>

@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container section">
-    <div class="section-container" style="max-width: 800px; margin: 0 auto;">
+<div class="container">
+    <div class="section-container" style="max-width: 1200px; margin: 0 auto; padding-top: 2rem;">
         <div style="margin-bottom: 2rem;">
             <a href="{{ url_for('cart.view_cart') }}" class="btn btn-sm btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
                 <i class="fas fa-arrow-left"></i> Kthehu në Shportë
             </a>
         </div>
         
-        <h1 class="section-title">Përfundo Porosinë</h1>
+        <h1 class="section-title" style="margin-bottom: 3rem;">Përfundo Porosinë</h1>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
             <!-- Checkout Form -->

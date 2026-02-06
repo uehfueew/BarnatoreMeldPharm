@@ -16,6 +16,14 @@
     <nav class="navbar">
         <div class="container nav-container">
             <a href="{{ url_for('main.index') }}" class="logo">Meld <span class="highlight">Pharm</span></a>
+            
+            <!-- Mobile Toggle -->
+            <button class="menu-toggle" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
             <ul class="nav-links">
                 <li><a href="{{ url_for('main.index') }}">Ballina</a></li>
                 <li><a href="{{ url_for('main.products') }}">Dyqani</a></li>
@@ -31,6 +39,7 @@
                 <li>
                     <a href="{{ url_for('cart.view_cart') }}" class="cart-icon">
                         <i class="fas fa-shopping-cart"></i>
+                        <span class="nav-label">Shporta</span>
                         {% if cart_count and cart_count > 0 %}
                             <span class="cart-badge">{{ cart_count }}</span>
                         {% endif %}
@@ -39,10 +48,11 @@
                 <li>
                     <a href="{{ url_for('main.profile') }}" class="profile-icon" title="Profili">
                         <i class="fas fa-user"></i>
+                        <span class="nav-label">Profili Im</span>
                     </a>
                 </li>
                 {% if not current_user.is_authenticated %}
-                    <li><a href="{{ url_for('auth.login') }}">Kyçu</a></li>
+                    <li><a href="{{ url_for('auth.login') }}" class="nav-login-btn">Kyçu</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -62,6 +72,11 @@
                 <div class="footer-section">
                     <h3>Meld Pharm</h3>
                     <p>Burimi juaj i besuar për përkujdesje ndaj lëkurës dhe vitamina.</p>
+                    <div class="opening-hours" style="margin-top: 1.5rem;">
+                        <h4 style="color: white; font-size: 1rem; margin-bottom: 0.5rem;"><i class="far fa-clock"></i> Orari i Punës</h4>
+                        <p style="margin-bottom: 0.25rem;">E Hënë - E Shtunë: <strong>08:00 - 22:00</strong></p>
+                        <p>E Diel: <strong>08:00 - 21:00</strong></p>
+                    </div>
                 </div>
                 <div class="footer-section">
                     <h3>Kontakt</h3>

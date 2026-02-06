@@ -62,7 +62,8 @@ def new_product():
             "description": request.form.get('description'),
             "image_url": main_img,
             "images": images,
-            "featured": request.form.get('featured') == 'on'
+            "featured": request.form.get('featured') == 'on',
+            "in_stock": request.form.get('in_stock') == 'on'
         }
         Product.create(product_data)
         flash('Produkti u krijua me sukses!', 'success')
@@ -97,7 +98,8 @@ def edit_product(product_id):
             "description": request.form.get('description'),
             "image_url": main_img,
             "images": images,
-            "featured": request.form.get('featured') == 'on'
+            "featured": request.form.get('featured') == 'on',
+            "in_stock": request.form.get('in_stock') == 'on'
         }
         Product.update(product_id, product_data)
         flash('Produkti u përditësua me sukses!', 'success')

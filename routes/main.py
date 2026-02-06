@@ -32,13 +32,14 @@ def products():
          return redirect(url_for('main.index'))
          
     page = request.args.get('page', 1, type=int)
+    category = request.args.get('category', 'all')
     per_page = 20
     
-    products, total_pages = Product.get_paginated(page, per_page)
+    products, total_pages = Product.get_paginated(page, per_page, category)
     
     # Debug print
-    print(f"Products found: {len(products)} on page {page}")
-    return render_template('products.html', products=products, page=page, total_pages=total_pages)
+    print(f"Products found: {len(products)} on page {page} in category {category}")
+    return render_template('products.html', products=products, page=page, total_pages=total_pages, current_category=category)
 
 from models.user import User
 

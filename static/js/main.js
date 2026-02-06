@@ -1,4 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Mobile Menu Toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+        });
+
+        // Close menu when clicking links
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+    }
+
     // 1. Sticky Navbar Effect
     const navbar = document.querySelector('.navbar');
     window.addEventListener('scroll', () => {
@@ -8,33 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
             navbar.classList.remove('scrolled');
         }
     });
-
-    // 2. Live Action Scroll Observer
-    const observerOptions = {
-        threshold: 0.05,
-        rootMargin: "0px 0px -20px 0px" 
-    };
-
-    const liveObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('fade-in');
-            }
-        });
-    }, observerOptions);
-
-    document.querySelectorAll('.product-card, .feature-item, .hero-text, .section-title, .fade-in-section').forEach((el) => liveObserver.observe(el));
-
-    // Force initial check for elements already in view (fixes "must scroll to see" bug)
-    setTimeout(() => {
-        const itemsToForce = document.querySelectorAll('.product-card, .hero-text, .section-title, .fade-in-section');
-        itemsToForce.forEach(el => {
-            const rect = el.getBoundingClientRect();
-            if (rect.top < window.innerHeight) {
-                el.classList.add('fade-in');
-            }
-        });
-    }, 100);
 
     // 3. Product Search Filter (Front-end only for demo/smoothness)
     const searchInput = document.getElementById('productSearch');
@@ -411,3 +405,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+function moveCarousel(event, btn, direction) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    
+    const container = btn.closest('.carousel-container');
+    const track = container.querySelector('.carousel-track');
+    const images = track.querySelectorAll('img');
+    const dots = container.querySelectorAll('.indicator-dot');
+    
+    let currentIndex = parseInt(container.getAttribute('data-index') || '0');
+    currentIndex += direction;
+    
+    if (currentIndex < 0) currentIndex = images.length - 1;
+    if (currentIndex >= images.length) currentIndex = 0;
+    
+    goToSlide(container, currentIndex);
+}
+
+function goToSlide(container, index) {
+    const track = container.querySelector('.carousel-track');
+    const dots = container.querySelectorAll('.indicator-dot');
+    const thumbs = container.parentElement.querySelectorAll('.thumbnail');
+    
+    container.setAttribute('data-index', index);
+    track.style.transform = `translateX(-${index * 100}%)`;
+    
+    // Update indicators
+    if (dots) {
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
+    }
+
+    // Update thumbnails if they exist
+    if (thumbs) {
+        thumbs.forEach((thumb, i) => {
+            thumb.style.borderColor = i === index ? 'var(--primary)' : 'transparent';
+            thumb.style.opacity = i === index ? '1' : '0.7';
+        });
+    }
+}

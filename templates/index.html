@@ -1,82 +1,190 @@
 {% extends "base.html" %}
 
 {% block content %}
-<header class="hero">
+<!-- Modern Hero Section -->
+<header class="hero live-bg">
+    <div class="hero-bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
     <div class="container hero-container">
-        <div class="hero-text">
-            <h1>Bukuri Natyrale & Mirëqenie</h1>
-            <p>Përkujdesje premium për lëkurën dhe suplemente për t'ju bërë të dukeni dhe të ndiheni më së miri.</p>
-            <a href="{{ url_for('main.products') }}" class="btn btn-primary">Bli Tani</a>
+        <div class="hero-text fade-in-section">
+            <h1 class="gradient-headline">Partneri Juaj i Besuar për Shëndet dhe Bukuri</h1>
+            <p>Meld Pharm është destinacioni juaj për produkte bio, suplemente ushqimore dhe këshilla profesionale farmaceutike.</p>
+            <div class="hero-btns">
+                <a href="{{ url_for('main.products') }}" class="btn btn-primary">
+                    Bli Tani <i class="fas fa-shopping-bag"></i>
+                </a>
+                <a href="#featured" class="btn btn-outline">
+                    Shiko Ofertat
+                </a>
+            </div>
         </div>
-        <div class="hero-image">
-            <!-- Placeholder for hero image -->
-            <div class="image-placeholder"></div>
+        <div class="hero-image fade-in-section">
+            <div class="image-wrapper">
+                <div class="hero-blob">
+                    <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770325540/shop-1_yfh731.webp" alt="Premium Skincare" class="hero-main-img">
+                </div>
+            </div>
         </div>
     </div>
 </header>
 
-<section class="section featured">
+<!-- Categories Section -->
+<section class="section categories-preview">
     <div class="container">
-        <h2 class="section-title">Ofertat Speciale</h2>
+        <div class="section-center-header fade-in-section">
+            <h2 class="section-title">Eksploro Sipas Nevojës</h2>
+        </div>
+        
+        <div class="categories-grid fade-in-section">
+            <a href="{{ url_for('main.products', category='Skincare') }}" class="cat-card">
+                <div class="cat-icon"><i class="fas fa-spa"></i></div>
+                <span>Skincare</span>
+            </a>
+            <a href="{{ url_for('main.products', category='Vitamina') }}" class="cat-card">
+                <div class="cat-icon"><i class="fas fa-capsules"></i></div>
+                <span>Vitamina</span>
+            </a>
+            <a href="{{ url_for('main.products', category='Bio') }}" class="cat-card">
+                <div class="cat-icon"><i class="fas fa-leaf"></i></div>
+                <span>Produkte Bio</span>
+            </a>
+            <a href="{{ url_for('main.products', category='Mama & Baby') }}" class="cat-card">
+                <div class="cat-icon"><i class="fas fa-baby"></i></div>
+                <span>Nënë & Fëmijë</span>
+            </a>
+            <a href="{{ url_for('main.products', category='First Aid') }}" class="cat-card">
+                <div class="cat-icon"><i class="fas fa-first-aid"></i></div>
+                <span>Ndihma e Shpejtë</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section id="featured" class="section featured-products bg-light">
+    <div class="container">
+        <div class="section-header fade-in-section">
+            <div>
+                <span class="sub-title">Rekomandimet Tona</span>
+                <h2 class="section-title">Ofertat Ekskluzive</h2>
+            </div>
+            <a href="{{ url_for('main.products') }}" class="view-all"><span>Shiko të gjitha</span> <i class="fas fa-arrow-right"></i></a>
+        </div>
+        
         <div class="product-grid">
             {% for product in featured_products %}
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="{{ product.image_url }}" alt="{{ product.name }}">
-                        {% if product.discount_price %}
-                            <span class="badge sale">Zbritje -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
+                <div class="product-card fade-in-section">
+                    <div class="product-image carousel-container" data-index="0">
+                        <div class="carousel-track">
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                            {% if product.images and product.images|length > 1 %}
+                                {% for extra_img in product.images[1:] %}
+                                    <img src="{{ extra_img }}" alt="{{ product.name }} {{ loop.index }}">
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        {% if product.images and product.images|length > 1 %}
+                            <button class="carousel-arrow prev" onclick="moveCarousel(event, this, -1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="carousel-arrow next" onclick="moveCarousel(event, this, 1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <div class="carousel-indicators">
+                                <div class="indicator-dot active"></div>
+                                {% for extra_img in product.images[1:] %}
+                                    <div class="indicator-dot"></div>
+                                {% endfor %}
+                            </div>
                         {% endif %}
+
+                        {% if product.discount_price %}
+                            <span class="badge sale"> -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
+                        {% endif %}
+
+                        {% if product.in_stock == False %}
+                            <div class="out-of-stock-overlay">
+                                <span>Jashtë Stokut</span>
+                            </div>
+                        {% endif %}
+
                         <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
                             <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
                         </button>
                     </div>
                     <div class="product-info">
+                        <span class="product-category">{{ product.category or 'Farmaci' }}</span>
                         <h3>{{ product.name }}</h3>
+                        
                         <div class="price-container">
                             {% if product.discount_price %}
-                                <span class="price original">€{{ product.price }}</span>
                                 <span class="price discounted">€{{ product.discount_price }}</span>
+                                <span class="price original">€{{ product.price }}</span>
                             {% else %}
                                 <span class="price">€{{ product.price }}</span>
                             {% endif %}
                         </div>
 
-                        <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="margin-bottom: 0.5rem; width: 100%;">
-                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                             <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
-                                <i class="fas fa-shopping-bag" style="margin-right: 0.5rem;"></i> Shto në Shportë
-                             </button>
-                        </form>
-
-                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-sm" style="width: 100%; justify-content: center;">Shiko Detajet</a>
+                        <div class="product-actions">
+                            <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="flex: 1;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-cart" {% if product.in_stock == False %}disabled{% endif %}>
+                                    <i class="fas fa-shopping-basket"></i> {{ 'Jashtë Stokut' if product.in_stock == False else 'Shto në Shportë' }}
+                                </button>
+                            </form>
+                            <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-details">
+                                Shiko Detajet
+                            </a>
+                        </div>
                     </div>
                 </div>
             {% else %}
-                 <p>Nuk ka produkte të veçuara momentalisht.</p>
+                 <div class="empty-state">
+                    <i class="fas fa-box-open"></i>
+                    <p>Nuk ka produkte të veçuara momentalisht.</p>
+                 </div>
             {% endfor %}
         </div>
     </div>
 </section>
 
-<section class="section features">
+<!-- Trust Banner -->
+<section class="section trust-banner">
     <div class="container">
-        <div class="features-grid">
-            <div class="feature-item">
-                <i class="fas fa-leaf"></i>
-                <h3>Përbërës Natyral</h3>
-                <p>100% produkte organike dhe të sigurta.</p>
+        <div class="trust-grid fade-in-section">
+            <div class="trust-item">
+                <i class="fas fa-truck-fast"></i>
+                <div class="trust-text">
+                    <h4>Dërgesë Falas</h4>
+                    <p>Mbi çdo porosi 50€</p>
+                </div>
             </div>
-            <div class="feature-item">
-                <i class="fas fa-shipping-fast"></i>
-                <h3>Dërgesë e Shpejtë</h3>
-                <p>Dërgesë brenda 72 orëve.</p>
+            <div class="trust-item">
+                <i class="fas fa-headset"></i>
+                <div class="trust-text">
+                    <h4>Mbështetje Live</h4>
+                    <p>08:00 - 22:00 / 7 ditë</p>
+                </div>
             </div>
-            <div class="feature-item">
-                <i class="fas fa-user-md"></i>
-                <h3>Këshilla Ekspertësh</h3>
-                <p>Konsultohuni me farmacistët tanë.</p>
+            <div class="trust-item">
+                <i class="fas fa-shield"></i>
+                <div class="trust-text">
+                    <h4>Pagesë e Sigurt</h4>
+                    <p>Me kartelë ose në dorë</p>
+                </div>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-rotate"></i>
+                <div class="trust-text">
+                    <h4>Kthim i Thjeshtë</h4>
+                    <p>Brenda 14 ditëve</p>
+                </div>
             </div>
         </div>
     </div>
 </section>
+
 {% endblock %}

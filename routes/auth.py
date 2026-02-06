@@ -4,10 +4,6 @@ from models.user import User
 from flask_bcrypt import Bcrypt
 
 auth = Blueprint('auth', __name__)
-# We will init bcrypt with app in app.py, but here we can just use the class for hashing if needed, 
-# or better, pass the bcrypt instance from app. 
-# For now, let's instantiate a local Bcrypt, but ideally it should be the same instance. 
-# A common pattern is extensions.py. Let's stick to simple:
 bcrypt = Bcrypt()
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -25,25 +21,20 @@ def login():
                 db_cart = User.get_cart(user.id)
                 session_cart = session.get('cart', {})
                 
-                # Ensure db_cart is a dict
                 if not isinstance(db_cart, dict):
                     db_cart = {}
 
-                # Merge session cart into db cart
                 for pid, qty in session_cart.items():
                     if pid in db_cart:
                         db_cart[pid] = int(db_cart[pid]) + int(qty)
                     else:
                         db_cart[pid] = int(qty)
                 
-                # Save merged cart back to DB and Session
                 User.update_cart(user.id, db_cart)
                 session['cart'] = db_cart
                 session.modified = True
             except Exception as e:
                 print(f"Error syncing cart: {e}")
-                # Fallback: keep session cart if sync fails
-                pass
 
             flash('Kycja ishte e suksesshme!', 'success')
             return redirect(url_for('main.index'))
@@ -60,7 +51,7 @@ def register():
         password = request.form.get('password')
         
         existing_user = User.get_by_email(email)
-        if existing_user:
+        if existing_user: 
             flash('Email është rregjistruar tashmë.', 'warning')
             return redirect(url_for('auth.register'))
             
@@ -68,7 +59,6 @@ def register():
         user = User.create(username, email, hashed_pw)
         login_user(user)
 
-        # Sync Cart for new user if they added items before registering
         session_cart = session.get('cart', {})
         if session_cart:
             User.update_cart(user.id, session_cart)
