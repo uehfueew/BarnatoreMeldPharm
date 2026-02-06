@@ -1515,9 +1515,25 @@ html, body {
     /* Orders Date Optimization */
     .table-responsive .table th:nth-child(2),
     .table-responsive .table td:nth-child(2) {
-        min-width: 160px !important; 
+        min-width: 140px !important; 
         white-space: nowrap !important;
         overflow: visible !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* Orders Detail Shrink */
+    [id^="details-"] td div {
+        padding: 0.75rem !important;
+    }
+
+    [id^="details-"] h4 {
+        font-size: 0.95rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    [id^="details-"] p, [id^="details-"] li {
+        font-size: 0.8rem !important;
+        margin-bottom: 0.25rem !important;
     }
 
     /* Cart Mobile Optimization */
@@ -1571,6 +1587,12 @@ html, body {
     .cart-table td:nth-child(3)::before { content: "Sasia: "; float: left; font-weight: 600; color: var(--text-muted); }
     .cart-table td:nth-child(4)::before { content: "Total: "; float: left; font-weight: 600; color: var(--primary); }
     
+    .cart-table td:nth-child(2),
+    .cart-table td:nth-child(3),
+    .cart-table td:nth-child(4) {
+        font-size: 0.85rem;
+    }
+
     .cart-table td:nth-child(3) {
         display: flex;
         justify-content: space-between;
@@ -1842,6 +1864,46 @@ html, body {
         width: 80px !important;
         height: 80px !important;
         font-size: 2.5rem !important;
+    }
+}
+
+/* Admin Mobile Layout and General Fixes */
+@media (max-width: 992px) {
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 1rem;
+    }
+
+    .admin-header .btn {
+        padding: 0.5rem 0.8rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    [href*="admin/dashboard"].btn-secondary {
+        padding: 0.4rem 0.7rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* Admin Order Details Fix */
+    [id^="details-"] > td > div {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+        padding: 1rem !important;
+    }
+
+    [id^="details-"] h5 {
+        font-size: 0.9rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    [id^="details-"] p, [id^="details-"] span, [id^="details-"] li, [id^="details-"] strong {
+        font-size: 0.75rem !important;
+    }
+
+    .status-select {
+        font-size: 0.75rem !important;
+        width: 100px !important;
     }
 }
 

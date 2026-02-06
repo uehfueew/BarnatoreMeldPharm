@@ -36,6 +36,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Global Delete Confirmation (SweetAlert2)
+    window.confirmDelete = function(formElement) {
+        Swal.fire({
+            title: 'A jeni i sigurt?',
+            text: "Ky veprim nuk mund të kthehet mbrapa!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e11d48',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Po, fshije!',
+            cancelButtonText: 'Anulo'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                formElement.submit();
+            }
+        });
+        return false;
+    };
+
     // 1. Sticky Navbar Effect
     const navbar = document.querySelector('.navbar');
     window.addEventListener('scroll', () => {
