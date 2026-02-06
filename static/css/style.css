@@ -194,6 +194,10 @@ p {
     display: none; /* Hidden on desktop */
 }
 
+.mobile-close-container {
+    display: none !important; /* Force hide on desktop to avoid 'x' bug */
+}
+
 /* Mobile Toggle */
 .menu-toggle {
     display: none;
@@ -1412,7 +1416,7 @@ html, body {
     }
 
     .mobile-close-container {
-        display: flex;
+        display: flex !important;
         justify-content: flex-end;
         align-items: center;
         width: 100%;
@@ -1568,7 +1572,8 @@ html, body {
     }
 
     .btn-cart i {
-        display: none !important; /* Hide icon to save space for text */
+        margin-right: 5px !important;
+        font-size: 0.8rem !important;
     }
 
     .btn-details {

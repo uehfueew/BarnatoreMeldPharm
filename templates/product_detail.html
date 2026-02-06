@@ -99,7 +99,11 @@
                     <button type="button" class="qty-btn plus" style="width: 45px; height: 45px; border: none; cursor: pointer; color: var(--text-main); font-size: 0.9rem;" {% if product.in_stock == False %}disabled{% endif %}><i class="fas fa-plus"></i></button>
                 </div>
                 <button type="submit" class="btn btn-primary" style="padding: 0 3rem; font-size: 1.1rem; flex: 1; min-height: 60px; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.3);" {% if product.in_stock == False %}disabled{% endif %}>
-                    <i class="fas fa-shopping-bag" style="margin-right: 1rem;"></i> {{ 'Jashtë Stokut' if product.in_stock == False else 'Bli Tani' }}
+                    {% if product.in_stock == False %}
+                        Jashtë Stokut
+                    {% else %}
+                        <i class="fas fa-shopping-basket" style="margin-right: 1rem;"></i> Në Shportë
+                    {% endif %}
                 </button>
             </form>
         </div>
@@ -144,7 +148,11 @@
                     <form action="{{ url_for('cart.add_to_cart', product_id=related._id) }}" method="POST" style="margin-bottom: 0.5rem; width: 100%;">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;" {% if related.in_stock == False %}disabled{% endif %}>
-                           <i class="fas fa-shopping-bag" style="margin-right: 0.5rem;"></i> {{ 'Jashtë Stokut' if related.in_stock == False else 'Shto në Shportë' }}
+                            {% if related.in_stock == False %}
+                                Jashtë Stokut
+                            {% else %}
+                                <i class="fas fa-shopping-basket" style="margin-right: 0.5rem;"></i> Në Shportë
+                            {% endif %}
                         </button>
                    </form>
 
