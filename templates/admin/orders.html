@@ -14,7 +14,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Emri dhe Mbiemri</th>
-                        <th>Data</th>
+                        <th class="date-col">Data</th>
                         <th>Totali</th>
                         <th>Statusi</th>
                         <th>Veprime</th>
@@ -25,7 +25,7 @@
                     <tr>
                         <td><small>#{{ order._id|string|truncate(6, True, '') }}</small></td>
                         <td>{{ order.fullname }}<br><small>{{ order.email if order.email else order.city }}</small></td>
-                        <td>{{ order.created_at.strftime('%d-%m-%Y %H:%M') }}</td>
+                        <td class="date-col">{{ order.created_at.strftime('%d-%m-%Y %H:%M') }}</td>
                         <td>€{{ "%.2f"|format(order.grand_total) }}</td>
                         <td>
                             <form action="{{ url_for('admin.update_order_status', order_id=order._id) }}" method="POST" style="display: flex; align-items: center; gap: 0.5rem;">
@@ -45,28 +45,28 @@
                     </tr>
                     <tr id="details-{{ order._id }}" style="display: none; background-color: #f8fafc;">
                         <td colspan="6">
-                            <div class="admin-order-details" style="padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; font-size: 0.82rem;">
+                            <div class="admin-order-details" style="padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.72rem !important;">
                                 <div>
-                                    <h5 style="font-size: 0.95rem; margin-bottom: 0.5rem;">Informacionet e Dërgesës</h5>
-                                    <p style="margin-bottom: 0.25rem;"><strong>Emri:</strong> {{ order.fullname }}</p>
-                                    <p style="margin-bottom: 0.25rem;"><strong>Email:</strong> {{ order.email }}</p>
-                                    <p style="margin-bottom: 0.25rem;"><strong>Adresa:</strong> {{ order.address }}, {{ order.city }}</p>
-                                    <p style="margin-bottom: 0.25rem;"><strong>Telefoni:</strong> {{ order.phone }}</p>
-                                    <p style="margin-bottom: 0.25rem;"><strong>Pagesa:</strong> {{ order.payment_method }}</p>
+                                    <h5 style="font-size: 0.82rem !important; margin-bottom: 0.4rem; color: var(--text-main); font-weight: 700;">Informacionet e Dërgesës</h5>
+                                    <p style="margin-bottom: 0.2rem; line-height: 1.4; font-size: 0.72rem !important;"><strong>Emri:</strong> {{ order.fullname }}</p>
+                                    <p style="margin-bottom: 0.2rem; line-height: 1.4; font-size: 0.72rem !important;"><strong>Email:</strong> {{ order.email }}</p>
+                                    <p style="margin-bottom: 0.2rem; line-height: 1.4; font-size: 0.72rem !important;"><strong>Adresa:</strong> {{ order.address }}, {{ order.city }}</p>
+                                    <p style="margin-bottom: 0.2rem; line-height: 1.4; font-size: 0.72rem !important;"><strong>Telefoni:</strong> {{ order.phone }}</p>
+                                    <p style="margin-bottom: 0.2rem; line-height: 1.4; font-size: 0.72rem !important;"><strong>Pagesa:</strong> {{ order.payment_method }}</p>
                                 </div>
                                 <div>
-                                    <h5 style="font-size: 0.95rem; margin-bottom: 0.5rem;">Produktet</h5>
+                                    <h5 style="font-size: 0.82rem !important; margin-bottom: 0.4rem; color: var(--text-main); font-weight: 700;">Produktet</h5>
                                     <ul style="list-style: none; padding: 0; margin: 0;">
                                         {% for item in order['items'] %}
-                                            <li style="padding: 0.3rem 0; border-bottom: 1px solid #e2e8f0; font-size: 0.8rem;">
+                                            <li style="padding: 0.2rem 0; border-bottom: 1px dashed #e2e8f0; font-size: 0.72rem !important;">
                                                 <div style="display: flex; justify-content: space-between;">
                                                     <span>{{ item.quantity }}x {{ item.name }}</span>
-                                                    <strong>€{{ "%.2f"|format(item.item_total) }}</strong>
+                                                    <strong style="color: var(--primary);">€{{ "%.2f"|format(item.item_total) }}</strong>
                                                 </div>
                                             </li>
                                         {% endfor %}
-                                        <li style="padding-top: 0.75rem; text-align: right;">
-                                            <strong style="font-size: 0.9rem;">Total: €{{ "%.2f"|format(order.grand_total) }}</strong>
+                                        <li style="padding-top: 0.5rem; text-align: right;">
+                                            <strong style="font-size: 0.82rem !important; color: var(--text-main);">Total: €{{ "%.2f"|format(order.grand_total) }}</strong>
                                         </li>
                                     </ul>
                                 </div>

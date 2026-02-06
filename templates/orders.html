@@ -41,19 +41,22 @@
                     </tr>
                     <tr id="details-{{ order._id }}" style="display: none; background-color: #f9fafb;">
                         <td colspan="5">
-                            <div class="order-details-wrapper" style="padding: 1rem; font-size: 0.85rem;">
-                                <h4 style="font-size: 1rem; margin-bottom: 0.5rem;">Informacionet</h4>
-                                <p style="margin-bottom: 0.25rem;"><strong>Emri dhe Mbiemri:</strong> {{ order.fullname }}<br>
+                            <div class="order-details-wrapper" style="padding: 1rem; font-size: 0.72rem !important;">
+                                <h4 style="font-size: 0.82rem !important; margin-bottom: 0.4rem; color: var(--text-main); font-weight: 700;">Informacionet</h4>
+                                <p style="margin-bottom: 0.2rem; line-height: 1.4; font-size: 0.72rem !important;"><strong>Emri dhe Mbiemri:</strong> {{ order.fullname }}<br>
                                    <strong>Email:</strong> {{ order.email }}</p>
-                                <p style="margin-bottom: 0.25rem;"><strong>Adresa:</strong> {{ order.address }}, {{ order.city }}</p>
-                                <p style="margin-bottom: 0.5rem;"><strong>Telefoni:</strong> {{ order.phone }}</p>
-                                <h4 style="margin-top: 1rem; font-size: 1rem; margin-bottom: 0.5rem;">Produktet</h4>
-                                <ul style="padding-left: 1.2rem; margin-bottom: 0.5rem;">
+                                <p style="margin-bottom: 0.2rem; line-height: 1.4; font-size: 0.72rem !important;"><strong>Adresa:</strong> {{ order.address }}, {{ order.city }}</p>
+                                <p style="margin-bottom: 0.5rem; line-height: 1.4; font-size: 0.72rem !important;"><strong>Telefoni:</strong> {{ order.phone }}</p>
+                                
+                                <h4 style="margin-top: 0.8rem; font-size: 0.82rem !important; margin-bottom: 0.4rem; color: var(--text-main); font-weight: 700;">Produktet</h4>
+                                <ul style="padding-left: 0; margin-bottom: 0.5rem; list-style-type: none;">
                                     {% for item in order['items'] %}
-                                        <li style="margin-bottom: 0.25rem;">{{ item.quantity }}x {{ item.name }} - €{{ "%.2f"|format(item.item_total) }}</li>
+                                        <li style="margin-bottom: 0.2rem; border-bottom: 1px dashed #eee; padding-bottom: 0.2rem; font-size: 0.72rem !important;">
+                                            {{ item.quantity }}x {{ item.name }} - <span style="color: var(--primary); font-weight: 600;">€{{ "%.2f"|format(item.item_total) }}</span>
+                                        </li>
                                     {% endfor %}
                                 </ul>
-                                <p style="margin-top: 0.5rem; font-weight: 500;"><strong>Pagesa:</strong> {{ order.payment_method }}</p>
+                                <p style="margin-top: 0.5rem; font-weight: 500; font-size: 0.72rem !important;"><strong>Mënyra e Pagesës:</strong> {{ order.payment_method }}</p>
                             </div>
                         </td>
                     </tr>

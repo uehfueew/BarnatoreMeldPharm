@@ -1514,8 +1514,9 @@ html, body {
     
     /* Orders Date Optimization */
     .table-responsive .table th:nth-child(2),
-    .table-responsive .table td:nth-child(2) {
-        min-width: 155px !important; 
+    .table-responsive .table td:nth-child(2),
+    .date-col {
+        min-width: 175px !important; 
         white-space: nowrap !important;
         overflow: visible !important;
     }
@@ -1587,14 +1588,14 @@ html, body {
     }
 
     /* Use pseudo-elements for labels with forced space */
-    .cart-table td:nth-child(2)::before { content: "Çmimi:\00a0"; float: left; font-weight: 600; color: var(--text-muted); }
-    .cart-table td:nth-child(3)::before { content: "Sasia:\00a0"; float: left; font-weight: 600; color: var(--text-muted); }
-    .cart-table td:nth-child(4)::before { content: "Total:\00a0"; float: left; font-weight: 600; color: var(--primary); }
+    .cart-table td:nth-child(2)::before { content: "Çmimi:"; margin-right: 8px; float: left; font-weight: 600; color: var(--text-muted); }
+    .cart-table td:nth-child(3)::before { content: "Sasia:"; margin-right: 8px; float: left; font-weight: 600; color: var(--text-muted); }
+    .cart-table td:nth-child(4)::before { content: "Total:"; margin-right: 8px; float: left; font-weight: 600; color: var(--primary); }
     
     .cart-table td:nth-child(2),
     .cart-table td:nth-child(3),
     .cart-table td:nth-child(4) {
-        font-size: 0.82rem !important;
+        font-size: 0.78rem !important; /* Even smaller for cart details */
     }
 
     .cart-table td:nth-child(3) {
@@ -1908,6 +1909,19 @@ html, body {
     .status-select {
         font-size: 0.75rem !important;
         width: 100px !important;
+    }
+
+    /* Additional Button Shrinks */
+    .cart-container .btn-secondary,
+    .checkout-grid + div .btn-secondary,
+    .section-container .btn-secondary {
+        font-size: 0.7rem !important;
+        padding: 0.35rem 0.7rem !important;
+    }
+
+    .table .btn-sm {
+        font-size: 0.75rem !important;
+        padding: 0.35rem 0.6rem !important;
     }
 }
 
