@@ -155,6 +155,99 @@
     </div>
 </section>
 
+<!-- Regular Products Section -->
+<section id="regular-products" class="section regular-products">
+    <div class="container">
+        <div class="section-header fade-in-section">
+            <div>
+                <span class="sub-title">Zbuloni Më Shumë</span>
+                <h2 class="section-title">Produkte të Reja</h2>
+            </div>
+            <a href="{{ url_for('main.products') }}" class="view-all"><span>Shiko të gjitha</span> <i class="fas fa-arrow-right"></i></a>
+        </div>
+        
+        <div class="product-grid">
+            {% for product in regular_products %}
+                <div class="product-card fade-in-section">
+                    <div class="product-image carousel-container" data-index="0">
+                        <div class="carousel-track">
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                            {% if product.images and product.images|length > 1 %}
+                                {% for extra_img in product.images[1:] %}
+                                    <img src="{{ extra_img }}" alt="{{ product.name }} {{ loop.index }}">
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        {% if product.images and product.images|length > 1 %}
+                            <button class="carousel-arrow prev" onclick="moveCarousel(event, this, -1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="carousel-arrow next" onclick="moveCarousel(event, this, 1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <div class="carousel-indicators">
+                                <div class="indicator-dot active"></div>
+                                {% for extra_img in product.images[1:] %}
+                                    <div class="indicator-dot"></div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if product.discount_price %}
+                            <span class="badge sale"> -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
+                        {% endif %}
+
+                        {% if product.in_stock == False %}
+                            <div class="out-of-stock-overlay">
+                                <span>Jashtë Stokut</span>
+                            </div>
+                        {% endif %}
+
+                        <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
+                            <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">{{ product.category or 'Farmaci' }}</span>
+                        <h3>{{ product.name }}</h3>
+                        
+                        <div class="price-container">
+                            {% if product.discount_price %}
+                                <span class="price discounted">€{{ product.discount_price }}</span>
+                                <span class="price original">€{{ product.price }}</span>
+                            {% else %}
+                                <span class="price">€{{ product.price }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="product-actions">
+                            <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-cart" {% if product.in_stock == False %}disabled{% endif %}>
+                                    {% if product.in_stock == False %}
+                                        Jashtë Stokut
+                                    {% else %}
+                                        <i class="fas fa-shopping-basket"></i> Në Shportë
+                                    {% endif %}
+                                </button>
+                            </form>
+                            <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-details">
+                                Shiko Detajet
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                 <div class="empty-state">
+                    <i class="fas fa-box-open"></i>
+                    <p>Nuk ka produkte momentalisht.</p>
+                 </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
 <!-- Trust Banner -->
 <section class="section trust-banner">
     <div class="container">

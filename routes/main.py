@@ -10,7 +10,10 @@ def index():
     # If user is logged in OR has chosen to continue as guest, show the main page (now called index template)
     if current_user.is_authenticated or session.get('guest_mode'):
         featured_products = Product.get_featured()
-        return render_template('index.html', featured_products=featured_products)
+        regular_products = Product.get_regular(limit=8)
+        return render_template('index.html', 
+                             featured_products=featured_products, 
+                             regular_products=regular_products)
     
     # Otherwise, show the welcome screen
     return render_template('welcome.html')

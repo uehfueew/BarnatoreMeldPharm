@@ -71,7 +71,16 @@ class Product:
 
         }))
 
-
+    @staticmethod
+    def get_regular(limit=8):
+        # Returns products WITHOUT a discount_price
+        return list(mongo.db.products.find({
+            "$or": [
+                {"discount_price": {"$exists": False}},
+                {"discount_price": None},
+                {"discount_price": 0}
+            ]
+        }).limit(limit))
 
     @staticmethod
 

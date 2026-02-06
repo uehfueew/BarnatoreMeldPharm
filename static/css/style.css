@@ -1906,22 +1906,67 @@ html, body {
         font-size: 0.75rem !important;
     }
 
-    .status-select {
-        font-size: 0.75rem !important;
-        width: 100px !important;
+    /* Global Order Detail Logic */
+    .details-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-main);
+        font-weight: 600;
     }
 
-    /* Additional Button Shrinks */
-    .cart-container .btn-secondary,
-    .checkout-grid + div .btn-secondary,
-    .section-container .btn-secondary {
-        font-size: 0.7rem !important;
-        padding: 0.35rem 0.7rem !important;
+    .order-details-wrapper p,
+    .order-details-wrapper li {
+        font-size: 0.95rem;
+        line-height: 1.6;
     }
 
-    .table .btn-sm {
-        font-size: 0.75rem !important;
-        padding: 0.35rem 0.6rem !important;
+    .details-price {
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    .admin-details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+    }
+
+    .details-products-admin li {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .admin-total-row {
+        margin-top: 1rem;
+        text-align: right;
+    }
+
+    @media (max-width: 992px) {
+        .order-details-wrapper {
+            padding: 1rem !important;
+        }
+
+        .details-title {
+            font-size: 0.9rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .order-details-wrapper p,
+        .order-details-wrapper li {
+            font-size: 0.75rem !important;
+            line-height: 1.4 !important;
+        }
+
+        .admin-details-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+        }
+
+        .details-products-admin li {
+            padding: 0.35rem 0 !important;
+        }
     }
 }
 
