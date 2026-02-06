@@ -2,21 +2,37 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mobile Menu Toggle
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
+    const menuBackdrop = document.querySelector('.menu-backdrop');
+    const menuCloseBtn = document.querySelector('.menu-close-btn');
+
+    const closeMenu = () => {
+        menuToggle.classList.remove('active');
+        navLinks.classList.remove('active');
+        if (menuBackdrop) menuBackdrop.classList.remove('active');
+        document.body.style.overflow = '';
+    };
 
     if (menuToggle) {
         menuToggle.addEventListener('click', () => {
             menuToggle.classList.toggle('active');
             navLinks.classList.toggle('active');
+            if (menuBackdrop) menuBackdrop.classList.toggle('active');
             document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
         });
 
+        // Close when clicking backdrop
+        if (menuBackdrop) {
+            menuBackdrop.addEventListener('click', closeMenu);
+        }
+
+        // Close when clicking 'X' button
+        if (menuCloseBtn) {
+            menuCloseBtn.addEventListener('click', closeMenu);
+        }
+
         // Close menu when clicking links
         navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                menuToggle.classList.remove('active');
-                navLinks.classList.remove('active');
-                document.body.style.overflow = '';
-            });
+            link.addEventListener('click', closeMenu);
         });
     }
 
@@ -414,42 +430,47 @@ function initCarouselSwipe() {
     
     tracks.forEach(track => {
         let startX = 0;
-        let isSwiping = false;
-        const container = track.closest('.carousel-container');
+        let startY = 0;
+        let isHorizontalSwipe = false;
 
         track.addEventListener('touchstart', (e) => {
             startX = e.touches[0].clientX;
-            isSwiping = true;
+            startY = e.touches[0].clientY;
+            isHorizontalSwipe = false;
         }, { passive: true });
 
         track.addEventListener('touchmove', (e) => {
-            if (!isSwiping) return;
             const currentX = e.touches[0].clientX;
-            const diff = startX - currentX;
-            
-            // If horizontal movement is significant, prevent page scroll
-            if (Math.abs(diff) > 10) {
-                // We don't preventDefault here because passive is true for smoothness
+            const currentY = e.touches[0].clientY;
+            const diffX = startX - currentX;
+            const diffY = startY - currentY;
+
+            // Determine if the user is swiping horizontally
+            if (!isHorizontalSwipe && Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+                isHorizontalSwipe = true;
             }
-        }, { passive: true });
+
+            // If it is a horizontal swipe, prevent page scrolling
+            if (isHorizontalSwipe) {
+                if (e.cancelable) e.preventDefault();
+            }
+        }, { passive: false });
 
         track.addEventListener('touchend', (e) => {
-            if (!isSwiping) return;
+            if (!isHorizontalSwipe) return;
+            
             const endX = e.changedTouches[0].clientX;
             const diff = startX - endX;
-            const threshold = 50; // pixels
+            const threshold = 40;
 
             if (Math.abs(diff) > threshold) {
                 if (diff > 0) {
-                    // Swipe left -> Next
                     moveCarousel(null, track, 1);
                 } else {
-                    // Swipe right -> Prev
                     moveCarousel(null, track, -1);
                 }
             }
-            isSwiping = false;
-        });
+        }, { passive: true });
     });
 }
 

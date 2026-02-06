@@ -1389,22 +1389,25 @@ html, body {
     /* Better Icon/Label Layout for Mobile Menu */
     .nav-links li a {
         display: flex;
-        flex-direction: row; /* Back to normal since HTML is fixed */
+        flex-direction: row; 
         justify-content: flex-start;
         width: 100%;
         align-items: center;
-        padding: 0.8rem 0;
+        padding: 1rem 0;
         border-bottom: 1px solid #f1f5f9;
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 
     .nav-label {
-        font-size: 1rem;
+        font-size: 1.1rem;
         margin-right: auto; /* Push icon to the right */
+        display: inline !important;
     }
 
     .nav-links li a i {
-        order: 2; /* Ensure icon is after text if label is before it in DOM */
+        order: 2; /* ICON AFTER TEXT */
+        font-size: 1.2rem;
+        color: var(--primary);
     }
 
     .cart-badge {
@@ -1417,37 +1420,51 @@ html, body {
         padding: 0.5rem 0 !important; /* Even less */
     }
 
-    .hero-container {
-        flex-direction: column-reverse;
-        gap: 0.5rem; 
-        padding-left: 10px !important;
-        padding-right: 10px !important;
+    .hero {
+        padding: 0.5rem 0 2rem !important; 
     }
 
-    .hero-text {
-        text-align: center;
+    .hero-container {
+        flex-direction: column-reverse;
+        gap: 1rem; 
+        padding-top: 3.5rem !important; /* SIGNIFICANTLY lower text */
     }
 
     .hero-text h1 {
-        font-size: 1.4rem !important; /* Much smaller than 1.8-2.0 */
-        margin-bottom: 0.5rem !important;
+        font-size: 1.4rem !important;
+        margin-top: 1.5rem !important; /* Lower it even more */
+        line-height: 1.2;
     }
 
-    .hero-text p {
-        font-size: 0.8rem !important;
-        margin-bottom: 1rem !important;
+    .hero-image {
+        display: flex;
+        justify-content: center;
+        width: 100%;
     }
 
-    .hero-main-img {
-        max-width: 150px !important; /* Forces smaller size */
-        height: auto !important;
-        margin: 0 auto;
+    .image-wrapper {
+        border: none !important; /* Fix green outline */
+        padding: 0 !important;
+        background: transparent !important;
     }
 
     .hero-blob {
-        width: 180px !important; /* Smaller blob container */
+        width: 180px !important;
         height: 180px !important;
-        margin: 0 auto !important;
+        background: rgba(16, 185, 129, 0.1) !important;
+        border: none !important; /* Fix green outline */
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50% !important;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-main-img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important; /* Fill container */
+        max-width: none !important;
     }
 
     .hero-btns {
@@ -1464,27 +1481,26 @@ html, body {
         min-width: 100px;
     }
 
-    /* Headlines & Sections */
-    .section-title {
-        font-size: 1.25rem !important;
+    /* Spacing between sections */
+    .categories-preview {
+        margin-top: -1rem !important; /* Closer to hero */
     }
 
-    .sub-title {
-        font-size: 0.65rem !important;
+    .section-center-header {
+        margin-bottom: 1rem !important;
     }
 
-    /* Categories Horizontal Scroll */
     .categories-grid {
+        margin-top: 0.5rem !important;
         display: flex !important;
         overflow-x: auto !important;
-        gap: 0.75rem !important;
-        padding: 0.5rem 0.5rem 1rem !important;
-        justify-content: flex-start !important;
+        gap: 0.8rem !important;
+        padding-bottom: 1rem !important;
     }
 
     .cat-card {
-        min-width: 85px !important; /* Smaller card */
-        padding: 0.6rem !important; /* Smaller container vertically */
+        min-width: 90px !important;
+        padding: 0.75rem !important;
     }
 
     .cat-card span {
@@ -1505,20 +1521,50 @@ html, body {
         display: inline-flex;
     }
 
-    /* Product Grid Mobile Fix (2 per row) */
+    /* Featured Section Spacing */
+    .featured-products {
+        padding-top: 1rem !important; /* Closer to categories */
+    }
+
+    /* Product Grid Mobile Fix (2 per row centered) */
     .product-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.5rem !important; /* Reduced gap to prevent overlap */
-        padding: 0.25rem !important;
+        justify-content: center !important;
+        align-items: start !important;
+        gap: 0.75rem !important; /* Balanced gap */
+        padding: 0.5rem !important;
         width: 100% !important;
         box-sizing: border-box;
     }
 
     .product-card {
         width: 100% !important;
-        margin-bottom: 0.5rem !important;
-        padding: 0.6rem !important; /* Reduced padding for more internal space */
+        margin: 0 auto !important; /* Centered */
+        padding: 0.75rem !important; 
+    }
+
+    /* Badge & Heart Positioning */
+    .badge.sale {
+        top: 4px !important;
+        left: 4px !important;
+        padding: 3px 6px !important;
+        font-size: 0.65rem !important;
+    }
+
+    .btn-favorite {
+        top: 4px !important;
+        right: 4px !important;
+        width: 30px !important; /* Smaller heart icon */
+        height: 30px !important;
+        font-size: 0.95rem !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .out-of-stock-overlay span {
+        font-size: 0.7rem !important;
+        padding: 5px 10px !important;
     }
 
     .carousel-arrow {
@@ -1540,26 +1586,37 @@ html, body {
     }
 
     .product-actions {
-        gap: 0.3rem !important;
-        margin-top: 0.5rem !important;
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 0.4rem !important;
+        margin-top: 0.8rem !important;
     }
 
     .btn-cart {
         font-size: 0.75rem !important;
-        padding: 0.4rem 0.2rem !important; /* Narrower padding */
-        height: 36px !important;
+        padding: 0.5rem 0.2rem !important;
+        height: 38px !important;
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        background: var(--primary) !important;
+        color: white !important;
+        flex: 2.2 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .btn-details {
         font-size: 0.75rem !important;
-        padding: 0.4rem !important;
-        height: 36px !important;
-        background: transparent !important;
+        padding: 0.5rem 0.2rem !important;
+        height: 38px !important;
+        background: white !important;
         color: var(--primary) !important;
         border: 1px solid var(--primary) !important;
+        flex: 1 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
     }
 
     /* Detail Page Fixes */

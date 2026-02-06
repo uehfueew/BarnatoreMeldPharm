@@ -24,7 +24,15 @@
                 <span></span>
             </button>
 
+            <!-- Menu Overlay/Backdrop -->
+            <div class="menu-backdrop"></div>
+
             <ul class="nav-links">
+                <!-- Close Button for Mobile -->
+                <li class="mobile-close-container">
+                    <button class="menu-close-btn">&times;</button>
+                </li>
+
                 <li><a href="{{ url_for('main.index') }}">Ballina</a></li>
                 <li><a href="{{ url_for('main.products') }}">Dyqani</a></li>
                 <li><a href="{{ url_for('main.about') }}">Rreth Nesh</a></li>

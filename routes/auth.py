@@ -51,7 +51,7 @@ def register():
         password = request.form.get('password')
         
         existing_user = User.get_by_email(email)
-        if existing_user: 
+        if existing_user:
             flash('Email është rregjistruar tashmë.', 'warning')
             return redirect(url_for('auth.register'))
             
