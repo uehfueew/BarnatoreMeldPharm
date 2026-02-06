@@ -8,9 +8,16 @@
         <div class="shape shape-2"></div>
     </div>
     <div class="container hero-container">
+        <div class="hero-image fade-in-section">
+            <div class="image-wrapper">
+                <div class="hero-blob">
+                    <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770325540/shop-1_yfh731.webp" alt="Premium Skincare" class="hero-main-img">
+                </div>
+            </div>
+        </div>
         <div class="hero-text fade-in-section">
-            <h1 class="gradient-headline">Partneri Juaj i Besuar për Shëndet dhe Bukuri</h1>
-            <p>Meld Pharm është destinacioni juaj për produkte bio, suplemente ushqimore dhe këshilla profesionale farmaceutike.</p>
+            <h1 class="gradient-headline">Partneri Juaj i Besuar</h1>
+            <p>Meld Pharm është destinacioni juaj për produkte bio dhe suplemente.</p>
             <div class="hero-btns">
                 <a href="{{ url_for('main.products') }}" class="btn btn-primary">
                     Bli Tani <i class="fas fa-shopping-bag"></i>
@@ -18,13 +25,6 @@
                 <a href="#featured" class="btn btn-outline">
                     Shiko Ofertat
                 </a>
-            </div>
-        </div>
-        <div class="hero-image fade-in-section">
-            <div class="image-wrapper">
-                <div class="hero-blob">
-                    <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770325540/shop-1_yfh731.webp" alt="Premium Skincare" class="hero-main-img">
-                </div>
             </div>
         </div>
     </div>
@@ -129,15 +129,15 @@
                         </div>
 
                         <div class="product-actions">
+                            <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-details btn-prominent">
+                                Shiko Detajet
+                            </a>
                             <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="flex: 1;">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                 <button type="submit" class="btn btn-cart" {% if product.in_stock == False %}disabled{% endif %}>
-                                    <i class="fas fa-shopping-basket"></i> {{ 'Jashtë Stokut' if product.in_stock == False else 'Shto në Shportë' }}
+                                    <i class="fas fa-shopping-basket"></i>
                                 </button>
                             </form>
-                            <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-details">
-                                Shiko Detajet
-                            </a>
                         </div>
                     </div>
                 </div>

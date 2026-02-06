@@ -404,18 +404,65 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Initialize Swipe for Carousels
+    initCarouselSwipe();
 });
 
-function moveCarousel(event, btn, direction) {
-    if (event) {
+function initCarouselSwipe() {
+    const tracks = document.querySelectorAll('.carousel-track');
+    
+    tracks.forEach(track => {
+        let startX = 0;
+        let isSwiping = false;
+        const container = track.closest('.carousel-container');
+
+        track.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isSwiping = true;
+        }, { passive: true });
+
+        track.addEventListener('touchmove', (e) => {
+            if (!isSwiping) return;
+            const currentX = e.touches[0].clientX;
+            const diff = startX - currentX;
+            
+            // If horizontal movement is significant, prevent page scroll
+            if (Math.abs(diff) > 10) {
+                // We don't preventDefault here because passive is true for smoothness
+            }
+        }, { passive: true });
+
+        track.addEventListener('touchend', (e) => {
+            if (!isSwiping) return;
+            const endX = e.changedTouches[0].clientX;
+            const diff = startX - endX;
+            const threshold = 50; // pixels
+
+            if (Math.abs(diff) > threshold) {
+                if (diff > 0) {
+                    // Swipe left -> Next
+                    moveCarousel(null, track, 1);
+                } else {
+                    // Swipe right -> Prev
+                    moveCarousel(null, track, -1);
+                }
+            }
+            isSwiping = false;
+        });
+    });
+}
+
+function moveCarousel(event, btnOrTrack, direction) {
+    if (event && event.preventDefault) {
         event.preventDefault();
         event.stopPropagation();
     }
     
-    const container = btn.closest('.carousel-container');
+    // Find container from button OR from track (if swipe)
+    const container = btnOrTrack.closest('.carousel-container');
     const track = container.querySelector('.carousel-track');
     const images = track.querySelectorAll('img');
-    const dots = container.querySelectorAll('.indicator-dot');
     
     let currentIndex = parseInt(container.getAttribute('data-index') || '0');
     currentIndex += direction;
