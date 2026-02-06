@@ -22,15 +22,15 @@
             <div class="filter-bar glass-card">
                 <div class="search-wrapper">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="productSearch" placeholder="Kërko produkte sipas emrit ose markës...">
+                    <input type="text" id="productSearch" placeholder="Kërko produkte sipas emrit ose markës..." autocomplete="off" value="{{ search_query or '' }}">
+                    <div id="searchPreview" class="search-preview-dropdown"></div>
                 </div>
                 
                 <div class="category-filters">
                     <button class="filter-btn {{ 'active' if current_category == 'all' else '' }}" data-filter="all">Të Gjitha</button>
-                    <button class="filter-btn {{ 'active' if current_category == 'Skincare' else '' }}" data-filter="Skincare">Skincare</button>
+                    <button class="filter-btn {{ 'active' if current_category == 'Kozmetik' else '' }}" data-filter="Kozmetik">Kozmetik</button>
                     <button class="filter-btn {{ 'active' if current_category == 'Vitamina' else '' }}" data-filter="Vitamina">Vitamina</button>
-                    <button class="filter-btn {{ 'active' if current_category == 'Pain Relief' else '' }}" data-filter="Pain Relief">Dhimbje</button>
-                    <button class="filter-btn {{ 'active' if current_category == 'First Aid' else '' }}" data-filter="First Aid">Ndihma e parë</button>
+                    <button class="filter-btn {{ 'active' if current_category == 'Pajisje ortopedike' else '' }}" data-filter="Pajisje ortopedike">Pajisje Ortopedike</button>
                 </div>
             </div>
         </div>
@@ -76,10 +76,13 @@
                         <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
                             <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
                         </button>
+                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
                     </div>
                     <div class="product-info">
                         <span class="product-category">{{ product.category or 'Farmaci' }}</span>
-                        <h3>{{ product.name }}</h3>
+                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" style="text-decoration: none; color: inherit; position: relative; z-index: 5;">
+                            <h3>{{ product.name }}</h3>
+                        </a>
                         
                         <div class="price-container">
                             {% if product.discount_price %}
@@ -122,17 +125,17 @@
         {% if total_pages > 1 %}
         <div class="pagination">
             {% if page > 1 %}
-            <a href="{{ url_for('main.products', page=page-1) }}" class="page-btn">
+            <a href="{{ url_for('main.products', page=page-1, category=current_category, q=search_query) }}" class="page-btn">
                 <i class="fas fa-chevron-left"></i>
             </a>
             {% endif %}
             
             {% for p in range(1, total_pages + 1) %}
-                <a href="{{ url_for('main.products', page=p) }}" class="page-btn {{ 'active' if p == page else '' }}">{{ p }}</a>
+                <a href="{{ url_for('main.products', page=p, category=current_category, q=search_query) }}" class="page-btn {{ 'active' if p == page else '' }}">{{ p }}</a>
             {% endfor %}
 
             {% if page < total_pages %}
-            <a href="{{ url_for('main.products', page=page+1) }}" class="page-btn">
+            <a href="{{ url_for('main.products', page=page+1, category=current_category, q=search_query) }}" class="page-btn">
                 <i class="fas fa-chevron-right"></i>
             </a>
             {% endif %}

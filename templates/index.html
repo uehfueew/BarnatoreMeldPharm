@@ -18,6 +18,15 @@
         <div class="hero-text fade-in-section">
             <h1 class="gradient-headline">Partneri Juaj i Besuar</h1>
             <p>Meld Pharm është destinacioni juaj për produkte bio dhe suplemente.</p>
+            
+            <div class="hero-search-container">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="productSearch" placeholder="Kërko produkte, vitamina, marka..." autocomplete="off">
+                    <div id="searchPreview" class="search-preview-dropdown"></div>
+                </div>
+            </div>
+
             <div class="hero-btns">
                 <a href="{{ url_for('main.products') }}" class="btn btn-primary">
                     Bli Tani <i class="fas fa-shopping-bag"></i>
@@ -34,30 +43,95 @@
 <section class="section categories-preview bg-light">
     <div class="container">
         <div class="section-center-header fade-in-section">
+            <span class="sub-title">Zgjidhni sipas kategorisë</span>
             <h2 class="section-title">Eksploro Sipas Nevojës</h2>
         </div>
         
-        <div class="categories-grid fade-in-section">
-            <a href="{{ url_for('main.products', category='Skincare') }}" class="cat-card">
-                <div class="cat-icon"><i class="fas fa-spa"></i></div>
-                <span>Skincare</span>
+        <div class="category-grid-v2">
+            <!-- Kozmetik -->
+            <a href="{{ url_for('main.products', category='Kozmetik') }}" class="category-card-v2 fade-in-section">
+                <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=800&auto=format&fit=crop" alt="Kozmetik" class="category-bg">
+                <div class="category-overlay">
+                    <span class="category-title">Kozmetik</span>
+                    <span class="category-count">Kujdesi për bukuri</span>
+                </div>
             </a>
-            <a href="{{ url_for('main.products', category='Vitamina') }}" class="cat-card">
-                <div class="cat-icon"><i class="fas fa-capsules"></i></div>
-                <span>Vitamina</span>
+
+            <!-- Vitamina -->
+            <a href="{{ url_for('main.products', category='Vitamina') }}" class="category-card-v2 fade-in-section">
+                <img src="https://images.unsplash.com/photo-1556760544-74c27a059c12?q=80&w=800&auto=format&fit=crop" alt="Vitamina" class="category-bg">
+                <div class="category-overlay">
+                    <span class="category-title">Vitamina</span>
+                    <span class="category-count">Suplemente & Shëndet</span>
+                </div>
             </a>
-            <a href="{{ url_for('main.products', category='Bio') }}" class="cat-card">
-                <div class="cat-icon"><i class="fas fa-leaf"></i></div>
-                <span>Produkte Bio</span>
+
+            <!-- Pajisje ortopedike -->
+            <a href="{{ url_for('main.products', category='Pajisje ortopedike') }}" class="category-card-v2 fade-in-section">
+                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop" alt="Pajisje ortopedike" class="category-bg">
+                <div class="category-overlay">
+                    <span class="category-title">Pajisje Ortopedike</span>
+                    <span class="category-count">Mbështetje & Rehabilitim</span>
+                </div>
             </a>
-            <a href="{{ url_for('main.products', category='Mama & Baby') }}" class="cat-card">
-                <div class="cat-icon"><i class="fas fa-baby"></i></div>
-                <span>Nënë & Fëmijë</span>
-            </a>
-            <a href="{{ url_for('main.products', category='First Aid') }}" class="cat-card">
-                <div class="cat-icon"><i class="fas fa-first-aid"></i></div>
-                <span>Ndihma e Shpejtë</span>
-            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Brands Section -->
+<section class="section brands-section">
+    <div class="container">
+        <div class="section-header fade-in-section">
+            <div>
+                <span class="sub-title">Zgjidhni më të mirët</span>
+                <h2 class="section-title">Eksploro Markat</h2>
+            </div>
+        </div>
+        
+        <div class="brand-grid">
+            <!-- Brand 1: Eucerin -->
+            <div class="brand-card fade-in-section">
+                <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=800&auto=format&fit=crop" alt="Eucerin" class="brand-img">
+                <div class="brand-overlay">
+                    <h3 class="brand-name">Eucerin</h3>
+                    <a href="{{ url_for('main.products', q='Eucerin') }}" class="brand-link">
+                        Shiko Produktet <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Brand 2: Vichy -->
+            <div class="brand-card fade-in-section">
+                <img src="https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=800&auto=format&fit=crop" alt="Vichy" class="brand-img">
+                <div class="brand-overlay">
+                    <h3 class="brand-name">Vichy</h3>
+                    <a href="{{ url_for('main.products', q='Vichy') }}" class="brand-link">
+                        Shiko Produktet <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Brand 3: La Roche-Posay -->
+            <div class="brand-card fade-in-section">
+                <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=800&auto=format&fit=crop" alt="La Roche-Posay" class="brand-img">
+                <div class="brand-overlay">
+                    <h3 class="brand-name">La Roche-Posay</h3>
+                    <a href="{{ url_for('main.products', q='La Roche-Posay') }}" class="brand-link">
+                        Shiko Produktet <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Brand 4: CeraVe -->
+            <div class="brand-card fade-in-section">
+                <img src="https://images.unsplash.com/photo-1556229010-6c3f2c9ca4f8?q=80&w=800&auto=format&fit=crop" alt="CeraVe" class="brand-img">
+                <div class="brand-overlay">
+                    <h3 class="brand-name">CeraVe</h3>
+                    <a href="{{ url_for('main.products', q='CeraVe') }}" class="brand-link">
+                        Shiko Produktet <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -114,10 +188,13 @@
                         <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
                             <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
                         </button>
+                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
                     </div>
                     <div class="product-info">
                         <span class="product-category">{{ product.category or 'Farmaci' }}</span>
-                        <h3>{{ product.name }}</h3>
+                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" style="text-decoration: none; color: inherit; position: relative; z-index: 5;">
+                            <h3>{{ product.name }}</h3>
+                        </a>
                         
                         <div class="price-container">
                             {% if product.discount_price %}
@@ -161,7 +238,7 @@
         <div class="section-header fade-in-section">
             <div>
                 <span class="sub-title">Zbuloni Më Shumë</span>
-                <h2 class="section-title">Produkte të Reja</h2>
+                <h2 class="section-title">Produktet</h2>
             </div>
             <a href="{{ url_for('main.products') }}" class="view-all"><span>Shiko të gjitha</span> <i class="fas fa-arrow-right"></i></a>
         </div>
@@ -207,10 +284,13 @@
                         <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
                             <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
                         </button>
+                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
                     </div>
                     <div class="product-info">
                         <span class="product-category">{{ product.category or 'Farmaci' }}</span>
-                        <h3>{{ product.name }}</h3>
+                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" style="text-decoration: none; color: inherit; position: relative; z-index: 5;">
+                            <h3>{{ product.name }}</h3>
+                        </a>
                         
                         <div class="price-container">
                             {% if product.discount_price %}

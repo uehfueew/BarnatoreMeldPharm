@@ -17,10 +17,16 @@ class Product:
 
 
     @staticmethod
-    def get_paginated(page=1, per_page=20, category=None):
+    def get_paginated(page=1, per_page=20, category=None, search_query=None):
         query = {}
         if category and category != 'all':
             query["category"] = category
+            
+        if search_query:
+            query["$or"] = [
+                {"name": {"$regex": search_query, "$options": "i"}},
+                {"category": {"$regex": search_query, "$options": "i"}}
+            ]
             
         total_products = mongo.db.products.count_documents(query)
         

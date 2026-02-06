@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container section" style="padding-top: 1rem;">
+<div class="container section product-detail-container" style="padding-top: 1rem;">
     <a href="{{ url_for('main.products') }}" class="btn btn-outline btn-back" style="margin-bottom: 2rem; display: inline-flex; align-items: center; gap: 0.75rem; border-radius: 12px; padding: 0.6rem 1.2rem; font-size: 0.9rem;">
         <i class="fas fa-arrow-left"></i> Kthehu tek Dyqani
     </a>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 5rem; align-items: start;">
+    <div class="product-detail-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 5rem; align-items: start;">
         
         <!-- Image Section -->
         <div class="product-gallery">
@@ -15,10 +15,10 @@
                     <div class="carousel-track" style="height: 100%;">
                         {% if product.images %}
                             {% for img in product.images %}
-                            <img src="{{ img }}" alt="{{ product.name }}" class="product-image" style="padding: 2rem;">
+                            <img src="{{ img }}" alt="{{ product.name }}" class="product-image" style="padding: 1.5rem; object-fit: contain;">
                             {% endfor %}
                         {% else %}
-                            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image" style="padding: 2rem;">
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image" style="padding: 1.5rem; object-fit: contain;">
                         {% endif %}
                     </div>
                 </div>
@@ -60,7 +60,7 @@
         </div>
 
         <!-- Info Section -->
-        <div class="product-info-column" style="animation: slideRight 0.6s ease-out;">
+        <div class="product-info-column" style="animation: slideUp 0.6s ease-out;">
             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
                 <span class="product-category" style="font-size: 0.85rem; font-weight: 800;">{{ product.category }}</span>
                 <span style="width: 4px; height: 4px; background: #cbd5e1; border-radius: 50%;"></span>
@@ -69,14 +69,14 @@
                 </span>
             </div>
             
-            <h1 style="font-size: 3.5rem; letter-spacing: -0.04em; margin-bottom: 1.5rem; line-height: 1.1;">{{ product.name }}</h1>
+            <h1 class="product-title-detail" style="margin-bottom: 1.5rem; line-height: 1.1;">{{ product.name }}</h1>
             
             <div class="price-container" style="display: flex; align-items: flex-end; gap: 1rem; margin-bottom: 2.5rem;">
                 {% if product.discount_price %}
                     <span class="price original" style="font-size: 1.25rem; text-decoration: line-through; color: #94a3b8; font-weight: 500;">€{{ product.price }}</span>
                     <span class="price discounted" style="font-size: 3rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{ product.discount_price }}</span>
                 {% else %}
-                    <span class="price" style="font-size: 3rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{ product.price }}</span>
+                    <span class="price main-price" style="font-size: 3rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{ product.price }}</span>
                 {% endif %}
             </div>
             
@@ -91,7 +91,7 @@
                 </ul>
             </div>
             
-            <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="display: flex; gap: 1.5rem; align-items: stretch; flex-wrap: wrap;">
+            <form id="addToCartForm" action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="display: flex; gap: 1.5rem; align-items: stretch; flex-wrap: wrap;">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="quantity-selector" style="display: flex; align-items: center; background: #f1f5f9; border-radius: 12px; padding: 0.25rem;">
                     <button type="button" class="qty-btn minus" style="width: 45px; height: 45px; border: none; cursor: pointer; color: var(--text-main); font-size: 0.9rem;" {% if product.in_stock == False %}disabled{% endif %}><i class="fas fa-minus"></i></button>
@@ -110,56 +110,122 @@
     </div>
 </div>
 
+<!-- Mobile Sticky Action Bar -->
+<div class="mobile-action-bar">
+    <div class="price-info">
+        {% if product.discount_price %}
+            <span class="price-detail" style="font-weight: 800; color: var(--primary); font-size: 1.3rem;">€{{ product.discount_price }}</span>
+        {% else %}
+            <span class="price-detail" style="font-weight: 800; color: var(--primary); font-size: 1.3rem;">€{{ product.price }}</span>
+        {% endif %}
+    </div>
+    <button type="button" onclick="document.getElementById('addToCartForm').submit()" class="btn btn-primary btn-cart" style="padding: 0.8rem 2rem !important; border-radius: 12px !important;" {% if product.in_stock == False %}disabled{% endif %}>
+        {% if product.in_stock == False %}
+            Jashtë Stokut
+        {% else %}
+            <i class="fas fa-plus"></i> Shto
+        {% endif %}
+    </button>
+</div>
+
+<style>
+/* Product Card Link Fix for Detail Page Related Products */
+.product-card { position: relative; }
+.product-card-link-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+.btn-favorite, button, a.btn { z-index: 5 !important; }
+
+/* Responsive Action Bar */
+.mobile-action-bar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+    z-index: 3000;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+@media (max-width: 768px) {
+    .mobile-action-bar {
+        display: flex;
+    }
+    /* Add padding to body to prevent content being hidden behind bar */
+    body {
+        padding-bottom: 80px !important;
+    }
+}
+</style>
+
 
     {% if related_products %}
-    <div class="related-products" style="margin-top: 5rem;">
-        <h2 class="section-title">Produkte të Ngjashme</h2>
-        <div class="product-grid">
-            {% for related in related_products %}
-            <div class="product-card">
-                <div class="product-image">
-                    <img src="{{ related.image_url }}" alt="{{ related.name }}">
-                    {% if related.discount_price %}
-                        <span class="badge sale">Zbritje -{{ ((related.price - related.discount_price) / related.price * 100)|round|int }}%</span>
-                    {% endif %}
-
-                    {% if related.in_stock == False %}
-                        <div class="out-of-stock-overlay">
-                            <span>Jashtë Stokut</span>
-                        </div>
-                    {% endif %}
-
-                    <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and related.favorites and current_user.id in related.favorites) or (not current_user.is_authenticated and related._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ related._id }}')">
-                        <i class="{{ 'fas' if (current_user.is_authenticated and related.favorites and current_user.id in related.favorites) or (not current_user.is_authenticated and related._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
-                    </button>
-                </div>
-                <div class="product-info">
-                    <h3 class="product-title">{{ related.name }}</h3>
-                    <p class="category-tag">{{ related.category }}</p>
-                    <div class="price-container">
+    <div class="container">
+        <div class="related-products" style="margin-top: 5rem; padding-bottom: 2rem;">
+            <h2 class="section-title">Produkte të Ngjashme</h2>
+            <div class="product-grid">
+                {% for related in related_products %}
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="{{ related.image_url }}" alt="{{ related.name }}">
                         {% if related.discount_price %}
-                            <span class="price original">€{{ related.price }}</span>
-                            <span class="price discounted">€{{ related.discount_price }}</span>
-                        {% else %}
-                            <span class="price">€{{ related.price }}</span>
+                            <span class="badge sale">Zbritje -{{ ((related.price - related.discount_price) / related.price * 100)|round|int }}%</span>
                         {% endif %}
-                    </div>
-                    
-                    <form action="{{ url_for('cart.add_to_cart', product_id=related._id) }}" method="POST" style="margin-bottom: 0.5rem; width: 100%;">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;" {% if related.in_stock == False %}disabled{% endif %}>
-                            {% if related.in_stock == False %}
-                                Jashtë Stokut
-                            {% else %}
-                                <i class="fas fa-shopping-basket" style="margin-right: 0.5rem;"></i> Në Shportë
-                            {% endif %}
-                        </button>
-                   </form>
 
-                    <a href="{{ url_for('main.product_detail', product_id=related._id) }}" class="btn btn-sm" style="width: 100%; justify-content: center;">Shiko Detajet</a>
+                        {% if related.in_stock == False %}
+                            <div class="out-of-stock-overlay">
+                                <span>Jashtë Stokut</span>
+                            </div>
+                        {% endif %}
+
+                        <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and related.favorites and current_user.id in related.favorites) or (not current_user.is_authenticated and related._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ related._id }}')">
+                            <i class="{{ 'fas' if (current_user.is_authenticated and related.favorites and current_user.id in related.favorites) or (not current_user.is_authenticated and related._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
+                        </button>
+                        <a href="{{ url_for('main.product_detail', product_id=related._id) }}" class="product-card-link-overlay"></a>
+                    </div>
+                    <div class="product-info">
+                        <a href="{{ url_for('main.product_detail', product_id=related._id) }}" style="text-decoration: none; color: inherit; position: relative; z-index: 5;">
+                            <h3 class="product-title">{{ related.name }}</h3>
+                        </a>
+                        <p class="category-tag">{{ related.category }}</p>
+                        <div class="price-container">
+                            {% if related.discount_price %}
+                                <span class="price original">€{{ related.price }}</span>
+                                <span class="price discounted">€{{ related.discount_price }}</span>
+                            {% else %}
+                                <span class="price">€{{ related.price }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="product-actions">
+                            <form action="{{ url_for('cart.add_to_cart', product_id=related._id) }}" method="POST" style="margin-bottom: 0.5rem; width: 100%;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;" {% if related.in_stock == False %}disabled{% endif %}>
+                                    {% if related.in_stock == False %}
+                                        Jashtë Stokut
+                                    {% else %}
+                                        <i class="fas fa-shopping-basket" style="margin-right: 0.5rem;"></i> Në Shportë
+                                    {% endif %}
+                                </button>
+                        </form>
+
+                            <a href="{{ url_for('main.product_detail', product_id=related._id) }}" class="btn btn-sm" style="width: 100%; justify-content: center;">Shiko Detajet</a>
+                        </div>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
     </div>
     {% endif %}

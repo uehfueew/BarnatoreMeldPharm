@@ -67,13 +67,67 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Product Search Filter (Front-end only for demo/smoothness)
     const searchInput = document.getElementById('productSearch');
+    const searchPreview = document.getElementById('searchPreview');
     const filterBtns = document.querySelectorAll('.filter-btn');
     const productCards = document.querySelectorAll('.product-card');
 
     if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
+        searchInput.addEventListener('input', async (e) => {
             const term = e.target.value.toLowerCase();
-            filterProducts(term, getActiveCategory());
+            
+            // Front-end filter for current page
+            // filterProducts(term, getActiveCategory()); // Disabling front-end filter to rely more on API search for better experience
+
+            // Live search preview
+            if (term.length >= 2) {
+                try {
+                    const response = await fetch(`/api/search?q=${encodeURIComponent(term)}`);
+                    const products = await response.json();
+                    
+                    if (products.length > 0) {
+                        searchPreview.innerHTML = products.map(p => `
+                            <a href="/product/${p.id}" class="preview-item">
+                                <img src="${p.image_url}" alt="${p.name}">
+                                <div class="preview-info">
+                                    <span class="preview-name">${p.name}</span>
+                                    <span class="preview-category">${p.category}</span>
+                                    <div class="preview-price">
+                                        ${p.discount_price ? `<span class="price">€${p.discount_price}</span> <span class="old-price">€${p.price}</span>` : `<span class="price">€${p.price}</span>`}
+                                    </div>
+                                </div>
+                            </a>
+                        `).join('') + `
+                            <a href="/products?q=${encodeURIComponent(term)}" class="preview-item view-all-search">
+                                <span style="width: 100%; text-align: center; color: var(--primary); font-weight: 600;">Shiko të gjitha rezultatet</span>
+                            </a>
+                        `;
+                        searchPreview.classList.add('active');
+                    } else {
+                        searchPreview.classList.remove('active');
+                    }
+                } catch (err) {
+                    console.error('Search error:', err);
+                }
+            } else {
+                searchPreview.classList.remove('active');
+            }
+        });
+
+        // Handle Enter key
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const term = searchInput.value;
+                if (term.length >= 2) {
+                    window.location.href = `/products?q=${encodeURIComponent(term)}`;
+                }
+            }
+        });
+
+        // Close preview when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !searchPreview.contains(e.target)) {
+                searchPreview.classList.remove('active');
+            }
         });
     }
 

@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, session, redirect, url_for, request, jsonify
+from models.db import mongo
 from models.product import Product
 from models.order import Order
+from models.user import User
 from flask_login import current_user, login_required
 
 main = Blueprint('main', __name__)
@@ -36,15 +38,19 @@ def products():
          
     page = request.args.get('page', 1, type=int)
     category = request.args.get('category', 'all')
+    search_query = request.args.get('q', '')
     per_page = 20
     
-    products, total_pages = Product.get_paginated(page, per_page, category)
+    products, total_pages = Product.get_paginated(page, per_page, category, search_query)
     
     # Debug print
-    print(f"Products found: {len(products)} on page {page} in category {category}")
-    return render_template('products.html', products=products, page=page, total_pages=total_pages, current_category=category)
-
-from models.user import User
+    print(f"Products found: {len(products)} on page {page} in category {category} search: {search_query}")
+    return render_template('products.html', 
+                         products=products, 
+                         page=page, 
+                         total_pages=total_pages, 
+                         current_category=category,
+                         search_query=search_query)
 
 @main.route('/product/<product_id>')
 def product_detail(product_id):
@@ -123,3 +129,32 @@ def toggle_favorite(product_id):
     if action:
         return jsonify({'success': True, 'action': action})
     return jsonify({'success': False}), 400
+
+@main.route('/api/search')
+def search_api():
+    query = request.args.get('q', '').strip()
+    if not query or len(query) < 2:
+        return jsonify([])
+    
+    # Search in name or description
+    search_query = {
+        "$or": [
+            {"name": {"$regex": query, "$options": "i"}},
+            {"category": {"$regex": query, "$options": "i"}}
+        ]
+    }
+    
+    products = list(mongo.db.products.find(search_query).limit(5))
+    
+    results = []
+    for p in products:
+        results.append({
+            'id': str(p['_id']),
+            'name': p['name'],
+            'price': p['price'],
+            'discount_price': p.get('discount_price'),
+            'image_url': p.get('image_url'),
+            'category': p.get('category')
+        })
+    
+    return jsonify(results)
