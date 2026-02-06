@@ -1386,11 +1386,11 @@ html, body {
         right: 0;
     }
 
-    /* Reverse Icon/Label Order for Mobile Menu */
+    /* Better Icon/Label Layout for Mobile Menu */
     .nav-links li a {
         display: flex;
-        flex-direction: row-reverse;
-        justify-content: space-between;
+        flex-direction: row; /* Back to normal since HTML is fixed */
+        justify-content: flex-start;
         width: 100%;
         align-items: center;
         padding: 0.8rem 0;
@@ -1399,9 +1399,12 @@ html, body {
     }
 
     .nav-label {
-        display: inline;
         font-size: 1rem;
-        margin-left: 0;
+        margin-right: auto; /* Push icon to the right */
+    }
+
+    .nav-links li a i {
+        order: 2; /* Ensure icon is after text if label is before it in DOM */
     }
 
     .cart-badge {
@@ -1411,122 +1414,152 @@ html, body {
 
     /* Home Hero Fixes */
     .hero {
-        padding: 1.5rem 0 !important;
+        padding: 0.5rem 0 !important; /* Even less */
     }
 
     .hero-container {
-        flex-direction: column-reverse; /* Put image on top for mobile maybe? user said smaller image at top */
-        gap: 2rem;
+        flex-direction: column-reverse;
+        gap: 0.5rem; 
+        padding-left: 10px !important;
+        padding-right: 10px !important;
     }
 
     .hero-text {
         text-align: center;
     }
 
+    .hero-text h1 {
+        font-size: 1.4rem !important; /* Much smaller than 1.8-2.0 */
+        margin-bottom: 0.5rem !important;
+    }
+
+    .hero-text p {
+        font-size: 0.8rem !important;
+        margin-bottom: 1rem !important;
+    }
+
     .hero-main-img {
-        max-width: 240px; /* Smaller image */
+        max-width: 150px !important; /* Forces smaller size */
+        height: auto !important;
         margin: 0 auto;
     }
 
+    .hero-blob {
+        width: 180px !important; /* Smaller blob container */
+        height: 180px !important;
+        margin: 0 auto !important;
+    }
+
     .hero-btns {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: center;
+        flex-direction: row; /* Keep them on one row if they are small */
+        gap: 0.5rem;
+        justify-content: center;
         width: 100%;
     }
 
     .hero-btns .btn {
-        width: 80%; /* Centered and not full width */
-        justify-content: center;
-    }
-
-    .hero-btns .btn-outline {
-        border-color: var(--primary) !important; /* Visible on mobile */
-        color: var(--primary) !important;
-        background: rgba(5, 150, 105, 0.05) !important;
+        width: auto; 
+        padding: 0.4rem 0.8rem !important; /* Extremely small buttons */
+        font-size: 0.75rem !important;
+        min-width: 100px;
     }
 
     /* Headlines & Sections */
     .section-title {
-        font-size: 1.5rem !important;
+        font-size: 1.25rem !important;
     }
 
     .sub-title {
-        font-size: 0.75rem !important;
+        font-size: 0.65rem !important;
     }
 
     /* Categories Horizontal Scroll */
     .categories-grid {
         display: flex !important;
         overflow-x: auto !important;
-        scroll-snap-type: x mandatory;
-        gap: 1rem !important;
-        padding: 0.5rem 0.5rem 1.5rem !important;
+        gap: 0.75rem !important;
+        padding: 0.5rem 0.5rem 1rem !important;
         justify-content: flex-start !important;
-        -webkit-overflow-scrolling: touch;
     }
 
     .cat-card {
-        min-width: 100px !important;
-        scroll-snap-align: start;
-        padding: 1rem !important;
+        min-width: 85px !important; /* Smaller card */
+        padding: 0.6rem !important; /* Smaller container vertically */
+    }
+
+    .cat-card span {
+        font-size: 0.75rem !important; /* Smaller text */
     }
 
     .cat-icon {
-        width: 45px !important;
-        height: 45px !important;
-        font-size: 1.2rem !important;
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 1rem !important;
     }
 
     .view-all {
-        font-size: 0.8rem !important;
-        padding: 0.4rem 0.8rem !important;
+        font-size: 0.75rem !important;
+        padding: 0.3rem 0.6rem !important;
+        width: fit-content;
+        margin: 0 auto;
+        display: inline-flex;
     }
 
     /* Product Grid Mobile Fix (2 per row) */
     .product-grid {
+        display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 1rem !important;
-        padding: 0.5rem !important;
+        gap: 0.5rem !important; /* Reduced gap to prevent overlap */
+        padding: 0.25rem !important;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .product-card {
+        width: 100% !important;
+        margin-bottom: 0.5rem !important;
+        padding: 0.6rem !important; /* Reduced padding for more internal space */
+    }
+
+    .carousel-arrow {
+        display: none !important; /* Hide arrows on phone */
     }
 
     .product-image.carousel-container {
-        height: 160px !important; /* Slightly bigger than 140 but smaller than desktop */
-    }
-
-    .badge.sale {
-        top: 0.4rem !important;
-        left: 0.4rem !important;
-        font-size: 0.65rem !important;
-    }
-
-    .btn-favorite {
-        top: 0.4rem !important;
-        right: 0.4rem !important;
-        width: 32px !important; /* Smaller heart icon */
-        height: 32px !important;
-        font-size: 1rem !important;
+        height: 150px !important; /* Slightly shorter */
     }
 
     .product-info h3 {
+        font-size: 0.8rem !important;
+        min-height: 2rem;
+        margin: 0.2rem 0 !important;
+    }
+
+    .price-container .price {
         font-size: 0.9rem !important;
-        min-height: 2.4rem; /* Ensure matching height */
     }
 
     .product-actions {
-        gap: 0.4rem !important;
-        margin-top: 0 !important; /* Move higher */
-    }
-
-    .btn-details.btn-prominent {
-        flex: 2 !important;
-        font-weight: 600 !important;
-        background: var(--primary) !important;
-        color: white !important;
+        gap: 0.3rem !important;
+        margin-top: 0.5rem !important;
     }
 
     .btn-cart {
-        flex: 1 !important;
+        font-size: 0.75rem !important;
+        padding: 0.4rem 0.2rem !important; /* Narrower padding */
+        height: 36px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .btn-details {
+        font-size: 0.75rem !important;
+        padding: 0.4rem !important;
+        height: 36px !important;
+        background: transparent !important;
+        color: var(--primary) !important;
+        border: 1px solid var(--primary) !important;
     }
 
     /* Detail Page Fixes */

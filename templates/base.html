@@ -39,7 +39,7 @@
                 <li>
                     <a href="{{ url_for('cart.view_cart') }}" class="cart-icon">
                         <span class="nav-label">Shporta</span>
-                        <i class="fas fa-shopping-cart"></i>
+                        <i class="fas fa-shopping-cart" style="margin-left: 10px;"></i>
                         {% if cart_count and cart_count > 0 %}
                             <span class="cart-badge">{{ cart_count }}</span>
                         {% endif %}
@@ -48,7 +48,7 @@
                 <li>
                     <a href="{{ url_for('main.profile') }}" class="profile-icon" title="Profili">
                         <span class="nav-label">Profili Im</span>
-                        <i class="fas fa-user"></i>
+                        <i class="fas fa-user" style="margin-left: 10px;"></i>
                     </a>
                 </li>
                 {% if not current_user.is_authenticated %}
