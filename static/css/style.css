@@ -1428,30 +1428,139 @@ html, body {
         transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 2000;
         display: flex;
+        border-top-left-radius: 1.5rem;
+        border-bottom-left-radius: 1.5rem;
     }
 
     .nav-links.active {
         right: 0;
     }
 
-    .mobile-close-container {
-        display: flex !important;
-        justify-content: flex-end;
-        align-items: center;
+    .menu-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
-        margin-bottom: 1.5rem;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(2px);
+        opacity: 0;
+        visibility: hidden;
+        transition: 0.3s ease;
+        z-index: 1500;
     }
 
-    /* Clear X button in the top right of the side menu */
+    .menu-backdrop.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .mobile-menu-header {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid #f1f5f9;
+        margin-bottom: 1rem;
+    }
+
     .menu-close-btn {
         background: none;
         border: none;
-        font-size: 3rem !important;
+        font-size: 2.2rem !important;
         color: var(--primary);
         cursor: pointer;
         padding: 0;
-        line-height: 0.5;
-        margin-top: 10px;
+        line-height: 1;
+    }
+
+    /* Cart Mobile Optimization */
+    .cart-table thead {
+        display: none; /* Hide headers on mobile */
+    }
+
+    .cart-table tr {
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        background: white;
+        border-radius: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        border: 1px solid #f1f5f9;
+        position: relative;
+    }
+
+    .cart-table td {
+        display: block;
+        padding: 0.5rem 0;
+        border: none;
+        text-align: right;
+    }
+
+    .cart-table td:first-child {
+        text-align: left;
+        padding-right: 3rem; /* Space for bin button if needed */
+    }
+
+    .cart-product-info {
+        gap: 0.75rem !important;
+    }
+
+    .cart-product-info span {
+        font-size: 0.82rem; /* Shrunk as requested */
+        line-height: 1.2;
+        font-weight: 500;
+        max-width: 100%;
+        color: var(--text-main);
+    }
+
+    .cart-thumb {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+    /* Use pseudo-elements for labels */
+    .cart-table td:nth-child(2)::before { content: "Çmimi: "; float: left; font-weight: 600; color: var(--text-muted); }
+    .cart-table td:nth-child(3)::before { content: "Sasia: "; float: left; font-weight: 600; color: var(--text-muted); }
+    .cart-table td:nth-child(4)::before { content: "Total: "; float: left; font-weight: 600; color: var(--primary); }
+    
+    .cart-table td:nth-child(3) {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .cart-table td:last-child {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        padding: 0;
+    }
+
+    .cart-summary {
+        padding: 1.5rem !important;
+        flex-direction: column;
+        align-items: stretch !important;
+        text-align: center;
+    }
+
+    .cart-summary h3 {
+        font-size: 1.3rem !important;
+        margin-bottom: 1rem;
+    }
+
+    .cart-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .cart-actions .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.75rem !important;
+        font-size: 0.85rem !important; /* Smaller fonts for buttons */
     }
 
     .nav-links li a {
