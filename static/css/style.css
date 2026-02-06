@@ -412,13 +412,13 @@ p {
 }
 
 .btn-outline {
-    background: transparent;
-    border: 2px solid #e2e8f0;
-    color: var(--text-main);
+    background: #f1f5f9;
+    border: none;
+    color: #475569;
 }
 
 .btn-outline:hover {
-    border-color: var(--primary);
+    background: #e2e8f0;
     color: var(--primary);
 }
 
@@ -1361,12 +1361,20 @@ html, body {
 
 /* Responsive Optimization */
 @media (max-width: 768px) {
+    .nav-container {
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+    }
+
     /* Menu Toggle Positioned Top-Right (No circle) */
     .menu-toggle {
         display: flex !important;
-        position: fixed !important;
-        right: 1rem !important;
-        top: 1.25rem !important;
+        position: absolute !important; /* Absolute to the nav-container */
+        right: 0.5rem !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important; 
         width: 32px !important;
         height: 32px !important;
         background: transparent !important;
@@ -1455,7 +1463,7 @@ html, body {
     }
 
     .hero-image {
-        margin-top: 2.5rem !important; /* Pushed image lower as requested */
+        margin-top: 3rem !important; /* Pushed just a little lower as requested */
     }
 
     .hero-blob {
@@ -1469,17 +1477,10 @@ html, body {
         margin-top: 1.5rem;
     }
 
-    .hero-btns .btn-outline {
-        background: #f1f5f9 !important; /* Gave it color as requested */
-        color: #475569 !important;
-        border: none !important;
-        padding: 0.7rem 1rem !important;
-        font-size: 0.85rem !important;
-    }
-
-    .hero-btns .btn-primary {
-        padding: 0.7rem 1rem !important;
-        font-size: 0.85rem !important;
+    .hero-btns .btn-primary, .hero-btns .btn-outline {
+        padding: 0.65rem 0.9rem !important; /* Slightly smaller button padding */
+        font-size: 0.8rem !important;
+        min-width: 110px;
     }
 
     /* Section Headlines compact layout */
@@ -1512,37 +1513,47 @@ html, body {
     }
 
     .cat-card span {
-        font-size: 0.8rem !important; /* Smaller category text */
+        font-size: 0.75rem !important; /* Even smaller as requested */
     }
 
     .view-all {
-        font-size: 0.8rem !important;
-        padding: 0.4rem 1rem !important; /* Smaller view all button horizontally */
+        font-size: 0.7rem !important;
+        padding: 0.25rem 0.6rem !important; /* Even smaller vertically and horizontally */
     }
 
     /* Product Grid & Actions (Laptop Style Re-fixed) */
     .product-grid {
         display: grid !important;
-        grid-template-columns: 1fr 1fr !important; /* Force equal split */
-        gap: 0.75rem !important;
-        padding: 1rem 0.6rem !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.7rem !important;
+        padding: 1rem !important; /* Perfectly balanced padding on all sides */
         width: 100% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
+        margin: 0 auto !important;
+        justify-content: center !important;
     }
 
     .product-card {
-        padding: 0.7rem !important;
+        padding: 0.6rem !important;
         width: 100% !important;
-        max-width: none !important;
-        margin: 0 !important;
+    }
+
+    .product-info h3 {
+        font-size: 0.8rem !important; /* Smaller name as requested */
+        margin-bottom: 0.2rem !important;
+        line-height: 1.1;
+        height: 2.2em; /* Ensure alignment */
+        overflow: hidden;
+    }
+
+    .price-container .price {
+        font-size: 0.85rem !important; /* Smaller price as requested */
     }
 
     .product-actions {
         display: flex !important;
         flex-direction: column !important;
-        gap: 0.4rem !important;
-        margin-top: 0.8rem !important;
+        gap: 0.35rem !important;
+        margin-top: 0.4rem !important; /* Even closer to price */
     }
 
     .btn-cart, .btn-details {
