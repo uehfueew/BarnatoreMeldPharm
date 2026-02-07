@@ -67,9 +67,11 @@ document.getElementById('adminProductSearch').addEventListener('keyup', function
         const textContent = row.textContent.toLowerCase();
         
         if (term === '' || name.includes(term) || category.includes(term) || textContent.includes(term)) {
-            row.style.display = '';
+            row.classList.remove('d-none-impt');
+            row.style.setProperty('display', '', 'important'); /* Reset if needed */
         } else {
-            row.style.display = 'none';
+            row.classList.add('d-none-impt');
+            row.style.setProperty('display', 'none', 'important');
         }
     });
 });

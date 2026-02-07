@@ -1,3 +1,20 @@
+// Focus handler for search inputs on mobile to prevent zoom and align to top
+document.querySelectorAll('input[type="text"][id*="Search"]').forEach(input => {
+    input.addEventListener('focus', function(e) {
+        if (window.innerWidth <= 768) {
+            // Scroll to ensure element is in the top-ish area
+            setTimeout(() => {
+                const elementPosition = this.getBoundingClientRect().top + window.scrollY;
+                const offsetPosition = elementPosition - 80;
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }, 300);
+        }
+    });
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     // Mobile Menu Toggle
     const menuToggle = document.querySelector('.menu-toggle');
@@ -391,28 +408,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!result.isConfirmed) return;
         }
 
-        // OPTIMISTIC UI UPDATE for Quantity
-        let previousQty = null;
-        let pQtyInput = null;
-        
-        if (isUpdate) {
-            // Find the input in the same container
-            const container = form.closest('.quantity-selector'); 
-            if (container) {
-                pQtyInput = container.querySelector('.qty-input');
-                if (pQtyInput) {
-                    previousQty = parseInt(pQtyInput.value);
-                    const isIncrease = form.action.includes('increase');
-                    const isDecrease = form.action.includes('decrease');
-                    
-                    if (isIncrease) {
-                        pQtyInput.value = previousQty + 1;
-                    } else if (isDecrease && previousQty > 1) {
-                        pQtyInput.value = previousQty - 1;
-                    }
-                }
-            }
-        }
+        // Optimistic UI removed to prevent lag/jumping. Relying on Server Response.
+
 
         // Setup UI for loading
         let btn = form.querySelector('button[type="submit"]');

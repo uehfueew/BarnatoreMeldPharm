@@ -106,16 +106,22 @@ document.getElementById('adminOrderSearch').addEventListener('keyup', function(e
         const visibleText = row.textContent.toLowerCase();
         
         if (id.includes(term) || fullname.includes(term) || city.includes(term) || status.includes(term) || visibleText.includes(term)) {
-            row.style.display = '';
+            row.classList.remove('d-none-impt');
+            row.style.setProperty('display', '', 'important'); 
         } else {
-            row.style.display = 'none';
+            row.classList.add('d-none-impt');
+            row.style.setProperty('display', 'none', 'important');
+            
             // Hide details if parent is hidden
             const btn = row.querySelector('button[onclick^="toggleDetails"]');
             if (btn) {
                  const match = btn.getAttribute('onclick').match(/'(.+?)'/);
                  if (match) {
                     const detailsRow = document.getElementById('details-' + match[1]);
-                    if (detailsRow) detailsRow.style.display = 'none';
+                    if (detailsRow) {
+                        detailsRow.classList.add('d-none-impt');
+                        detailsRow.style.setProperty('display', 'none', 'important');
+                    }
                  }
             }
         }
