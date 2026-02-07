@@ -182,6 +182,22 @@ p {
     color: white;
 }
 
+.btn-icon-only {
+    width: 34px !important;
+    height: 34px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50% !important;
+    line-height: 1;
+}
+
+.btn-icon-only i {
+    font-size: 0.95rem;
+    margin: 0 !important;
+}
+
 .btn-tab {
     font-family: var(--font-main);
     font-size: 1rem;
@@ -3416,6 +3432,17 @@ div:where(.swal2-container) div:where(.swal2-actions) {
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
+        align-items: flex-start !important; /* Left align text */
+        text-align: left !important;
+    }
+
+    /* Force Price single line layout */
+    .preview-price {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        margin-top: 0.1rem !important;
     }
 
     .preview-item h4 {
@@ -3657,74 +3684,80 @@ div:where(.swal2-container) div:where(.swal2-actions) {
 
     .nav-label {
         display: inline-block !important;
-        margin-left: 0.75rem !important; /* Text AFTER icon */
-        margin-right: 0 !important;
+        margin-left: 0 !important; 
+        margin-right: 0.5rem !important; /* Text Margin Right */
         font-size: 0.95rem !important;
         color: var(--text-main);
-        order: 2; /* Text second */
+        order: 1; /* Text First */
     }
     
     .cart-icon, .profile-icon {
         color: var(--text-muted) !important;
         display: inline-flex !important;
         width: auto !important;
+        position: relative !important; /* For Badge */
+        overflow: visible !important;
     }
 
     .nav-links i {
         min-width: 20px;
         text-align: center;
-        order: 1; /* Icon first */
+        order: 2; /* Icon Second */
         font-size: 1.1rem !important;
     }
     
-    /* Cart Badge adjustment for left menu */
+    /* Cart Badge adjustment - attached to icon */
     .cart-badge {
-        position: static !important;
-        margin-left: auto !important; /* Push to far right */
+        position: relative !important;
+        top: -8px !important;
+        right: auto !important;
+        left: -8px !important; /* Pull over the icon */
+        margin-left: 0 !important;
         order: 3 !important;
+        z-index: 10;
+        box-shadow: 0 0 0 2px white; /* Border for separation */
     }
 
-    /* FIX: Cart Page Mobile Layout - ABSOLUTE/RELATIVE HYBRID */
-    .cart-table {
-        background: transparent !important;
-        border: none !important;
-    }
-    
+    /* FIX: Cart Page Mobile Layout - Refined */
     .cart-table thead {
         display: none !important;
     }
 
     .cart-table tr {
-        display: block !important;
+        display: flex !important;
+        flex-direction: column !important;
         position: relative !important;
         background: white;
         border: 1px solid #f1f5f9;
         border-radius: 12px;
         margin-bottom: 1rem;
-        padding: 1rem 1rem 1rem 110px !important; /* Reserve Left Space for Image */
-        min-height: 110px;
+        padding: 0.75rem 0.75rem 0.75rem 100px !important; /* Reserve Left Space */
+        min-height: 100px;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
     
     .cart-table td {
         display: block !important;
         border: none !important;
         padding: 0 !important;
-        width: auto !important;
+        width: 100% !important;
     }
 
     /* TD 1: Image & Name */
     .cart-table td:nth-child(1) {
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.5rem;
     }
 
     /* Image - Absolute Left */
     .cart-thumb {
         position: absolute !important;
-        left: 15px !important;
-        top: 15px !important;
+        left: 10px !important;
+        top: 10px !important;
         width: 80px !important;
         height: 80px !important;
-        object-fit: cover;
+        object-fit: contain;
+        background: #f8fafc;
         border-radius: 8px;
     }
 
@@ -3732,38 +3765,57 @@ div:where(.swal2-container) div:where(.swal2-actions) {
         display: block !important;
     }
     
-    /* Name - Text Flow */
+    /* Name - Text Flow - Prevent Overlap & Smaller */
     .cart-product-info span { 
         display: block !important;
-        font-size: 0.95rem !important;
+        font-size: 0.85rem !important; /* Smaller Name */
         font-weight: 600;
         line-height: 1.3;
         color: var(--text-main);
-        padding-right: 30px; /* Space for Delete Button */
-        margin-bottom: 0.2rem;
+        padding-right: 35px; /* More Space for Delete Button */
+        margin-bottom: 0.5rem; /* Separation from Price */
     }
     
-    /* TD 2: Price - Inline Block */
+    /* Price Container Construction */
+    /* We use nth-child selectors to find them, but they are block by default. */
+    
+    /* TD 2: Unit Price */
     .cart-table td:nth-child(2) {
         display: inline-block !important;
-        font-size: 0.95rem !important;
-        font-weight: 700;
-        color: var(--primary);
-        margin-right: 1rem !important;
+        width: auto !important;
+        font-size: 0.85rem !important; /* Smaller Price Number */
+        font-weight: 600;
+        color: var(--text-main); /* Standard color (or muted) */
+        margin-right: 0.5rem !important;
         vertical-align: middle;
     }
     
-    /* TD 3: Quantity - Inline Block */
-    .cart-table td:nth-child(3) {
+    /* TD 4: Subtotal - Show Inline Next to Price */
+    .cart-table td:nth-child(4) {
         display: inline-block !important;
+        width: auto !important;
+        font-size: 0.9rem !important;
+        font-weight: 800;
+        color: var(--primary);
         vertical-align: middle;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* TD 3: Quantity */
+    .cart-table td:nth-child(3) {
+        display: block !important;
+        margin-top: 0.25rem !important;
     }
     
     .quantity-selector {
         transform: scale(0.9);
-        transform-origin: left center;
+        transform-origin: left top;
         margin: 0 !important;
+        display: flex !important;
+        align-items: center !important; /* Align vertically center */
     }
+    
+    /* Align Sasia text if it exists (it doesn't in HTML usually, but logic helps) */
 
     /* FIX: Allow typing in Cart Quantity on Mobile */
     .cart-table .qty-input {
@@ -3774,11 +3826,14 @@ div:where(.swal2-container) div:where(.swal2-actions) {
         pointer-events: auto !important;
         -webkit-user-select: text !important;
         user-select: text !important;
-        margin: 0 2px !important;
+        margin: 0 4px !important;
+        height: 32px !important; /* Match button height for alignment */
+        line-height: 32px !important;
+        padding: 0 !important;
     }
     
     .cart-table .quantity-selector {
-        background: transparent !important; /* Remove container bg to highlight input */
+        background: transparent !important;
         border: none !important;
     }
     
@@ -3786,31 +3841,33 @@ div:where(.swal2-container) div:where(.swal2-actions) {
         background: #f1f5f9 !important;
         border: 1px solid #e2e8f0 !important;
         border-radius: 6px !important;
+        width: 32px !important;
+        height: 32px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 
-    /* TD 4: Subtotal - Hide on Mobile to save space/reduce clutter */
-    .cart-table td:nth-child(4) {
-        display: none !important;
-    }
-
-    /* TD 5: Delete Button - Absolute Top Right */
+    /* TD 5: Delete Button - Absolute Top Right - FIXED SCROLL ISSUE */
     .cart-table td:nth-child(5) {
         position: absolute !important;
-        top: 10px !important;
-        right: 10px !important;
+        top: 0.75rem !important;
+        right: 0.75rem !important;
         width: auto !important;
+        padding: 0 !important;
+        z-index: 5; /* Ensure visibility */
     }
     
     .btn-icon {
         background: #fee2e2;
         color: #ef4444;
-        width: 32px;
-        height: 32px;
+        width: 28px !important; 
+        height: 28px !important;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         box-shadow: none !important;
     }
 
@@ -3853,47 +3910,174 @@ div:where(.swal2-container) div:where(.swal2-actions) {
         word-break: break-word !important; /* Prevent horizontal scroll from long strings */
     }
 
-    /* Target specific details to be even smaller as requested */
-    .admin-table td small, 
-    .table td small,
-    .date-col,
-    .admin-table td:first-child, /* ID usually first */
-    .table td:first-child /* ID usually first */
-    {
-        font-size: 0.75rem !important;
-        color: var(--text-muted);
+    /* ID - Top Left, Bold */
+    .admin-table td:first-child, 
+    .table td:first-child { 
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        color: var(--text-main) !important;
+        margin-bottom: 0.25rem !important;
+        width: 70% !important; /* Limit width so it doesn't overlap status */
     }
 
-    /* Price styling in card view */
-    .admin-table td:nth-child(4), /* Price in admin orders usually 4th */
-    .table td:nth-child(3) { /* Price in user orders usually 3rd */
+    /* USER TABLE: Date (2nd) - Smaller, grayish */
+    .table:not(.admin-table) td:nth-child(2) {
+        font-size: 0.85rem !important;
+        color: var(--text-muted) !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* ADMIN TABLE: Client (2nd) - Regular block */
+    .admin-table td:nth-child(2) {
         font-size: 0.9rem !important;
-        font-weight: 700;
-        color: var(--primary);
+        font-weight: 600 !important;
+        margin-bottom: 0.25rem !important;
+        color: var(--text-main) !important;
+    }
+
+    /* ADMIN TABLE: Date (3rd) - Smaller, grayish */
+    .admin-table td:nth-child(3) {
+        font-size: 0.85rem !important;
+        color: var(--text-muted) !important;
+        margin-bottom: 0.5rem !important;
     }
     
-    /* Special Handling for Order Details Row (The expandable part) */
+    /* Price - Prominent */
+    .admin-table td:nth-child(4), /* Admin Price (4th) */
+    .table:not(.admin-table) td:nth-child(3) { /* User Price (3rd) */
+        font-size: 1rem !important;
+        font-weight: 800 !important;
+        color: var(--primary) !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Status - ABSOLUTE Top Right */
+    .admin-table td:nth-child(5), /* Admin Status (5th) */
+    .table:not(.admin-table) td:nth-child(4) { /* User Status (4th) */
+        position: absolute !important;
+        top: 1rem !important;
+        right: 1rem !important;
+        width: auto !important;
+        padding: 0 !important;
+        text-align: right !important;
+    }
+
+    /* Admin Actions (6th) - Bottom */
+    .admin-table:not(.admin-product-table) td:nth-child(6) {
+        border-top: 1px dashed #e2e8f0 !important;
+        padding-top: 0.75rem !important;
+        margin-top: 0.5rem !important;
+    }
+    
+    /* FIX: Admin Product List Mobile */
+    .admin-product-table tr {
+        padding-right: 90px !important; /* Space for Action Icons */
+        min-height: 80px !important;
+        justify-content: center !important;
+    }
+
+    /* Name: Smaller */
+    .admin-product-table td:first-child {
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.1rem !important;
+        width: 100% !important;
+    }
+    
+    /* Category: Smaller, Gray, Inline */
+    .admin-product-table td:nth-child(2) {
+        display: inline-block !important;
+        width: auto !important;
+        font-size: 0.8rem !important;
+        color: var(--text-muted) !important;
+        margin-bottom: 0 !important;
+        margin-right: 0.5rem !important;
+    }
+    
+    /* Price: Smaller, Next to Category */
+    .admin-product-table td:nth-child(3) {
+        display: inline-block !important;
+        width: auto !important;
+        font-size: 0.9rem !important;
+        color: var(--primary) !important;
+        font-weight: 700 !important;
+        margin-bottom: 0 !important;
+    }
+    
+    /* Actions: Icons Top Right */
+    .admin-product-table td:last-child {
+        position: absolute !important;
+        top: 1rem !important;
+        right: 0.75rem !important;
+        width: auto !important;
+        display: flex !important;
+        gap: 0.5rem !important;
+        padding: 0 !important;
+        background: transparent !important;
+    }
+    
+    /* Icon Button Styling */
+    .btn-icon-only {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    
+    .btn-icon-only i {
+        font-size: 0.9rem;
+    }
+
+    /* Reduce container padding to fit screen */
+    .admin-container {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Special Handling for Order Details Row */
     tr[id^="details-"] {
-        display: none; /* Controlled by JS, but when active: */
+        display: none; 
         flex-direction: column;
         width: 100% !important;
         border: 1px solid #e2e8f0;
         border-top: none;
         background: #f8fafc;
-        margin-top: -1rem; /* Connect to card above */
+        margin-top: -0.5rem !important; /* Pull higher up */
         border-radius: 0 0 12px 12px;
-        padding: 1rem !important;
+        padding: 0.75rem !important; /* Reduce padding */
         box-sizing: border-box !important;
     }
+
+    /* Fix Details Content Alignment - "Too far down/right" */
+    td .order-details-wrapper {
+        width: 100% !important; 
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        position: static !important; /* Remove sticky weirdness */
+        display: block !important;
+        left: 0 !important;
+    }
     
+    .order-details-wrapper .details-title {
+        margin-top: 0.25rem !important; /* Closer to top */
+        font-size: 0.9rem !important;
+    }
+
     /* Fix Admin Search Bar & Header */
-    .admin-header > div:first-child { 
+    .admin-header > div:first-child,
+    .admin-orders-header { /* Applied to new class in orders.html */
         flex-direction: column-reverse !important; /* Button above title */
         align-items: flex-start !important;
         gap: 1rem !important;
     }
     
-    .admin-header .section-title {
+    .admin-header .section-title,
+    .admin-orders-header .section-title {
         font-size: 1.5rem !important;
         align-self: flex-start;
     }
@@ -3989,12 +4173,12 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     }
     
     /* Ensure the wrapper doesn't force full table width */
-    td .order-details-wrapper {
-        width: 100% !important; 
-        max-width: 90vw !important;
-        display: inline-block !important; /* Allow it to be smaller than cell */
-        position: sticky !important;
-        left: 0.5rem;
+    /* REMOVED PREVIOUS CONFLICTING RULES */
+    
+    /* Use standard left-aligned block for details */
+    .table-responsive tr[id^="details-"] td { 
+         padding: 0 !important;
+         margin: 0 !important;
     }
 
     /* Stores/Products Page Mobile Fixes */

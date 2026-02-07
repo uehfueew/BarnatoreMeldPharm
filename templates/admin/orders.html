@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container section">
     <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2.5rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div class="admin-orders-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <h2 class="section-title" style="font-size: 1.75rem; margin-bottom: 0;">Menaxhimi i Porosive</h2>
             <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Kthehu te Paneli</a>
         </div>
@@ -17,7 +17,7 @@
     
     {% if orders %}
         <div class="table-responsive">
-            <table class="table">
+            <table class="table admin-table">
                 <thead>
                     <tr>
                         <th style="width: 12%;">ID</th>
