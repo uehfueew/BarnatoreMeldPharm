@@ -1,5 +1,5 @@
 CATEGORIES = {
-    "Dermokozmetikë & Bukuri": [
+    "Dermokozmetikë": [
         "Kujdes fytyre", 
         "Kundër akneve", 
         "Anti-aging", 
@@ -52,11 +52,5 @@ CATEGORIES = {
         "Kapsula bimore", 
         "Vajra esencialë", 
         "Produkte bio"
-    ],
-    "Shëndet & Mirëqenie": [
-        "Produkte për gjumë (melatoninë, çaj qetësues)", 
-        "Stres & ankth", 
-        "Produkte për sportistë", 
-        "Proteina & energji"
     ]
 }
