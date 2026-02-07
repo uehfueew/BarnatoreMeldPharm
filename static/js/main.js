@@ -417,9 +417,22 @@ document.addEventListener('DOMContentLoaded', () => {
         // Setup UI for loading
         let btn = form.querySelector('button[type="submit"]');
         let originalContent = btn ? btn.innerHTML : '';
-        if (btn && isAdd) {
+        
+        // Disable buttons to prevent race conditions
+        if (btn) {
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            if (isAdd) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        }
+        
+        // Also disable sibling buttons if this is a quantity update
+        if (isUpdate) {
+            const container = form.closest('.quantity-selector');
+            if (container) {
+                const allBtns = container.querySelectorAll('button');
+                allBtns.forEach(b => b.disabled = true);
+                const input = container.querySelector('input');
+                if (input) input.disabled = true;
+            }
         }
 
         try {
@@ -466,7 +479,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (itemTotal) itemTotal.textContent = '€' + data.item_total.toFixed(2);
                         
                         const minusBtn = row.querySelector('.minus');
-                        if (minusBtn) minusBtn.disabled = data.quantity <= 1;
+                        // Re-enable buttons
+                        const container = row.querySelector('.quantity-selector');
+                        if (container) {
+                            const allBtns = container.querySelectorAll('button');
+                            allBtns.forEach(b => {
+                                // Keep minus disabled if qty is 1
+                                if (b.classList.contains('minus')) {
+                                    b.disabled = data.quantity <= 1;
+                                } else {
+                                    b.disabled = false;
+                                }
+                            });
+                             const input = container.querySelector('input');
+                             if (input) input.disabled = false;
+                        }
                     }
                     // Update global totals
                     const totalEl = document.querySelector('.cart-summary h3');
@@ -475,8 +502,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } else {
                 // Revert optimistic update on failure/error
-                if (isUpdate && pQtyInput && previousQty !== null) {
+                if (isUpdate && pQtyInput) {
                     pQtyInput.value = previousQty;
+                }
+                
+                // Re-enable buttons on error
+                if (isUpdate) {
+                    const row = form.closest('tr');
+                    if (row) {
+                        const container = row.querySelector('.quantity-selector');
+                        if (container) {
+                            container.querySelectorAll('button').forEach(b => b.disabled = false);
+                            const input = container.querySelector('input');
+                            if (input) input.disabled = false;
+                        }
+                        const minusBtn = row.querySelector('.minus');
+                        if (minusBtn && previousQty <= 1) minusBtn.disabled = true;
+                    }
                 }
 
                 // Handle error (e.g., login required)

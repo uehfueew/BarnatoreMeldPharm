@@ -85,24 +85,27 @@
     /* Mobile Header inside Menu */
     .mobile-menu-header {
         display: flex !important;
-        justify-content: space-between !important;
+        justify-content: flex-start !important; /* Changed from space-between */
         align-items: center !important;
         width: 100% !important;
         padding-bottom: 1rem !important;
         border-bottom: 1px solid #f1f5f9 !important;
         margin-bottom: 0.5rem !important;
-        z-index: 100 !important; /* Ensure it is on top of any internal elements */
+        z-index: 100 !important; 
         position: relative !important;
+        padding-right: 40px !important; /* Reserve space for close button */
     }
 
     .menu-close-btn {
+        position: absolute !important;
+        top: -5px !important; /* Align with top of text */
+        right: 0 !important;
         background: none !important;
         border: none !important;
-        font-size: 2.2rem !important;
+        font-size: 2.5rem !important; /* Slightly larger */
         color: var(--primary) !important;
         cursor: pointer !important;
-        padding: 0 !important;
-        margin-right: -0.5rem !important; /* Align to the edge */
+        padding: 5px !important;
         line-height: 1 !important;
         display: block !important;
         z-index: 101 !important;
@@ -144,10 +147,11 @@
     /* Cart Badge in Menu */
     .cart-badge {
         position: relative !important;
-        top: -3px !important; /* Move higher */
-        left: -2px !important; /* Move a bit to the left */
+        top: -8px !important; /* Moved higher (was -3px) */
+        left: -8px !important; /* Moved further left (was -2px) */
         right: auto !important;
         transform: none !important;
+        margin-left: 0 !important; /* Try to negate default margin */
     }
 
     /* Navbar fixes - Ensure it's above backdrop */
@@ -583,14 +587,15 @@
     /* FIX: Cart Page Mobile Layout - Refined */
     /* Cart Header Layout - Reversed */
     .cart-header-row {
-        flex-direction: column-reverse !important;
+        display: flex !important;
+        flex-direction: column-reverse !important; /* Button Top, Title Bottom */
         align-items: flex-start !important;
-        gap: 1.5rem !important;
+        gap: 1rem !important;
         margin-bottom: 2rem !important;
     }
     
     .cart-header-row .btn {
-        align-self: flex-start !important; /* Button top left */
+        align-self: flex-start !important;
         margin-bottom: 0 !important;
     }
     
@@ -616,45 +621,42 @@
     /* Row as Card */
     .cart-table tr {
         display: grid !important;
-        grid-template-columns: 90px 1fr !important;
-        grid-template-rows: auto auto auto auto !important;
+        grid-template-columns: 100px 1fr !important; /* Fixed Image Col, Fluid Info */
+        grid-template-rows: auto auto auto !important; /* Name, Price, Controls */
         grid-template-areas:
             "img info"
             "img price"
-            "img actions"
-            "bottom bottom";
+            "actions actions";
         background: white;
         border: 1px solid #f1f5f9;
-        border-radius: 16px;
-        padding: 1rem !important;
+        border-radius: 12px;
+        /* Padding: Top Right Bottom Left - Left is 0 for image to touch edge */
+        padding: 1rem 0.5rem 1rem 0 !important; 
         margin-bottom: 0 !important;
         position: relative !important;
-        box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05); /* Softer shadow */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03) !important;
         min-height: 120px;
     }
     
     .cart-table td {
-        display: block !important;
+        display: contents !important; /* Children participate in Grid */
         border: none !important;
         padding: 0 !important;
-        width: 100% !important;
     }
 
     /* 1. IMAGE & INFO & CATEGORY */
-    .cart-table td:nth-child(1) {
-        display: contents !important; /* Allow children to place themselves in grid */
-        border: none !important;
-    }
     
     /* Image */
     .cart-product-info .cart-thumb {
         grid-area: img;
-        width: 80px !important;
-        height: 80px !important;
+        width: 100px !important; /* Use full col width */
+        height: 100px !important;
         object-fit: contain;
         background: #f8fafc;
-        border-radius: 12px;
-        align-self: start;
+        border-radius: 0 8px 8px 0; /* Rounded only on right */
+        align-self: center;
+        justify-self: start;
+        margin-left: -5px !important; /* Ensure it firmly touches/bleeds slightly */
     }
 
     /* Wrapper for Text (Name/Cat) */
@@ -666,37 +668,49 @@
         grid-area: info;
         display: flex !important;
         flex-direction: column !important;
-        padding-right: 30px !important; /* Space for delete button */
+        justify-content: center !important;
+        padding-left: 0.5rem !important;
+        padding-right: 35px !important; /* Space for delete button */
         margin-bottom: 0.25rem !important;
     }
 
     .product-name {
         font-size: 1rem !important;
-        font-weight: 700 !important;
+        font-weight: 600 !important;
         line-height: 1.3 !important;
         color: var(--text-main);
         margin-bottom: 0.1rem !important;
+        /* Word Wrapping Fixes */
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        word-break: normal !important; /* Prevent mid-word breaking */
+        hyphens: auto !important;
     }
 
     .product-category {
         font-size: 0.8rem !important;
         color: #94a3b8;
         font-weight: 500;
-        margin-bottom: 0.5rem !important;
+        margin-bottom: 0.25rem !important;
     }
 
-    /* 2. UNIT PRICE */
+    /* 2. UNIT PRICE - Below Info */
     .cart-table td:nth-child(2) {
         grid-area: price;
-        font-size: 0.9rem !important;
-        color: var(--text-muted) !important;
-        font-weight: 500 !important;
-        margin-bottom: 1rem !important;
+        font-size: 0.95rem !important;
+        color: var(--text-main) !important;
+        font-weight: 700 !important;
+        padding-left: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+        align-self: start;
+        display: block !important; /* Change back to block to contain text properly */
     }
     
+    /* Remove "Çmimi" Label */
     .cart-table td:nth-child(2):before {
-        content: "Çmimi: " !important;
-        opacity: 0.7;
+        content: none !important;
+        display: none !important;
     }
 
     /* 3. QUANTITY ROW (Bottom Left) */
@@ -704,71 +718,113 @@
         grid-area: actions;
         display: flex !important;
         align-items: center !important;
-        justify-content: flex-start !important;
-        margin-top: auto !important; /* Push to bottom if space available */
+        justify-content: space-between !important; /* Spread Qty and Total */
+        padding: 0.5rem 0.5rem 0 1rem !important; /* Add left padding to align under image visual center */
+        border-top: 1px dashed #f1f5f9 !important;
+        margin-top: 0.5rem !important;
+        width: 100% !important;
     }
     
     .quantity-selector {
-        transform: scale(0.9);
+        transform: scale(0.95);
         transform-origin: left center;
         margin: 0 !important;
-        background: #f8fafc;
+        background: #f1f5f9;
         border-radius: 8px;
-        padding: 2px;
-        border: 1px solid #e2e8f0;
+        padding: 4px;
+        border: none !important;
+        display: flex !important;
+        gap: 5px !important;
     }
     
     .qty-btn {
-        width: 28px !important;
-        height: 28px !important;
+        width: 32px !important;
+        height: 32px !important;
         background: white !important;
         border-radius: 6px !important;
         box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
     
     .qty-input {
-        width: 35px !important;
-        height: 28px !important;
-        font-size: 0.9rem !important;
+        width: 40px !important;
+        height: 32px !important;
+        font-size: 1rem !important;
         font-weight: 600 !important;
         background: transparent !important;
         border: none !important;
+        text-align: center !important;
     }
 
     /* 4. TOTAL (Bottom Right) */
     .cart-table td:nth-child(4) {
-        grid-area: actions; /* Share row with Quantity */
+        display: flex !important; /* It is inside the 'actions' area which is flex/grid cell? No, grid area allows overwrite? */
+        /* Wait, td:nth-child(3) took 'actions'. nth-child(4) needs to be IN 'actions' or separate? */
+        /* Better to share the cell. But TDs are siblings. */
+        /* We can grid-area overlap OR make them siblings in same area?
+           Only one element can structurally occupy a slot unless we use negative margins.
+           Actually, if we assign same grid-area to multiple elements, they overlap.
+           We want them side by side.
+           
+           Let's change the Grid Areas:
+           "img info"
+           "img price"
+           "qty total"
+         */
+    }
+
+    .cart-table td:nth-child(3) {
+        grid-area: qty;
+        border-top: 1px dashed #f1f5f9 !important;
+        margin-top: 0.5rem !important;
+        padding-top: 0.5rem !important;
+        padding-left: 0.5rem !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .cart-table td:nth-child(4) {
+        grid-area: total;
+        border-top: 1px dashed #f1f5f9 !important;
+        margin-top: 0.5rem !important;
+        padding-top: 0.5rem !important;
         display: flex !important;
         align-items: center !important;
         justify-content: flex-end !important;
         font-size: 1.1rem !important;
         font-weight: 700 !important;
         color: var(--primary) !important;
-        height: 100% !important; /* Align with selector */
+        padding-right: 0.5rem !important;
+    }
+
+    /* Update Grid Template for Split Bottom Row */
+    .cart-table tr {
+        grid-template-areas:
+            "img info"
+            "img price"
+            "qty total" !important;
     }
     
     /* 5. DELETE BUTTON (Top Right Absolute) */
     .cart-table td:nth-child(5) {
         position: absolute !important;
-        top: 0.75rem !important;
-        right: 0.75rem !important;
+        top: 0.5rem !important;
+        right: 0.5rem !important;
         width: auto !important;
         display: block !important;
         z-index: 10;
+        background: transparent !important;
     }
     
     .cart-table td:nth-child(5) .btn-icon {
         color: #ef4444 !important;
-        opacity: 0.8;
-        padding: 0.5rem;
-        background: #fef2f2;
+        background: transparent !important;
         border-radius: 8px;
         transition: 0.2s;
-    }
-    
-    .cart-table td:nth-child(5) .btn-icon:active {
-        background: #fee2e2;
-        transform: scale(0.95);
+        box-shadow: none !important;
+        font-size: 1rem !important;
     }
     
     .btn-icon {
@@ -808,30 +864,70 @@
         flex-direction: column !important;
         align-items: flex-start !important;
         width: 100% !important;
-        gap: 1.5rem !important; /* Increased space between title and buttons */
-        margin-top: -1.5rem !important; /* Move higher up to reduce empty space at top */
+        gap: 1rem !important; /* Reduced gap */
+        margin-top: 0 !important; /* Reset negative margin */
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Pull content higher globally for admin pages */
+    .admin-container,
+    .container.section {
+        padding-top: 1rem !important; /* significantly reduced from default */
     }
 
     .admin-header > div:first-child > h1,
     .admin-orders-header h2 {
-        margin-bottom: 0.5rem !important;
+        margin-bottom: 0.25rem !important;
         margin-top: 0 !important;
+        font-size: 1.5rem !important; /* Slightly smaller title */
     }
     
-    /* Buttons Container - Stack them vertically for mobile */
-    .admin-header > div:first-child > div {
+    /* Search Bar Mobile Fixes */
+    .admin-search-wrapper i,
+    .search-box-admin i {
+        left: 0.8rem !important; /* More to left */
+        font-size: 1rem !important;
+    }
+    
+    .admin-search-wrapper input,
+    .search-box-admin input {
+        padding-left: 2.5rem !important; /* Adjusted for new icon position */
+        height: 52px !important; /* Slightly bigger/taller */
+        font-size: 16px !important; /* No Zoom */
+    }
+    
+    /* Buttons Container - Force Horizontal Row */
+    .admin-header > div:first-child > div,
+    .admin-actions-group {
         width: 100% !important;
         display: flex !important;
-        flex-direction: column !important;
-        gap: 0.8rem !important;
+        flex-direction: row !important; /* Force Row */
+        gap: 0.5rem !important;
+        justify-content: space-between !important;
     }
     
-    /* Buttons - Full width */
+    /* Buttons - Mobile Size Optimization */
     .admin-header .btn {
-        width: 100% !important;
+        flex: 1 !important; /* Equal width */
+        width: auto !important;
         display: flex !important;
+        align-items: center !important;
         justify-content: center !important;
         text-align: center !important;
+        font-size: 0.75rem !important; /* Smaller text */
+        padding: 0.5rem 0.2rem !important; /* Compact padding */
+        height: 38px !important; /* Fixed height */
+        margin: 0 !important;
+    }
+    
+    /* GLOBAL FIX: Prevent Zoom on Input Focus (iOS) */
+    input[type="text"], 
+    input[type="number"], 
+    input[type="password"], 
+    input[type="email"], 
+    select, 
+    textarea {
+        font-size: 16px !important; /* Must be 16px to prevent zoom */
     }
 
     /* Convert Table Rows to Compact Cards - CHANGED SELECTOR to exclude details row */
@@ -928,14 +1024,15 @@
         margin-top: 0.1rem !important;
     }
     
-    /* Status - ABSOLUTE Top Right - Bigger */
+    /* Status - ABSOLUTE Top Right - Bigger & Further Right */
     .admin-table td:nth-child(5) { /* Admin Status (Select) */
         position: absolute !important;
         top: 0.5rem !important;
-        right: 0.5rem !important;
-        width: 125px !important; /* Wider container */
+        right: -5px !important; /* Pushed further right */
+        width: 125px !important; 
         padding: 0 !important;
         text-align: right !important;
+        z-index: 5;
     }
 
     .table:not(.admin-table) td:nth-child(4) { /* User Status (Badge) */
@@ -974,9 +1071,15 @@
     
     /* BUTTON FIX: Admin Details Button - Bigger */
     .admin-table td:nth-child(6) .btn {
-        padding: 0.5rem 1.2rem !important; /* Bigger padding */
-        font-size: 0.85rem !important; /* Bigger text */
+        padding: 0.75rem 1rem !important; /* SIGNIFICANTLY BIGGER PADDING */
+        font-size: 0.95rem !important; /* BIGGER FONT */
         width: 100% !important; /* Full width button */
+        height: auto !important;
+        min-height: 44px !important; /* Minimum touch target size */
+        display: flex !important; 
+        align-items: center !important;
+        justify-content: center !important;
+        margin-top: 0.5rem !important;
     }
 
     /* User Actions (Button) - Positioned below status */
@@ -985,7 +1088,7 @@
         padding-top: 0 !important;
         border-top: none !important;
         position: absolute !important;
-        top: 2.2rem !important; /* Right below the status badge */
+        top: 2.5rem !important; /* Adjusted */
         right: 0.75rem !important;
         width: auto !important;
         text-align: right !important;
@@ -1003,37 +1106,55 @@
         background: transparent !important;
         color: var(--primary) !important;
         border: 1px solid var(--primary) !important;
-        padding: 0.1rem 0.5rem !important;
-        font-size: 0.65rem !important;
+        padding: 0.3rem 0.8rem !important;
+        font-size: 0.75rem !important;
         font-weight: 500 !important;
         border-radius: 4px;
         box-shadow: none !important;
     }
-        padding: 0.3rem 0.8rem !important; /* Smaller padding */
-        font-size: 0.75rem !important;
+
+    /* DETAILS ROW FIX: Reset Defaults for Details Card */
+    .table tr[id^="details-"] {
+        display: none; /* Default hidden */
+        width: 100% !important;
+        background: #f8fafc !important;
+        border: none !important;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* When active (overriding JS inline style 'display: table-row') */
+    .table tr[id^="details-"][style*="display: table-row"],
+    .table tr[id^="details-"][style*="display: block"] {
+        display: block !important;
     }
 
-
-    /* DETAILS ROW FIX: Ensure content is aligned left/top */
-    .table tr[id^="details-"] td {
+    /* FIX: Ensure content is aligned left/top and overrides first-child rules */
+    .table tr[id^="details-"] td,
+    .admin-table tr[id^="details-"] td:first-child, /* Specific override for nth-child(1) collision */
+    .table tr[id^="details-"] td:first-child {
         display: block !important;
         width: 100% !important;
         text-align: left !important;
-        padding: 1rem !important;
-        background-color: #f9fafb !important;
+        padding: 0.5rem 0.5rem 0.5rem 0 !important; 
+        background-color: transparent !important;
+        position: static !important; /* Prevent absolute positioning */
+        font-weight: normal !important;
+        font-size: 0.9rem !important;
+        margin: 0 !important;
     }
 
     .order-details-wrapper {
         text-align: left !important;
         width: 100% !important;
+        margin-left: 0 !important;
+        padding-left: 0 !important;
     }
     
     .details-content {
         text-align: left !important;
-    }
-        font-size: 0.85rem !important; /* Increased font size */
-        width: 100% !important; /* Full width for easier tapping */
-        justify-content: center;
+        padding-left: 0 !important;
     }
 
     /* Admin Header Actions - Single Row - Forced Specificity */
