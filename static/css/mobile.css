@@ -91,17 +91,21 @@
         padding-bottom: 1rem !important;
         border-bottom: 1px solid #f1f5f9 !important;
         margin-bottom: 0.5rem !important;
+        z-index: 100 !important; /* Ensure it is on top of any internal elements */
+        position: relative !important;
     }
 
     .menu-close-btn {
         background: none !important;
         border: none !important;
-        font-size: 2rem !important;
+        font-size: 2.2rem !important;
         color: var(--primary) !important;
         cursor: pointer !important;
-        padding: 0.5rem !important;
+        padding: 0 !important;
+        margin-right: -0.5rem !important; /* Align to the edge */
         line-height: 1 !important;
         display: block !important;
+        z-index: 101 !important;
     }
 
     /* Menu Links */
@@ -140,8 +144,8 @@
     /* Cart Badge in Menu */
     .cart-badge {
         position: relative !important;
-        top: 0 !important;
-        left: 5px !important;
+        top: -3px !important; /* Move higher */
+        left: -2px !important; /* Move a bit to the left */
         right: auto !important;
         transform: none !important;
     }
@@ -577,194 +581,194 @@
     }
 
     /* FIX: Cart Page Mobile Layout - Refined */
+    /* Cart Header Layout - Reversed */
+    .cart-header-row {
+        flex-direction: column-reverse !important;
+        align-items: flex-start !important;
+        gap: 1.5rem !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    .cart-header-row .btn {
+        align-self: flex-start !important; /* Button top left */
+        margin-bottom: 0 !important;
+    }
+    
+    .cart-header-row h1 {
+        margin-top: 0 !important;
+        font-size: 1.75rem !important;
+    }
+
+    /* COMPLETE REWRITE of Cart Table Mobile */
+
     .cart-table {
         display: flex !important;
         flex-direction: column !important;
-        gap: 1rem !important; /* Proper spacing between cart items */
+        gap: 1.25rem !important;
         background: transparent !important;
     }
 
-    /* Ensure Header is HIDDEN */
-    .cart-table thead, .cart-table thead tr, .cart-table thead th {
+    /* Hide Table Header */
+    .cart-table thead {
         display: none !important;
-        visibility: hidden !important;
-        height: 0 !important;
     }
 
+    /* Row as Card */
     .cart-table tr {
-        display: block !important; /* Layout mode */
-        position: relative !important;
+        display: grid !important;
+        grid-template-columns: 90px 1fr !important;
+        grid-template-rows: auto auto auto auto !important;
+        grid-template-areas:
+            "img info"
+            "img price"
+            "img actions"
+            "bottom bottom";
         background: white;
         border: 1px solid #f1f5f9;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        border-radius: 12px;
+        border-radius: 16px;
+        padding: 1rem !important;
         margin-bottom: 0 !important;
-        /* Padding: Adjusted for Image Left */
-        padding: 1rem 1rem 3.5rem 100px !important; 
-        min-height: 100px;
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-        overflow: visible !important; 
+        position: relative !important;
+        box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05); /* Softer shadow */
+        min-height: 120px;
     }
     
     .cart-table td {
+        display: block !important;
         border: none !important;
         padding: 0 !important;
-        width: auto !important;
-    }
-
-    /* TD 1: Image & Name */
-    .cart-table td:nth-child(1) {
-        display: block !important;
-        margin-bottom: 0.5rem; /* Space below name */
         width: 100% !important;
-        padding-right: 30px !important; /* Avoid delete button overlap */
     }
 
-    /* Image - Absolute Left */
-    .cart-thumb {
-        position: absolute !important;
-        left: 10px !important;
-        top: 10px !important;
+    /* 1. IMAGE & INFO & CATEGORY */
+    .cart-table td:nth-child(1) {
+        display: contents !important; /* Allow children to place themselves in grid */
+        border: none !important;
+    }
+    
+    /* Image */
+    .cart-product-info .cart-thumb {
+        grid-area: img;
         width: 80px !important;
         height: 80px !important;
         object-fit: contain;
         background: #f8fafc;
-        border-radius: 8px;
-        z-index: 1;
+        border-radius: 12px;
+        align-self: start;
     }
 
-    /* Name & Category Container */
+    /* Wrapper for Text (Name/Cat) */
     .cart-product-info {
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        min-height: 80px; /* Match image height */
-    }
-
-    .product-details-text {
-        display: flex;
-        flex-direction: column;
-        gap: 0.1rem;
+        display: contents !important;
     }
     
-    .product-name { 
-        display: block !important;
-        font-size: 0.95rem !important; 
-        font-weight: 600;
-        line-height: 1.3;
+    .product-details-text {
+        grid-area: info;
+        display: flex !important;
+        flex-direction: column !important;
+        padding-right: 30px !important; /* Space for delete button */
+        margin-bottom: 0.25rem !important;
+    }
+
+    .product-name {
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        line-height: 1.3 !important;
         color: var(--text-main);
-        word-wrap: break-word !important; 
+        margin-bottom: 0.1rem !important;
     }
 
     .product-category {
-        display: block !important;
         font-size: 0.8rem !important;
-        color: #94a3b8; /* Muted slate */
-        font-weight: 400;
-        margin-bottom: 0.25rem;
+        color: #94a3b8;
+        font-weight: 500;
+        margin-bottom: 0.5rem !important;
     }
-    
-    /* TD 2: Unit Price - Block below name */
+
+    /* 2. UNIT PRICE */
     .cart-table td:nth-child(2) {
-        display: block !important; /* Force new line */
+        grid-area: price;
         font-size: 0.9rem !important;
-        font-weight: 600;
-        color: var(--text-main);
-        margin-top: 0 !important;
-        margin-bottom: 0.1rem !important;
-        padding-left: 0 !important;
+        color: var(--text-muted) !important;
+        font-weight: 500 !important;
+        margin-bottom: 1rem !important;
     }
     
-    /* Price label prefix - Removed "Basic:" as per request for cleaner look */
     .cart-table td:nth-child(2):before {
         content: "Çmimi: " !important;
-        font-weight: 400;
         opacity: 0.7;
-        font-size: 0.8rem;
     }
-    
-    /* TD 4: Subtotal - Block below unit price */
-    .cart-table td:nth-child(4) {
-        display: block !important; /* Force new line */
-        font-size: 1rem !important;
-        font-weight: 700;
-        color: var(--primary);
-        margin-top: 0.1rem !important;
-    }
-    
-    /* Total label prefix */
-    .cart-table td:nth-child(4):before {
-        content: "Total: " !important;
-        font-weight: 400;
-        opacity: 0.7;
-        font-size: 0.9rem;
-        color: var(--text-muted);
-    }
-    
-    /* TD 3: Quantity - Absolute Bottom Right */
+
+    /* 3. QUANTITY ROW (Bottom Left) */
     .cart-table td:nth-child(3) {
-        position: absolute !important;
-        display: block !important;
-        bottom: 0.75rem !important;
-        right: 0.75rem !important;
-        width: auto !important;
-        z-index: 2;
+        grid-area: actions;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        margin-top: auto !important; /* Push to bottom if space available */
     }
     
     .quantity-selector {
-        transform: scale(0.85); 
-        transform-origin: right bottom; 
+        transform: scale(0.9);
+        transform-origin: left center;
         margin: 0 !important;
-        display: flex !important;
-        align-items: center !important;
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 2px;
+        border: 1px solid #e2e8f0;
     }
     
-    .cart-table td:nth-child(3):before {
-        content: none !important;
-        display: none !important;
-    }
-
-    /* FIX: Allow typing in Cart Quantity on Mobile */
-    .cart-table .qty-input {
-        width: 45px !important;
-        background: #ffffff !important;
-        border: 1px solid #cbd5e1 !important;
+    .qty-btn {
+        width: 28px !important;
+        height: 28px !important;
+        background: white !important;
         border-radius: 6px !important;
-        pointer-events: auto !important;
-        -webkit-user-select: text !important;
-        user-select: text !important;
-        margin: 0 4px !important;
-        height: 32px !important; /* Match button height for alignment */
-        line-height: 32px !important;
-        padding: 0 !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
     
-    .cart-table .quantity-selector {
+    .qty-input {
+        width: 35px !important;
+        height: 28px !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
         background: transparent !important;
         border: none !important;
     }
-    
-    .cart-table .qty-btn {
-        background: #f1f5f9 !important;
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 6px !important;
-        width: 32px !important;
-        height: 32px !important;
+
+    /* 4. TOTAL (Bottom Right) */
+    .cart-table td:nth-child(4) {
+        grid-area: actions; /* Share row with Quantity */
         display: flex !important;
         align-items: center !important;
-        justify-content: center !important;
+        justify-content: flex-end !important;
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        color: var(--primary) !important;
+        height: 100% !important; /* Align with selector */
     }
-
-    /* TD 5: Delete Button - Absolute Top Right - FIXED SCROLL ISSUE */
+    
+    /* 5. DELETE BUTTON (Top Right Absolute) */
     .cart-table td:nth-child(5) {
         position: absolute !important;
         top: 0.75rem !important;
         right: 0.75rem !important;
         width: auto !important;
-        padding: 0 !important;
-        z-index: 5; /* Ensure visibility */
+        display: block !important;
+        z-index: 10;
+    }
+    
+    .cart-table td:nth-child(5) .btn-icon {
+        color: #ef4444 !important;
+        opacity: 0.8;
+        padding: 0.5rem;
+        background: #fef2f2;
+        border-radius: 8px;
+        transition: 0.2s;
+    }
+    
+    .cart-table td:nth-child(5) .btn-icon:active {
+        background: #fee2e2;
+        transform: scale(0.95);
     }
     
     .btn-icon {
@@ -799,15 +803,19 @@
     }
 
     /* ADMIN DASHBOARD HEADER FIXES */
-    .admin-header > div:first-child {
+    .admin-header > div:first-child,
+    .admin-orders-header { /* Applied to both dashboards */
         flex-direction: column !important;
         align-items: flex-start !important;
         width: 100% !important;
-        gap: 1rem !important;
+        gap: 1.5rem !important; /* Increased space between title and buttons */
+        margin-top: -1.5rem !important; /* Move higher up to reduce empty space at top */
     }
 
-    .admin-header > div:first-child > h1 {
+    .admin-header > div:first-child > h1,
+    .admin-orders-header h2 {
         margin-bottom: 0.5rem !important;
+        margin-top: 0 !important;
     }
     
     /* Buttons Container - Stack them vertically for mobile */
@@ -920,12 +928,12 @@
         margin-top: 0.1rem !important;
     }
     
-    /* Status - ABSOLUTE Top Right - Tighter */
+    /* Status - ABSOLUTE Top Right - Bigger */
     .admin-table td:nth-child(5) { /* Admin Status (Select) */
         position: absolute !important;
         top: 0.5rem !important;
         right: 0.5rem !important;
-        width: 100px !important; 
+        width: 125px !important; /* Wider container */
         padding: 0 !important;
         text-align: right !important;
     }
@@ -939,13 +947,15 @@
         text-align: right !important;
     }
     
-    /* Form Select inside Admin Table - Smaller */
+    /* Form Select inside Admin Table - Bigger */
     .admin-table .form-select {
-        padding: 0.1rem 1.2rem 0.1rem 0.4rem !important;
-        font-size: 0.7rem !important;
+        padding: 0.25rem 1.4rem 0.25rem 0.6rem !important; /* More comfortable padding */
+        font-size: 0.8rem !important; /* Bigger font */
+        font-weight: 500 !important;
         height: auto !important;
-        background-position: right 0.2rem center !important;
-        line-height: 1.2 !important;
+        background-position: right 0.3rem center !important;
+        line-height: 1.3 !important;
+        border-width: 1px !important;
     }
 
     .status-badge, .badge {
@@ -969,11 +979,17 @@
         width: 100% !important; /* Full width button */
     }
 
-    /* User Actions (Button) */
+    /* User Actions (Button) - Positioned below status */
     .table:not(.admin-table) td:last-child {
-        margin-top: 0.5rem !important;
-        padding-top: 0.5rem !important;
-        border-top: 1px dashed #e2e8f0 !important; 
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        border-top: none !important;
+        position: absolute !important;
+        top: 2.2rem !important; /* Right below the status badge */
+        right: 0.75rem !important;
+        width: auto !important;
+        text-align: right !important;
+        background: transparent !important;
     }
     
     .btn-sm {
@@ -982,8 +998,17 @@
         height: auto !important;
     }
 
-    /* BUTTON FIX: View Details Button - Smaller as requested */
+    /* BUTTON FIX: View Details Button - Text Only style */
     .table:not(.admin-table) td:last-child .btn {
+        background: transparent !important;
+        color: var(--primary) !important;
+        border: 1px solid var(--primary) !important;
+        padding: 0.1rem 0.5rem !important;
+        font-size: 0.65rem !important;
+        font-weight: 500 !important;
+        border-radius: 4px;
+        box-shadow: none !important;
+    }
         padding: 0.3rem 0.8rem !important; /* Smaller padding */
         font-size: 0.75rem !important;
     }
@@ -1011,15 +1036,16 @@
         justify-content: center;
     }
 
-    /* Admin Header Actions - Single Row */
-    .admin-actions-group {
+    /* Admin Header Actions - Single Row - Forced Specificity */
+    .admin-header .admin-actions-group {
         display: flex !important;
+        flex-direction: row !important; /* Force Row */
         gap: 0.5rem !important;
         width: 100% !important;
         margin-top: 0.5rem !important;
     }
 
-    .admin-actions-group .btn {
+    .admin-header .admin-actions-group .btn {
         flex: 1 !important;
         font-size: 0.8rem !important;
         padding: 0.6rem 0.2rem !important;
@@ -1046,10 +1072,13 @@
         font-weight: 600 !important;
         margin-bottom: 0.1rem !important;
         width: 100% !important;
-        padding-right: 70px !important; /* Prevent overlap with buttons */
+        padding-right: 110px !important; /* Increased buffer from buttons */
         white-space: normal !important;
         line-height: 1.3 !important;
         display: block !important;
+        word-break: normal !important; /* Reset break-all */
+        word-wrap: break-word !important; /* Break long words only if needed */
+        overflow-wrap: break-word !important;
     }
     
     /* Category: Hidden */
@@ -1057,14 +1086,9 @@
         display: none !important;
     }
 
-    /* Price: Under Name */
+    /* Price: Hidden as requested */
     .admin-product-table td:nth-child(3) {
-        display: block !important;
-        width: auto !important;
-        font-size: 0.85rem !important;
-        margin-bottom: 0 !important;
-        color: #64748b !important;
-        margin-top: 0.1rem !important;
+        display: none !important;
     }
     
     /* Actions: Icons Top Right */
@@ -1153,18 +1177,19 @@
     td .order-details-wrapper {
         width: 100% !important; 
         max-width: 100% !important;
-        padding: 0.75rem !important;
-        margin: 0 !important;
+        padding: 0 0.5rem 0.5rem 0 !important; /* Top padding 0 to pull higher, Left 0 to pull left */
+        margin: -0.25rem 0 0 0 !important; /* Negative margin to pull even higher */
         position: static !important; 
         display: block !important;
         box-sizing: border-box !important;
+        text-align: left !important;
     }
     
     .order-details-wrapper .details-title,
     .details-content .details-title {
         font-size: 0.85rem !important; /* Smaller Title */
-        margin-bottom: 0.25rem !important;
-        margin-top: 0.5rem !important;
+        margin-bottom: 0.1rem !important; /* Tighter title margin */
+        margin-top: 0.2rem !important; /* Pulled higher */
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }

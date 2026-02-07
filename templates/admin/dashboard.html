@@ -32,7 +32,7 @@
             </thead>
             <tbody>
                 {% for product in products %}
-                <tr>
+                <tr data-name="{{ product.name|lower }}" data-category="{{ product.category|lower }}">
                     <td>{{ product.name }}</td>
                     <td>{{ product.category }}</td>
                     <td>€{{ product.price }}</td>
@@ -55,20 +55,28 @@
 </div>
 
 <script>
-document.getElementById('adminProductSearch').addEventListener('input', function(e) {
-    const term = e.target.value.toLowerCase();
-    const rows = document.querySelectorAll('.admin-table tbody tr');
+document.getElementById('adminProductSearch').addEventListener('keyup', function(e) {
+    const term = e.target.value.toLowerCase().trim();
+    const rows = document.querySelectorAll('.admin-product-table tbody tr');
     
     rows.forEach(row => {
-        const name = row.cells[0].textContent.toLowerCase();
-        const category = row.cells[1].textContent.toLowerCase();
+        const name = row.getAttribute('data-name') || '';
+        const category = row.getAttribute('data-category') || '';
         
-        if (name.includes(term) || category.includes(term)) {
+        // Fallback to text content if attributes missing
+        const textContent = row.textContent.toLowerCase();
+        
+        if (term === '' || name.includes(term) || category.includes(term) || textContent.includes(term)) {
             row.style.display = '';
         } else {
             row.style.display = 'none';
         }
     });
+});
+
+// Also support 'input' event for clear (x) button in some browsers
+document.getElementById('adminProductSearch').addEventListener('input', function(e) {
+   this.dispatchEvent(new Event('keyup'));
 });
 
 function confirmDelete(form) {

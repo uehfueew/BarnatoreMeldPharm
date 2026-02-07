@@ -30,7 +30,7 @@
                 </thead>
                 <tbody>
                     {% for order in orders %}
-                    <tr>
+                    <tr data-id="{{ order._id|string }}" data-fullname="{{ order.fullname|lower }}" data-city="{{ order.city|lower }}" data-status="{{ order.status|lower }}">
                         <td><small>#{{ order._id|string|truncate(6, True, '') }}</small></td>
                         <td>{{ order.fullname }}<br><small>{{ order.email if order.email else order.city }}</small></td>
                         <td class="date-col">{{ order.created_at.strftime('%d-%m-%Y %H:%M') }}</td>
@@ -93,31 +93,37 @@
 </div>
 
 <script>
-document.getElementById('adminOrderSearch').addEventListener('input', function(e) {
+document.getElementById('adminOrderSearch').addEventListener('keyup', function(e) {
     const term = e.target.value.toLowerCase();
     const rows = document.querySelectorAll('.table tbody tr:not([id^="details-"])');
     
     rows.forEach(row => {
-        const id = row.cells[0].textContent.toLowerCase();
-        const nameAndInfo = row.cells[1].textContent.toLowerCase();
-        const status = row.querySelector('select').value.toLowerCase();
+        // Use Data Attributes for Robust Search
+        const id = row.getAttribute('data-id') || '';
+        const fullname = row.getAttribute('data-fullname') || '';
+        const city = row.getAttribute('data-city') || '';
+        const status = row.getAttribute('data-status') || '';
+        const visibleText = row.textContent.toLowerCase();
         
-        if (id.includes(term) || nameAndInfo.includes(term) || status.includes(term)) {
+        if (id.includes(term) || fullname.includes(term) || city.includes(term) || status.includes(term) || visibleText.includes(term)) {
             row.style.display = '';
-            // If the details row was open, keep it hidden or leave it as is?
-            // Usually best to hide details if the parent is hidden.
-            const detailsRow = document.getElementById('details-' + row.querySelector('button').onclick.toString().match(/'(.+?)'/)[1]);
-            // This regex is a bit fragile, let's just use data attributes or better logic.
         } else {
             row.style.display = 'none';
-            // Hide details row if hidden
-            const match = row.querySelector('button').getAttribute('onclick').match(/'(.+?)'/);
-            if (match) {
-                const detailsRow = document.getElementById('details-' + match[1]);
-                if (detailsRow) detailsRow.style.display = 'none';
+            // Hide details if parent is hidden
+            const btn = row.querySelector('button[onclick^="toggleDetails"]');
+            if (btn) {
+                 const match = btn.getAttribute('onclick').match(/'(.+?)'/);
+                 if (match) {
+                    const detailsRow = document.getElementById('details-' + match[1]);
+                    if (detailsRow) detailsRow.style.display = 'none';
+                 }
             }
         }
     });
+});
+
+document.getElementById('adminOrderSearch').addEventListener('input', function(e) {
+    this.dispatchEvent(new Event('keyup'));
 });
 
 function toggleDetails(id) {
