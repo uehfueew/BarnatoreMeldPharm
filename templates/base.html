@@ -76,6 +76,7 @@
 
     <div id="toast-container" class="toast-container"></div>
 
+    {% block footer %}
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -112,6 +113,7 @@
             </div>
         </div>
     </footer>
+    {% endblock %}
 
     <!-- Toast Logic for Flask Flash Messages -->
     <div id="flash-messages" data-messages='{{ get_flashed_messages(with_categories=true) | tojson | safe }}' style="display: none;"></div>

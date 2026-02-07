@@ -2062,134 +2062,116 @@ html, body {
         font-size: 0.85rem !important; /* Smaller fonts for buttons */
     }
 
+/* Mobile Nav Links Container Spacing */
+@media (max-width: 768px) {
+    .nav-links {
+        padding: 1.5rem 1.8rem !important; /* Increased horizontal padding slightly */
+    }
+
     .nav-links li a {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        gap: 1.25rem;
-        width: 100%;
-        padding: 0.8rem 0;
-        border-bottom: 1px solid #f8fafc;
-        font-size: 1.05rem;
-    }
-
-    .nav-label {
-        font-size: 1.05rem;
-        display: inline !important;
-    }
-
-    /* Hero Spacing (Stop overlapping) */
-    .hero {
-        padding: 2rem 0 !important; /* Reduced padding since container handles top margin */
-        overflow: visible !important;
-    }
-
-    .hero-container {
-        flex-direction: column-reverse;
-        gap: 1.5rem; 
-    }
-
-    .hero-text h1 {
-        font-size: 1.6rem !important;
-        line-height: 1.2;
-    }
-
-    .hero-text p {
-        font-size: 0.95rem !important; /* Smaller text for "Meld Pharm është..." */
-        line-height: 1.5;
-    }
-
-    /* Small Home Search */
-    .hero-search-container {
-        margin: 1rem 0 !important;
-        max-width: 100% !important;
-    }
-
-    .hero-search-container .search-wrapper input {
-        height: 40px !important;
-        font-size: 0.85rem !important;
-        padding-left: 2.5rem !important;
-    }
-
-    .hero-search-container .search-wrapper i {
-        font-size: 0.9rem !important;
-        left: 1rem !important;
-    }
-
-    .hero-image {
-        margin-top: 3rem !important; /* Pushed just a little lower as requested */
-    }
-
-    .hero-blob {
-        width: 220px !important;
-        height: 220px !important;
-    }
-
-    .hero-btns {
-        flex-direction: row;
-        gap: 0.5rem;
-        margin-top: 1.5rem;
-    }
-
-    .hero-btns .btn-primary, .hero-btns .btn-outline {
-        padding: 0.65rem 0.9rem !important; /* Slightly smaller button padding */
-        font-size: 0.8rem !important;
-        min-width: 110px;
-    }
-
-    /* Section Headlines compact layout */
-    .section {
-        padding: 3rem 0 !important;
-    }
-
-    .section-title {
-        font-size: 1.4rem !important;
-        letter-spacing: -0.01em !important;
-    }
-
-    .sub-title {
-        font-size: 0.75rem !important;
-    }
-
-    /* Fixed Grid for 8 Categories - 2 per row */
-    .category-grid-v2 {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.45rem !important;
-        padding: 0 0.25rem 1.5rem !important;
-        margin-top: 1.2rem !important;
-        overflow-x: visible !important;
-    }
-
-    .category-card-v2 {
-        min-width: auto !important;
-        height: 180px !important;
-    }
-
-    .category-card-v2 .category-title {
+        padding: 1rem 0 !important;
         font-size: 1.1rem !important;
     }
 
-    .view-all {
-        font-size: 0.7rem !important;
-        padding: 0.25rem 0.6rem !important; /* Even smaller vertically and horizontally */
+    /* Fix z-index stacking bugs */
+    .navbar {
+        z-index: 2000 !important;
+    }
+    
+    .main-content {
+        position: relative;
+        z-index: 10;
+        margin-top: 0;
     }
 
-    /* Product Grid & Actions - 2 per row */
-    .product-grid {
+    .footer {
+        position: relative;
+        z-index: 10;
+    }
+
+    /* Compact Search Previews for Mobile */
+    .search-preview-dropdown {
+        max-height: 50vh !important;
+        width: 96vw !important;
+        left: 2vw !important;
+        border-radius: 1rem !important;
+    }
+
+    .preview-item {
+        padding: 0.5rem 0.75rem !important;
+        gap: 0.75rem !important;
+    }
+
+    .preview-item img {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .preview-name {
+        font-size: 0.82rem !important;
+    }
+
+    .preview-category {
+        font-size: 0.7rem !important;
+    }
+
+    .preview-price .price {
+        font-size: 0.85rem !important;
+    }
+
+    /* Store Page Subcategories smaller */
+    .subcategory-chips-container {
+        gap: 0.4rem !important;
+    }
+
+    .sub-chip {
+        padding: 0.45rem 1rem !important;
+        font-size: 0.75rem !important;
+        border-radius: 8px !important;
+    }
+
+    /* Edge Spacing - Ensure text doesn't touch sides */
+    .container {
+        padding-left: clamp(1.2rem, 5vw, 2rem) !important;
+        padding-right: clamp(1.2rem, 5vw, 2rem) !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Correct grid alignment to show 2 per row with tiny margins */
+    .category-grid-v2, .product-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.45rem !important;
-        padding: 0 0.25rem !important;
-        width: 100% !important;
-        margin: 0 auto !important;
+        gap: 0.6rem !important; /* Tiny gap */
+        padding: 0 0.1rem 1.5rem !important; /* Tiny bit on sides */
+        margin: 0 !important;
     }
 
-    .product-card {
-        padding: 0.4rem !important;
-        width: 100% !important;
-        min-height: auto !important;
+    /* Empty state shrunken as requested */
+    .empty-state h4, .empty-state p {
+        font-size: 1rem !important;
     }
+    
+    .empty-state .btn-primary {
+        padding: 0.6rem 1.2rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* Stability Fixes for jumping/scrolling */
+    * {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: none; /* Stops pull-to-refresh jumpiness */
+    }
+    
+    .hero-bg-shapes {
+        display: none !important; /* Blobs cause lag and layout bugs on some mobile browsers */
+    }
+}
+
 
     .product-info h3 {
         font-size: 0.85rem !important;
@@ -3279,3 +3261,129 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     border-radius: 10px;
 }
 
+
+/* Mobile Performance & Stabilization */
+@media (max-width: 768px) {
+    .navbar {
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 2000;
+        background: var(--white);
+    }
+
+    body {
+        padding-top: 70px;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .nav-links {
+        z-index: 1001;
+        max-height: calc(100vh - 70px);
+        overflow-y: auto;
+    }
+
+    .menu-backdrop {
+        z-index: 1000;
+    }
+
+    .container, 
+    main, 
+    article, 
+    section,
+    .content-wrapper,
+    .section-container {
+        padding-left: clamp(0.75rem, 3vw, 1rem) !important;
+        padding-right: clamp(0.75rem, 3vw, 1rem) !important;
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .products-grid,
+    .categories-grid,
+    .stores-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.6rem !important;
+        padding: 0 0.2rem !important;
+    }
+
+    .search-preview-item {
+        padding: 0.5rem !important;
+    }
+
+    .search-preview-item img {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .search-preview-info h4 {
+        font-size: 0.85rem !important;
+    }
+
+    .subcategory-chip {
+        padding: 0.3rem 0.6rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    .hero-bg-shapes,
+    .blob,
+    .animated-bg {
+        display: none !important;
+    }
+}
+
+/* Profile & Checkout Grid Mobile Logic */
+.checkout-grid-2,
+.profile-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .checkout-grid-2,
+    .profile-grid-2 {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Admin Table Mobile Fixes */
+    .admin-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 1.5rem !important;
+        text-align: center;
+    }
+
+    .admin-header .section-title {
+        text-align: center !important;
+    }
+
+    .admin-header div {
+        justify-content: center !important;
+    }
+
+    .table-responsive .table {
+        min-width: 850px !important; /* Force overflow to enable scrolling */
+        table-layout: auto !important;
+        width: 100%;
+    }
+
+    .table-responsive {
+        overflow-x: auto !important;
+        display: block;
+        width: 100%;
+        -webkit-overflow-scrolling: touch;
+        margin-top: 1rem;
+        padding: 0.5rem;
+        border-radius: var(--radius-md);
+    }
+    
+    .table th, .table td {
+        padding: 0.75rem 0.5rem !important;
+        font-size: 0.85rem !important;
+    }
+}

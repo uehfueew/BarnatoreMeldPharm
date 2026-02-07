@@ -10,14 +10,26 @@ document.addEventListener('DOMContentLoaded', () => {
         navLinks.classList.remove('active');
         if (menuBackdrop) menuBackdrop.classList.remove('active');
         document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
     };
 
     if (menuToggle) {
         menuToggle.addEventListener('click', () => {
+            const isActive = navLinks.classList.toggle('active');
             menuToggle.classList.toggle('active');
-            navLinks.classList.toggle('active');
             if (menuBackdrop) menuBackdrop.classList.toggle('active');
-            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+            
+            if (isActive) {
+                // Prevent background scrolling completely on mobile
+                document.body.style.overflow = 'hidden';
+                document.body.style.position = 'fixed';
+                document.body.style.width = '100%';
+            } else {
+                document.body.style.overflow = '';
+                document.body.style.position = '';
+                document.body.style.width = '';
+            }
         });
 
         // Close when clicking backdrop
@@ -72,7 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const productCards = document.querySelectorAll('.product-card');
 
     if (searchInput) {
-        searchInput.addEventListener('input', async (e) => {
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             
             // Front-end filter for current page
@@ -80,37 +93,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 filterProducts(term, getActiveCategory());
             }
 
-            // Live search preview
+            // Live search preview with Denouncer for performance
+            clearTimeout(searchTimeout);
             if (term.length >= 2) {
-                try {
-                    const limit = searchInput.dataset.limit || 20;
-                    const response = await fetch(`/api/search?q=${encodeURIComponent(term)}&limit=${limit}`);
-                    const products = await response.json();
-                    
-                    if (products.length > 0) {
-                        searchPreview.innerHTML = products.map(p => `
-                            <a href="/product/${p.id}" class="preview-item">
-                                <img src="${p.image_url}" alt="${p.name}">
-                                <div class="preview-info">
-                                    <span class="preview-name">${p.name}</span>
-                                    <span class="preview-category">${p.category}</span>
-                                    <div class="preview-price">
-                                        ${p.discount_price ? `<span class="price">€${p.discount_price}</span> <span class="old-price">€${p.price}</span>` : `<span class="price">€${p.price}</span>`}
+                searchTimeout = setTimeout(async () => {
+                    try {
+                        const limit = searchInput.dataset.limit || 20;
+                        const response = await fetch(`/api/search?q=${encodeURIComponent(term)}&limit=${limit}`);
+                        const products = await response.json();
+                        
+                        if (products.length > 0) {
+                            searchPreview.innerHTML = products.map(p => `
+                                <a href="/product/${p.id}" class="preview-item">
+                                    <img src="${p.image_url}" alt="${p.name}">
+                                    <div class="preview-info">
+                                        <span class="preview-name">${p.name}</span>
+                                        <span class="preview-category">${p.category}</span>
+                                        <div class="preview-price">
+                                            ${p.discount_price ? `<span class="price">€${p.discount_price}</span> <span class="old-price">€${p.price}</span>` : `<span class="price">€${p.price}</span>`}
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
-                        `).join('') + `
-                            <a href="/products?q=${encodeURIComponent(term)}" class="preview-item view-all-search">
-                                <span style="width: 100%; text-align: center; color: var(--primary); font-weight: 600;">Shiko të gjitha rezultatet</span>
-                            </a>
-                        `;
-                        searchPreview.classList.add('active');
-                    } else {
-                        searchPreview.classList.remove('active');
+                                </a>
+                            `).join('') + `
+                                <a href="/products?q=${encodeURIComponent(term)}" class="preview-item view-all-search">
+                                    <span style="width: 100%; text-align: center; color: var(--primary); font-weight: 600;">Shiko të gjitha rezultatet</span>
+                                </a>
+                            `;
+                            searchPreview.classList.add('active');
+                        } else {
+                            searchPreview.classList.remove('active');
+                        }
+                    } catch (err) {
+                        console.error('Search error:', err);
                     }
-                } catch (err) {
-                    console.error('Search error:', err);
-                }
+                }, 300); // 300ms delay to save CPU
             } else {
                 searchPreview.classList.remove('active');
             }

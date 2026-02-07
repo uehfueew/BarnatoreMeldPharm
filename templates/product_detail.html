@@ -106,20 +106,9 @@
                 </ul>
             </div>
             
-            <form id="addToCartForm" action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="display: flex; gap: 1.5rem; align-items: stretch; flex-wrap: wrap;">
+            <form id="addToCartForm" action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="display: none;">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <div class="quantity-selector qty-lg">
-                    <button type="button" class="qty-btn minus" {% if product.in_stock == False %}disabled{% endif %}><i class="fas fa-minus"></i></button>
-                    <input type="number" name="quantity" value="1" min="1" step="1" oninput="this.value = Math.round(this.value);" class="qty-input" {% if product.in_stock == False %}disabled{% endif %}>
-                    <button type="button" class="qty-btn plus" {% if product.in_stock == False %}disabled{% endif %}><i class="fas fa-plus"></i></button>
-                </div>
-                <button type="submit" class="btn btn-primary" style="padding: 0 3rem; font-size: 1.1rem; flex: 1; min-height: 60px; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.3);" {% if product.in_stock == False %}disabled{% endif %}>
-                    {% if product.in_stock == False %}
-                        Jashtë Stokut
-                    {% else %}
-                        <i class="fas fa-shopping-basket" style="margin-right: 1rem;"></i> Në Shportë
-                    {% endif %}
-                </button>
+                <input type="hidden" name="quantity" value="1">
             </form>
         </div>
     </div>
@@ -138,10 +127,12 @@
         {% if product.in_stock == False %}
             Jashtë Stokut
         {% else %}
-            <i class="fas fa-plus"></i> Shto
+            <i class="fas fa-shopping-cart"></i> Shto në shportë
         {% endif %}
     </button>
 </div>
+
+{% block footer %}{% endblock %}
 
 <style>
 /* Product Card Link Fix for Detail Page Related Products */
@@ -158,7 +149,7 @@
 
 /* Responsive Action Bar */
 .mobile-action-bar {
-    display: none;
+    display: flex;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -173,13 +164,14 @@
     border-top: 1px solid #f1f5f9;
 }
 
+/* Add padding to body to prevent content being hidden behind bar */
+body {
+    padding-bottom: 80px !important;
+}
+
 @media (max-width: 768px) {
     .mobile-action-bar {
-        display: flex;
-    }
-    /* Add padding to body to prevent content being hidden behind bar */
-    body {
-        padding-bottom: 80px !important;
+        padding: 0.8rem 1rem;
     }
 }
 </style>

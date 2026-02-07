@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="card" style="padding: 1.5rem; border-radius: 1.5rem; box-shadow: var(--shadow-sm); background: white; border: 1px solid rgba(0,0,0,0.05);">
-                    <form action="{{ url_for('main.profile') }}" method="POST" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <form action="{{ url_for('main.profile') }}" method="POST" class="profile-grid-2">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         
                         <div class="form-group" style="grid-column: span 2;">
@@ -266,3 +266,5 @@
     }
 </script>
 {% endblock %}
+
+{% block footer %}{% endblock %}

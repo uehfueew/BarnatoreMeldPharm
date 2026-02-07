@@ -33,7 +33,7 @@
                         <input type="text" id="address" name="address" class="form-control" required placeholder="" value="{{ current_user.address if current_user.is_authenticated else '' }}">
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="checkout-grid-2">
                         <div class="form-group">
                             <label for="country">Shteti</label>
                             <input type="text" id="country" name="country" class="form-control" required placeholder="" value="{{ current_user.country if current_user.is_authenticated else 'Kosovë' }}">
@@ -155,3 +155,5 @@
     }
 </script>
 {% endblock %}
+
+{% block footer %}{% endblock %}
