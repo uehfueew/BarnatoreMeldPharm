@@ -1,0 +1,1049 @@
+/* Mobile specific styles */
+@media (max-width: 768px) {
+    /* Navbar fixes */
+    .navbar {
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 2000;
+        background: rgba(255, 255, 255, 0.98);
+        height: 70px !important;
+    }
+
+    body {
+        padding-top: 70px;
+        overflow-x: hidden;
+    }
+
+    /* Hero Section Fixes */
+    .hero {
+        padding: 2rem 0 3rem !important; /* Reduced padding */
+        overflow: hidden !important;
+    }
+
+    .hero-container {
+        flex-direction: column-reverse !important; /* Text top, Image bottom */
+        gap: 1.5rem !important;
+        text-align: center;
+        padding: 0 1rem !important;
+    }
+
+    .hero-text {
+        flex: auto !important;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-text h1 {
+        font-size: 1.8rem !important; /* Much smaller as requested */
+        margin-bottom: 0.75rem !important;
+        line-height: 1.2;
+    }
+    
+    .hero-text p {
+        font-size: 0.9rem !important; /* Smaller text */
+        margin-bottom: 1.5rem !important;
+        line-height: 1.5;
+        padding: 0 0.5rem;
+    }
+
+    .hero-btns {
+        width: 100%;
+        justify-content: center;
+        gap: 0.75rem !important;
+        flex-wrap: wrap;
+    }
+
+    .hero-btns .btn {
+        padding: 0.6rem 1.2rem !important;
+        font-size: 0.85rem !important;
+        height: auto !important;
+    }
+
+    /* Hero Search Fixes */
+    .hero-search-container {
+        margin: 1rem 0 1.5rem !important;
+        max-width: 95% !important; /* Limit width */
+        position: relative; /* Ensure dropdown is relative to this */
+    }
+
+    .search-wrapper input {
+        height: 42px !important; /* Smaller search bar */
+        font-size: 0.9rem !important;
+        padding: 0.4rem 1rem 0.4rem 2.5rem !important;
+    }
+    
+    .search-wrapper i {
+        left: 0.8rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Fixed Search Preview Dropdown */
+    .search-preview-dropdown {
+        width: 100% !important;
+        left: 0 !important;
+        max-height: 40vh !important; /* Limit height */
+        overflow-y: auto !important;
+        overflow-x: hidden !important; /* Prevent horizontal scroll */
+        border-radius: 12px !important;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+    }
+
+    .preview-item {
+        padding: 0.4rem !important;
+        gap: 0.5rem !important;
+        align-items: center !important;
+    }
+
+    .preview-item img {
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important; /* Prevent squishing */
+        object-fit: contain !important; /* Changed to contain */
+        border-radius: 6px !important;
+    }
+
+    .preview-item div {
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: flex-start !important; /* Left align text */
+        text-align: left !important;
+    }
+
+    /* Force Price single line layout */
+    .preview-price {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        margin-top: 0.1rem !important;
+    }
+
+    .preview-item h4 {
+        font-size: 0.8rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        line-height: 1.1 !important;
+        margin-bottom: 0 !important;
+    }
+    
+    .preview-item p {
+        font-size: 0.75rem !important;
+        margin-bottom: 0 !important;
+    }
+
+    .hero-image {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 0 !important;
+        height: auto !important;
+    }
+
+    .hero-blob {
+        width: 280px !important;
+        height: 280px !important;
+        margin-top: 0 !important;
+    }
+
+    /* Stores/Products Search Fixes - Apply same rules */
+    .filter-bar {
+        padding: 0.4rem !important;
+    }
+    
+    .filter-bar .search-wrapper input {
+        height: 42px !important;
+    }
+
+    /* ALIGN NAVBAR ITEMS CENTER except close button */
+    .nav-links {
+        align-items: center !important; /* Center items */
+        text-align: left;
+    }
+    
+    .nav-links li {
+        width: 100%;
+        border-bottom: 1px solid #f1f5f9; /* Separator lines */
+    }
+
+    .nav-links a {
+        justify-content: flex-start !important; /* Keep icons/text left aligned within the item */
+        width: 100%;
+        padding: 1rem 0.5rem !important; /* Tap targets */
+    }
+
+    /* Fix Cart/Profile being stuck left/right */
+    .cart-icon, .profile-icon {
+        display: flex !important;
+        width: 100% !important;
+        justify-content: flex-start !important; /* Align left */
+        color: var(--text-muted) !important;
+    }
+
+    /* Cart Badge Position Fix */
+    .cart-icon {
+        position: relative;
+    }
+
+    .cart-badge {
+        position: absolute !important;
+        left: 20px !important; /* Position relative to icon (which is left aligned) */
+        top: -5px !important;
+        right: auto !important; /* Cancel right: -10px from desktop */
+    }
+    
+    .nav-label {
+        font-weight: 500 !important;
+    }
+
+    .sub-title {
+        font-size: 0.75rem !important; /* Smaller sub-titles */
+        margin-bottom: 0.25rem !important;
+    }
+    
+    .section-header, .section-center-header {
+        margin-bottom: 1.5rem !important;
+        flex-direction: row; /* Keep row for title + view all */
+        align-items: center;
+        justify-content: space-between;
+        text-align: left;
+    }
+    
+    .section-center-header {
+        text-align: center;
+        flex-direction: column;
+    }
+
+    .view-all {
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.75rem !important;
+        gap: 0.4rem !important;
+    }
+
+    /* Product Grid - Full Width & Symmetrical */
+    .container {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+        max-width: 100% !important;
+    }
+
+    .product-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; /* Strictly 2 columns */
+        gap: 0.5rem !important; /* Small uniform gap */
+        margin-bottom: 2rem !important;
+    }
+
+    .product-card {
+        padding: 0.5rem !important;
+        min-height: auto !important;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-image {
+        aspect-ratio: 1 / 1 !important; /* Square */
+        height: auto !important;
+        width: 100% !important;
+        margin-bottom: 0.5rem !important;
+        background: transparent !important;
+    }
+
+    .product-image img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important; /* Center and fit fully */
+        object-position: center !important;
+        padding: 0.25rem !important;
+    }
+    
+    .product-info {
+        padding: 0 !important;
+    }
+
+    .product-category {
+        font-size: 0.6rem !important;
+        margin-bottom: 0.1rem !important;
+    }
+
+    .product-title {
+        font-size: 0.8rem !important;
+        line-height: 1.3 !important;
+        margin-bottom: 0.25rem !important;
+        min-height: 2.1rem !important; /* Reduce minimum height */
+    }
+    
+    .product-size {
+        font-size: 0.65rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .price-container {
+        margin-bottom: 0 !important;
+        gap: 0.4rem !important;
+    }
+
+    .price {
+        font-size: 0.9rem !important;
+    }
+    
+    .price.discounted {
+        font-size: 0.95rem !important;
+    }
+    
+    .price.original {
+        font-size: 0.75rem !important;
+    }
+
+    /* Category Grid Fix */
+    .category-grid-v2 {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
+        margin-top: 1rem !important;
+    }
+
+    .category-card-v2 {
+        height: 120px !important;
+        border-radius: 12px !important;
+    }
+    
+    .category-card-v2 .category-overlay {
+        padding: 0.75rem !important;
+    }
+    
+    .category-card-v2 .category-title {
+        font-size: 0.95rem !important;
+    }
+    
+    .category-card-v2 .category-count {
+        font-size: 0.65rem !important;
+    }
+
+    /* General Typography Fixes */
+    h1 { font-size: 2rem !important; }
+    h2 { font-size: 1.5rem !important; }
+    h3 { font-size: 1.1rem !important; }
+    p { font-size: 0.9rem !important; }
+
+    /* Hide background elements */
+    .hero-bg-shapes { display: none !important; }
+    
+    /* Cart & Order Page Mobile Fixes */
+    .cart-container {
+        padding-top: 1rem !important;
+    }
+    
+
+    /* Strict Mobile Menu Labels Force - LEFT ALIGNED */
+    .nav-links {
+        align-items: flex-start !important; 
+        text-align: left;
+    }
+
+    .nav-links li {
+        width: 100%;
+        border-bottom: 1px solid #f1f5f9;
+        margin-bottom: 0;
+    }
+
+    .nav-links a {
+        display: flex !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+        width: 100%;
+        padding: 1rem 1.5rem !important;
+        font-weight: 500 !important;
+    }
+
+    .nav-label {
+        display: inline-block !important;
+        margin-left: 0 !important; 
+        margin-right: 0.5rem !important; /* Text Margin Right */
+        font-size: 0.95rem !important;
+        color: var(--text-main);
+        order: 1; /* Text First */
+    }
+    
+    .cart-icon, .profile-icon {
+        color: var(--text-muted) !important;
+        display: inline-flex !important;
+        width: auto !important;
+        position: relative !important; /* For Badge */
+        overflow: visible !important;
+    }
+
+    .nav-links i {
+        min-width: 20px;
+        text-align: center;
+        order: 2; /* Icon Second */
+        font-size: 1.1rem !important;
+    }
+    
+    /* Cart Badge adjustment - attached to icon */
+    .cart-badge {
+        position: relative !important;
+        top: -6px !important;
+        right: auto !important;
+        left: -5px !important; /* Pull over the icon */
+        margin-left: 0 !important;
+        order: 3 !important;
+        z-index: 10;
+        box-shadow: 0 0 0 1.5px white !important; /* Border for separation */
+        font-size: 0.55rem !important; /* Smaller Text */
+        padding: 0.1rem 0.3rem !important; /* Smaller Padding */
+        min-width: auto !important;
+        line-height: 1 !important;
+        border-radius: 99px !important;
+    }
+
+    /* GLOBAL MOBILE OVERFLOW FIX */
+    html, body {
+        overflow-x: hidden !important;
+        width: 100vw !important;
+        max-width: 100% !important;
+    }
+    
+    .section-container, .container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        overflow-x: hidden !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Prevent horizontal scroll on tables wrapper */
+    .table-responsive {
+        width: 100% !important;
+        overflow-x: hidden !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .table {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    /* FIX: Cart Page Mobile Layout - Refined */
+    .cart-table thead {
+        display: none !important;
+    }
+
+    .cart-table tr {
+        display: flex !important;
+        flex-direction: column !important;
+        position: relative !important;
+        background: white;
+        border: 1px solid #f1f5f9;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        padding: 0.75rem 0.75rem 0.75rem 100px !important; /* Reserve Left Space */
+        min-height: 100px;
+        width: 100% !important;
+        max-width: 100% !important; /* Ensure no overflow */
+        box-sizing: border-box !important;
+        overflow: hidden !important; /* Clip content */
+    }
+    
+    .cart-table td {
+        display: block !important;
+        border: none !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
+    /* TD 1: Image & Name */
+    .cart-table td:nth-child(1) {
+        margin-bottom: 0.5rem;
+    }
+
+    /* Image - Absolute Left */
+    .cart-thumb {
+        position: absolute !important;
+        left: 10px !important;
+        top: 10px !important;
+        width: 80px !important;
+        height: 80px !important;
+        object-fit: contain;
+        background: #f8fafc;
+        border-radius: 8px;
+    }
+
+    .cart-product-info {
+        display: block !important;
+    }
+    
+    /* Name - Text Flow - Prevent Overlap & Smaller */
+    .cart-product-info span { 
+        display: block !important;
+        font-size: 0.85rem !important; /* Smaller Name */
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--text-main);
+        padding-right: 35px; /* More Space for Delete Button */
+        margin-bottom: 0.5rem; /* Separation from Price */
+    }
+    
+    /* Price Container Construction */
+    /* We use nth-child selectors to find them, but they are block by default. */
+    
+    /* TD 2: Unit Price */
+    .cart-table td:nth-child(2) {
+        display: inline-block !important;
+        width: auto !important;
+        font-size: 0.85rem !important; /* Smaller Price Number */
+        font-weight: 600;
+        color: var(--text-main); /* Standard color (or muted) */
+        margin-right: 0.5rem !important;
+        vertical-align: middle;
+    }
+    
+    /* TD 4: Subtotal - Show Inline Next to Price */
+    .cart-table td:nth-child(4) {
+        display: inline-block !important;
+        width: auto !important;
+        font-size: 0.9rem !important;
+        font-weight: 800;
+        color: var(--primary);
+        vertical-align: middle;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* TD 3: Quantity */
+    .cart-table td:nth-child(3) {
+        display: block !important;
+        margin-top: 0.25rem !important;
+    }
+    
+    .quantity-selector {
+        transform: scale(0.9);
+        transform-origin: left top;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important; /* Align vertically center */
+    }
+    
+    /* Align Sasia text if it exists (it doesn't in HTML usually, but logic helps) */
+
+    /* FIX: Allow typing in Cart Quantity on Mobile */
+    .cart-table .qty-input {
+        width: 45px !important;
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        pointer-events: auto !important;
+        -webkit-user-select: text !important;
+        user-select: text !important;
+        margin: 0 4px !important;
+        height: 32px !important; /* Match button height for alignment */
+        line-height: 32px !important;
+        padding: 0 !important;
+    }
+    
+    .cart-table .quantity-selector {
+        background: transparent !important;
+        border: none !important;
+    }
+    
+    .cart-table .qty-btn {
+        background: #f1f5f9 !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        width: 32px !important;
+        height: 32px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* TD 5: Delete Button - Absolute Top Right - FIXED SCROLL ISSUE */
+    .cart-table td:nth-child(5) {
+        position: absolute !important;
+        top: 0.75rem !important;
+        right: 0.75rem !important;
+        width: auto !important;
+        padding: 0 !important;
+        z-index: 5; /* Ensure visibility */
+    }
+    
+    .btn-icon {
+        background: #fee2e2;
+        color: #ef4444;
+        width: 28px !important; 
+        height: 28px !important;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        box-shadow: none !important;
+    }
+
+    /* FIX: Orders Page & Admin Orders - CARD VIEW (No Scroll) */
+    .table-responsive {
+        overflow-x: hidden !important; /* Disable horizontal scroll globally for this container */
+        padding: 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        max-width: 100vw !important; /* Force screen width limit */
+    }
+    
+    .admin-table tbody, .table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem; /* Reduced gap */
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Convert Table Rows to Compact Cards */
+    .admin-table tr, .table tr:not([id^="details-"]) {
+        display: flex !important;
+        flex-direction: column;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px; /* Slightly less rounded */
+        padding: 0.75rem !important; /* Reduced padding */
+        position: relative;
+        width: 100% !important;
+        max-width: 100% !important; /* Ensure no overflow */
+        box-sizing: border-box !important;
+        overflow: hidden !important; /* Clip content */
+        margin: 0 !important; /* Clean margins */
+    }
+    
+    /* Hide Table Headers for Orders/Admin tables on mobile */
+    .admin-table thead, .table thead {
+        display: none !important;
+    }
+    
+    .admin-table td, .table td {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0.1rem 0 !important; /* Very tight vertical padding */
+        border: none !important;
+        text-align: left !important;
+        font-size: 0.7rem !important; /* Even smaller base size */
+        word-break: break-all !important; /* Prevent horizontal scroll on long strings */
+        line-height: normal !important;
+        white-space: normal !important;
+    }
+
+    /* ID - Top Left, Bold - INLINE BLOCK to sit next to Date */
+    .admin-table td:first-child, 
+    .table td:first-child { 
+        display: inline-block !important;
+        width: auto !important;
+        font-size: 0.65rem !important; /* Smaller ID */
+        font-weight: 700 !important;
+        color: var(--text-main) !important;
+        margin-bottom: 0.1rem !important;
+        margin-right: 0.5rem !important; /* Space between ID and Date */
+    }
+
+    /* USER TABLE: Date (2nd) - INLINE BLOCK next to ID */
+    .table:not(.admin-table) td:nth-child(2) {
+        display: inline-block !important;
+        width: auto !important;
+        font-size: 0.65rem !important; /* Smaller date */
+        color: var(--text-muted) !important;
+        margin-bottom: 0.15rem !important;
+    }
+
+    /* ADMIN TABLE: Client (2nd) & Date (3rd) */
+    .admin-table td:nth-child(2),
+    .admin-table td:nth-child(3) {
+        font-size: 0.65rem !important;
+        color: var(--text-muted) !important;
+        margin-bottom: 0.1rem !important;
+    }
+    
+    /* Price - Prominent but smaller than before */
+    .admin-table td:nth-child(4), /* Admin Price */
+    .table:not(.admin-table) td:nth-child(3) { /* User Price */
+        font-size: 0.75rem !important; /* Smaller Price */
+        font-weight: 700 !important;
+        color: var(--primary) !important;
+        margin-bottom: 0.25rem !important;
+        clear: both; /* Ensure it drops to next line after ID/Date */
+    }
+    
+    /* Status - ABSOLUTE Top Right */
+    .admin-table td:nth-child(5), /* Admin Status */
+    .table:not(.admin-table) td:nth-child(4) { /* User Status */
+        position: absolute !important;
+        top: 0.75rem !important;
+        right: 0.75rem !important;
+        width: auto !important;
+        padding: 0 !important;
+        text-align: right !important;
+    }
+    
+    .status-badge, .badge {
+        font-size: 0.6rem !important; /* Tiny badge */
+        padding: 2px 5px !important;
+    }
+    
+    /* Admin Actions (6th) - Bottom */
+    .admin-table:not(.admin-product-table) td:nth-child(6) {
+        border-top: 1px dashed #e2e8f0 !important;
+        padding-top: 0.5rem !important;
+        margin-top: 0.5rem !important;
+        display: flex !important;
+        gap: 0.5rem !important;
+    }
+    
+    /* User Actions (Button) */
+    .table:not(.admin-table) td:last-child {
+        margin-top: 0.5rem !important;
+        padding-top: 0.5rem !important;
+        border-top: 1px dashed #e2e8f0 !important; 
+    }
+    
+    .btn-sm {
+        padding: 0.2rem 0.5rem !important; /* Smaller button padding */
+        font-size: 0.7rem !important; /* Smaller button text */
+        height: auto !important;
+    }
+
+    /* BUTTON FIX: View Details Button - Bigger as requested */
+    .table:not(.admin-table) td:last-child .btn {
+        padding: 0.5rem 1rem !important; /* Increased padding */
+        font-size: 0.85rem !important; /* Increased font size */
+        width: 100% !important; /* Full width for easier tapping */
+        justify-content: center;
+    }
+
+    /* FIX: Admin Product List Mobile */
+    .admin-product-table tr {
+        padding-right: 60px !important; /* Space for Action Icons */
+        min-height: 60px !important;
+        justify-content: center !important;
+    }
+
+    /* Name: Smaller */
+    .admin-product-table td:first-child {
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.1rem !important;
+        width: 100% !important;
+    }
+    
+    /* Category & Price: Inline */
+    .admin-product-table td:nth-child(2),
+    .admin-product-table td:nth-child(3) {
+        display: inline-block !important;
+        width: auto !important;
+        font-size: 0.7rem !important;
+        margin-bottom: 0 !important;
+        margin-right: 0.5rem !important;
+    }
+    
+    /* Actions: Icons Top Right */
+    .admin-product-table td:last-child {
+        position: absolute !important;
+        top: 0.75rem !important;
+        right: 0.5rem !important;
+        width: auto !important;
+        display: flex !important;
+        gap: 0.25rem !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        margin: 0 !important;
+    }
+    
+    .btn-icon-only {
+        width: 24px !important;
+        height: 24px !important;
+    }
+    
+    .btn-icon-only i {
+        font-size: 0.7rem !important;
+    }
+
+    /* Reduce container padding to fit screen */
+    .admin-container {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+        overflow-x: hidden !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Special Handling for Order Details Row */
+    tr[id^="details-"] {
+        display: none; 
+        flex-direction: column;
+        width: 100% !important;
+        max-width: 100% !important;
+        border: 1px solid #e2e8f0;
+        border-top: none;
+        background: #f8fafc;
+        margin-top: -0.5rem !important; /* Pull higher up */
+        border-radius: 0 0 8px 8px;
+        padding: 0 !important; /* Zero padding on wrapper TR */
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+    
+    tr[id^="details-"] td {
+        padding: 0.75rem !important;
+        width: 100% !important;
+    }
+
+    /* DETAILS CONTENT TYPOGRAPHY REDUCTION */
+    .details-title, h4.details-title {
+        font-size: 0.75rem !important;
+        margin-bottom: 0.5rem !important;
+        margin-top: 1rem !important;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .details-content p {
+        font-size: 0.7rem !important;
+        margin-bottom: 0.25rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    .details-products li {
+        font-size: 0.7rem !important;
+        padding: 0.25rem 0 !important;
+    }
+    
+    .details-price {
+        font-size: 0.7rem !important;
+    }
+
+    /* Fix Details Content Alignment - Small Text */
+    td .order-details-wrapper {
+        width: 100% !important; 
+        max-width: 100% !important;
+        padding: 0.75rem !important;
+        margin: 0 !important;
+        position: static !important; 
+        display: block !important;
+        box-sizing: border-box !important;
+    }
+    
+    .order-details-wrapper .details-title,
+    .details-content .details-title {
+        font-size: 0.85rem !important; /* Smaller Title */
+        margin-bottom: 0.25rem !important;
+        margin-top: 0.5rem !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .order-details-wrapper p,
+    .order-details-wrapper li,
+    .details-content p,
+    .details-content li {
+        font-size: 0.75rem !important; /* Very small text as requested */
+        line-height: 1.3 !important;
+        margin-bottom: 0.2rem !important;
+    }
+    
+    .details-products {
+        margin-top: 0.5rem !important;
+    }
+
+    .details-products li {
+        padding: 0.25rem 0 !important;
+        font-size: 0.75rem !important;
+        border-bottom: 1px dashed #e2e8f0;
+        display: flex !important;
+        justify-content: space-between !important;
+    }
+
+    .details-products .details-price {
+        font-size: 0.8rem !important;
+        font-weight: 700 !important;
+    }
+
+    /* Admin Orders Specific Details Fixes */
+    .admin-details-grid {
+        display: block !important; /* Stack vertically */
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+
+    .admin-details-grid .details-section {
+        margin-bottom: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .admin-details-grid .details-section:last-child {
+        border-bottom: none !important;
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    
+    .admin-details-grid .details-section p,
+    .admin-details-grid .details-section li,
+    .admin-details-grid .details-section span {
+        font-size: 0.75rem !important; /* Smallest */
+    }
+
+    /* Fix Admin Search Bar & Header */
+    .admin-header > div:first-child,
+    .admin-orders-header { 
+        flex-direction: column-reverse !important; /* Button above title */
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
+    }
+    
+    .admin-header .section-title,
+    .admin-orders-header .section-title {
+        font-size: 1.25rem !important; /* Smaller Title */
+        align-self: flex-start;
+    }
+    
+    /* Smaller Search Bar in Admin Orders */
+    #adminOrderSearch {
+        padding: 0.5rem 0.75rem 0.5rem 2.25rem !important;
+        font-size: 0.8rem !important;
+        height: auto !important;
+        width: 100% !important;
+    }
+    
+    /* Admin/Orders Card Content Styling - Labels */
+    .table td::before {
+        /* Optional: content: attr(data-label); if maintained in HTML */
+        font-weight: 600;
+        font-size: 0.7rem !important;
+        color: #94a3b8;
+        display: block;
+        margin-bottom: 0;
+    }
+
+    /* Stores/Products Page Mobile Fixes */
+    .shop-hero {
+        padding-bottom: 1.5rem !important; /* Reduce gap between text and search bar */
+        min-height: auto !important;
+        padding-top: 5rem !important;
+    }
+
+    .filter-container {
+        margin-top: -1rem !important; /* Pull search bar up slightly less or adjust */
+        margin-bottom: 2rem !important;
+    }
+    
+    .filter-bar {
+        padding: 0.5rem !important; /* Smaller search bar container */
+    }
+
+    /* About Page Text Fixes */
+    .section p {
+        font-size: 0.9rem !important; /* Smaller paragraph text globally on mobile */
+        line-height: 1.6 !important;
+    }
+    
+    /* Checkout & Profile Fixes */
+    .checkout-form h3 {
+        font-size: 1.1rem !important; /* Smaller "Permbledhja" */
+    }
+    
+    /* Admin Products Page Fixes */
+    #adminProductSearch {
+        padding: 0.75rem 1rem 0.75rem 2.5rem !important; /* Smaller compressed padding */
+        font-size: 0.9rem !important;
+        height: auto !important;
+    }
+    
+    .search-box-admin i {
+        font-size: 0.9rem !important;
+        left: 1rem !important;
+    }
+
+    /* Smaller/Compressed items in Admin Product Table */
+    .admin-table td, 
+    .admin-table th {
+        font-size: 0.75rem !important; /* Significantly smaller text */
+        padding: 0.4rem 0.25rem !important; /* Tighter padding */
+        white-space: normal !important;
+    }
+    
+    .admin-table .btn {
+        padding: 0.3rem 0.6rem !important;
+        font-size: 0.7rem !important;
+        margin-right: 2px !important;
+    }
+
+    /* FIX: Product Details Mobile Spacing */
+    .product-detail-grid {
+        gap: 0.5rem !important; /* drastically reduce gap between image and text */
+        margin-top: -1rem !important; /* Pull up */
+    }
+
+    /* Reduce White Space in Image Container */
+    .detail-carousel-container .product-image {
+        padding: 0.5rem !important; /* Reduce internal padding so image is bigger */
+    }
+    
+    /* Make Indicators tighter and closer */
+    .carousel-indicators {
+        bottom: 5px !important; /* Pull dots down */
+        gap: 4px !important;
+    }
+    
+    .indicator-dot {
+        width: 5px !important;
+        height: 5px !important;
+        margin: 0 1px !important;
+    }
+
+    /* Reduce Thumbnail gap if they exist */
+    .thumbnails-container {
+        padding-top: 0.75rem !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Pull Info Column Up */
+    .product-info-column {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    /* Category Name specific spacing */
+    .product-info-column > div:first-child {
+        margin-bottom: 0.5rem !important; /* Reduce gap below category */
+    }
+
+    /* Checkout & Profile Grid logic integrated into main media query */
+    .checkout-grid-2,
+    .profile-grid-2 {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .profile-grid-2 .form-group,
+    .checkout-grid-2 .form-group {
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+
+    /* Admin Table Mobile Fixes - Combined */
+    .admin-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 1.5rem !important;
+        text-align: center;
+    }
+
+    .admin-header .section-title {
+        text-align: center !important;
+    }
+
+    .admin-header div {
+        justify-content: center !important;
+    }
+}
