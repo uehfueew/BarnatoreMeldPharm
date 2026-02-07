@@ -910,15 +910,21 @@ p {
     }
 }
 
+
 @media (max-width: 640px) {
     .product-grid {
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.4rem !important;
-        padding: 0 0.25rem !important;
+        gap: 0.75rem !important; /* Uniform gap */
+        padding: 0 !important;
+    }
+    
+    .container {
+        padding-left: 0.5rem !important; /* Minimized side padding */
+        padding-right: 0.5rem !important;
     }
 
     .product-card {
-        padding: 0.4rem !important;
+        padding: 0.6rem !important;
         min-height: auto !important;
     }
 
@@ -928,7 +934,7 @@ p {
 
     .product-card h3 {
         font-size: 0.85rem !important;
-        margin-bottom: 0.3rem !important;
+        margin-bottom: 0.2rem !important;
         line-height: 1.25;
         height: 2.5rem !important;
         overflow: hidden;
@@ -937,30 +943,65 @@ p {
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
     }
-
+    
+    /* Product Image Fixes */
     .product-image.carousel-container {
-        height: 190px !important; /* Fixed height to ensure image is visible and not too short */
-        aspect-ratio: auto !important;
+        height: auto !important;
+        aspect-ratio: 1/1 !important; /* Force square aspect ratio */
+        margin-bottom: 0.5rem;
     }
 
     .product-image img {
-        padding: 0.25rem !important; /* Even less padding to maximize product visibility */
+        padding: 0.5rem !important;
+        height: 100% !important;
+        width: 100% !important;
         object-fit: contain !important;
+        object-position: center !important;
+    }
+    
+    /* Font Size Reductions */
+    .product-category {
+        font-size: 0.6rem !important; /* Smaller category text */
+        margin-bottom: 0.2rem !important;
+    }
+    
+    .product-size {
+        font-size: 0.65rem !important; /* Smaller sasia text */
+        margin-bottom: 0.4rem !important;
+    }
+    
+    /* Icons Adjustments */
+    .btn-favorite {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 1.1rem !important; /* Slightly bigger relative to container */
+        top: 0.25rem !important;
+        right: 0.25rem !important; /* Closer to edge */
+    }
+    
+    .badge.sale {
+        font-size: 0.65rem !important;
+        padding: 0.2rem 0.5rem !important;
+        top: 0.25rem !important;
+        left: 0.25rem !important; /* Closer to edge */
     }
 
-    /* Fixed Grid for 8 Categories - 2 per row */
+    /* Fixed Grid for Categories matching Products */
     .category-grid-v2 {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.4rem !important;
-        padding: 0 0.25rem 1.5rem !important;
+        gap: 0.75rem !important;
+        padding: 0 !important;
         margin-top: 1.2rem !important;
-        overflow-x: visible !important;
     }
 
     .category-card-v2 {
         min-width: auto !important;
-        height: 180px !important; /* Made taller as requested */
+        height: 120px !important; /* Slightly reduced height for mobile */
+    }
+    
+    .category-card-v2 .category-title {
+        font-size: 1rem !important;
     }
 
     /* Trust Banner 2 per row on small mobile */
@@ -3263,13 +3304,57 @@ div:where(.swal2-container) div:where(.swal2-actions) {
 
 
 /* Mobile Performance & Stabilization */
+
 @media (max-width: 768px) {
+    /* Navbar fixes */
     .navbar {
         position: fixed;
         width: 100%;
         top: 0;
         z-index: 2000;
         background: var(--white);
+    }
+    
+    .nav-links a {
+        justify-content: flex-start; /* Align text properly */
+    }
+
+    .nav-label {
+        display: inline-block !important; /* Show text for icons */
+        margin-right: 0.5rem;
+    }
+    
+    .cart-icon, .profile-icon {
+        width: 100%;
+        display: flex !important;
+        align-items: center;
+        font-size: 1rem !important;
+    }
+    
+    /* Cart Adjustments */
+    .cart-container h1.section-title {
+        font-size: 1.75rem !important; /* Reduced from default */
+    }
+    
+    .cart-table th, .cart-table td {
+        padding: 0.5rem !important;
+        font-size: 0.85rem !important;
+    }
+    
+    .cart-table td:nth-child(2), 
+    .cart-table td:nth-child(4) { /* Prices columns */
+        font-size: 1rem !important; /* Reduced price size */
+    }
+
+    /* Hero Text Reduction */
+    .hero-text h1 {
+        font-size: 2.5rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .hero-text p {
+        font-size: 1rem !important;
+        margin-bottom: 2rem !important;
     }
 
     body {
@@ -3288,18 +3373,41 @@ div:where(.swal2-container) div:where(.swal2-actions) {
         z-index: 1000;
     }
 
+    /* Reduced internal padding on mobile */
     .container, 
     main, 
     article, 
     section,
     .content-wrapper,
     .section-container {
-        padding-left: clamp(0.75rem, 3vw, 1rem) !important;
-        padding-right: clamp(0.75rem, 3vw, 1rem) !important;
-        padding-top: 1.5rem !important;
-        padding-bottom: 1.5rem !important;
+        padding-left: 0.75rem !important; 
+        padding-right: 0.75rem !important;
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
         width: 100% !important;
         box-sizing: border-box !important;
+    }
+    
+    /* Order Details Font Size */
+    .order-details-wrapper p, 
+    .order-details-wrapper li {
+        font-size: 0.85rem !important;
+    }
+    
+    .details-title {
+        font-size: 1rem !important;
+    }
+    
+    /* Admin Search & List Fixes */
+    #adminOrderSearch, 
+    .search-wrapper input {
+        padding: 0.75rem 1rem 0.75rem 2.5rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .admin-header i.fa-search { /* Adjust icon position relative to new padding */
+        left: 1rem !important;
+        font-size: 1rem !important;
     }
 
     .products-grid,
