@@ -62,12 +62,7 @@
         right: 0 !important;
     }
 
-    /* Ensure Backdrop is BELOW menu */
-    .menu-backdrop {
-        z-index: 2000000000 !important; 
-    }
-
-    /* Backdrop */
+    /* Backdrop - Correct Z-Index Stack */
     .menu-backdrop {
         position: fixed !important;
         top: 0 !important;
@@ -79,7 +74,7 @@
         opacity: 0;
         visibility: hidden;
         transition: 0.3s ease !important;
-        z-index: 2100 !important; /* Below menu, above navbar */
+        z-index: 2050 !important; /* Below navbar (2100), above content */
     }
 
     .menu-backdrop.active {
