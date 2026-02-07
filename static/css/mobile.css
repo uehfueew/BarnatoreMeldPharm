@@ -29,26 +29,28 @@
         display: none !important;
     }
 
-    /* Sidebar Menu Container */
+    /* Sidebar Menu Container - FIXED HEIGHT/VISIBILITY */
     .nav-links {
         position: fixed !important;
         top: 0 !important;
-        right: -100% !important; /* Hidden by default */
+        bottom: 0 !important; /* Force full height */
+        right: -100% !important; 
         width: 80% !important; 
         max-width: 300px !important;
-        height: 100vh !important;
+        height: 100% !important; /* Full height */
+        min-height: 100vh !important;
         background: white !important;
         flex-direction: column !important;
         justify-content: flex-start !important;
         align-items: flex-start !important;
-        gap: 0 !important; /* Gap handled by padding/borders */
+        gap: 0 !important; 
         padding: 1.5rem !important; 
         padding-bottom: 6rem !important;
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important;
         box-shadow: -10px 0 30px rgba(0,0,0,0.15) !important;
         transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        z-index: 2200 !important; /* Topmost */
+        z-index: 9999 !important; /* Maximum Z-Index */
         display: flex !important;
         border-top-left-radius: 20px !important;
         border-bottom-left-radius: 20px !important;
@@ -580,8 +582,11 @@
         background: transparent !important;
     }
 
-    .cart-table thead {
+    /* Ensure Header is HIDDEN */
+    .cart-table thead, .cart-table thead tr, .cart-table thead th {
         display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
     }
 
     .cart-table tr {
@@ -592,9 +597,9 @@
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         border-radius: 12px;
         margin-bottom: 0 !important;
-        /* Padding: Top, Right, Bottom (space for qty), Left (space for image) */
-        padding: 1rem 1rem 4rem 110px !important; 
-        min-height: 110px;
+        /* Padding: Adjusted for Image Left */
+        padding: 1rem 1rem 3.5rem 100px !important; 
+        min-height: 100px;
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
@@ -602,7 +607,7 @@
     }
     
     .cart-table td {
-        display: inline-block !important; /* Change default to inline-block for flexibility */
+        display: inline-block !important; 
         border: none !important;
         padding: 0 !important;
         width: auto !important;
@@ -611,18 +616,18 @@
     /* TD 1: Image & Name - Name Block */
     .cart-table td:nth-child(1) {
         display: block !important;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem; /* Space below name */
         width: 100% !important;
         padding-right: 30px !important; /* Avoid delete button overlap */
     }
 
-    /* Image - Absolute Left */
+    /* Image - Absolute Left (More to left as requested) */
     .cart-thumb {
         position: absolute !important;
-        left: 10px !important;
+        left: 10px !important; /* 0 aligned with padding box usually, but 10px gives margin */
         top: 10px !important;
-        width: 90px !important; /* Fixed size */
-        height: 90px !important;
+        width: 80px !important; /* Slightly smaller */
+        height: 80px !important;
         object-fit: contain;
         background: #f8fafc;
         border-radius: 8px;
@@ -636,7 +641,7 @@
     /* Name - Text Flow */
     .cart-product-info span { 
         display: block !important;
-        font-size: 0.9rem !important; 
+        font-size: 0.95rem !important; 
         font-weight: 600;
         line-height: 1.3;
         color: var(--text-main);
@@ -651,35 +656,43 @@
         color: var(--text-muted);
         margin-right: 0.5rem !important;
         vertical-align: middle;
+        margin-top: 0.2rem !important;
     }
     
-    /* TD 4: Subtotal - Next to Price */
+    /* TD 4: Subtotal - Next to Price on same line */
     .cart-table td:nth-child(4) {
         display: inline-block !important;
-        font-size: 0.9rem !important;
+        font-size: 0.95rem !important;
         font-weight: 800;
         color: var(--primary);
         vertical-align: middle;
+        margin-top: 0.2rem !important;
+        padding-left: 0.5rem !important;
+        border-left: 1px solid #e2e8f0 !important;
     }
     
-    /* TD 3: Quantity - Bottom Right */
+    /* TD 3: Quantity - Bottom Right, Smaller, Lower */
     .cart-table td:nth-child(3) {
         position: absolute !important;
-        bottom: 1rem !important;
-        right: 1rem !important;
+        bottom: 0.75rem !important; /* Lower */
+        right: 0.75rem !important;
         width: auto !important;
         z-index: 2;
     }
     
     .quantity-selector {
-        transform: scale(0.9);
-        transform-origin: right bottom; /* Scale from corner */
+        transform: scale(0.85); /* Smaller */
+        transform-origin: right bottom; 
         margin: 0 !important;
         display: flex !important;
         align-items: center !important;
     }
     
-    /* Align Sasia text if it exists (it doesn't in HTML usually, but logic helps) */
+    /* Hide specific quantity text if any exists via other means */
+    .cart-table td:nth-child(3):before {
+        content: none !important;
+        display: none !important;
+    }
 
     /* FIX: Allow typing in Cart Quantity on Mobile */
     .cart-table .qty-input {
