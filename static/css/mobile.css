@@ -146,12 +146,12 @@
         transform: none !important;
     }
 
-    /* Navbar fixes */
+    /* Navbar fixes - Ensure it's above backdrop (2050) */
     .navbar {
         position: fixed;
         width: 100%;
         top: 0;
-        z-index: 2000;
+        z-index: 2100 !important; /* Raised to be above backdrop */
         background: rgba(255, 255, 255, 0.98);
         height: 70px !important;
     }
