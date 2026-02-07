@@ -1,5 +1,148 @@
 /* Mobile specific styles */
 @media (max-width: 768px) {
+    /* --- CRITICAL MOBILE MENU STYLES --- */
+    .nav-container {
+        position: static !important; /* Allow absolute positioning inside */
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+    }
+
+    /* Toggle Button */
+    .menu-toggle {
+        display: flex !important;
+        position: absolute !important;
+        right: 1rem !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important; 
+        width: 32px !important;
+        height: 32px !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        z-index: 2001 !important; /* Above navbar */
+        padding: 0;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .menu-toggle.active {
+        display: none !important;
+    }
+
+    /* Sidebar Menu Container */
+    .nav-links {
+        position: fixed !important;
+        top: 0 !important;
+        right: -100% !important; /* Hidden by default */
+        width: 80% !important; 
+        max-width: 300px !important;
+        height: 100vh !important;
+        background: white !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        align-items: flex-start !important;
+        gap: 0 !important; /* Gap handled by padding/borders */
+        padding: 1.5rem !important; 
+        padding-bottom: 6rem !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.15) !important;
+        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        z-index: 2200 !important; /* Topmost */
+        display: flex !important;
+        border-top-left-radius: 20px !important;
+        border-bottom-left-radius: 20px !important;
+    }
+
+    /* Open State */
+    .nav-links.active {
+        right: 0 !important;
+    }
+
+    /* Backdrop */
+    .menu-backdrop {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: rgba(0, 0, 0, 0.4) !important;
+        backdrop-filter: blur(2px) !important;
+        opacity: 0;
+        visibility: hidden;
+        transition: 0.3s ease !important;
+        z-index: 2100 !important; /* Below menu, above navbar */
+    }
+
+    .menu-backdrop.active {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* Mobile Header inside Menu */
+    .mobile-menu-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+        padding-bottom: 1rem !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .menu-close-btn {
+        background: none !important;
+        border: none !important;
+        font-size: 2rem !important;
+        color: var(--primary) !important;
+        cursor: pointer !important;
+        padding: 0.5rem !important;
+        line-height: 1 !important;
+        display: block !important;
+    }
+
+    /* Menu Links */
+    .nav-links li {
+        width: 100% !important;
+        border-bottom: 1px solid #f8fafc !important;
+        display: block !important; /* Ensure list items are block */
+        margin: 0 !important;
+    }
+
+    .nav-links a {
+        display: flex !important;
+        align-items: center !important;
+        width: 100% !important;
+        padding: 1rem 0.5rem !important;
+        font-size: 1rem !important;
+        font-weight: 500 !important;
+        color: #0f172a !important; /* Dark text mandatory */
+        text-decoration: none !important;
+        justify-content: flex-start !important;
+    }
+    
+    .nav-links a:hover {
+        background-color: #f8fafc !important;
+        color: var(--primary) !important;
+    }
+
+    .nav-links i {
+        width: 24px !important;
+        text-align: center !important;
+        margin-right: 10px !important;
+        color: var(--primary) !important;
+        font-size: 1.1rem !important;
+    }
+    
+    /* Cart Badge in Menu */
+    .cart-badge {
+        position: relative !important;
+        top: 0 !important;
+        left: 5px !important;
+        right: auto !important;
+        transform: none !important;
+    }
+
     /* Navbar fixes */
     .navbar {
         position: fixed;
@@ -430,36 +573,47 @@
     }
 
     /* FIX: Cart Page Mobile Layout - Refined */
+    .cart-table {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1rem !important; /* Proper spacing between cart items */
+        background: transparent !important;
+    }
+
     .cart-table thead {
         display: none !important;
     }
 
     .cart-table tr {
-        display: flex !important;
-        flex-direction: column !important;
+        display: block !important; /* Layout mode */
         position: relative !important;
         background: white;
         border: 1px solid #f1f5f9;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         border-radius: 12px;
-        margin-bottom: 1rem;
-        padding: 0.75rem 0.75rem 0.75rem 100px !important; /* Reserve Left Space */
-        min-height: 100px;
+        margin-bottom: 0 !important;
+        /* Padding: Top, Right, Bottom (space for qty), Left (space for image) */
+        padding: 1rem 1rem 4rem 110px !important; 
+        min-height: 110px;
         width: 100% !important;
-        max-width: 100% !important; /* Ensure no overflow */
+        max-width: 100% !important;
         box-sizing: border-box !important;
-        overflow: hidden !important; /* Clip content */
+        overflow: visible !important; 
     }
     
     .cart-table td {
-        display: block !important;
+        display: inline-block !important; /* Change default to inline-block for flexibility */
         border: none !important;
         padding: 0 !important;
-        width: 100% !important;
+        width: auto !important;
     }
 
-    /* TD 1: Image & Name */
+    /* TD 1: Image & Name - Name Block */
     .cart-table td:nth-child(1) {
+        display: block !important;
         margin-bottom: 0.5rem;
+        width: 100% !important;
+        padding-right: 30px !important; /* Avoid delete button overlap */
     }
 
     /* Image - Absolute Left */
@@ -467,65 +621,62 @@
         position: absolute !important;
         left: 10px !important;
         top: 10px !important;
-        width: 80px !important;
-        height: 80px !important;
+        width: 90px !important; /* Fixed size */
+        height: 90px !important;
         object-fit: contain;
         background: #f8fafc;
         border-radius: 8px;
+        z-index: 1;
     }
 
     .cart-product-info {
         display: block !important;
     }
     
-    /* Name - Text Flow - Prevent Overlap & Smaller */
+    /* Name - Text Flow */
     .cart-product-info span { 
         display: block !important;
-        font-size: 0.85rem !important; /* Smaller Name */
+        font-size: 0.9rem !important; 
         font-weight: 600;
         line-height: 1.3;
         color: var(--text-main);
-        padding-right: 35px; /* More Space for Delete Button */
-        margin-bottom: 0.5rem; /* Separation from Price */
+        word-wrap: break-word !important; 
     }
     
-    /* Price Container Construction */
-    /* We use nth-child selectors to find them, but they are block by default. */
-    
-    /* TD 2: Unit Price */
+    /* TD 2: Unit Price - Under Name */
     .cart-table td:nth-child(2) {
         display: inline-block !important;
-        width: auto !important;
-        font-size: 0.85rem !important; /* Smaller Price Number */
-        font-weight: 600;
-        color: var(--text-main); /* Standard color (or muted) */
+        font-size: 0.85rem !important;
+        font-weight: 500;
+        color: var(--text-muted);
         margin-right: 0.5rem !important;
         vertical-align: middle;
     }
     
-    /* TD 4: Subtotal - Show Inline Next to Price */
+    /* TD 4: Subtotal - Next to Price */
     .cart-table td:nth-child(4) {
         display: inline-block !important;
-        width: auto !important;
         font-size: 0.9rem !important;
         font-weight: 800;
         color: var(--primary);
         vertical-align: middle;
-        margin-bottom: 0.5rem;
     }
     
-    /* TD 3: Quantity */
+    /* TD 3: Quantity - Bottom Right */
     .cart-table td:nth-child(3) {
-        display: block !important;
-        margin-top: 0.25rem !important;
+        position: absolute !important;
+        bottom: 1rem !important;
+        right: 1rem !important;
+        width: auto !important;
+        z-index: 2;
     }
     
     .quantity-selector {
         transform: scale(0.9);
-        transform-origin: left top;
+        transform-origin: right bottom; /* Scale from corner */
         margin: 0 !important;
         display: flex !important;
-        align-items: center !important; /* Align vertically center */
+        align-items: center !important;
     }
     
     /* Align Sasia text if it exists (it doesn't in HTML usually, but logic helps) */
@@ -596,25 +747,55 @@
     .admin-table tbody, .table tbody {
         display: flex;
         flex-direction: column;
-        gap: 0.75rem; /* Reduced gap */
+        gap: 1.5rem !important; /* Increased gap between cards */
         width: 100% !important;
         max-width: 100% !important;
+        background: transparent !important; /* Ensure transparent background between items */
     }
 
-    /* Convert Table Rows to Compact Cards */
-    .admin-table tr, .table tr:not([id^="details-"]) {
+    /* ADMIN DASHBOARD HEADER FIXES */
+    .admin-header > div:first-child {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        width: 100% !important;
+        gap: 1rem !important;
+    }
+
+    .admin-header > div:first-child > h1 {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Buttons Container - Stack them vertically for mobile */
+    .admin-header > div:first-child > div {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.8rem !important;
+    }
+    
+    /* Buttons - Full width */
+    .admin-header .btn {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+
+    /* Convert Table Rows to Compact Cards - CHANGED SELECTOR to exclude details row */
+    .admin-table tr:not([id^="details-"]), .table tr:not([id^="details-"]) {
         display: flex !important;
         flex-direction: column;
         background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px; /* Slightly less rounded */
-        padding: 0.75rem !important; /* Reduced padding */
+        border: 1px solid #f1f5f9; /* Lighter border */
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); /* Slight shadow to separate */
+        border-radius: 12px; /* Smoother rounding */
+        padding: 1rem !important; /* More breathing room inside */
         position: relative;
         width: 100% !important;
         max-width: 100% !important; /* Ensure no overflow */
         box-sizing: border-box !important;
         overflow: hidden !important; /* Clip content */
-        margin: 0 !important; /* Clean margins */
+        margin-bottom: 0 !important; /* Gap is handled by flex gap */
     }
     
     /* Hide Table Headers for Orders/Admin tables on mobile */
@@ -635,48 +816,75 @@
         white-space: normal !important;
     }
 
-    /* ID - Top Left, Bold - INLINE BLOCK to sit next to Date */
+    /* ID - Top Left, Bold */
     .admin-table td:first-child, 
     .table td:first-child { 
         display: inline-block !important;
         width: auto !important;
-        font-size: 0.65rem !important; /* Smaller ID */
+        font-size: 0.9rem !important; /* Bigger ID */
         font-weight: 700 !important;
         color: var(--text-main) !important;
-        margin-bottom: 0.1rem !important;
-        margin-right: 0.5rem !important; /* Space between ID and Date */
+        margin-bottom: 0.2rem !important;
+        margin-right: 0.5rem !important;
     }
 
-    /* USER TABLE: Date (2nd) - INLINE BLOCK next to ID */
+    /* USER TABLE: Date (2nd) - Absolute positioned to be closer to status */
     .table:not(.admin-table) td:nth-child(2) {
-        display: inline-block !important;
+        position: absolute !important;
+        top: 1rem !important; 
+        right: 5rem !important;  
         width: auto !important;
-        font-size: 0.65rem !important; /* Smaller date */
+        font-size: 0.75rem !important; 
         color: var(--text-muted) !important;
-        margin-bottom: 0.15rem !important;
+        text-align: right !important;
+        background: transparent !important;
+        padding: 0 !important;
     }
 
-    /* ADMIN TABLE: Client (2nd) & Date (3rd) */
-    .admin-table td:nth-child(2),
+    /* ADMIN TABLE: Client (2nd) - Bigger Name/Email */
+    .admin-table td:nth-child(2) {
+        font-size: 0.9rem !important; /* Bigger text as requested */
+        color: var(--text-main) !important;
+        margin-bottom: 0.3rem !important;
+        margin-top: 1.8rem !important; /* Push down below relative/absolute header items */
+    }
+
+    /* ADMIN TABLE: Date (3rd) - Absolute Top Right (next to ID, left of Status) */
     .admin-table td:nth-child(3) {
-        font-size: 0.65rem !important;
+        position: absolute !important;
+        top: 1rem !important;
+        right: 8.5rem !important; /* Positioned to left of Status dropdown */
+        width: auto !important;
+        font-size: 0.8rem !important; /* Bigger Date */
         color: var(--text-muted) !important;
-        margin-bottom: 0.1rem !important;
+        text-align: right !important;
+        padding: 0 !important;
+        background: transparent !important;
     }
     
-    /* Price - Prominent but smaller than before */
+    /* Price - Bigger and prominent */
     .admin-table td:nth-child(4), /* Admin Price */
     .table:not(.admin-table) td:nth-child(3) { /* User Price */
-        font-size: 0.75rem !important; /* Smaller Price */
+        display: block !important; 
+        font-size: 1rem !important; /* Bigger Price */
         font-weight: 700 !important;
         color: var(--primary) !important;
-        margin-bottom: 0.25rem !important;
-        clear: both; /* Ensure it drops to next line after ID/Date */
+        margin-bottom: 0.5rem !important;
+        clear: both !important;
+        margin-top: 0.2rem !important;
     }
     
     /* Status - ABSOLUTE Top Right */
-    .admin-table td:nth-child(5), /* Admin Status */
-    .table:not(.admin-table) td:nth-child(4) { /* User Status */
+    .admin-table td:nth-child(5) { /* Admin Status (Select) */
+        position: absolute !important;
+        top: 0.75rem !important;
+        right: 0.75rem !important;
+        width: 110px !important; /* Fixed width for select */
+        padding: 0 !important;
+        text-align: right !important;
+    }
+
+    .table:not(.admin-table) td:nth-child(4) { /* User Status (Badge) */
         position: absolute !important;
         top: 0.75rem !important;
         right: 0.75rem !important;
@@ -685,20 +893,35 @@
         text-align: right !important;
     }
     
+    /* Form Select inside Admin Table */
+    .admin-table .form-select {
+        padding: 0.2rem 1.5rem 0.2rem 0.5rem !important;
+        font-size: 0.75rem !important;
+        height: auto !important;
+        background-position: right 0.2rem center !important;
+    }
+
     .status-badge, .badge {
-        font-size: 0.6rem !important; /* Tiny badge */
+        font-size: 0.6rem !important; 
         padding: 2px 5px !important;
     }
     
     /* Admin Actions (6th) - Bottom */
     .admin-table:not(.admin-product-table) td:nth-child(6) {
         border-top: 1px dashed #e2e8f0 !important;
-        padding-top: 0.5rem !important;
+        padding-top: 0.8rem !important;
         margin-top: 0.5rem !important;
         display: flex !important;
         gap: 0.5rem !important;
     }
     
+    /* BUTTON FIX: Admin Details Button - Bigger */
+    .admin-table td:nth-child(6) .btn {
+        padding: 0.5rem 1.2rem !important; /* Bigger padding */
+        font-size: 0.85rem !important; /* Bigger text */
+        width: 100% !important; /* Full width button */
+    }
+
     /* User Actions (Button) */
     .table:not(.admin-table) td:last-child {
         margin-top: 0.5rem !important;
@@ -712,9 +935,30 @@
         height: auto !important;
     }
 
-    /* BUTTON FIX: View Details Button - Bigger as requested */
+    /* BUTTON FIX: View Details Button - Smaller as requested */
     .table:not(.admin-table) td:last-child .btn {
-        padding: 0.5rem 1rem !important; /* Increased padding */
+        padding: 0.3rem 0.8rem !important; /* Smaller padding */
+        font-size: 0.75rem !important;
+    }
+
+
+    /* DETAILS ROW FIX: Ensure content is aligned left/top */
+    .table tr[id^="details-"] td {
+        display: block !important;
+        width: 100% !important;
+        text-align: left !important;
+        padding: 1rem !important;
+        background-color: #f9fafb !important;
+    }
+
+    .order-details-wrapper {
+        text-align: left !important;
+        width: 100% !important;
+    }
+    
+    .details-content {
+        text-align: left !important;
+    }
         font-size: 0.85rem !important; /* Increased font size */
         width: 100% !important; /* Full width for easier tapping */
         justify-content: center;
@@ -1045,5 +1289,25 @@
 
     .admin-header div {
         justify-content: center !important;
+    }
+
+    /* CART PAGE HEADER FIX: Button Left, Text Right */
+    .cart-container > div:first-child {
+        display: flex !important;
+        flex-direction: row-reverse !important; /* Button(2) becomes 1st visually */
+        justify-content: flex-end !important; /* Pack to Left (End of Reverse axis) */
+        align-items: center !important;
+        gap: 0.8rem !important;
+        margin-bottom: 2rem !important;
+    }
+
+    .cart-container > div:first-child h1 {
+        font-size: 1.4rem !important;
+        margin: 0 !important;
+    }
+
+    .cart-container > div:first-child .btn {
+        margin: 0 !important;
+        padding: 0.5rem 1rem !important;
     }
 }
