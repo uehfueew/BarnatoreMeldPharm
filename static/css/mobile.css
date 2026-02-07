@@ -33,13 +33,14 @@
     .nav-links {
         position: fixed !important;
         top: 0 !important;
-        bottom: 0 !important; /* Force full height */
+        left: auto !important;
         right: -100% !important; 
         width: 80% !important; 
         max-width: 300px !important;
-        height: 100% !important; /* Full height */
+        height: 100vh !important; /* Viewport Height is key */
         min-height: 100vh !important;
-        background: white !important;
+        bottom: 0 !important;
+        background: #ffffff !important; /* Force white background */
         flex-direction: column !important;
         justify-content: flex-start !important;
         align-items: flex-start !important;
@@ -48,17 +49,22 @@
         padding-bottom: 6rem !important;
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important;
-        box-shadow: -10px 0 30px rgba(0,0,0,0.15) !important;
-        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        z-index: 9999 !important; /* Maximum Z-Index */
+        box-shadow: -10px 0 30px rgba(0,0,0,0.2) !important;
+        transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        z-index: 2147483647 !important; /* Max integer Z-Index */
         display: flex !important;
-        border-top-left-radius: 20px !important;
-        border-bottom-left-radius: 20px !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
     /* Open State */
     .nav-links.active {
         right: 0 !important;
+    }
+
+    /* Ensure Backdrop is BELOW menu */
+    .menu-backdrop {
+        z-index: 2000000000 !important; 
     }
 
     /* Backdrop */
@@ -607,26 +613,25 @@
     }
     
     .cart-table td {
-        display: inline-block !important; 
         border: none !important;
         padding: 0 !important;
         width: auto !important;
     }
 
-    /* TD 1: Image & Name - Name Block */
+    /* TD 1: Image & Name */
     .cart-table td:nth-child(1) {
         display: block !important;
-        margin-bottom: 0.25rem; /* Space below name */
+        margin-bottom: 0.5rem; /* Space below name */
         width: 100% !important;
         padding-right: 30px !important; /* Avoid delete button overlap */
     }
 
-    /* Image - Absolute Left (More to left as requested) */
+    /* Image - Absolute Left */
     .cart-thumb {
         position: absolute !important;
-        left: 10px !important; /* 0 aligned with padding box usually, but 10px gives margin */
+        left: 10px !important;
         top: 10px !important;
-        width: 80px !important; /* Slightly smaller */
+        width: 80px !important;
         height: 80px !important;
         object-fit: contain;
         background: #f8fafc;
@@ -634,11 +639,11 @@
         z-index: 1;
     }
 
+    /* Name - Force Block */
     .cart-product-info {
         display: block !important;
     }
     
-    /* Name - Text Flow */
     .cart-product-info span { 
         display: block !important;
         font-size: 0.95rem !important; 
@@ -648,47 +653,59 @@
         word-wrap: break-word !important; 
     }
     
-    /* TD 2: Unit Price - Under Name */
+    /* TD 2: Unit Price - Block below name */
     .cart-table td:nth-child(2) {
-        display: inline-block !important;
+        display: block !important; /* Force new line */
         font-size: 0.85rem !important;
         font-weight: 500;
         color: var(--text-muted);
-        margin-right: 0.5rem !important;
-        vertical-align: middle;
-        margin-top: 0.2rem !important;
+        margin-top: 0.25rem !important;
+        margin-bottom: 0.1rem !important;
     }
     
-    /* TD 4: Subtotal - Next to Price on same line */
+    /* Price label prefix */
+    .cart-table td:nth-child(2):before {
+        content: "Basic: " !important;
+        font-weight: 400;
+        opacity: 0.7;
+    }
+    
+    /* TD 4: Subtotal - Block below unit price */
     .cart-table td:nth-child(4) {
-        display: inline-block !important;
-        font-size: 0.95rem !important;
-        font-weight: 800;
+        display: block !important; /* Force new line */
+        font-size: 1rem !important;
+        font-weight: 700;
         color: var(--primary);
-        vertical-align: middle;
-        margin-top: 0.2rem !important;
-        padding-left: 0.5rem !important;
-        border-left: 1px solid #e2e8f0 !important;
+        margin-top: 0.1rem !important;
     }
     
-    /* TD 3: Quantity - Bottom Right, Smaller, Lower */
+    /* Total label prefix */
+    .cart-table td:nth-child(4):before {
+        content: "Total: " !important;
+        font-weight: 400;
+        opacity: 0.7;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+    
+    /* TD 3: Quantity - Absolute Bottom Right */
     .cart-table td:nth-child(3) {
         position: absolute !important;
-        bottom: 0.75rem !important; /* Lower */
+        display: block !important;
+        bottom: 0.75rem !important;
         right: 0.75rem !important;
         width: auto !important;
         z-index: 2;
     }
     
     .quantity-selector {
-        transform: scale(0.85); /* Smaller */
+        transform: scale(0.85); 
         transform-origin: right bottom; 
         margin: 0 !important;
         display: flex !important;
         align-items: center !important;
     }
     
-    /* Hide specific quantity text if any exists via other means */
     .cart-table td:nth-child(3):before {
         content: none !important;
         display: none !important;
