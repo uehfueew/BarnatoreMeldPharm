@@ -20,28 +20,44 @@
                     
                     <div class="form-group">
                         <label for="fullname">Emri dhe Mbiemri</label>
-                        <input type="text" id="fullname" name="fullname" class="form-control" required placeholder="psh. Agim Gashi">
+                        <input type="text" id="fullname" name="fullname" class="form-control" required placeholder="" value="{{ current_user.fullname if current_user.is_authenticated else '' }}">
                     </div>
 
                     <div class="form-group">
                         <label for="email">Email Adresa</label>
-                        <input type="email" id="email" name="email" class="form-control" required placeholder="psh. agim@example.com">
+                        <input type="email" id="email" name="email" class="form-control" required placeholder="" value="{{ current_user.email if current_user.is_authenticated else '' }}">
                     </div>
 
                     <div class="form-group">
                         <label for="address">Adresa</label>
-                        <input type="text" id="address" name="address" class="form-control" required placeholder="Rruga, Numri i hymjes...">
+                        <input type="text" id="address" name="address" class="form-control" required placeholder="" value="{{ current_user.address if current_user.is_authenticated else '' }}">
                     </div>
 
-                    <div class="form-group">
-                        <label for="city">Qyteti</label>
-                        <input type="text" id="city" name="city" class="form-control" required placeholder="Prishtinë">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="country">Shteti</label>
+                            <input type="text" id="country" name="country" class="form-control" required placeholder="" value="{{ current_user.country if current_user.is_authenticated else 'Kosovë' }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">Qyteti</label>
+                            <input type="text" id="city" name="city" class="form-control" required placeholder="" value="{{ current_user.city if current_user.is_authenticated else '' }}">
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="phone">Numri i Telefonit</label>
-                        <input type="tel" id="phone" name="phone" class="form-control" required placeholder="+383 4X XXX XXX">
+                        <input type="tel" id="phone" name="phone" class="form-control" required placeholder="" value="{{ current_user.phone if current_user.is_authenticated else '' }}">
                     </div>
+
+                    {% if current_user.is_authenticated %}
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem;">
+                            <input type="checkbox" name="save_details" value="1">
+                            Ruaj të dhënat për porositë e ardhshme
+                        </label>
+                    </div>
+                    {% endif %}
 
                     <h3 style="margin-top: 2rem; margin-bottom: 1.5rem;">Mënyra e Pagesës</h3>
                     

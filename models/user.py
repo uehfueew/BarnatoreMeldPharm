@@ -9,6 +9,12 @@ class User(UserMixin):
         self.email = user_data.get('email')
         self.password = user_data.get('password')
         self.is_admin = user_data.get('is_admin', False)
+        # Add profile fields
+        self.fullname = user_data.get('fullname', '')
+        self.address = user_data.get('address', '')
+        self.city = user_data.get('city', '')
+        self.country = user_data.get('country', '')
+        self.phone = user_data.get('phone', '')
 
     @staticmethod
     def create(username, email, password_hash, is_admin=False):
@@ -16,9 +22,27 @@ class User(UserMixin):
             "username": username,
             "email": email,
             "password": password_hash,
-            "is_admin": is_admin
+            "is_admin": is_admin,
+            "fullname": "",
+            "address": "",
+            "city": "",
+            "country": "",
+            "phone": ""
         }).inserted_id
         return User.get_by_id(user_id)
+
+    @staticmethod
+    def update_profile(user_id, profile_data):
+        mongo.db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": {
+                "fullname": profile_data.get('fullname', ''),
+                "address": profile_data.get('address', ''),
+                "city": profile_data.get('city', ''),
+                "country": profile_data.get('country', ''),
+                "phone": profile_data.get('phone', '')
+            }}
+        )
 
     @staticmethod
     def get_by_id(user_id):

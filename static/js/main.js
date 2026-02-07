@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <img src="${p.image_url}" alt="${p.name}">
                                 <div class="preview-info">
                                     <span class="preview-name">${p.name}</span>
-                                    <span class="preview-category">${p.category}${p.subcategory ? ' • ' + p.subcategory : ''}</span>
+                                    <span class="preview-category">${p.category}</span>
                                     <div class="preview-price">
                                         ${p.discount_price ? `<span class="price">€${p.discount_price}</span> <span class="old-price">€${p.price}</span>` : `<span class="price">€${p.price}</span>`}
                                     </div>

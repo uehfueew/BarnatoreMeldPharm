@@ -205,7 +205,9 @@ def place_order():
     email = request.form.get('email')
     address = request.form.get('address')
     city = request.form.get('city')
+    country = request.form.get('country')
     phone = request.form.get('phone')
+    save_details = request.form.get('save_details') == '1'
     
     if method == 'card':
         flash('Pagesat me kartë nuk janë ende aktive.', 'warning')
@@ -216,6 +218,16 @@ def place_order():
     if not cart:
         flash('Shporta është e zbrazët.', 'error')
         return redirect(url_for('main.products'))
+
+    # Save user details if requested
+    if current_user.is_authenticated and save_details:
+        User.update_profile(current_user.id, {
+            'fullname': fullname,
+            'address': address,
+            'city': city,
+            'country': country,
+            'phone': phone
+        })
 
     order_items = []
     total_price = 0
@@ -243,6 +255,7 @@ def place_order():
         "email": email,
         "address": address,
         "city": city,
+        "country": country,
         "phone": phone,
         "payment_method": method,
         "items": order_items,

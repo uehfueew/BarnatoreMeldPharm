@@ -116,8 +116,8 @@
                         <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
                     </div>
                     <div class="product-info">
-                        <span class="product-category">{{ product.category }}{% if product.subcategory %} • {{ product.subcategory }}{% endif %}</span>
-                        <h3 class="product-title">{% if product.brand %}<span style="color: var(--primary); font-weight: 700;">{{ product.brand }}</span> {% endif %}{{ product.name }}</h3>
+                        <span class="product-category">{{ product.category }}</span>
+                        <h3 class="product-title">{{ product.name }}</h3>
                         {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
                         
                         <div class="price-container">
@@ -184,14 +184,14 @@
 <style>
 /* Modern Category Filter Styles */
 .shop-filter-system {
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
 }
 
 .category-pills-container {
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
     overflow-x: auto;
-    padding: 0.5rem 0.25rem 1.5rem;
+    padding: 0.5rem 0.25rem 1rem;
     scrollbar-width: none; /* Hide scrollbar for clean look */
     -ms-overflow-style: none;
 }
@@ -203,14 +203,14 @@
 .category-pill {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 1rem 1.75rem;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
     background: white;
     border: 1px solid #e2e8f0;
-    border-radius: var(--radius-xl);
+    border-radius: var(--radius-lg);
     color: var(--text-muted);
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     white-space: nowrap;
     transition: var(--transition);
     box-shadow: var(--shadow-sm);
@@ -282,8 +282,44 @@
 
 @media (max-width: 768px) {
     .category-pill {
-        padding: 0.8rem 1.25rem;
-        font-size: 0.85rem;
+        padding: 0.5rem 0.8rem;
+        font-size: 0.75rem;
+        border-radius: 10px;
+        gap: 0.4rem;
+    }
+    
+    .category-pill i {
+        font-size: 0.8rem;
+    }
+
+    .shop-filter-system {
+        margin-bottom: 1.25rem;
+    }
+
+    .category-pills-container {
+        gap: 0.5rem;
+        padding-bottom: 0.75rem;
+    }
+
+    .filter-container {
+        margin-top: -1rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .filter-bar {
+        padding: 0.5rem 0.75rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .search-wrapper input {
+        padding: 0.6rem 1rem 0.6rem 2.8rem !important;
+        font-size: 0.85rem !important;
+        height: 40px !important;
+    }
+
+    .search-wrapper i {
+        left: 1rem !important;
+        font-size: 0.9rem !important;
     }
 }
 </style>
@@ -365,8 +401,8 @@
                                 <a href="/product/${p.id}" class="product-card-link-overlay"></a>
                             </div>
                             <div class="product-info">
-                                <span class="product-category">${p.category}${p.subcategory ? ' • ' + p.subcategory : ''}</span>
-                                <h3 class="product-title">${p.brand ? `<span style="color: var(--primary); font-weight: 700;">${p.brand}</span> ` : ''}${p.name}</h3>
+                                <span class="product-category">${p.category}</span>
+                                <h3 class="product-title">${p.name}</h3>
                                 ${p.size ? `<span class="product-size">${p.size}</span>` : ''}
                                 <div class="price-container">
                                     ${p.discount_price ? `

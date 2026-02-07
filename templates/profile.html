@@ -2,39 +2,38 @@
 
 {% block content %}
 <div class="container" style="padding-top: 2rem; padding-bottom: 5rem; min-height: 80vh;">
-    <div class="profile-wrapper" style="display: grid; grid-template-columns: 350px 1fr; gap: 4rem; align-items: stretch; max-width: 1250px; margin: 0 auto;">
+    <div class="profile-wrapper" style="display: grid; grid-template-columns: 350px 1fr; gap: 4rem; align-items: flex-start; max-width: 1200px; margin: 0 auto;">
         
         <!-- Sidebar: User Info -->
-        <aside class="profile-sidebar" style="display: flex; flex-direction: column;">
-            <div style="height: 100px; border-bottom: 2px solid #f1f5f9; margin-bottom: 2.5rem; display: flex; align-items: flex-end; padding-bottom: 1.5rem;">
+        <aside class="profile-sidebar" style="display: flex; flex-direction: column; position: sticky; top: 2rem;">
+            <div style="border-bottom: 2px solid #f1f5f9; margin-bottom: 2rem; display: flex; align-items: flex-end; padding-bottom: 1rem;">
                 <div style="text-align: left;">
-                    <h2 style="font-size: 2rem; display: flex; align-items: center; gap: 1rem; margin: 0; color: var(--text-main); white-space: nowrap;">
-                        <i class="fas fa-id-card" style="color: var(--primary);"></i> Profili Im
+                    <h2 style="font-size: 1.5rem; display: flex; align-items: center; gap: 0.75rem; margin: 0; color: var(--text-main); white-space: nowrap;">
+                        <i class="fas fa-id-card" style="color: var(--primary); font-size: 1.25rem;"></i> Profili Im
                     </h2>
-                    <p class="text-muted" style="margin: 0.5rem 0 0; font-size: 1rem;">Menaxhoni profilin tuaj</p>
                 </div>
             </div>
 
             {% if current_user.is_authenticated %}
-                <div class="card user-card fade-in-section is-visible" style="padding: 2.5rem 2rem; text-align: center; border-radius: 1.5rem; box-shadow: var(--shadow-lg); background: white; border: 1px solid rgba(0,0,0,0.05); flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
-                    <div class="avatar" style="width: 110px; height: 110px; background: linear-gradient(135deg, var(--primary-light) 0%, #ffffff 100%); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 3.5rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); border: 4px solid white;">
+                <div class="card user-card fade-in-section is-visible" style="padding: 2rem 1.5rem; text-align: center; border-radius: 1.5rem; box-shadow: var(--shadow-sm); background: white; border: 1px solid rgba(0,0,0,0.05); display: flex; flex-direction: column;">
+                    <div class="avatar" style="width: 90px; height: 90px; background: linear-gradient(135deg, var(--primary-light) 0%, #ffffff 100%); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; font-size: 2.5rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); border: 4px solid white;">
                         <i class="fas fa-user"></i>
                     </div>
-                    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem; color: var(--text-main);">{{ current_user.username }}</h3>
-                    <p class="text-muted" style="margin-bottom: 2rem; font-size: 0.95rem; word-break: break-all; opacity: 0.8;">{{ current_user.email }}</p>
+                    <h3 style="margin-bottom: 0.25rem; font-size: 1.25rem; color: var(--text-main);">{{ current_user.username }}</h3>
+                    <p class="text-muted" style="margin-bottom: 1.5rem; font-size: 0.9rem; word-break: break-all; opacity: 0.8;">{{ current_user.email }}</p>
                     
                     {% if current_user.is_admin %}
-                        <div style="margin-bottom: 2rem;">
-                            <span class="badge" style="background: var(--primary); color: white; padding: 0.4rem 1.2rem; border-radius: 2rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Administrator</span>
+                        <div style="margin-bottom: 1.5rem;">
+                            <span class="badge" style="background: var(--primary); color: white; padding: 0.3rem 1rem; border-radius: 2rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Administrator</span>
                         </div>
                     {% endif %}
 
-                    <div class="profile-actions" style="display: flex; flex-direction: column; gap: 1rem;">
-                        <a href="{{ url_for('main.orders') }}" class="btn profile-btn-orders">
-                            <i class="fas fa-shopping-bag" style="margin-right: 0.75rem;"></i> Porositë e Mia
+                    <div class="profile-actions" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <a href="{{ url_for('main.orders') }}" class="btn profile-btn-orders" style="padding: 0.6rem; font-size: 0.9rem;">
+                            <i class="fas fa-shopping-bag" style="margin-right: 0.5rem;"></i> Porositë e Mia
                         </a>
-                        <a href="{{ url_for('auth.logout') }}" class="btn profile-btn-logout">
-                            <i class="fas fa-sign-out-alt" style="margin-right: 0.75rem;"></i> Dilni
+                        <a href="{{ url_for('auth.logout') }}" class="btn profile-btn-logout" style="padding: 0.6rem; font-size: 0.9rem;">
+                            <i class="fas fa-sign-out-alt" style="margin-right: 0.5rem;"></i> Dilni
                         </a>
                     </div>
                 </div>
@@ -53,22 +52,72 @@
             {% endif %}
         </aside>
 
-        <!-- Main Content: Favorites -->
+        <!-- Main Content: Details & Favorites -->
         <main class="profile-main" style="display: flex; flex-direction: column;">
-            <div style="height: 100px; border-bottom: 2px solid #f1f5f9; margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 1.5rem;">
-                <div>
-                    <h2 style="font-size: 2rem; display: flex; align-items: center; gap: 1rem; margin: 0; color: var(--text-main);">
-                        <i class="fas fa-heart" style="color: #e11d48;"></i> Të Preferuarat
-                    </h2>
-                    <p class="text-muted" style="margin: 0.5rem 0 0; font-size: 1rem;">Produktet që keni ruajtur për më vonë</p>
+            
+            {% if current_user.is_authenticated %}
+            <!-- Profile Details Form -->
+            <div style="margin-bottom: 3rem;">
+                <div style="border-bottom: 2px solid #f1f5f9; margin-bottom: 1.5rem; display: flex; align-items: flex-end; padding-bottom: 1rem;">
+                    <div>
+                        <h2 style="font-size: 1.5rem; display: flex; align-items: center; gap: 0.75rem; margin: 0; color: var(--text-main);">
+                            <i class="fas fa-map-marker-alt" style="color: var(--primary); font-size: 1.25rem;"></i> Të dhënat e Dërgesës
+                        </h2>
+                    </div>
                 </div>
-                <span style="background: var(--primary-light); color: var(--primary-dark); padding: 0.5rem 1rem; border-radius: var(--radius-full); font-weight: 600; font-size: 0.9rem;">
+
+                <div class="card" style="padding: 1.5rem; border-radius: 1.5rem; box-shadow: var(--shadow-sm); background: white; border: 1px solid rgba(0,0,0,0.05);">
+                    <form action="{{ url_for('main.profile') }}" method="POST" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label for="fullname" style="font-size: 0.85rem; margin-bottom: 0.4rem;">Emri dhe Mbiemri</label>
+                            <input type="text" id="fullname" name="fullname" class="form-control" style="padding: 0.6rem;" placeholder="" value="{{ current_user.fullname }}">
+                        </div>
+
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label for="address" style="font-size: 0.85rem; margin-bottom: 0.4rem;">Adresa</label>
+                            <input type="text" id="address" name="address" class="form-control" style="padding: 0.6rem;" placeholder="" value="{{ current_user.address }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="country" style="font-size: 0.85rem; margin-bottom: 0.4rem;">Shteti</label>
+                            <input type="text" id="country" name="country" class="form-control" style="padding: 0.6rem;" placeholder="" value="{{ current_user.country or 'Kosovë' }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city" style="font-size: 0.85rem; margin-bottom: 0.4rem;">Qyteti</label>
+                            <input type="text" id="city" name="city" class="form-control" style="padding: 0.6rem;" placeholder="" value="{{ current_user.city }}">
+                        </div>
+
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label for="phone" style="font-size: 0.85rem; margin-bottom: 0.4rem;">Numri i Telefonit</label>
+                            <input type="tel" id="phone" name="phone" class="form-control" style="padding: 0.6rem;" placeholder="" value="{{ current_user.phone }}">
+                        </div>
+
+                        <div style="grid-column: span 2; display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+                            <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.5rem; border-radius: var(--radius-md); font-size: 0.9rem;">
+                                Ruaj Ndryshimet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+
+            <div style="border-bottom: 2px solid #f1f5f9; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 0.5rem;">
+                <div>
+                    <h2 style="font-size: 1.5rem; display: flex; align-items: center; gap: 0.75rem; margin: 0; color: var(--text-main);">
+                        <i class="fas fa-heart" style="color: #e11d48; font-size: 1.25rem;"></i> Të Preferuarat
+                    </h2>
+                </div>
+                <span style="background: var(--primary-light); color: var(--primary-dark); padding: 0.4rem 0.8rem; border-radius: var(--radius-full); font-weight: 600; font-size: 0.8rem;">
                     {{ favorites|length }} Produkt{{ 'e' if favorites|length != 1 else '' }}
                 </span>
             </div>
 
             {% if favorites %}
-                <div class="favorites-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem;">
+                <div class="favorites-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
                     {% for product in favorites %}
                         <div class="favorite-card fade-in-section is-visible" style="background: white; border-radius: 1.5rem; overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid rgba(0,0,0,0.03); transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative;">
                             
@@ -136,12 +185,12 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="empty-state" style="text-align: center; padding: 2.5rem 2rem; background: white; border-radius: 2rem; border: 2px dashed #e2e8f0; box-shadow: var(--shadow-sm); flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                    <div style="width: 100px; height: 100px; background: #fff1f2; color: #fda4af; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; font-size: 3rem;">
+                <div class="empty-state" style="text-align: center; padding: 2rem; background: white; border-radius: 1.5rem; border: 2px dashed #e2e8f0; box-shadow: var(--shadow-sm); flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <div style="width: 70px; height: 70px; background: #fff1f2; color: #fda4af; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; font-size: 2rem;">
                         <i class="far fa-heart"></i>
                     </div>
-                    <h4 style="color: var(--text-main); font-size: 1.5rem; margin-bottom: 2.5rem;">Ju nuk keni produkte të preferuara</h4>
-                    <a href="{{ url_for('main.products') }}" class="btn btn-primary" style="padding: 1rem 2.5rem; border-radius: var(--radius-full);">
+                    <h4 style="color: var(--text-main); font-size: 1.2rem; margin-bottom: 1.5rem;">Ju nuk keni produkte të preferuara</h4>
+                    <a href="{{ url_for('main.products') }}" class="btn btn-primary" style="padding: 0.8rem 1.5rem; border-radius: var(--radius-full); font-size: 0.9rem;">
                         Eksploro Dyqanin <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
                     </a>
                 </div>
@@ -159,6 +208,9 @@
         .profile-sidebar {
             position: relative !important;
             top: 0 !important;
+        }
+        .profile-main form {
+            grid-template-columns: 1fr !important;
         }
     }
     .favorite-card:hover {

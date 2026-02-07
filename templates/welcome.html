@@ -373,6 +373,19 @@
                 registerBtn.classList.add('active');
             }
         }
+
+        // Auto-switch to register tab if there are registration-specific errors
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const flashMessages = document.getElementById('flash-messages');
+            if (flashMessages) {
+                const text = flashMessages.innerText.toLowerCase();
+                // ONLY switch to register if it's a registration failure (email exists or password rule)
+                // Do NOT switch if it's a login failure (which includes "fjalëkalimi")
+                if (text.includes('të paktën 8 karaktere') || text.includes('regjistruar tashmë')) {
+                    showTab('register');
+                }
+            }
+        });
     </script>
 </body>
 </html>

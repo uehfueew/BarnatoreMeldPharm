@@ -372,6 +372,7 @@ p {
     width: 100%;
     height: 100%;
     z-index: 1;
+    pointer-events: none; /* Make sure decorative shapes don't block clicks */
 }
 
 .shape {
@@ -911,14 +912,14 @@ p {
 
 @media (max-width: 640px) {
     .product-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding: 0 5%; /* Use percentage to cover nearly all width */
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.4rem !important;
+        padding: 0 0.25rem !important;
     }
 
     .product-card {
-        padding: 0.75rem !important; /* Shorter/less padding */
-        min-height: auto !important; /* Allow it to be shorter */
+        padding: 0.4rem !important;
+        min-height: auto !important;
     }
 
     .product-card .product-info {
@@ -926,12 +927,63 @@ p {
     }
 
     .product-card h3 {
-        font-size: 1rem !important;
-        margin-bottom: 0.25rem !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 0.3rem !important;
+        line-height: 1.25;
+        height: 2.5rem !important;
+        overflow: hidden;
+        display: -webkit-box;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
     }
 
     .product-image.carousel-container {
-        height: 200px !important; /* Reduced from potential larger size to make it shorter */
+        height: 190px !important; /* Fixed height to ensure image is visible and not too short */
+        aspect-ratio: auto !important;
+    }
+
+    .product-image img {
+        padding: 0.25rem !important; /* Even less padding to maximize product visibility */
+        object-fit: contain !important;
+    }
+
+    /* Fixed Grid for 8 Categories - 2 per row */
+    .category-grid-v2 {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.4rem !important;
+        padding: 0 0.25rem 1.5rem !important;
+        margin-top: 1.2rem !important;
+        overflow-x: visible !important;
+    }
+
+    .category-card-v2 {
+        min-width: auto !important;
+        height: 180px !important; /* Made taller as requested */
+    }
+
+    /* Trust Banner 2 per row on small mobile */
+    .trust-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.2rem 0.4rem !important;
+        padding: 0 0.25rem !important;
+    }
+
+    .trust-item {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 0.4rem !important;
+        padding: 0.5rem !important;
+    }
+
+    .trust-text h4 {
+        font-size: 0.85rem !important;
+        white-space: nowrap;
+    }
+
+    .trust-text p {
+        font-size: 0.7rem !important;
     }
 
     /* Hide actions as requested - can only add from detail page */
@@ -1097,6 +1149,48 @@ p {
     margin-bottom: 1rem;
     font-weight: 500;
 }
+
+/* Product Detail Styles */
+.product-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 5rem;
+    align-items: start;
+}
+
+.product-title-detail {
+    font-size: 3.5rem;
+    letter-spacing: -0.04em;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+    color: var(--text-main);
+}
+
+.product-info-column .price-container .price,
+.product-info-column .price-container .main-price,
+.product-info-column .price-container .discounted {
+    font-size: 3rem;
+    color: var(--primary);
+    font-weight: 800;
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
+    .product-detail-grid {
+        gap: 2rem !important;
+    }
+
+    .product-title-detail {
+        font-size: 2rem !important;
+    }
+    .product-info-column .price-container .price,
+    .product-info-column .price-container .main-price,
+    .product-info-column .price-container .discounted {
+        font-size: 2.25rem !important;
+    }
+}
+
 
 .price-container {
     display: flex;
@@ -1625,6 +1719,23 @@ p {
     font-weight: 800;
 }
 
+@media (max-width: 768px) {
+    .shop-hero {
+        padding: 4rem 0 2rem !important;
+        overflow: hidden !important;
+    }
+    .shop-hero h1 {
+        font-size: 2rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    .shop-hero p {
+        font-size: 0.85rem !important;
+        line-height: 1.4 !important;
+        max-width: 90% !important;
+        margin: 0 auto !important;
+    }
+}
+
 .mx-auto { margin-left: auto; margin-right: auto; }
 .w-100 { width: 100%; }
 
@@ -1953,8 +2064,9 @@ html, body {
 
     .nav-links li a {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
+        gap: 1.25rem;
         width: 100%;
         padding: 0.8rem 0;
         border-bottom: 1px solid #f8fafc;
@@ -1963,7 +2075,6 @@ html, body {
 
     .nav-label {
         font-size: 1.05rem;
-        margin-right: auto;
         display: inline !important;
     }
 
@@ -1988,13 +2099,30 @@ html, body {
         line-height: 1.5;
     }
 
+    /* Small Home Search */
+    .hero-search-container {
+        margin: 1rem 0 !important;
+        max-width: 100% !important;
+    }
+
+    .hero-search-container .search-wrapper input {
+        height: 40px !important;
+        font-size: 0.85rem !important;
+        padding-left: 2.5rem !important;
+    }
+
+    .hero-search-container .search-wrapper i {
+        font-size: 0.9rem !important;
+        left: 1rem !important;
+    }
+
     .hero-image {
         margin-top: 3rem !important; /* Pushed just a little lower as requested */
     }
 
     .hero-blob {
-        width: 190px !important;
-        height: 190px !important;
+        width: 220px !important;
+        height: 220px !important;
     }
 
     .hero-btns {
@@ -2023,23 +2151,23 @@ html, body {
         font-size: 0.75rem !important;
     }
 
-    /* Fixed Grid for 8 Categories */
+    /* Fixed Grid for 8 Categories - 2 per row */
     .category-grid-v2 {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.75rem !important;
-        padding: 0.5rem 0 1.5rem !important;
+        gap: 0.45rem !important;
+        padding: 0 0.25rem 1.5rem !important;
         margin-top: 1.2rem !important;
         overflow-x: visible !important;
     }
 
     .category-card-v2 {
         min-width: auto !important;
-        height: 120px !important;
+        height: 180px !important;
     }
 
     .category-card-v2 .category-title {
-        font-size: 1rem !important;
+        font-size: 1.1rem !important;
     }
 
     .view-all {
@@ -2047,28 +2175,32 @@ html, body {
         padding: 0.25rem 0.6rem !important; /* Even smaller vertically and horizontally */
     }
 
-    /* Product Grid & Actions */
+    /* Product Grid & Actions - 2 per row */
     .product-grid {
         display: grid !important;
-        grid-template-columns: 1fr !important; /* One column to cover nearly all width */
-        gap: 1.5rem !important;
-        padding: 0 5% !important; /* Balanced padding for mobile */
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.45rem !important;
+        padding: 0 0.25rem !important;
         width: 100% !important;
         margin: 0 auto !important;
     }
 
     .product-card {
-        padding: 0.75rem !important;
+        padding: 0.4rem !important;
         width: 100% !important;
         min-height: auto !important;
     }
 
     .product-info h3 {
-        font-size: 0.95rem !important;
+        font-size: 0.85rem !important;
         margin-bottom: 0.3rem !important;
-        line-height: 1.3;
-        height: auto !important;
-        min-height: auto !important;
+        line-height: 1.25;
+        height: 2.5rem !important;
+        overflow: hidden;
+        display: -webkit-box;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
     }
 
     .price-container .price {
@@ -2106,13 +2238,12 @@ html, body {
     }
 
     .product-image.carousel-container {
-        height: 140px !important;
+        height: 190px !important;
+        aspect-ratio: auto !important;
     }
 
     /* Detail Page Fixes */
-    .product-info-column h1 {
-        font-size: 1.6rem !important;
-    }
+    /* Handled in Detail Page Specifics section */
 
     /* Profile Page Mobile Optimization */
     .profile-sidebar {
@@ -2190,18 +2321,7 @@ html, body {
 }
 
 /* Product Detail Page Classes */
-.product-title-detail {
-    font-size: 3.5rem;
-    letter-spacing: -0.04em;
-}
-
-.product-info-column .price-container .price,
-.product-info-column .price-container .main-price {
-    font-size: 3rem;
-    color: var(--primary);
-    font-weight: 800;
-    line-height: 1;
-}
+/* Consolidated in Detail Page Specifics section */
 
 .details-price {
     color: var(--primary);
@@ -2288,49 +2408,132 @@ html, body {
     }
 
     .trust-grid {
-        grid-template-columns: 1fr !important; /* Stack them to avoid side overflow */
-        gap: 2rem !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.25rem 0.5rem !important;
+        padding: 0 0.25rem !important;
     }
 
-    .trust-text h4 {
-        font-size: 0.95rem !important;
+    .trust-item {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 0.5rem !important;
+        padding: 0.5rem !important;
     }
 
-    .trust-text p {
-        font-size: 0.8rem !important;
-    }
-
-    .trust-item i {
-        font-size: 2rem !important;
-    }
-
-    /* Product Detail Page Mobile Fixes */
-    .product-detail-container {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-    }
-
-    .product-title-detail {
-        font-size: 1.8rem !important; /* Shrink the huge name */
+    /* Product Detail Mobile Refinement */
+    .product-breadcrumbs {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.75rem !important;
         margin-bottom: 1rem !important;
-        line-height: 1.2 !important;
+        gap: 0.25rem;
     }
 
-    .product-info-column .price-container .price,
-    .product-info-column .price-container .main-price {
-        font-size: 2rem !important;
-    }
-
-    .product-info-column {
-        padding: 0 0.5rem !important; /* Tiny bit of padding to ensure it doesn't touch edges */
+    .btn-back {
+        padding: 0.45rem 1rem !important;
+        font-size: 0.8rem !important;
+        margin-bottom: 1.5rem !important;
     }
 
     .detail-carousel-container {
+        max-width: 320px !important;
+        margin: 0 auto 1.5rem !important;
         aspect-ratio: 1/1 !important;
     }
 
-    .product-detail-grid {
-        gap: 2rem !important; /* Reduce huge 5rem gap on mobile */
+    .detail-carousel-container .product-image {
+        padding: 0.75rem !important;
+    }
+
+    .product-title-detail {
+        font-size: 1.6rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .product-size-detail {
+        font-size: 0.95rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .product-info-column .price-container {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .product-info-column .price-container .price,
+    .product-info-column .price-container .main-price,
+    .product-info-column .price-container .discounted {
+        font-size: 1.8rem !important;
+    }
+
+    .product-info-column .price-container .original {
+        font-size: 1.1rem !important;
+    }
+
+    .product-info-column > div:last-of-type {
+        padding: 1.25rem !important;
+        margin-bottom: 2rem !important;
+    }
+
+    .product-info-column > div:last-of-type h3 {
+        font-size: 1.1rem !important;
+    }
+
+    .product-description-list li {
+        font-size: 0.82rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* Side-by-side Quantity and Add to Cart */
+    #addToCartForm {
+        gap: 0.5rem !important;
+        flex-wrap: nowrap !important;
+    }
+
+    .quantity-selector.qty-lg {
+        height: 45px !important;
+        min-width: 100px !important;
+        padding: 0 0.5rem !important;
+    }
+
+    .quantity-selector.qty-lg .qty-btn {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .quantity-selector.qty-lg .qty-input {
+        font-size: 0.9rem !important;
+        width: 35px !important;
+    }
+
+    #addToCartForm .btn-primary {
+        padding: 0 1rem !important;
+        font-size: 0.85rem !important;
+        min-height: 45px !important;
+        flex: 1 !important;
+    }
+
+    #addToCartForm .btn-primary i {
+        margin-right: 0.5rem !important;
+    }
+
+    .trust-text h4 {
+        font-size: 0.85rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+
+    .trust-text p {
+        font-size: 0.7rem !important;
+    }
+
+    .trust-item i {
+        font-size: 1.8rem !important;
+        margin-bottom: 0.25rem;
+    }
+
+    /* Profile Mobile Fixes */
+    .profile-sidebar {
+        margin-bottom: 2rem !important;
     }
 }
 
@@ -2387,6 +2590,8 @@ html, body {
     text-align: left;
     border-bottom: 1px solid rgba(0,0,0,0.05);
     vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .table th {
@@ -2578,6 +2783,7 @@ html, body {
     overflow: hidden;
     background: white;
     box-shadow: var(--shadow);
+    aspect-ratio: 1.1/1;
 }
 
 .detail-carousel-container .carousel-track-container {

@@ -11,10 +11,6 @@
             <span>/</span>
             <a href="{{ url_for('main.products', category=product.category) }}">{{ product.category }}</a>
         {% endif %}
-        {% if product.subcategory %}
-            <span>/</span>
-            <a href="{{ url_for('main.products', category=product.category, subcategory=product.subcategory) }}">{{ product.subcategory }}</a>
-        {% endif %}
         <span>/</span>
         <span class="current">{{ product.name }}</span>
     </nav>
@@ -23,7 +19,7 @@
         <i class="fas fa-arrow-left"></i> Kthehu tek Dyqani
     </a>
 
-    <div class="product-detail-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 5rem; align-items: start;">
+    <div class="product-detail-grid">
         
         <!-- Image Section -->
         <div class="product-gallery">
@@ -79,7 +75,7 @@
         <!-- Info Section -->
         <div class="product-info-column" style="animation: slideUp 0.6s ease-out;">
             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <span class="product-category" style="font-size: 0.85rem; font-weight: 800;">{{ product.category }}{% if product.subcategory %} • {{ product.subcategory }}{% endif %}</span>
+                <span class="product-category" style="font-size: 0.85rem; font-weight: 800;">{{ product.category }}</span>
                 <span style="width: 4px; height: 4px; background: #cbd5e1; border-radius: 50%;"></span>
                 <span style="color: {{ 'var(--primary)' if product.in_stock != False else '#ef4444' }}; font-size: 0.85rem; font-weight: 700;">
                     {{ 'Në Stok' if product.in_stock != False else 'Jashtë Stokut' }}
@@ -88,12 +84,6 @@
             
             <h1 class="product-title-detail" style="margin-bottom: 0.5rem; line-height: 1.1;">{{ product.name }}</h1>
             
-            {% if product.brand %}
-                <div class="product-brand-detail" style="margin-bottom: 0.5rem; font-size: 1.25rem; font-weight: 700; color: var(--primary);">
-                    {{ product.brand }}
-                </div>
-            {% endif %}
-
             {% if product.size %}<div class="product-size-detail" style="margin-bottom: 1.5rem; font-size: 1.1rem; color: #64748b; font-weight: 500;">{{ product.size }}</div>{% endif %}
             
             <div class="price-container" style="display: flex; align-items: flex-end; gap: 1rem; margin-bottom: 2.5rem;">
@@ -220,14 +210,13 @@
                         <a href="{{ url_for('main.product_detail', product_id=related._id) }}" class="product-card-link-overlay"></a>
                     </div>
                     <div class="product-info">
-                        <a href="{{ url_for('main.product_detail', product_id=related._id) }}" style="text-decoration: none; color: inherit; position: relative; z-index: 5;">
-                            <h3 class="product-title">{{ related.name }}</h3>
-                        </a>
-                        <p class="category-tag">{{ related.category }}</p>
+                        <span class="product-category">{{ related.category }}</span>
+                        <h3 class="product-title">{{ related.name }}</h3>
+                        {% if related.size %}<span class="product-size">{{ related.size }}</span>{% endif %}
                         <div class="price-container">
                             {% if related.discount_price %}
-                                <span class="price original">€{{ related.price }}</span>
                                 <span class="price discounted">€{{ related.discount_price }}</span>
+                                <span class="price original">€{{ related.price }}</span>
                             {% else %}
                                 <span class="price">€{{ related.price }}</span>
                             {% endif %}

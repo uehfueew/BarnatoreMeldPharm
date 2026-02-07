@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, redirect, url_for, request, jsonify
+from flask import Blueprint, render_template, session, redirect, url_for, request, jsonify, flash
 from models.db import mongo
 from models.product import Product
 from models.order import Order
@@ -110,8 +110,24 @@ def about():
          return redirect(url_for('main.index'))
     return render_template('about.html')
 
-@main.route('/profile')
+@main.route('/profile', methods=['GET', 'POST'])
 def profile():
+    if request.method == 'POST':
+        if not current_user.is_authenticated:
+            flash('Duhet të jeni të kyçur për të kryer këtë veprim.', 'error')
+            return redirect(url_for('auth.login'))
+        
+        profile_data = {
+            'fullname': request.form.get('fullname'),
+            'address': request.form.get('address'),
+            'city': request.form.get('city'),
+            'country': request.form.get('country'),
+            'phone': request.form.get('phone')
+        }
+        User.update_profile(current_user.id, profile_data)
+        flash('Profili u përditësua me sukses!', 'success')
+        return redirect(url_for('main.profile'))
+
     favorites = []
     if current_user.is_authenticated:
         favorites = Product.get_favorites_by_user(current_user.id)

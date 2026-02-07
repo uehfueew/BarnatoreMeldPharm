@@ -2,22 +2,30 @@
 
 {% block content %}
 <div class="container section">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-        <h2 class="section-title" style="margin-bottom: 0;">Menaxhimi i Porosive</h2>
-        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Kthehu te Paneli</a>
+    <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <h2 class="section-title" style="font-size: 1.75rem; margin-bottom: 0;">Menaxhimi i Porosive</h2>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Kthehu te Paneli</a>
+        </div>
+        
+        <div style="position: relative; width: 100%;">
+            <i class="fas fa-search" style="position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 1.25rem;"></i>
+            <input type="text" id="adminOrderSearch" placeholder="Kërko porositë sipas ID, emrit të klientit, qytetit ose statusit..." 
+                   style="width: 100%; padding: 1.25rem 1.5rem 1.25rem 4rem; border: 1px solid #e2e8f0; border-radius: 20px; outline: none; transition: var(--transition); font-size: 1.1rem; box-shadow: var(--shadow-md);">
+        </div>
     </div>
     
     {% if orders %}
         <div class="table-responsive">
-            <table class="table">
+            <table class="table" style="table-layout: fixed;">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Emri dhe Mbiemri</th>
-                        <th class="date-col">Data</th>
-                        <th>Totali</th>
-                        <th>Statusi</th>
-                        <th>Veprime</th>
+                        <th style="width: 12%;">ID</th>
+                        <th style="width: 25%;">Klienti</th>
+                        <th style="width: 18%;" class="date-col">Data</th>
+                        <th style="width: 10%;">Totali</th>
+                        <th style="width: 20%;">Statusi</th>
+                        <th style="width: 15%;">Veprime</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -85,6 +93,33 @@
 </div>
 
 <script>
+document.getElementById('adminOrderSearch').addEventListener('input', function(e) {
+    const term = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('.table tbody tr:not([id^="details-"])');
+    
+    rows.forEach(row => {
+        const id = row.cells[0].textContent.toLowerCase();
+        const nameAndInfo = row.cells[1].textContent.toLowerCase();
+        const status = row.querySelector('select').value.toLowerCase();
+        
+        if (id.includes(term) || nameAndInfo.includes(term) || status.includes(term)) {
+            row.style.display = '';
+            // If the details row was open, keep it hidden or leave it as is?
+            // Usually best to hide details if the parent is hidden.
+            const detailsRow = document.getElementById('details-' + row.querySelector('button').onclick.toString().match(/'(.+?)'/)[1]);
+            // This regex is a bit fragile, let's just use data attributes or better logic.
+        } else {
+            row.style.display = 'none';
+            // Hide details row if hidden
+            const match = row.querySelector('button').getAttribute('onclick').match(/'(.+?)'/);
+            if (match) {
+                const detailsRow = document.getElementById('details-' + match[1]);
+                if (detailsRow) detailsRow.style.display = 'none';
+            }
+        }
+    });
+});
+
 function toggleDetails(id) {
     const el = document.getElementById('details-' + id);
     if (el.style.display === 'none') {

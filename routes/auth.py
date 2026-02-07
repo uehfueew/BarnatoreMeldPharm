@@ -40,6 +40,7 @@ def login():
             return redirect(url_for('main.index'))
         else:
             flash('Kyçja dështoi. Kontrolloni emailin dhe fjalëkalimin.', 'danger')
+            return redirect(request.referrer or url_for('auth.login'))
             
     return render_template('login.html')
 
@@ -50,10 +51,15 @@ def register():
         email = request.form.get('email')
         password = request.form.get('password')
         
+        # Validimi i fjalëkalimit (të paktën 8 karaktere dhe 1 numër)
+        if len(password) < 8 or not any(char.isdigit() for char in password):
+            flash('Fjalëkalimi duhet të jetë të paktën 8 karaktere i gjatë dhe të përmbajë të paktën një numër.', 'warning')
+            return redirect(request.referrer or url_for('auth.register'))
+            
         existing_user = User.get_by_email(email)
         if existing_user:
             flash('Email është regjistruar tashmë.', 'warning')
-            return redirect(url_for('auth.register'))
+            return redirect(request.referrer or url_for('auth.register'))
             
         hashed_pw = bcrypt.generate_password_hash(password).decode('utf-8')
         user = User.create(username, email, hashed_pw)

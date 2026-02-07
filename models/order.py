@@ -10,6 +10,7 @@ class Order:
             "email": order_data.get('email'),
             "address": order_data.get('address'),
             "city": order_data.get('city'),
+            "country": order_data.get('country'),
             "phone": order_data.get('phone'),
             "payment_method": order_data.get('payment_method'),
             "items": order_data.get('items'),
