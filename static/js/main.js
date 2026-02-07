@@ -391,6 +391,29 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!result.isConfirmed) return;
         }
 
+        // OPTIMISTIC UI UPDATE for Quantity
+        let previousQty = null;
+        let pQtyInput = null;
+        
+        if (isUpdate) {
+            // Find the input in the same container
+            const container = form.closest('.quantity-selector'); 
+            if (container) {
+                pQtyInput = container.querySelector('.qty-input');
+                if (pQtyInput) {
+                    previousQty = parseInt(pQtyInput.value);
+                    const isIncrease = form.action.includes('increase');
+                    const isDecrease = form.action.includes('decrease');
+                    
+                    if (isIncrease) {
+                        pQtyInput.value = previousQty + 1;
+                    } else if (isDecrease && previousQty > 1) {
+                        pQtyInput.value = previousQty - 1;
+                    }
+                }
+            }
+        }
+
         // Setup UI for loading
         let btn = form.querySelector('button[type="submit"]');
         let originalContent = btn ? btn.innerHTML : '';
@@ -410,6 +433,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             const data = await response.json();
+            
+            // ... existing logic ...
             
             if (data.success) {
                 if (isAdd) {
@@ -449,6 +474,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateCartBadge(data.cart_count);
                 }
             } else {
+                // Revert optimistic update on failure/error
+                if (isUpdate && pQtyInput && previousQty !== null) {
+                    pQtyInput.value = previousQty;
+                }
+
                 // Handle error (e.g., login required)
                 if (response.status === 401 || !data.success) {
                     Swal.fire({
@@ -469,6 +499,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         } catch (error) {
+            // Revert optimistic update on error
+            if (isUpdate && pQtyInput && previousQty !== null) {
+                pQtyInput.value = previousQty;
+            }
             console.error('Error:', error);
             if (!isRemove) showToast('Ndodhi një gabim.', 'danger');
         } finally {

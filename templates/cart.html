@@ -37,7 +37,10 @@
                         <td>
                             <div class="cart-product-info">
                                 <img src="{{ item.image_url }}" alt="{{ item.name }}" class="cart-thumb">
-                                <span>{{ item.name }}</span>
+                                <div class="product-details-text">
+                                    <span class="product-name">{{ item.name }}</span>
+                                    <span class="product-category">{{ item.category }}</span>
+                                </div>
                             </div>
                         </td>
                         <td>€{{ item.discount_price if item.discount_price else item.price }}</td>

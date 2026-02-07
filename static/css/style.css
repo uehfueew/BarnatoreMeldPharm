@@ -1896,92 +1896,7 @@ html, body {
         height: 100% !important;
     }
 
-    /* Menu Toggle Positioned Top-Right (No circle) */
-    .menu-toggle {
-        display: flex !important;
-        position: absolute !important; /* Absolute to the nav-container */
-        right: 0.5rem !important;
-        top: 50% !important;
-        transform: translateY(-50%) !important; 
-        width: 32px !important;
-        height: 32px !important;
-        background: transparent !important;
-        box-shadow: none !important;
-        z-index: 1001 !important;
-        padding: 0;
-        justify-content: center;
-        align-items: center;
-    }
-
-    /* Hide Toggle when menu is active to avoid double icons */
-    .menu-toggle.active {
-        display: none !important;
-    }
-
-    .nav-links {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 80%; 
-        height: 100vh;
-        background: white;
-        flex-direction: column;
-        justify-content: flex-start;
-        gap: 1rem;
-        padding: 1.5rem; 
-        padding-bottom: 6rem; /* Ensure bottom items are accessible */
-        overflow-y: auto; /* Enable vertical scrolling */
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-        box-shadow: -10px 0 30px rgba(0,0,0,0.1);
-        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 2200; /* Higher than navbar to overlap it when open */
-        display: flex;
-        border-top-left-radius: 1.5rem;
-        border-bottom-left-radius: 1.5rem;
-    }
-
-    .nav-links.active {
-        right: 0;
-    }
-
-    .menu-backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.3); /* Lighter background */
-        backdrop-filter: none; /* Removed blur entirely as it caused issues */
-        opacity: 0;
-        visibility: hidden;
-        transition: 0.3s ease;
-        z-index: 1500; /* Lower z-index so it doesn't block the menu itself */
-    }
-
-    .menu-backdrop.active {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .mobile-menu-header {
-        display: flex !important;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        padding-bottom: 1.5rem;
-        border-bottom: 2px solid #f1f5f9;
-        margin-bottom: 1rem;
-    }
-
-    .menu-close-btn {
-        background: none;
-        border: none;
-        font-size: 2.2rem !important;
-        color: var(--primary);
-        cursor: pointer;
-        padding: 0;
-        line-height: 1;
-    }
+    /* Mobile menu styles moved to mobile.css */
 
     /* Checkout Mobile Optimization */
     .checkout-grid {
@@ -2133,10 +2048,7 @@ html, body {
         font-size: 1.1rem !important;
     }
 
-    /* Fix z-index stacking bugs */
-    .navbar {
-        z-index: 2000 !important;
-    }
+    /* z-index fix removed */
     
     .main-content {
         position: relative;
