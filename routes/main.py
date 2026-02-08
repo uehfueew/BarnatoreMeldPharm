@@ -10,19 +10,14 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    # If user is logged in OR has chosen to continue as guest, show the main page (now called index template)
-    if current_user.is_authenticated or session.get('guest_mode'):
-        featured_products = Product.get_featured()
-        best_sellers = Product.get_best_sellers(limit=8)
-        regular_products = Product.get_regular(limit=8)
-        return render_template('index.html', 
-                             featured_products=featured_products, 
-                             best_sellers=best_sellers,
-                             regular_products=regular_products,
-                             categories=CATEGORIES)
-    
-    # Otherwise, show the welcome screen
-    return render_template('welcome.html')
+    featured_products = Product.get_featured()
+    best_sellers = Product.get_best_sellers(limit=8)
+    regular_products = Product.get_regular(limit=8)
+    return render_template('index.html', 
+                            featured_products=featured_products, 
+                            best_sellers=best_sellers,
+                            regular_products=regular_products,
+                            categories=CATEGORIES)
 
 @main.route('/guest_login')
 def guest_login():
@@ -35,11 +30,7 @@ def exit_guest():
     return redirect(url_for('main.index'))
 
 @main.route('/products')
-def products():
-    # Ensure user is allowed to see this page
-    if not (current_user.is_authenticated or session.get('guest_mode')):
-         return redirect(url_for('main.index'))
-         
+def products(): 
     page = request.args.get('page', 1, type=int)
     category = request.args.get('category', 'all')
     subcategory = request.args.get('subcategory', 'all')
@@ -106,8 +97,6 @@ def product_detail(product_id):
 
 @main.route('/about')
 def about():
-    if not (current_user.is_authenticated or session.get('guest_mode')):
-         return redirect(url_for('main.index'))
     return render_template('about.html')
 
 @main.route('/profile', methods=['GET', 'POST'])
@@ -139,20 +128,11 @@ def profile():
             
     return render_template('profile.html', favorites=favorites)
 
-@main.route('/cart')
-def cart():
-    if not (current_user.is_authenticated or session.get('guest_mode')):
-         return redirect(url_for('main.index'))
-    return render_template('cart.html')
-
 @main.route('/orders')
 def orders():
     if not current_user.is_authenticated:
-        # If guest mode, show page but with "Login needed" message inside.
-        # Or redirect if not guest either.
-        if not session.get('guest_mode'):
-             return redirect(url_for('main.index'))
-        return render_template('orders.html', orders=[], guest_access=True)
+        flash('Ju lutem kyçuni për të parë historinë e porosive.', 'info')
+        return redirect(url_for('auth.login'))
         
     user_orders = Order.get_by_user(current_user.id)
     return render_template('orders.html', orders=user_orders)

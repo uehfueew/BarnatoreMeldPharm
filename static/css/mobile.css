@@ -1025,10 +1025,10 @@
     /* Status - Shifted to TOP RIGHT */
     .admin-table td:nth-child(5) { 
         position: absolute !important;
-        top: 0.75rem !important; /* Top */
-        right: 0 !important; /* Right - pushed to edge */
-        width: 150px !important; 
-        padding-right: 2px !important;
+        top: 0.5rem !important; /* Slightly higher */
+        right: 0.5rem !important; /* Not flush to edge, easier to see */
+        width: auto !important; /* Auto width */
+        padding: 0 !important;
         text-align: right !important;
         z-index: 5;
     }
@@ -1077,11 +1077,11 @@
         font-size: 0.85rem !important; 
         width: auto !important;
         height: auto !important;
-        background: #3b82f6 !important; /* Visible Blue */
+        background: #10b981 !important; /* GREEN (Success) */
         color: white !important; /* White Text */
         border: none !important;
         border-radius: 6px;
-        box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5) !important;
+        box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.5) !important;
         display: inline-block !important;
         margin-top: 0 !important;
         font-weight: 600 !important;

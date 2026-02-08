@@ -3473,23 +3473,23 @@ div:where(.swal2-container) div:where(.swal2-actions) {
 
 /* Custom Clear Cart Button Style */
 .btn-clear-cart {
-    border: 1px solid #ef4444 !important;
-    color: #ef4444 !important;
-    background: transparent !important;
+    border: none !important;
+    background: #ef4444 !important;
+    color: white !important;
     padding: 0.8rem 1.5rem;
-    border-radius: 0.75rem;
+    border-radius: 50px; /* Fully circular/pill */
     display: flex;
     align-items: center;
     gap: 0.5rem;
     transition: all 0.3s ease;
     font-weight: 500;
+    justify-content: center;
 }
 
 .btn-clear-cart:hover {
-    background: #ef4444 !important;
-    color: white !important;
+    background: #dc2626 !important; /* Darker red */
     transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+    box-shadow: 0 4px 6px rgba(220, 38, 38, 0.3);
 }
 
 @media (max-width: 768px) {
@@ -3545,6 +3545,19 @@ div:where(.swal2-container) div:where(.swal2-actions) {
         position: absolute;
         top: 1rem;
         right: 1rem;
+        z-index: 20; /* Ensure on top */
+    }
+
+    /* Make clear cart button smaller on mobile due to "way too big" feedback */
+    .btn-clear-cart {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.85rem !important;
+        width: auto !important;
+        flex: 1;
+    }
+
+    .cart-footer-actions {
+        gap: 0.75rem !important;
     }
 
     /* Ensure buttons are clickable/sized correctly */
@@ -3558,5 +3571,146 @@ div:where(.swal2-container) div:where(.swal2-actions) {
         background: white; /* Ensure bg */
         border: 1px solid #e2e8f0;
         border-radius: 50%;
+        position: relative; /* Fix for clicking */
+        z-index: 10; /* Bring to front */
+    }
+    
+    .quantity-control {
+        position: relative;
+        z-index: 5;
+    }
+}
+
+
+/* COMPACT CART MOBILE LAYOUT */
+@media (max-width: 768px) {
+    /* Header Reorganization: Title below Back Button */
+    .cart-page-header {
+        flex-direction: column-reverse !important; 
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .cart-page-header h1 {
+        margin: 0.5rem 0 0 0 !important;
+        font-size: 1.5rem !important;
+    }
+    
+    .cart-page-header .btn {
+        width: auto !important;
+        padding-left: 0 !important; /* Align with text */
+        color: var(--text-muted);
+    }
+
+    /* Compact Card Styles */
+    .cart-item-card {
+        padding: 0.75rem !important;
+        gap: 0.5rem !important;
+    }
+    
+    .cart-mobile-top {
+        display: flex;
+        gap: 0.75rem;
+        position: relative;
+        width: 100%;
+        padding-right: 2rem; /* Space for delete button */
+        align-items: flex-start;
+    }
+    
+    .cart-item-image {
+        width: 65px !important;
+        height: 65px !important;
+        border-radius: 8px !important;
+        flex-shrink: 0;
+        object-fit: cover;
+    }
+    
+    .cart-item-details {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-top: 0.25rem;
+    }
+    
+    .cart-item-name {
+        font-size: 0.9rem !important;
+        line-height: 1.25;
+        margin-bottom: 0.2rem;
+        font-weight: 600;
+    }
+    
+    .cart-item-category {
+        font-size: 0.75rem !important;
+        color: #94a3b8;
+    }
+    
+    /* Delete Button Top Right */
+    .cart-col-action {
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+    }
+    
+    .delete-btn {
+        color: #ef4444;
+        opacity: 0.8;
+        padding: 0.25rem;
+    }
+
+    /* Middle Row: Price and Quantity */
+    .cart-mobile-middle {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px dashed #f1f5f9;
+    }
+    
+    .mobile-price {
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        color: var(--primary) !important;
+        display: block !important;
+    }
+    
+    .quantity-control-wrapper {
+        display: flex;
+        align-items: center;
+    }
+    
+    .quantity-control {
+        margin: 0 !important; 
+    }
+    
+    .qty-btn {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 0.75rem !important;
+    }
+    
+    .qty-input {
+        height: 28px !important;
+        width: 35px !important;
+        font-size: 0.9rem !important;
+    }
+    
+    /* Bottom Row: Total */
+    .cart-mobile-bottom {
+        display: flex !important;
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+    
+    .total-amount {
+        font-weight: 700;
+        color: var(--text-main);
+        font-size: 0.95rem;
     }
 }

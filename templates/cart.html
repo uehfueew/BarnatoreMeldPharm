@@ -9,17 +9,7 @@
         <h1 class="section-title">Shporta Juaj</h1>
     </div>
     
-    {% if guest_access %}
-        <div class="empty-cart-msg">
-            <div style="margin-bottom: 1.5rem;">
-                <i class="fas fa-lock" style="font-size: 3rem; color: var(--text-muted); opacity: 0.5;"></i>
-            </div>
-            <p>Ju lutem kyçuni për të menaxhuar shportën tuaj.</p>
-            <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
-                Kyçuni Këtu <i class="fas fa-sign-in-alt" style="margin-left: 0.5rem;"></i>
-            </a>
-        </div>
-    {% elif cart_items %}
+    {% if cart_items %}
         
         <!-- DESKTOP TABLE VIEW -->
         <div class="table-responsive desktop-cart-view">
@@ -95,58 +85,56 @@
             <!-- Cart Items -->
             {% for item in cart_items %}
             <div class="cart-item-card">
-                <!-- Product Info -->
-                <div class="cart-col-product">
+                <!-- Top Row: Image + Info + Delete Button -->
+                <div class="cart-mobile-top">
+                    <!-- Action (Delete) - Absolute Positioned -->
+                    <div class="cart-col-action">
+                        <form action="{{ url_for('cart.remove_from_cart', product_id=item._id) }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="delete-btn" title="Fshije">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </div>
+
                     <img src="{{ item.image_url }}" alt="{{ item.name }}" class="cart-item-image">
+                    
                     <div class="cart-item-details">
                         <span class="cart-item-name">{{ item.name }}</span>
                         <span class="cart-item-category">{{ item.category }}</span>
-                        <!-- Price is shown here on mobile -->
-                        <div class="mobile-price">€{{ item.discount_price if item.discount_price else item.price }}</div>
                     </div>
                 </div>
 
-                <!-- Price (Desktop) -->
-                <div class="cart-col-price desktop-only">
-                    €{{ item.discount_price if item.discount_price else item.price }}
-                </div>
-
-                <!-- Quantity -->
-                <div class="cart-col-quantity">
-                    <div class="quantity-control">
-                        <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='decrease') }}" method="POST">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                            <button type="submit" class="qty-btn" {{ 'disabled' if item.quantity <= 1 }}>
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </form>
-                        <form action="{{ url_for('cart.set_quantity', product_id=item._id) }}" method="POST" class="qty-form">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                            <input type="number" name="quantity" class="qty-input" value="{{ item.quantity }}" min="1" step="1" oninput="this.value = Math.round(this.value);" {% if item.in_stock == False %}disabled{% endif %}>
-                        </form>
-                        <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='increase') }}" method="POST">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                            <button type="submit" class="qty-btn">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </form>
+                <!-- Middle Row: Price and Quantity Side-by-Side -->
+                <div class="cart-mobile-middle">
+                    <div class="mobile-price">€{{ item.discount_price if item.discount_price else item.price }}</div>
+                    
+                    <div class="quantity-control-wrapper">
+                        <div class="quantity-control">
+                            <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='decrease') }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="qty-btn" {{ 'disabled' if item.quantity <= 1 }}>
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </form>
+                            <form action="{{ url_for('cart.set_quantity', product_id=item._id) }}" method="POST" class="qty-form">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <input type="number" name="quantity" class="qty-input" value="{{ item.quantity }}" min="1" step="1" oninput="this.value = Math.round(this.value);" {% if item.in_stock == False %}disabled{% endif %}>
+                            </form>
+                            <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='increase') }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="qty-btn">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Subtotal -->
-                <div class="cart-col-total">
-                    <span class="mobile-label">Totali: </span>
+                <!-- Bottom Row: Subtotal -->
+                <div class="cart-mobile-bottom">
+                    <span class="mobile-label">Totali: &nbsp;</span>
                     <span class="total-amount">€{{ "%.2f"|format(item.item_total) }}</span>
-                </div>
-
-                <!-- Action -->
-                <div class="cart-col-action">
-                    <form action="{{ url_for('cart.remove_from_cart', product_id=item._id) }}" method="POST">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                        <button type="submit" class="delete-btn" title="Fshije">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </form>
                 </div>
             </div>
             {% endfor %}

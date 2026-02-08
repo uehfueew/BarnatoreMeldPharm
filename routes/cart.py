@@ -18,9 +18,6 @@ def calculate_cart_totals(cart):
 
 @cart_bp.route('/')
 def view_cart():
-    if not current_user.is_authenticated:
-        return render_template('cart.html', guest_access=True, cart_items=[], total_price=0)
-
     # session['cart'] structure: {'product_id': quantity, ...}
     cart = session.get('cart', {})
     cart_items = []
@@ -40,12 +37,6 @@ def view_cart():
 
 @cart_bp.route('/add/<product_id>', methods=['POST'])
 def add_to_cart(product_id):
-    if not current_user.is_authenticated:
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return jsonify({'success': False, 'message': 'Ju lutem kyçuni për të shtuar produkte.'}), 401
-        flash('Ju lutem kyçuni për të shtuar produkte.', 'warning')
-        return redirect(url_for('auth.login'))
-
     cart = session.get('cart', {})
     quantity = int(request.form.get('quantity', 1))
     
@@ -109,9 +100,6 @@ def update_quantity(product_id, action):
 
 @cart_bp.route('/set/<product_id>', methods=['POST'])
 def set_quantity(product_id):
-    if not current_user.is_authenticated:
-        return jsonify({'success': False, 'message': 'Ju lutem kyçuni.'}), 401
-    
     cart = session.get('cart', {})
     try:
         new_qty = int(request.form.get('quantity', 1))
@@ -123,7 +111,8 @@ def set_quantity(product_id):
         cart[product_id] = new_qty
         session['cart'] = cart
         session.modified = True
-        User.update_cart(current_user.id, cart)
+        if current_user.is_authenticated:
+            User.update_cart(current_user.id, cart)
         
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         total_price, total_items = calculate_cart_totals(cart)
