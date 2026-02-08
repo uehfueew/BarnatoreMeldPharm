@@ -3444,3 +3444,28 @@ div:where(.swal2-container) div:where(.swal2-actions) {
 .mobile-price, .mobile-label { display: none; }
 
 
+
+/* Fix for quantity forms layout */
+.quantity-control form,
+.quantity-selector form {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+/* Toggle Views */
+.desktop-cart-view {
+    display: block;
+}
+.mobile-cart-view {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .desktop-cart-view {
+        display: none !important;
+    }
+    .mobile-cart-view {
+        display: flex !important;
+    }
+}

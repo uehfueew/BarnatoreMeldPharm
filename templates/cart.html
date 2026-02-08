@@ -3,10 +3,10 @@
 {% block content %}
 <div class="cart-container section-container">
     <div class="cart-page-header">
-        <h1 class="section-title">Shporta Juaj</h1>
-        <a href="{{ url_for('main.products') }}" class="btn btn-sm btn-outline">
-            <i class="fas fa-arrow-left"></i> <span class="desktop-text">Vazhdo Blerjen</span>
+        <a href="{{ url_for('main.products') }}" class="btn btn-sm btn-outline cart-back-btn">
+            <i class="fas fa-arrow-left"></i> <span class="desktop-text">Vazhdo Blerjen</span> <span class="mobile-text" style="display:none">Kthehu</span>
         </a>
+        <h1 class="section-title">Shporta Juaj</h1>
     </div>
     
     {% if guest_access %}
@@ -20,7 +20,69 @@
             </a>
         </div>
     {% elif cart_items %}
-        <div class="cart-grid-container">
+        
+        <!-- DESKTOP TABLE VIEW -->
+        <div class="table-responsive desktop-cart-view">
+            <table class="table cart-table">
+                <thead>
+                    <tr>
+                        <th>Produkti</th>
+                        <th>Çmimi</th>
+                        <th>Sasia</th>
+                        <th>Nëntotali</th>
+                        <th>Veprime</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td>
+                            <div class="cart-product-info">
+                                <img src="{{ item.image_url }}" alt="{{ item.name }}" class="cart-thumb">
+                                <div class="product-details-text">
+                                    <span class="product-name">{{ item.name }}</span>
+                                    <span class="product-category">{{ item.category }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>€{{ item.discount_price if item.discount_price else item.price }}</td>
+                        <td>
+                            <div class="quantity-selector"> 
+                                <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='decrease') }}" method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <button type="submit" class="qty-btn minus" {{ 'disabled' if item.quantity <= 1 }}>
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </form>
+                                <form action="{{ url_for('cart.set_quantity', product_id=item._id) }}" method="POST" class="qty-set-form">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <input type="number" name="quantity" class="qty-input" value="{{ item.quantity }}" min="1" step="1" oninput="this.value = Math.round(this.value);" {% if item.in_stock == False %}disabled{% endif %}>
+                                </form>
+                                <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='increase') }}" method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <button type="submit" class="qty-btn plus">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                        <td>€{{ "%.2f"|format(item.item_total) }}</td>
+                        <td>
+                            <form action="{{ url_for('cart.remove_from_cart', product_id=item._id) }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn-icon" title="Fshije">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- MOBILE GRID/CARD VIEW -->
+        <div class="cart-grid-container mobile-cart-view">
             <!-- Headers (Hidden on Mobile) -->
             <div class="cart-header-row-grid">
                 <div class="col-product">Produkti</div>
@@ -96,11 +158,11 @@
                 <span class="grand-total">€{{ "%.2f"|format(total_price) }}</span>
             </div>
             <div class="cart-footer-actions">
-                <a href="{{ url_for('cart.clear_cart') }}" class="btn btn-text-danger" data-confirm="A jeni i sigurt që doni të pastroni shportën?">
-                    <i class="fas fa-trash"></i> Pastro
+                <a href="{{ url_for('cart.clear_cart') }}" class="btn btn-outline-danger cart-clear-btn" data-confirm="A jeni i sigurt që doni të pastroni shportën?" style="border: 1px solid #ef4444; padding: 0.8rem 1.5rem; border-radius: 0.75rem;">
+                    <i class="fas fa-trash"></i> Pastro shportën
                 </a>
-                <a href="{{ url_for('cart.checkout') }}" class="btn btn-primary btn-block-mobile">
-                    Vazhdo tek Pagesa <i class="fas fa-arrow-right"></i>
+                <a href="{{ url_for('cart.checkout') }}" class="btn btn-primary cart-checkout-btn">
+                     Porosit <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
         </div>

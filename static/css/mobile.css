@@ -1688,13 +1688,49 @@
     /* Reduce header padding on mobile */
     .cart-page-header {
         margin-bottom: 1rem;
+        flex-direction: row; /* Ensure row to keep Left/Right alignment */
     }
 
-    .cart-page-header .btn {
-        padding: 0.5rem;
+    .cart-page-header .section-title {
+        font-size: 1.25rem !important; /* Smaller title to fit */
     }
+
+    .cart-back-btn {
+        padding: 0.6rem 1rem !important;
+        font-size: 1rem !important; /* Bigger Font */
+        display: flex !important;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .cart-footer-actions {
+        width: 100%;
+        flex-direction: row; /* Side by side buttons */
+        gap: 1rem;
+        justify-content: space-between;
+    }
+    
+    .cart-checkout-btn {
+        flex: 1; /* Take available rounded space */
+        justify-content: center;
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        /* "Make button smaller" - implied width or just generally not huge block */
+    }
+
+    .cart-clear-btn {
+        flex: 1; /* Same size as checkout */
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
     .desktop-text {
-        display: none;
+        display: inline !important; /* Show text on mobile now */
     }
 }
 
