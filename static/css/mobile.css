@@ -1535,3 +1535,166 @@
 
 }
 
+/* =========================================
+   NEW CART MOBILE OVERRIDES (GRID SYSTEM)
+   ========================================= */
+@media (max-width: 768px) {
+    .cart-header-row-grid,
+    .desktop-only,
+    .cart-col-price.desktop-only {
+        display: none !important;
+    }
+    
+    .cart-grid-container {
+        gap: 1rem;
+    }
+
+    .cart-item-card {
+        grid-template-columns: 1fr; /* Stack everything */
+        position: relative;
+        padding: 1rem;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .cart-col-product {
+        width: 100%;
+        padding-right: 3rem; /* Make space for delete button */
+        flex-direction: row; 
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .cart-item-image {
+        width: 70px;
+        height: 70px;
+        min-width: 70px; /* Prevent shrink */
+    }
+
+    .cart-item-details {
+        align-items: flex-start;
+        width: 100%;
+        gap: 0.1rem;
+    }
+    
+    .cart-item-name {
+        font-size: 0.95rem;
+        line-height: 1.2;
+    }
+
+    .mobile-price {
+        display: block;
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 1.1rem;
+        margin-top: 0.25rem;
+    }
+
+    .cart-col-quantity {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px dashed #e2e8f0;
+        margin-top: 0.5rem;
+    }
+    
+    .quantity-control {
+        margin: 0;
+    }
+
+    .qty-btn {
+        width: 36px; /* Larger touch target */
+        height: 36px;
+    }
+    
+    .qty-input {
+        width: 45px;
+    }
+
+    .cart-col-total {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 0.75rem;
+        margin-top: 0;
+    }
+    
+    /* We can actually put total next to quantity or below */
+    .cart-col-total {
+        width: auto;
+    }
+    
+    .mobile-label {
+        display: inline;
+        font-size: 0.9rem;
+        color: #64748b;
+        font-weight: 400;
+    }
+
+    .cart-col-action {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: auto;
+    }
+    
+    .delete-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+        background: transparent;
+        color: #ef4444;
+        border: 1px solid #fee2e2;
+        padding: 0;
+    }
+    
+    .delete-btn:hover {
+        background: #fee2e2;
+        transform: none;
+    }
+
+    .cart-footer-summary {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+    
+    .cart-total-box {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+    }
+    
+    .cart-footer-actions {
+        width: 100%;
+        flex-direction: column-reverse; /* Put Checkout on top */
+        gap: 1rem;
+    }
+    
+    .btn-block-mobile {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Reduce header padding on mobile */
+    .cart-page-header {
+        margin-bottom: 1rem;
+    }
+
+    .cart-page-header .btn {
+        padding: 0.5rem;
+    }
+    .desktop-text {
+        display: none;
+    }
+}
+
