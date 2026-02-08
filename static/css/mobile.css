@@ -1026,9 +1026,9 @@
     .admin-table td:nth-child(5) { 
         position: absolute !important;
         top: 0.75rem !important; /* Top */
-        right: 0.5rem !important; /* Right */
-        width: 140px !important; 
-        padding: 0 !important;
+        right: 0 !important; /* Right - pushed to edge */
+        width: 150px !important; 
+        padding-right: 2px !important;
         text-align: right !important;
         z-index: 5;
     }
@@ -1073,17 +1073,19 @@
     }
     
     .admin-table td:nth-child(6) .btn {
-        padding: 0.4rem 1rem !important; /* Bigger padding */
-        font-size: 0.8rem !important; 
+        padding: 0.5rem 1.25rem !important; /* Larger touch target */
+        font-size: 0.85rem !important; 
         width: auto !important;
         height: auto !important;
-        background: var(--info) !important; /* Blue Background */
+        background: #3b82f6 !important; /* Visible Blue */
         color: white !important; /* White Text */
         border: none !important;
         border-radius: 6px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+        box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5) !important;
         display: inline-block !important;
         margin-top: 0 !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.025em !important;
     }
 
     /* User Actions (Button) - Positioned below status */

@@ -158,7 +158,7 @@
                 <span class="grand-total">€{{ "%.2f"|format(total_price) }}</span>
             </div>
             <div class="cart-footer-actions">
-                <a href="{{ url_for('cart.clear_cart') }}" class="btn btn-outline-danger cart-clear-btn" data-confirm="A jeni i sigurt që doni të pastroni shportën?" style="border: 1px solid #ef4444; padding: 0.8rem 1.5rem; border-radius: 0.75rem;">
+                <a href="{{ url_for('cart.clear_cart') }}" class="btn btn-outline-danger btn-clear-cart" data-confirm="A jeni i sigurt që doni të pastroni shportën?">
                     <i class="fas fa-trash"></i> Pastro shportën
                 </a>
                 <a href="{{ url_for('cart.checkout') }}" class="btn btn-primary cart-checkout-btn">
