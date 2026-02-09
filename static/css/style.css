@@ -1768,6 +1768,8 @@ p {
 
 .shop-section {
     padding-top: 0;
+    position: relative;
+    z-index: 20; /* Ensure search bar sits on top of hero */
 }
 
 .shop-hero h1 {
@@ -1985,9 +1987,9 @@ html, body {
     }
 
     .cart-thumb {
-        width: 50px !important;
-        height: 50px !important;
-    }
+    width: 65px !important;
+    height: 65px !important;
+}
 
     /* Use pseudo-elements for labels with forced space */
     .cart-table td:nth-child(2)::before { content: "Çmimi:"; margin-right: 8px; float: left; font-weight: 600; color: var(--text-muted); }
@@ -2560,9 +2562,12 @@ html, body {
 }
 
 .cart-thumb {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
+    width: 65px;
+    height: 65px;
+    object-fit: contain; /* Better to not crop product images in cart */
+    padding: 2px;
+    background: white;
+    border: 1px solid #e2e8f0;
     border-radius: var(--radius-sm);
 }
 
@@ -2639,18 +2644,62 @@ html, body {
 .quantity-selector {
     display: flex;
     align-items: center;
-    background: var(--bg-card);
-    border: 1px solid rgba(0,0,0,0.1);
-    border-radius: var(--radius-full);
-    padding: 0.25rem;
+    background: #f1f5f9; /* Light gray background */
+    border: 1px solid #cbd5e1;
+    border-radius: 8px; /* Slightly rounded */
+    padding: 0.1rem;
     width: fit-content;
-    transition: var(--transition);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); /* Subtle inner shadow */
 }
 
 .quantity-selector:focus-within {
-    border-color: var(--primary) !important;
-    box-shadow: 0 0 0 3px var(--primary-light) !important;
-    background: white !important;
+    border-color: var(--primary);
+    background: white;
+}
+
+.quantity-selector .qty-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: white;
+    color: var(--text-main);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.quantity-selector .qty-btn:hover {
+    background: white;
+    color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.quantity-selector .qty-btn:active {
+    transform: translateY(0);
+}
+
+.quantity-selector .qty-input {
+    width: 40px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    margin: 0 0.2rem;
+    -moz-appearance: textfield; /* Remove arrows Firefox */
+    appearance: textfield;
+}
+.quantity-selector .qty-input::-webkit-outer-spin-button,
+.quantity-selector .qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .quantity-selector.qty-lg {
@@ -3989,19 +4038,32 @@ div:where(.swal2-container) div:where(.swal2-actions) {
 
 /* Responsive adjust */
 @media (max-width: 900px) {
+    .hero-inner-wrapper {
+        height: 60vw; /* Use Viewport Width to maintain aspect ratio on mobile, preventing white space */
+        max-height: 400px;
+        min-height: 250px;
+    }
     .hero-img {
-        object-fit: cover;
+        object-fit: cover; /* Cover on mobile to fill the space without white bars */
     }
     .hero-overlay-text {
         bottom: 1.5rem;
+        width: 100%; /* Ensure text container takes full width if needed */
+    }
+    
+    .hero-overlay-text .btn-primary {
+        padding: 0.8rem 2rem; /* Make button bigger */
+        font-size: 1rem;
+        width: 80%; /* Wider touch target */
+        max-width: 250px;
     }
 }
 
-.hero-overlay-text h1 {
-    font-size: 2rem;
-    color: var(--text-main);
-    margin-bottom: 0.5rem;
-    line-height: 1.2;
+.hero-overlay-text .btn-primary {
+    padding: 0.8rem 2.5rem; /* Bigger button mostly horizontal */
+    font-size: 1.1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.4);
 }
 
 .hero-overlay-text p {
@@ -4489,18 +4551,21 @@ div:where(.swal2-container) div:where(.swal2-actions) {
         height: 600px;
         margin-top: 70px;
     }
-    .hero-text h1 {
-        font-size: 2.5rem;
-    }
+@media (max-width: 900px) {
     .trust-banner-top .trust-grid {
-        padding: 1.5rem;
-        justify-content: center;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 2rem !important; /* Increase gap for better spacing */
         text-align: center;
+        justify-items: center; /* Center items in their grid cell */
     }
-    .trust-banner-top .trust-item {
+    .trust-item {
         flex-direction: column;
-        width: 45%; 
+        text-align: center;
+        width: 100%;
+        align-items: center; /* Ensure contents are centered */
     }
+}
     
     /* Improve button visibility on touch */
     .btn-quick-view {
