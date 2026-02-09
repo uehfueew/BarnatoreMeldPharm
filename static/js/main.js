@@ -714,3 +714,183 @@ function goToSlide(container, index) {
         });
     }
 }
+
+/* --- NEW HERO CAROUSEL LOGIC --- */
+let slideIndex = 1;
+let slideInterval;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Hero Carousel Auto Play
+    if (document.querySelector('.hero-carousel')) {
+        showSlides(slideIndex);
+        startSlideTimer();
+        
+        // Pause on hover
+        const container = document.querySelector('.hero-carousel-container');
+        if (container) {
+            container.addEventListener('mouseenter', () => clearInterval(slideInterval));
+            container.addEventListener('mouseleave', () => startSlideTimer());
+        }
+    }
+
+    // Product Carousel Scroll Buttons
+    const prevBtns = document.querySelectorAll('.scroll-btn.prev');
+    const nextBtns = document.querySelectorAll('.scroll-btn.next');
+    
+    prevBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Find the sibling carousel
+            const wrapper = this.closest('.product-carousel-wrapper');
+            const carousel = wrapper.querySelector('.product-carousel');
+            if (carousel) {
+                carousel.scrollBy({ left: -300, behavior: 'smooth' });
+            }
+        });
+    });
+
+    nextBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Find the sibling carousel
+            const wrapper = this.closest('.product-carousel-wrapper');
+            const carousel = wrapper.querySelector('.product-carousel');
+            if (carousel) {
+                carousel.scrollBy({ left: 300, behavior: 'smooth' });
+            }
+        });
+    });
+});
+
+function startSlideTimer() {
+    clearInterval(slideInterval);
+    slideInterval = setInterval(() => {
+        plusSlides(1);
+    }, 5000);
+}
+
+function plusSlides(n) {
+    showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+    showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+    let i;
+    let slides = document.getElementsByClassName("hero-slide");
+    let dots = document.getElementsByClassName("dot");
+    if (slides.length === 0) return;
+    
+    if (n > slides.length) {slideIndex = 1}    
+    if (n < 1) {slideIndex = slides.length}
+    for (i = 0; i < slides.length; i++) {
+        slides[i].classList.remove("active");
+    }
+    for (i = 0; i < dots.length; i++) {
+        dots[i].classList.remove("active");
+    }
+    if (slides[slideIndex-1]) slides[slideIndex-1].classList.add("active");
+    if (dots[slideIndex-1]) dots[slideIndex-1].classList.add("active");
+}
+
+/* --- PRODUCT SCROLL LOGIC --- */
+// Handled in DOMContentLoaded now
+
+/* --- QUICK VIEW LOGIC --- */
+function openQuickView(element) {
+    const card = element.closest('.product-card');
+    if (!card) return;
+
+    // Get data from attributes
+    const id = card.getAttribute('data-id');
+    const name = card.getAttribute('data-name');
+    const price = card.getAttribute('data-price');
+    const image = card.getAttribute('data-img');
+    const description = card.getAttribute('data-desc');
+    const url = card.getAttribute('data-url');
+
+    const modal = document.getElementById('quickViewModal');
+    if (!modal) return;
+    
+    const imgEl = document.getElementById('qv-image');
+    if (imgEl) imgEl.src = image;
+    
+    const titleEl = document.getElementById('qv-title');
+    if (titleEl) titleEl.innerText = name;
+    
+    const priceEl = document.getElementById('qv-price');
+    if (priceEl) priceEl.innerText = price + ' €';
+    
+    const descEl = document.getElementById('qv-description');
+    if (descEl) descEl.innerText = description;
+    
+    // Update Details Link
+    const detailsBtn = modal.querySelector('a.btn-outline, a[href]');
+    if (detailsBtn && url) {
+        detailsBtn.href = url;
+    }
+    
+    // Store ID for adding to cart
+    const addBtn = document.getElementById('qv-add-btn');
+    if (addBtn) {
+        addBtn.onclick = function() {
+            addToCartQuickView(id);
+        };
+    }
+
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+function closeQuickView() {
+    const modal = document.getElementById('quickViewModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+}
+
+// Close outside click
+window.onclick = function(event) {
+    const modal = document.getElementById('quickViewModal');
+    if (event.target == modal) {
+        closeQuickView();
+    }
+}
+
+function addToCartQuickView(productId) {
+    fetch(`/cart/add/${productId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update cart count if exists
+            const badge = document.querySelector('.cart-badge');
+            if (badge) badge.textContent = data.count;
+            
+            // Show feedback
+            const btn = document.getElementById('qv-add-btn');
+            if (btn) {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = 'Added! ✓';
+                btn.style.background = '#10b981';
+                btn.style.color = '#fff';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                    closeQuickView();
+                }, 1000);
+            }
+        } else {
+            console.error('Failed to add to cart', data);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
