@@ -10,9 +10,9 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    featured_products = Product.get_featured()
-    best_sellers = Product.get_best_sellers(limit=8)
-    regular_products = Product.get_regular(limit=8)
+    featured_products = Product.get_featured(limit=15)
+    best_sellers = Product.get_best_sellers(limit=15)
+    regular_products = Product.get_regular(limit=15)
     return render_template('index.html', 
                             featured_products=featured_products, 
                             best_sellers=best_sellers,

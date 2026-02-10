@@ -859,6 +859,21 @@ window.onclick = function(event) {
 }
 
 function addToCartQuickView(productId) {
+    addToCart(productId);
+    closeQuickView();
+}
+
+// Global Add to Cart Function
+function addToCart(productId) {
+    if (!productId) return;
+
+    // Visual feedback on the button clicked if possible
+    const btns = document.querySelectorAll(`button[onclick="addToCart('${productId}')"]`);
+    btns.forEach(btn => {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        btn.disabled = true;
+    });
+
     fetch(`/cart/add/${productId}`, {
         method: 'POST',
         headers: {
@@ -869,28 +884,39 @@ function addToCartQuickView(productId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Update cart count if exists
-            const badge = document.querySelector('.cart-badge');
-            if (badge) badge.textContent = data.count;
+            // Update cart count
+            const badges = document.querySelectorAll('.cart-badge');
+            badges.forEach(badge => {
+                badge.textContent = data.count;
+                badge.style.display = 'flex';
+                // Small animation for badge
+                badge.classList.add('bump');
+                setTimeout(() => badge.classList.remove('bump'), 300);
+            });
             
-            // Show feedback
-            const btn = document.getElementById('qv-add-btn');
-            if (btn) {
-                const originalText = btn.innerHTML;
-                btn.innerHTML = 'Added! ✓';
+            // Revert buttons and show success
+            btns.forEach(btn => {
+                btn.innerHTML = '<i class="fas fa-check"></i>';
                 btn.style.background = '#10b981';
                 btn.style.color = '#fff';
                 
                 setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.style.background = '';
+                    btn.innerHTML = '<i class="fas fa-shopping-basket"></i>';
+                    btn.disabled = false;
+                    btn.style.background = ''; // Revert to CSS default
                     btn.style.color = '';
-                    closeQuickView();
-                }, 1000);
-            }
-        } else {
-            console.error('Failed to add to cart', data);
+                }, 1500);
+            });
         }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error:', error);
+        btns.forEach(btn => {
+            btn.innerHTML = '<i class="fas fa-exclamation"></i>';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-shopping-basket"></i>';
+                btn.disabled = false;
+            }, 2000);
+        });
+    });
 }

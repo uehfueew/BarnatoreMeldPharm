@@ -72,7 +72,7 @@ class Product:
 
     @staticmethod
 
-    def get_featured():
+    def get_featured(limit=15):
 
         # Changed to return discounted products as per request
 
@@ -80,14 +80,14 @@ class Product:
 
             "discount_price": {"$ne": None, "$gt": 0}
 
-        }))
+        }).limit(limit))
 
     @staticmethod
-    def get_best_sellers(limit=8):
+    def get_best_sellers(limit=15):
         return list(mongo.db.products.find({"is_best_seller": True}).limit(limit))
 
     @staticmethod
-    def get_regular(limit=8):
+    def get_regular(limit=15):
         # Returns products WITHOUT a discount_price
         return list(mongo.db.products.find({
             "$or": [

@@ -58,6 +58,8 @@ body {
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden; /* Prevent horizontal scroll from background blobs */
+    width: 100%;
+    max-width: 100vw; /* Crucial for preventing infinite sideways scroll */
 }
 
 a {
@@ -1782,7 +1784,12 @@ p {
 @media (max-width: 768px) {
     .shop-hero {
         padding: 4rem 0 2rem !important;
-        overflow: hidden !important;
+        overflow: visible !important; /* Allow overlap without clipping */
+        z-index: 1 !important; /* Ensure it stays behind */
+    }
+    .shop-section {
+        z-index: 100 !important; /* Ensure it stays on top */
+        position: relative;
     }
     .shop-hero h1 {
         font-size: 2rem !important;
@@ -3610,24 +3617,30 @@ div:where(.swal2-container) div:where(.swal2-actions) {
         gap: 0.75rem !important;
     }
 
-    /* Ensure buttons are clickable/sized correctly */
+    /* Ensure buttons are clickable/sized correctly (+/-) */
     .qty-btn {
-        width: 32px;
-        height: 32px;
+        width: 38px !important; /* Force bigger size */
+        height: 38px !important;
+        font-size: 1.1rem !important;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        background: white; /* Ensure bg */
+        background: white; 
+        color: var(--text-main);
         border: 1px solid #e2e8f0;
-        border-radius: 50%;
-        position: relative; /* Fix for clicking */
-        z-index: 10; /* Bring to front */
+        border-radius: 6px !important; /* Squared look */
+        position: relative; 
+        z-index: 100; /* High z-index to ensure clickability */
     }
     
     .quantity-control {
+        margin: 0 !important;
+        border-radius: 8px !important;
+        padding: 4px !important; /* More padding */
         position: relative;
-        z-index: 5;
+        z-index: 50;
+        gap: 5px; /* Gap between buttons and input */
     }
 }
 
@@ -3636,21 +3649,56 @@ div:where(.swal2-container) div:where(.swal2-actions) {
 @media (max-width: 768px) {
     /* Header Reorganization: Title below Back Button */
     .cart-page-header {
+        display: flex !important;
         flex-direction: column-reverse !important; 
         align-items: flex-start !important;
         gap: 0.5rem !important;
         margin-bottom: 1.5rem !important;
     }
+    
+    /* Ensure the button is visually on top of the H1 because of column-reverse logic:
+       In column-reverse, the LAST element in HTML is shown FIRST (at the top). 
+       HTML: [Back Button, H1]
+       Column-Reverse puts H1 FIRST, Back Button SECOND (Bottom).
+       
+       Wait, that's what user complains about. They want "Shporta Juaj" UNDER "Vazhdo Blerjen".
+       If HTML is [Button, H1]:
+       flex-direction: column; -> Button Top, H1 Bottom.
+       flex-direction: column-reverse; -> H1 Top, Button Bottom.
+       
+       So I should use `flex-direction: column !important;` to ensure Button is Top, H1 is Bottom.
+    */
+    .cart-page-header {
+        flex-direction: column !important;
+    }
 
     .cart-page-header h1 {
         margin: 0.5rem 0 0 0 !important;
         font-size: 1.5rem !important;
+        order: 2; /* Explicitly order second */
     }
     
     .cart-page-header .btn {
         width: auto !important;
         padding-left: 0 !important; /* Align with text */
         color: var(--text-muted);
+        order: 1; /* Explicitly order first */
+    }
+
+    /* Cart Action Buttons Size Match & Smaller */
+    .cart-footer-actions {
+        display: flex;
+        gap: 0.75rem !important;
+    }
+    .cart-footer-actions .btn {
+        flex: 1;
+        padding: 0.6rem 0.5rem !important; /* Reduced padding */
+        font-size: 0.85rem !important; /* Smaller text */
+        height: auto !important;
+        min-height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     /* Compact Card Styles */
@@ -3669,8 +3717,8 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     }
     
     .cart-item-image {
-        width: 65px !important;
-        height: 65px !important;
+        width: 80px !important; /* Increased from 65px */
+        height: 80px !important; /* Increased from 65px */
         border-radius: 8px !important;
         flex-shrink: 0;
         object-fit: cover;
@@ -4043,23 +4091,31 @@ div:where(.swal2-container) div:where(.swal2-actions) {
 /* Responsive adjust */
 @media (max-width: 900px) {
     .hero-inner-wrapper {
-        height: 60vw; /* Use Viewport Width to maintain aspect ratio on mobile, preventing white space */
-        max-height: 400px;
-        min-height: 250px;
+        width: 100%;
+        max-width: 100%; /* Make full width so image is bigger */
+        height: 80vw; /* Increase height allocation */
+        max-height: 500px;
+        min-height: 200px;
     }
     .hero-img {
-        object-fit: contain; /* Changed to contain to show full image */
+        object-fit: contain; 
+    }
+    .hero-carousel-container {
+        padding-bottom: 0.5rem; /* Remove extra padding below */
+    }
+    .hero-dots {
+        bottom: 5px; /* Bring dots much closer */
     }
     .hero-overlay-text {
-        bottom: 1.5rem;
-        width: 100%; /* Ensure text container takes full width if needed */
+        bottom: 2rem; /* Adjust button position to be above dots */
+        width: 100%; 
     }
     
     .hero-overlay-text .btn-primary {
-        padding: 0.8rem 2rem; /* Make button bigger */
-        font-size: 1rem;
-        width: 80%; /* Wider touch target */
-        max-width: 250px;
+        padding: 0.6rem 1.5rem; /* Smaller button */
+        font-size: 0.9rem;
+        width: auto; /* Allow natural width */
+        min-width: 120px;
     }
 }
 
@@ -4510,6 +4566,21 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     position: absolute;
     bottom: 1.5rem;
     right: 1.5rem;
+    z-index: 10; /* Ensure clickable */
+}
+
+/* Ensure hidden on main products cards, if desired, or... */
+@media (max-width: 992px) {
+    .btn-cart-icon {
+         /* Slightly larger touch target on mobile */
+         width: 44px;
+         height: 44px;
+         background: var(--primary); /* More visible on mobile */
+         color: white;
+         bottom: 1rem;
+         right: 1rem;
+         box-shadow: var(--shadow-md);
+    }
 }
 
 .btn-cart-icon:hover {
@@ -4533,6 +4604,22 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     }
 }
 
+@media (max-width: 900px) {
+    .trust-banner-top .trust-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 2rem !important;
+        text-align: center;
+        justify-items: center;
+    }
+    .trust-item {
+        flex-direction: column;
+        text-align: center;
+        width: 100%;
+        align-items: center;
+    }
+}
+
 @media (max-width: 768px) {
     .quick-view-grid {
         grid-template-columns: 1fr;
@@ -4544,26 +4631,36 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     .quick-view-details {
         padding: 1.5rem;
     }
+    /* Adjusted Hero Container for Mobile */
     .hero-carousel-container {
-        height: 600px;
-        margin-top: 70px;
+        height: auto;
+        margin-top: 2rem;
     }
-@media (max-width: 900px) {
+
+    /* Trust Indicators Hidden on Mobile */
     .trust-banner-top .trust-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 2rem !important; /* Increase gap for better spacing */
-        text-align: center;
-        justify-items: center; /* Center items in their grid cell */
+        display: none !important;
     }
-    .trust-item {
-        flex-direction: column;
-        text-align: center;
-        width: 100%;
-        align-items: center; /* Ensure contents are centered */
+
+    /* Reduce Gap around Search Bar */
+    .hero-search-container-inline {
+        margin-top: 0.5rem;
     }
-}
-    
+    .trust-banner-top {
+        margin-bottom: 1rem;
+        margin-top: -1rem; /* Pull up */
+    }
+    .section.categories-preview {
+        padding-top: 0;
+        margin-top: 0;
+    }
+
+    /* Smaller Product Cards on Mobile */
+    .product-carousel .product-card {
+        min-width: 170px;
+        max-width: 170px;
+    }
+
     /* Improve button visibility on touch */
     .btn-quick-view {
         transform: translateY(0);
