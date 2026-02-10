@@ -1783,14 +1783,22 @@ p {
 
 @media (max-width: 768px) {
     .shop-hero {
-        padding: 4rem 0 2rem !important;
-        overflow: visible !important; /* Allow overlap without clipping */
-        z-index: 1 !important; /* Ensure it stays behind */
-    }
-    .shop-section {
-        z-index: 100 !important; /* Ensure it stays on top */
+        padding: 6rem 0 3rem !important; /* Increased padding to push content down */
+        overflow: visible !important; 
+        z-index: 1 !important; 
         position: relative;
     }
+    .shop-section {
+        z-index: 500 !important; /* Ensure it stays on top */
+        position: relative;
+        margin-top: 0 !important;
+    }
+    .filter-container {
+        z-index: 1000 !important;
+        position: relative;
+        margin-top: -2.5rem !important; /* Pull up */
+    }
+    
     .shop-hero h1 {
         font-size: 2rem !important;
         margin-bottom: 0.5rem !important;
@@ -3637,10 +3645,26 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     .quantity-control {
         margin: 0 !important;
         border-radius: 8px !important;
-        padding: 4px !important; /* More padding */
+        padding: 4px !important; 
         position: relative;
-        z-index: 50;
-        gap: 5px; /* Gap between buttons and input */
+        z-index: 999; /* Super high z-index to avoid overlay issues */
+        gap: 5px; 
+        display: flex;
+        align-items: center;
+        background: #f1f5f9;
+    }
+    
+    .quantity-control form {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Ensure nothing overlays the buttons */
+    .cart-col-action {
+        width: auto;
+        pointer-events: auto; /* Ensure it catches checks */
     }
 }
 
@@ -3680,9 +3704,25 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     
     .cart-page-header .btn {
         width: auto !important;
-        padding-left: 0 !important; /* Align with text */
+        padding: 0.4rem 0.8rem !important; /* Smaller button */
+        font-size: 0.85rem !important;
         color: var(--text-muted);
-        order: 1; /* Explicitly order first */
+        order: 1; 
+        background: rgba(0,0,0,0.05); /* Slight bg to make it look like a button */
+        border-radius: 20px;
+    }
+    
+    .cart-page-header .btn i {
+        margin-right: 5px;
+        font-size: 0.8rem;
+    }
+    
+    /* Make Shporta Juaj bigger */
+    .cart-page-header h1 {
+        margin: 0.8rem 0 0 0 !important;
+        font-size: 1.8rem !important; /* Bigger */
+        order: 2; 
+        font-weight: 800;
     }
 
     /* Cart Action Buttons Size Match & Smaller */
@@ -4092,13 +4132,16 @@ div:where(.swal2-container) div:where(.swal2-actions) {
 @media (max-width: 900px) {
     .hero-inner-wrapper {
         width: 100%;
-        max-width: 100%; /* Make full width so image is bigger */
-        height: 80vw; /* Increase height allocation */
-        max-height: 500px;
-        min-height: 200px;
+        max-width: 100%; 
+        height: auto !important; /* Allow height to move with image */
+        aspect-ratio: 1/1; /* Force square ratio to make it taller/bigger */
+        max-height: none;
+        min-height: 400px;
+        padding-bottom: 2rem;
     }
     .hero-img {
         object-fit: contain; 
+        max-height: 100%; /* Don't overflow the container */
     }
     .hero-carousel-container {
         padding-bottom: 0.5rem; /* Remove extra padding below */
@@ -4637,9 +4680,31 @@ div:where(.swal2-container) div:where(.swal2-actions) {
         margin-top: 2rem;
     }
 
-    /* Trust Indicators Hidden on Mobile */
+    /* Trust Indicators VISIBLE BUT UNSTYLED on Mobile */
     .trust-banner-top .trust-grid {
-        display: none !important;
+        display: grid !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+    }
+    
+    .trust-banner-top .trust-item {
+        margin-bottom: 0.5rem;
+    }
+    
+    .trust-banner-top .icon-box {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1rem !important;
+    }
+    
+    .trust-banner-top h4 {
+        font-size: 0.85rem !important;
+    }
+    
+    .trust-banner-top p {
+        font-size: 0.75rem !important;
     }
 
     /* Reduce Gap around Search Bar */
@@ -4653,6 +4718,26 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     .section.categories-preview {
         padding-top: 0;
         margin-top: 0;
+    }
+
+    /* Tighter Product Card Spacing on Mobile */
+    .product-info {
+        padding-top: 0.5rem !important; /* Reduce gap */
+    }
+    
+    .product-category {
+        margin-bottom: 0.2rem !important;
+    }
+    
+    .product-title {
+        font-size: 0.95rem !important;
+        margin-bottom: 0.2rem !important;
+        min-height: auto !important; 
+    }
+    
+    /* Remove Add to Cart Button on Mobile Home Page */
+    .btn-cart-icon {
+        display: none !important;
     }
 
     /* Smaller Product Cards on Mobile */

@@ -1,6 +1,7 @@
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
-from flask import Flask, render_template, session
+from flask import Flask, render_template, session, request
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, current_user
 from flask_wtf.csrf import CSRFProtect
@@ -28,8 +29,13 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev_secret_key')
 app.config['MONGO_URI'] = os.getenv('MONGO_URI', 'mongodb://localhost:27017/meldpharm')
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=31) # Keep cart for 31 days
 # Secure cookies only if explicit or safely on Render (HTTPS)
 app.config['SESSION_COOKIE_SECURE'] = os.getenv('RENDER') is not None 
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True 
 
 # Initialize Extensions
 csrf.init_app(app)
