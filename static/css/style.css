@@ -1091,6 +1091,7 @@ p {
     width: 100%;
     height: 100%;
     object-fit: contain; /* Better for varying product shots */
+    object-position: center;
     padding: 1rem;
     transition: var(--transition);
 }
@@ -3731,19 +3732,22 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     }
     
     .quantity-control {
-        margin: 0 !important; 
+        margin: 0 !important;
+        border-radius: 8px !important;
+        padding: 2px !important;
     }
     
     .qty-btn {
-        width: 28px !important;
-        height: 28px !important;
-        font-size: 0.75rem !important;
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1rem !important;
+        border-radius: 6px !important;
     }
     
     .qty-input {
-        height: 28px !important;
-        width: 35px !important;
-        font-size: 0.9rem !important;
+        height: 36px !important;
+        width: 45px !important;
+        font-size: 1rem !important;
     }
     
     /* Bottom Row: Total */
@@ -4044,7 +4048,7 @@ div:where(.swal2-container) div:where(.swal2-actions) {
         min-height: 250px;
     }
     .hero-img {
-        object-fit: cover; /* Cover on mobile to fill the space without white bars */
+        object-fit: contain; /* Changed to contain to show full image */
     }
     .hero-overlay-text {
         bottom: 1.5rem;
@@ -4127,19 +4131,12 @@ div:where(.swal2-container) div:where(.swal2-actions) {
 
 @media (max-width: 768px) {
     .hero-inner-wrapper {
-        height: 400px;
+        height: 60vw; /* Keep proportional */
+        min-height: 250px;
     }
-    .hero-overlay-text {
-        left: 0;
-        bottom: 0;
-        top: auto;
-        transform: none;
-        width: 100%;
-        max-width: 100%;
-        border-radius: 0;
-        padding: 1.5rem;
-        background: rgba(255,255,255,0.95);
-    }
+    
+    /* Removed conflicting hero-overlay-text background */
+
 }
 
 
