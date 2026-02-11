@@ -1,0 +1,59 @@
+/* Footer Modernization */
+.footer {
+    background-color: #0f172a; /* Slate 900 */
+    color: #f8fafc;
+    padding: 6rem 0 3rem;
+    margin-top: auto;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 4rem;
+    margin-bottom: 4rem;
+}
+
+.footer-section h3 {
+    color: white;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.footer-section p {
+    color: #94a3b8;
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
+.footer-bottom {
+    text-align: center;
+    border-top: 1px solid #1e293b;
+    padding-top: 2.5rem;
+    color: #64748b;
+    font-size: 0.875rem;
+    letter-spacing: 0.025em;
+}
+
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: #1e293b;
+    border-radius: 12px;
+    transition: var(--transition);
+    font-size: 1.4rem;
+    color: #94a3b8;
+}
+
+.social-icon:hover {
+    transform: translateY(-5px);
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.4);
+}
+
+

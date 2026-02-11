@@ -1,8 +1,6 @@
 from .db import mongo
-
 from bson import ObjectId
-
-
+from datetime import datetime
 
 class Product:
 
@@ -17,13 +15,35 @@ class Product:
 
 
     @staticmethod
-    def get_paginated(page=1, per_page=20, category=None, search_query=None, subcategory=None):
+    def get_paginated(page=1, per_page=20, category=None, search_query=None, subcategory=None, sort=None, brand=None, min_price=None, max_price=None, discount_only=False, best_seller_only=False, no_discount=False):
         query = {}
         if category and category != 'all':
             query["category"] = category
         
         if subcategory and subcategory != 'all':
             query["subcategory"] = subcategory
+
+        if brand and brand != 'all':
+            query["brand"] = brand
+
+        if discount_only:
+            query["discount_price"] = {"$ne": None, "$gt": 0}
+        elif no_discount:
+            query["$or"] = [
+                {"discount_price": {"$exists": False}},
+                {"discount_price": None},
+                {"discount_price": 0}
+            ]
+
+        if best_seller_only:
+            query["is_best_seller"] = True
+
+        if min_price is not None or max_price is not None:
+            query["price"] = {}
+            if min_price is not None:
+                query["price"]["$gte"] = min_price
+            if max_price is not None:
+                query["price"]["$lte"] = max_price
             
         if search_query:
             query["$or"] = [
@@ -39,12 +59,29 @@ class Product:
         if page < 1: page = 1
         skip = (page - 1) * per_page
         
-        products = list(mongo.db.products.find(query).skip(skip).limit(per_page))
+        # Determine sort order
+        sort_criteria = [('_id', -1)] # Default newest
+        if sort == 'price-low':
+            # Use discount_price if it exists, otherwise price
+            # In MongoDB, sorting by price directly is easiest, but we can try to handle it
+            sort_criteria = [('price', 1)]
+        elif sort == 'price-high':
+            sort_criteria = [('price', -1)]
+        elif sort == 'newest':
+            sort_criteria = [('_id', -1)]
+        elif sort == 'discount':
+            # Sort by showing products with discounts first, then by largest discount if possible
+            # Here we just sort by discount_price presence
+            sort_criteria = [('discount_price', 1)] # This might be tricky in Mongo without aggregation
+        elif sort == 'relevance':
+            sort_criteria = [('views', -1), ('_id', -1)] # Default to views or id
+            
+        products = list(mongo.db.products.find(query).sort(sort_criteria).skip(skip).limit(per_page))
         
         import math
         total_pages = math.ceil(total_products / per_page)
         
-        return products, total_pages
+        return products, total_pages, total_products
 
 
 
@@ -87,19 +124,30 @@ class Product:
         return list(mongo.db.products.find({"is_best_seller": True}).limit(limit))
 
     @staticmethod
-    def get_regular(limit=15):
+    def get_regular(limit=20):
         # Returns products WITHOUT a discount_price
+        # Align with get_paginated default sort (_id: -1)
         return list(mongo.db.products.find({
             "$or": [
                 {"discount_price": {"$exists": False}},
                 {"discount_price": None},
                 {"discount_price": 0}
             ]
-        }).limit(limit))
+        }).sort([('_id', -1)]).limit(limit))
+
+    @staticmethod
+    def get_regular_count():
+        return mongo.db.products.count_documents({
+            "$or": [
+                {"discount_price": {"$exists": False}},
+                {"discount_price": None},
+                {"discount_price": 0}
+            ]
+        })
 
     @staticmethod
 
-    def get_related(category, exclude_id, limit=3):
+    def get_related(category, exclude_id, limit=4):
 
         try:
 
@@ -195,8 +243,30 @@ class Product:
 
     @staticmethod
 
+    @staticmethod
     def delete(product_id):
         return mongo.db.products.delete_one({"_id": ObjectId(product_id)})
+
+    @staticmethod
+    def revert_expired_offers():
+        now = datetime.now()
+        # Find products where discount_until is in the past
+        expired = mongo.db.products.find({
+            "discount_until": {"$lt": now},
+            "discount_price": {"$ne": None}
+        })
+        
+        count = 0
+        for product in expired:
+            mongo.db.products.update_one(
+                {"_id": product["_id"]},
+                {"$set": {
+                    "discount_price": None,
+                    "discount_until": None
+                }}
+            )
+            count += 1
+        return count
 
     @staticmethod
     def get_favorites_by_user(user_id):

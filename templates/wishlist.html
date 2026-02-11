@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section wishlist-section">
+    <div class="container container-wide">
+        <div style="margin-bottom: 2.5rem;">
+            <a href="{{ url_for('main.products') }}" class="btn-back-standard">
+                <i class="fas fa-arrow-left"></i> Kthehu
+            </a>
+        </div>
+        
+        <div class="wishlist-header mb-5" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem;">
+            <div>
+                <h1 class="page-title highlight-title">Të Preferuarat Tona</h1>
+                <p class="text-muted">Produktet që keni ruajtur për më vonë</p>
+            </div>
+        </div>
+
+        {% if favorites %}
+        <div class="product-grid-v2">
+            {% for product in favorites %}
+                <div class="product-card fade-in">
+                    <div class="product-image">
+                        {% if product.discount_price %}
+                            <div class="special-offer-badge red-badge">Oferta Speciale</div>
+                        {% endif %}
+                        {% if product.is_best_seller %}
+                            <div class="best-seller-badge">Më i Shituri</div>
+                        {% endif %}
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                        <button class="btn-favorite active" onclick="toggleFavorite(this, '{{ product._id }}')">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
+                    </div>
+                        <div class="product-info">
+                            <span class="product-category">{{ product.category }}</span>
+                            <h3 class="product-title">{{ product.name }}</h3>
+                            <div class="price-container">
+                            {% if product.discount_price %}
+                                <span class="price discounted">€{{ product.discount_price }}</span>
+                                <span class="price original">€{{ product.price }}</span>
+                                <span class="discount-badge">-{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
+                            {% else %}
+                                <span class="price">€{{ product.price }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state-card text-center py-5">
+            <div class="empty-icon mb-4">
+                <i class="far fa-heart fa-3x"></i>
+            </div>
+            <h3>Nuk keni asnjë produkt të preferuar ende</h3>
+            <p class="text-muted mb-4">Eksploroni produktet tona dhe shtoni ato që ju pëlqejnë këtu.</p>
+            <a href="{{ url_for('main.products') }}" class="btn btn-primary px-5 btn-lg">Eksploro Dyqanin</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+    .wishlist-section {
+        padding-top: 1rem;
+        padding-bottom: 6rem;
+        min-height: 70vh;
+        background: white;
+    }
+
+    /* Remove the top gray color */
+    body {
+        background-color: white !important;
+    }
+
+    .wishlist-header {
+        border-bottom: 2px solid #f8fafc;
+        padding-bottom: 2rem;
+    }
+
+    .empty-state-card {
+        background: white;
+        border-radius: 20px;
+        padding: 5rem 2rem;
+        border: 2px dashed #f1f5f9;
+        margin-top: 2rem;
+    }
+
+    .empty-icon {
+        color: #cbd5e1;
+    }
+
+    /* Fixed grid for wishlist matching products */
+    .product-grid-v2 {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 2rem;
+    }
+
+    @media (max-width: 640px) {
+        .product-grid-v2 {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+        .page-title {
+            font-size: 1.75rem;
+        }
+    }
+</style>
+{% endblock %}

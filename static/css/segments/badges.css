@@ -1,0 +1,24 @@
+/* Global Badge Overrides to ensure visibility */
+.cart-badge, 
+.mobile-cart-badge, 
+.cart-badge-wish, 
+.wishlist-count {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 100 !important;
+}
+
+.cart-badge.d-none, 
+.mobile-cart-badge.d-none, 
+.cart-badge-wish.d-none, 
+.wishlist-count.d-none {
+    display: none !important;
+}
+
+/* Ensure parents don't clip them */
+.nav-icon-btn, 
+.bottom-nav-item, 
+.cart-dropdown-wrapper {
+    overflow: visible !important;
+}

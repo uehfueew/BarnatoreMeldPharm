@@ -1,39 +1,52 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Modern Hero Carousel Section -->
-<header class="hero-carousel-container">
+<div class="home-layout-container">
+    <!-- Desktop Categories Sidebar -->
+    <aside class="desktop-categories-sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-bars"></i>
+            <span>Kategoritë</span>
+        </div>
+        <ul class="d-cat-list">
+            {% if global_categories %}
+                {% for category, subcats in global_categories.items() %}
+                <li class="d-cat-item">
+                    <a href="{{ url_for('main.products', category=category) }}" class="d-cat-link">
+                        <span>{{ category }}</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <div class="d-subcat-popup">
+                        <ul>
+                            {% for sub in subcats %}
+                            <li><a href="{{ url_for('main.products', category=category, subcategory=sub) }}">{{ sub }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </aside>
+
+    <!-- Modern Hero Carousel Section -->
+    <header class="hero-carousel-container">
     <div class="hero-inner-wrapper">
         <div class="hero-carousel">
             <!-- Slide 1: Eucerin -->
-            <div class="hero-slide active">
+            <a href="{{ url_for('main.products', brand='Eucerin') }}" class="hero-slide active">
                 <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659727/IMG_4312_ul0exk.jpg" alt="Eucerin Products" class="hero-img">
-                <div class="hero-overlay-text fade-in-section">
-                    <a href="{{ url_for('main.products', q='Eucerin') }}" class="btn btn-primary btn-sm">
-                        Bli Tani
-                    </a>
-                </div>
-            </div>
+            </a>
 
             <!-- Slide 2: Vichy -->
-            <div class="hero-slide">
+            <a href="{{ url_for('main.products', brand='Vichy') }}" class="hero-slide">
                 <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659726/IMG_4310_eria9y.jpg" alt="Vichy Products" class="hero-img">
-                <div class="hero-overlay-text fade-in-section">
-                    <a href="{{ url_for('main.products', q='Vichy') }}" class="btn btn-primary btn-sm">
-                        Zbuloni Ofertat
-                    </a>
-                </div>
-            </div>
+            </a>
 
             <!-- Slide 3: CeraVe -->
-            <div class="hero-slide">
+            <a href="{{ url_for('main.products', brand='CeraVe') }}" class="hero-slide">
                 <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659006/cerave_zbritje_f6uugd.jpg" alt="CeraVe Products" class="hero-img">
-                <div class="hero-overlay-text fade-in-section">
-                    <a href="{{ url_for('main.products', q='CeraVe') }}" class="btn btn-primary btn-sm">
-                        Bli Tani
-                    </a>
-                </div>
-            </div>
+            </a>
         </div>
         
         <button class="hero-prev" onclick="plusSlides(-1)"><i class="fas fa-chevron-left"></i></button>
@@ -46,54 +59,10 @@
         <span class="dot" onclick="currentSlide(3)"></span>
     </div>
 </header>
-
-<!-- Trust Banner (Moved Up) -->
-<section class="section trust-banner-top">
-    <div class="container">
-        <div class="trust-grid fade-in-section">
-            <div class="trust-item">
-                <div class="icon-box"><i class="fas fa-truck-fast"></i></div>
-                <div class="trust-text">
-                    <h4>Dërgesë e Shpejtë</h4>
-                    <p>24-48 orë</p>
-                </div>
-            </div>
-            <div class="trust-item">
-                <div class="icon-box"><i class="fas fa-user-doctor"></i></div>
-                <div class="trust-text">
-                    <h4>Këshilla Ekspertësh</h4>
-                    <p>Farmacistë të Çertifikuar</p>
-                </div>
-            </div>
-            <div class="trust-item">
-                <div class="icon-box"><i class="fas fa-coins"></i></div>
-                <div class="trust-text">
-                    <h4>Transport Falas</h4>
-                    <p>Në porosi mbi 50€</p>
-                </div>
-            </div>
-            <div class="trust-item">
-                <div class="icon-box"><i class="fas fa-comments"></i></div>
-                <div class="trust-text">
-                    <h4>Suport 24/7</h4>
-                    <p>Jemi këtu për ju</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Search Bar Moved Here -->
-        <div class="hero-search-container-inline">
-             <div class="search-wrapper">
-                 <i class="fas fa-search"></i>
-                 <input type="text" id="productSearch" placeholder="Kërko produkte, vitamina, marka..." autocomplete="off">
-                 <div id="searchPreview" class="search-preview-dropdown"></div>
-             </div>
-         </div>
-    </div>
-</section>
+</div> <!-- End home-layout-container -->
 
 <!-- Categories Section -->
-<section class="section categories-preview">
+<section class="section categories-preview" style="margin-top: 4rem;">
     <div class="container">
         <div class="section-center-header fade-in-section">
             <h2 class="section-title">Eksploro Sipas Nevojës</h2>
@@ -167,7 +136,7 @@
 </section>
 
 <!-- Popular Brands Section -->
-<section class="section brands-section bg-light">
+<section class="section brands-section">
     <div class="container">
         <div class="section-header fade-in-section">
             <div>
@@ -178,7 +147,7 @@
         
         <div class="brand-grid">
             <!-- Brand 1: Eucerin -->
-            <a href="{{ url_for('main.products', q='Eucerin') }}" class="brand-card fade-in-section" style="text-decoration: none;">
+            <a href="{{ url_for('main.products', brand='Eucerin') }}" class="brand-card fade-in-section" style="text-decoration: none;">
                 <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=800&auto=format&fit=crop" alt="Eucerin" class="brand-img">
                 <div class="brand-overlay">
                     <h3 class="brand-name" style="color: white;">Eucerin</h3>
@@ -189,7 +158,7 @@
             </a>
 
             <!-- Brand 2: Vichy -->
-            <a href="{{ url_for('main.products', q='Vichy') }}" class="brand-card fade-in-section" style="text-decoration: none;">
+            <a href="{{ url_for('main.products', brand='Vichy') }}" class="brand-card fade-in-section" style="text-decoration: none;">
                 <img src="https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=800&auto=format&fit=crop" alt="Vichy" class="brand-img">
                 <div class="brand-overlay">
                     <h3 class="brand-name" style="color: white;">Vichy</h3>
@@ -200,7 +169,7 @@
             </a>
 
             <!-- Brand 3: La Roche-Posay -->
-            <a href="{{ url_for('main.products', q='La Roche-Posay') }}" class="brand-card fade-in-section" style="text-decoration: none;">
+            <a href="{{ url_for('main.products', brand='La Roche-Posay') }}" class="brand-card fade-in-section" style="text-decoration: none;">
                 <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=800&auto=format&fit=crop" alt="La Roche-Posay" class="brand-img">
                 <div class="brand-overlay">
                     <h3 class="brand-name" style="color: white;">La Roche-Posay</h3>
@@ -211,7 +180,7 @@
             </a>
 
             <!-- Brand 4: CeraVe -->
-            <a href="{{ url_for('main.products', q='CeraVe') }}" class="brand-card fade-in-section" style="text-decoration: none;">
+            <a href="{{ url_for('main.products', brand='CeraVe') }}" class="brand-card fade-in-section" style="text-decoration: none;">
                 <img src="https://images.unsplash.com/photo-1556229010-6c3f2c9ca4f8?q=80&w=800&auto=format&fit=crop" alt="CeraVe" class="brand-img">
                 <div class="brand-overlay">
                     <h3 class="brand-name" style="color: white;">CeraVe</h3>
@@ -224,62 +193,34 @@
     </div>
 </section>
 
-<!-- Featured Products Section -->
-<section id="featured" class="section featured-products">
+<!-- Featured / Ofertat Section -->
+<section id="ofertat" class="section featured-products">
     <div class="container">
-        <div class="section-header fade-in-section">
+        <div class="section-header fade-in-section" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
             <div>
-                <span class="sub-title">Rekomandimet Tona</span>
+                <span class="sub-title">Zbritjet e fundit</span>
                 <h2 class="section-title">Ofertat Ekskluzive</h2>
             </div>
-            <a href="{{ url_for('main.products') }}" class="view-all"><span>Shiko të gjitha</span> <i class="fas fa-arrow-right"></i></a>
+            <a href="{{ url_for('main.products', discount_only='true') }}" class="btn btn-primary" style="margin-bottom: 5px; border-radius: 50px; font-weight: 600;">
+                <span>Shiko të gjitha ofertat</span> <i class="fas fa-arrow-right ml-2"></i>
+            </a>
         </div>
         
-        <div class="product-carousel-wrapper">
-            <button class="scroll-btn prev"><i class="fas fa-chevron-left"></i></button>
-            <div class="product-carousel no-scrollbar">
+        <div class="product-carousel-wrapper ofertas-style">
+            <button class="scroll-btn prev" onclick="scrollCarousel(this, -1)"><i class="fas fa-chevron-left"></i></button>
+            <div class="product-carousel no-scrollbar creative-offers-grid">
                 {% for product in featured_products %}
-                    <div class="product-card fade-in-section" data-category="{{ product.category }}" 
-                         data-id="{{ product._id }}" 
-                         data-name="{{ product.name }}"
-                         data-price="{{ product.price }}"
-                         data-discount="{{ product.discount_price if product.discount_price else '' }}"
-                         data-img="{{ product.image_url }}"
-                         data-desc="{{ product.description }}"
-                         data-url="{{ url_for('main.product_detail', product_id=product._id) }}">
-                         
-                        <div class="product-image carousel-container" data-index="0">
-                            <!-- Badges -->
-                            <div class="badge-container">
-                                {% if product.discount_price %}
-                                    <span class="badge sale"> -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
-                                {% endif %}
-                                {% if product.is_new %}
-                                    <span class="badge new">E Re</span>
-                                {% endif %}
-                                {% if product.is_best_seller %}
-                                    <span class="badge best-seller">Best Seller</span>
-                                {% endif %}
-                            </div>
-
-                            <div class="carousel-track">
-                                <img src="{{ product.image_url }}" alt="{{ product.name }}">
-                                {% if product.images and product.images|length > 1 %}
-                                    {% for extra_img in product.images[1:] %}
-                                        <img src="{{ extra_img }}" alt="{{ product.name }} {{ loop.index }}">
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
-
-                            {% if product.images and product.images|length > 1 %}
-                                <button class="carousel-arrow prev" onclick="moveCarousel(event, this, -1)">
-                                    <i class="fas fa-chevron-left"></i>
-                                </button>
-                                <button class="carousel-arrow next" onclick="moveCarousel(event, this, 1)">
-                                    <i class="fas fa-chevron-right"></i>
-                                </button>
+                    <div class="product-card fade-in-section" data-id="{{ product._id }}">
+                        <div class="product-image">
+                            {% if product.discount_price %}
+                                <div class="special-offer-badge red-badge">Oferta Speciale</div>
+                            {% endif %}
+                            {% if product.is_best_seller %}
+                                <div class="best-seller-badge">Më i Shituri</div>
                             {% endif %}
 
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                            
                             {% if product.in_stock == False %}
                                 <div class="out-of-stock-overlay">
                                     <span>Jashtë Stokut</span>
@@ -300,82 +241,41 @@
                                 {% if product.discount_price %}
                                     <span class="price discounted">€{{ product.discount_price }}</span>
                                     <span class="price original">€{{ product.price }}</span>
+                                    <span class="discount-badge">-{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
                                 {% else %}
                                     <span class="price">€{{ product.price }}</span>
                                 {% endif %}
                             </div>
-
-                            <button class="btn btn-cart-icon" onclick="addToCart('{{ product._id }}')">
-                                <i class="fas fa-shopping-basket"></i>
-                            </button>
                         </div>
                     </div>
-                {% else %}
-                     <div class="empty-state">
-                        <i class="fas fa-box-open"></i>
-                        <p>Nuk ka produkte të veçuara momentalisht.</p>
-                     </div>
                 {% endfor %}
             </div>
-            <button class="scroll-btn next"><i class="fas fa-chevron-right"></i></button>
+            <button class="scroll-btn next" onclick="scrollCarousel(this, 1)"><i class="fas fa-chevron-right"></i></button>
         </div>
     </div>
 </section>
 
-<!-- Best Sellers Section -->
-<section class="section best-sellers bg-light">
+<!-- Recommended Section -->
+<section id="rekomanduara" class="section">
     <div class="container">
         <div class="section-header fade-in-section">
             <div>
-                <span class="sub-title">Trendet e Fundit</span>
-                <h2 class="section-title">Më të Shiturit</h2>
+                <h2 class="section-title">Të rekomanduara</h2>
             </div>
-            <a href="{{ url_for('main.products') }}" class="view-all"><span>Shiko të gjitha</span> <i class="fas fa-arrow-right"></i></a>
         </div>
         
-        <div class="product-carousel-wrapper">
-            <button class="scroll-btn prev"><i class="fas fa-chevron-left"></i></button>
-            <div class="product-carousel no-scrollbar">
-            {% for product in best_sellers %}
-                <div class="product-card fade-in-section" data-category="{{ product.category }}"
-                         data-id="{{ product._id }}" 
-                         data-name="{{ product.name }}"
-                         data-price="{{ product.price }}"
-                         data-discount="{{ product.discount_price if product.discount_price else '' }}"
-                         data-img="{{ product.image_url }}"
-                         data-desc="{{ product.description }}">
-                    <div class="product-image carousel-container" data-index="0">
-                         <!-- Badges -->
-                        <div class="badge-container">
-                            {% if product.discount_price %}
-                                <span class="badge sale"> -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
-                            {% endif %}
-                            <span class="badge best-seller">Best Seller</span> 
-                            <!-- Since this is the best sellers section, we can force the badge or check the property -->
-                        </div>
-
-                        <div class="carousel-track">
-                            <img src="{{ product.image_url }}" alt="{{ product.name }}">
-                            {% if product.images and product.images|length > 1 %}
-                                {% for extra_img in product.images[1:] %}
-                                    <img src="{{ extra_img }}" alt="{{ product.name }} {{ loop.index }}">
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-
-                        {% if product.images and product.images|length > 1 %}
-                            <button class="carousel-arrow prev" onclick="moveCarousel(event, this, -1)">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button class="carousel-arrow next" onclick="moveCarousel(event, this, 1)">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        {% endif %}
-
+        <div id="recommended-grid" class="product-grid-dynamic">
+            <!-- Products will be loaded here via JS -->
+            {% for product in regular_products[:20] %} <!-- Assuming regular_products has all or we load more -->
+                <div class="product-card fade-in-section">
+                    <div class="product-image">
                         {% if product.discount_price %}
-                            <span class="badge sale"> -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
+                            <div class="special-offer-badge red-badge">Oferta Speciale</div>
                         {% endif %}
-
+                        {% if product.is_best_seller %}
+                            <div class="best-seller-badge">Më i Shituri</div>
+                        {% endif %}
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}">
                         <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
                             <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
                         </button>
@@ -384,142 +284,64 @@
                     <div class="product-info">
                         <span class="product-category">{{ product.category }}</span>
                         <h3 class="product-title">{{ product.name }}</h3>
-                        
                         <div class="price-container">
                             {% if product.discount_price %}
                                 <span class="price discounted">€{{ product.discount_price }}</span>
                                 <span class="price original">€{{ product.price }}</span>
+                                <span class="discount-badge">-{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
                             {% else %}
                                 <span class="price">€{{ product.price }}</span>
                             {% endif %}
                         </div>
-
-                        <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" class="add-cart-form">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                            <button type="submit" class="btn btn-cart-icon" {% if product.in_stock == False %}disabled{% endif %}>
-                                <i class="fas fa-shopping-basket"></i>
-                            </button>
-                        </form>
                     </div>
                 </div>
             {% endfor %}
-            </div>
-            <button class="scroll-btn next"><i class="fas fa-chevron-right"></i></button>
-        </div>
-    </div>
-</section>
-
-<!-- Regular Products Section -->
-<section id="regular-products" class="section regular-products">
-    <div class="container">
-        <div class="section-header fade-in-section">
-            <div>
-                <span class="sub-title">Zbuloni Më Shumë</span>
-                <h2 class="section-title">Produktet</h2>
-            </div>
-            <a href="{{ url_for('main.products') }}" class="view-all"><span>Shiko të gjitha</span> <i class="fas fa-arrow-right"></i></a>
         </div>
         
-        <div class="product-carousel-wrapper">
-            <button class="scroll-btn prev"><i class="fas fa-chevron-left"></i></button>
-            <div class="product-carousel no-scrollbar">
-            {% for product in regular_products %}
-                <div class="product-card fade-in-section" data-category="{{ product.category }}"
-                         data-id="{{ product._id }}" 
-                         data-name="{{ product.name }}"
-                         data-price="{{ product.price }}"
-                         data-discount="{{ product.discount_price if product.discount_price else '' }}"
-                         data-img="{{ product.image_url }}"
-                         data-desc="{{ product.description }}">
-                    <div class="product-image carousel-container" data-index="0">
-                        <!-- Badges -->
-                        <div class="badge-container">
-                            {% if product.discount_price %}
-                                <span class="badge sale"> -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
-                            {% endif %}
-                            {% if product.is_new %}
-                                <span class="badge new">E Re</span>
-                            {% endif %}
-                        </div>
-
-                        <div class="carousel-track">
-                            <img src="{{ product.image_url }}" alt="{{ product.name }}">
-                            {% if product.images and product.images|length > 1 %}
-                                {% for extra_img in product.images[1:] %}
-                                    <img src="{{ extra_img }}" alt="{{ product.name }} {{ loop.index }}">
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-
-                        {% if product.images and product.images|length > 1 %}
-                            <button class="carousel-arrow prev" onclick="moveCarousel(event, this, -1)">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button class="carousel-arrow next" onclick="moveCarousel(event, this, 1)">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                            <div class="carousel-indicators">
-                                <div class="indicator-dot active"></div>
-                                {% for extra_img in product.images[1:] %}
-                                    <div class="indicator-dot"></div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        {% if product.discount_price %}
-                            <span class="badge sale"> -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
-                        {% endif %}
-
-                        {% if product.in_stock == False %}
-                            <div class="out-of-stock-overlay">
-                                <span>Jashtë Stokut</span>
-                            </div>
-                        {% endif %}
-
-                        <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
-                            <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
-                        </button>
-                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-category">{{ product.category }}</span>
-                        <h3 class="product-title">{{ product.name }}</h3>
-                        {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
-                        
-                        <div class="price-container">
-                            {% if product.discount_price %}
-                                <span class="price discounted">€{{ product.discount_price }}</span>
-                                <span class="price original">€{{ product.price }}</span>
-                            {% else %}
-                                <span class="price">€{{ product.price }}</span>
-                            {% endif %}
-                        </div>
-
-                        <div class="product-actions">
-                            <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                <button type="submit" class="btn btn-cart-icon" {% if product.in_stock == False %}disabled{% endif %}>
-                                    {% if product.in_stock == False %}
-                                        <i class="fas fa-ban"></i>
-                                    {% else %}
-                                        <i class="fas fa-shopping-basket"></i>
-                                    {% endif %}
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                 <div class="empty-state">
-                    <i class="fas fa-box-open"></i>
-                    <p>Nuk ka produkte momentalisht.</p>
-                 </div>
-            {% endfor %}
-            </div>
-            <button class="scroll-btn next"><i class="fas fa-chevron-right"></i></button>
+        {% if total_pages_regular and total_pages_regular > 1 %}
+        <div class="load-more-container text-center" style="margin-top: 4rem; margin-bottom: 4rem;">
+            <button id="load-more-btn" class="btn btn-outline-primary btn-load-more" data-page="1">
+                Shiko të gjitha produktet <i class="fas fa-chevron-down ml-2"></i>
+            </button>
         </div>
+        {% endif %}
     </div>
 </section>
 
+<!-- Trust Banner (At the end) -->
+<section class="section trust-banner-bottom">
+    <div class="container text-center mb-5">
+        <div class="trust-grid fade-in-section">
+            <div class="trust-item">
+                <div class="icon-box"><i class="fas fa-truck-fast"></i></div>
+                <div class="trust-text">
+                    <h4>Dërgesë e Shpejtë</h4>
+                    <p>24-48 orë</p>
+                </div>
+            </div>
+            <div class="trust-item">
+                <div class="icon-box"><i class="fas fa-user-doctor"></i></div>
+                <div class="trust-text">
+                    <h4>Këshilla Ekspertësh</h4>
+                    <p>Farmacistë të Çertifikuar</p>
+                </div>
+            </div>
+            <div class="trust-item">
+                <div class="icon-box"><i class="fas fa-coins"></i></div>
+                <div class="trust-text">
+                    <h4>Transport Falas</h4>
+                    <p>Në porosi mbi 50€</p>
+                </div>
+            </div>
+            <div class="trust-item">
+                <div class="icon-box"><i class="fas fa-comments"></i></div>
+                <div class="trust-text">
+                    <h4>Suport 24/7</h4>
+                    <p>Jemi këtu për ju</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}

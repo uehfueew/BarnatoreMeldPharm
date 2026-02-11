@@ -10,11 +10,15 @@ class User(UserMixin):
         self.password = user_data.get('password')
         self.is_admin = user_data.get('is_admin', False)
         # Add profile fields
-        self.fullname = user_data.get('fullname', '')
+        self.first_name = user_data.get('first_name', '')
+        self.last_name = user_data.get('last_name', '')
+        self.fullname = user_data.get('fullname', '') or f"{self.first_name} {self.last_name}".strip()
         self.address = user_data.get('address', '')
         self.city = user_data.get('city', '')
         self.country = user_data.get('country', '')
         self.phone = user_data.get('phone', '')
+        self.specifikat = user_data.get('specifikat', '')
+        self.favorites = user_data.get('favorites', [])
 
     @staticmethod
     def create(username, email, password_hash, is_admin=False):
@@ -23,25 +27,41 @@ class User(UserMixin):
             "email": email,
             "password": password_hash,
             "is_admin": is_admin,
+            "first_name": "",
+            "last_name": "",
             "fullname": "",
             "address": "",
             "city": "",
             "country": "",
-            "phone": ""
+            "phone": "",
+            "specifikat": ""
         }).inserted_id
         return User.get_by_id(user_id)
 
     @staticmethod
     def update_profile(user_id, profile_data):
+        update_data = {}
+        
+        # Only add fields that are provided in profile_data
+        fields = ['address', 'city', 'country', 'phone', 'first_name', 'last_name', 'specifikat']
+        for field in fields:
+            if field in profile_data:
+                update_data[field] = profile_data[field]
+        
+        # Automatically update fullname if first or last name is changed
+        # We need the current values if only one is provided
+        if 'first_name' in profile_data or 'last_name' in profile_data:
+            user = User.get_by_id(user_id)
+            fname = profile_data.get('first_name', user.first_name if user else '')
+            lname = profile_data.get('last_name', user.last_name if user else '')
+            update_data["fullname"] = f"{fname} {lname}".strip()
+        
+        if not update_data:
+            return
+
         mongo.db.users.update_one(
             {"_id": ObjectId(user_id)},
-            {"$set": {
-                "fullname": profile_data.get('fullname', ''),
-                "address": profile_data.get('address', ''),
-                "city": profile_data.get('city', ''),
-                "country": profile_data.get('country', ''),
-                "phone": profile_data.get('phone', '')
-            }}
+            {"$set": update_data}
         )
 
     @staticmethod

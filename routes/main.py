@@ -10,13 +10,20 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    featured_products = Product.get_featured(limit=15)
-    best_sellers = Product.get_best_sellers(limit=15)
-    regular_products = Product.get_regular(limit=15)
+    import math
+    featured_products = Product.get_featured(limit=20)
+    best_sellers = Product.get_best_sellers(limit=20)
+    
+    # Get regular products with count and total pages for pagination
+    regular_products = Product.get_regular(limit=20)
+    total_regular = Product.get_regular_count()
+    total_pages_regular = math.ceil(total_regular / 20)
+    
     return render_template('index.html', 
                             featured_products=featured_products, 
                             best_sellers=best_sellers,
                             regular_products=regular_products,
+                            total_pages_regular=total_pages_regular,
                             categories=CATEGORIES)
 
 @main.route('/guest_login')
@@ -31,16 +38,36 @@ def exit_guest():
 
 @main.route('/products')
 def products(): 
+    # Automatically revert expired offers
+    Product.revert_expired_offers()
+    
     page = request.args.get('page', 1, type=int)
     category = request.args.get('category', 'all')
     subcategory = request.args.get('subcategory', 'all')
-    search_query = request.args.get('q', '')
+    search_query = request.args.get('search') or request.args.get('q', '')
+    sort = request.args.get('sort', 'newest')
+    brand = request.args.get('brand', 'all')
+    min_price = request.args.get('min_price', type=float)
+    max_price = request.args.get('max_price', type=float)
+    discount_only = request.args.get('discount_only') == 'true'
+    no_discount = request.args.get('no_discount') == 'true'
+    best_sellers = request.args.get('best_sellers') == 'true'
     per_page = 20
     
-    products, total_pages = Product.get_paginated(page, per_page, category, search_query, subcategory)
+    products, total_pages, total_count = Product.get_paginated(
+        page, per_page, category, search_query, subcategory, 
+        sort=sort, brand=brand, min_price=min_price, max_price=max_price,
+        discount_only=discount_only, best_seller_only=best_sellers,
+        no_discount=no_discount
+    )
+    
+    # Get all unique brands for the filter sidebar
+    # For performance, we could hardcode or pre-calculate this, but let's try to get it dynamically or use a known list
+    available_brands = mongo.db.products.distinct("brand")
+    available_brands = [b for b in available_brands if b] # filter out None
     
     # If it's an AJAX request (from our new filter system)
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.args.get('ajax') == '1':
         results = []
         for p in products:
             results.append({
@@ -55,6 +82,7 @@ def products():
                 'subcategory': p.get('subcategory'),
                 'in_stock': p.get('in_stock', True),
                 'size': p.get('size', ''),
+                'is_best_seller': p.get('is_best_seller', False),
                 'is_favorite': (current_user.is_authenticated and p.get('favorites') and current_user.id in p.get('favorites')) or 
                                (not current_user.is_authenticated and str(p['_id']) in session.get('liked_products', []))
             })
@@ -63,10 +91,27 @@ def products():
             'products': results,
             'page': page,
             'total_pages': total_pages,
+            'total_count': total_count,
             'current_category': category,
             'current_subcategory': subcategory,
-            'categories_config': CATEGORIES # To update subcategory choices
+            'current_brand': brand,
+            'sort': sort,
+            'best_sellers': best_sellers
         })
+
+    return render_template('products.html', 
+                         products=products, 
+                         page=page, 
+                         total_pages=total_pages,
+                         total_count=total_count,
+                         current_category=category,
+                         current_subcategory=subcategory,
+                         current_brand=brand,
+                         search_query=search_query,
+                         categories=CATEGORIES,
+                         brands=available_brands,
+                         discount_only=discount_only,
+                         best_sellers=best_sellers)
 
     # Debug print
     print(f"Products found: {len(products)} on page {page} in category {category} subcategory {subcategory} search: {search_query}")
@@ -93,6 +138,8 @@ def product_detail(product_id):
                 favorite_usernames.append(u.username)
 
     related_products = Product.get_related(product.get('category'), product.get('_id'))
+    if related_products:
+        related_products = related_products[:4]
     return render_template('product_detail.html', product=product, related_products=related_products, favorite_usernames=favorite_usernames)
 
 @main.route('/about')
@@ -100,33 +147,44 @@ def about():
     return render_template('about.html')
 
 @main.route('/profile', methods=['GET', 'POST'])
+@login_required
 def profile():
     if request.method == 'POST':
-        if not current_user.is_authenticated:
-            flash('Duhet të jeni të kyçur për të kryer këtë veprim.', 'error')
-            return redirect(url_for('auth.login'))
-        
         profile_data = {
-            'fullname': request.form.get('fullname'),
-            'address': request.form.get('address'),
-            'city': request.form.get('city'),
-            'country': request.form.get('country'),
+            'first_name': request.form.get('first_name'),
+            'last_name': request.form.get('last_name'),
             'phone': request.form.get('phone')
         }
         User.update_profile(current_user.id, profile_data)
-        flash('Profili u përditësua me sukses!', 'success')
+        flash('Të dhënat personale u përditësuan!', 'success')
         return redirect(url_for('main.profile'))
+    return render_template('profile.html')
 
+@main.route('/profile/address', methods=['GET', 'POST'])
+@login_required
+def address():
+    if request.method == 'POST':
+        address_data = {
+            'address': request.form.get('address'),
+            'city': request.form.get('city'),
+            'country': request.form.get('country'),
+            'specifikat': request.form.get('specifikat') # Optional field
+        }
+        User.update_profile(current_user.id, address_data)
+        flash('Adresa u përditësua me sukses!', 'success')
+        return redirect(url_for('main.address'))
+    return render_template('address.html')
+
+@main.route('/wishlist')
+def wishlist():
     favorites = []
     if current_user.is_authenticated:
         favorites = Product.get_favorites_by_user(current_user.id)
     else:
-        # Check for guest favorites in session
         liked_ids = session.get('liked_products', [])
         if liked_ids:
             favorites = Product.get_by_ids(liked_ids)
-            
-    return render_template('profile.html', favorites=favorites)
+    return render_template('wishlist.html', favorites=favorites)
 
 @main.route('/orders')
 def orders():
@@ -156,7 +214,14 @@ def toggle_favorite(product_id):
         session.modified = True
     
     if action:
-        return jsonify({'success': True, 'action': action})
+        # Get new count
+        if current_user.is_authenticated:
+            # Count products where user_id is in favorites list
+            new_count = mongo.db.products.count_documents({"favorites": str(current_user.id)})
+        else:
+            new_count = len(session.get('liked_products', []))
+            
+        return jsonify({'success': True, 'action': action, 'count': new_count})
     return jsonify({'success': False}), 400
 
 @main.route('/api/search')

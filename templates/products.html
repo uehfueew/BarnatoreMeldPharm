@@ -1,472 +1,183 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Shop Hero Section -->
-<header class="hero shop-hero">
-    <div class="hero-bg-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-    </div>
-    <div class="container">
-        <div class="hero-text text-center">
-            <h1 class="gradient-headline">Eksploro Dyqanin</h1>
-            <p class="mx-auto" style="max-width: 600px;">Gjeni gjithçka që ju nevojitet për shëndetin dhe bukurinë tuaj në një vend me cilësinë më të lartë.</p>
-        </div>
-    </div>
-</header>
-
 <section class="section shop-section">
-    <div class="container">
-        <!-- Search and Filter Bar -->
-        <div class="filter-container">
-            <div class="filter-bar glass-card" style="border-radius: var(--radius-xl);">
-                <div class="search-wrapper" style="flex: 1; max-width: 100%;">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="productSearch" placeholder="Kërko produkte sipas emrit ose markës..." autocomplete="off" value="{{ search_query or '' }}" data-limit="5">
-                    <div id="searchPreview" class="search-preview-dropdown"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modern Category & Subcategory Filter System -->
-        <div class="shop-filter-system">
-            <!-- Main Categories Row -->
-            <div class="category-pills-container">
-                <button type="button" class="category-pill filter-trigger {% if current_category == 'all' %}active{% endif %}" data-category="all">
-                    <i class="fas fa-th-large"></i>
-                    <span>Të Gjitha</span>
-                </button>
-                
-                {% set icons = {
-                    'Dermokozmetikë': 'fa-sparkles',
-                    'Suplemente & Vitamina': 'fa-capsules',
-                    'Kujdes Personal & Higjienë': 'fa-soap',
-                    'Pajisje Mjekësore': 'fa-stethoscope',
-                    'Nënë & Fëmijë': 'fa-baby-carriage',
-                    'Pajisje Ortopedike': 'fa-bone',
-                    'Produkte Natyrale & Bimore': 'fa-leaf'
-                } %}
-
-                {% for cat_name in categories.keys() %}
-                    <button type="button" 
-                       class="category-pill filter-trigger {% if current_category == cat_name %}active{% endif %}"
-                       data-category="{{ cat_name }}">
-                        <i class="fas {{ icons.get(cat_name, 'fa-tag') }}"></i>
-                        <span>{{ cat_name }}</span>
-                    </button>
-                {% endfor %}
-            </div>
-
-            <!-- Subcategories Row -->
-            <div id="subcategoryContainer" class="subcategory-chips-container" style="{% if current_category == 'all' %}display: none;{% endif %}">
-                {% if current_category != 'all' %}
-                    <button type="button" class="sub-chip filter-trigger {% if current_subcategory == 'all' %}active{% endif %}" data-category="{{ current_category }}" data-subcategory="all">
-                        Të Gjitha Në {{ current_category }}
-                    </button>
-                    {% for sub in categories[current_category] %}
-                        <button type="button" class="sub-chip filter-trigger {% if current_subcategory == sub %}active{% endif %}" data-category="{{ current_category }}" data-subcategory="{{ sub }}">
-                            {{ sub }}
-                        </button>
-                    {% endfor %}
-                {% endif %}
-            </div>
-        </div>
-
-        <div id="productGrid" class="product-grid">
-            {% for product in products %}
-                <div class="product-card fade-in-section" data-category="{{ product.category }}">
-                    <div class="product-image carousel-container" data-index="0">
-                        <div class="carousel-track">
-                            <img src="{{ product.image_url }}" alt="{{ product.name }}">
-                            {% if product.images and product.images|length > 1 %}
-                                {% for extra_img in product.images[1:] %}
-                                    <img src="{{ extra_img }}" alt="{{ product.name }} {{ loop.index }}">
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-
-                        {% if product.images and product.images|length > 1 %}
-                            <button class="carousel-arrow prev" onclick="moveCarousel(event, this, -1)">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button class="carousel-arrow next" onclick="moveCarousel(event, this, 1)">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                            <div class="carousel-indicators">
-                                <div class="indicator-dot active"></div>
-                                {% for extra_img in product.images[1:] %}
-                                    <div class="indicator-dot"></div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        {% if product.discount_price %}
-                            <span class="badge sale"> -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
-                        {% endif %}
-
-                        {% if product.in_stock == False %}
-                            <div class="out-of-stock-overlay">
-                                <span>Jashtë Stokut</span>
-                            </div>
-                        {% endif %}
-
-                        <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
-                            <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
-                        </button>
-                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-category">{{ product.category }}</span>
-                        <h3 class="product-title">{{ product.name }}</h3>
-                        {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
-                        
-                        <div class="price-container">
-                            {% if product.discount_price %}
-                                <span class="price discounted">€{{ product.discount_price }}</span>
-                                <span class="price original">€{{ product.price }}</span>
-                            {% else %}
-                                <span class="price">€{{ product.price }}</span>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="product-actions">
-                            <form action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST">
-                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                 <button type="submit" class="btn btn-cart" {% if product.in_stock == False %}disabled{% endif %}>
-                                    {% if product.in_stock == False %}
-                                        Jashtë Stokut
-                                    {% else %}
-                                        <i class="fas fa-shopping-basket"></i> Në Shportë
-                                    {% endif %}
-                                 </button>
-                            </form>
-                            <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="btn btn-details">
-                                Shiko Detajet
+    <div class="container container-wide">
+        <div class="shop-layout">
+            <!-- Sidebar Filters -->
+            <aside class="shop-sidebar">
+                <div class="sidebar-block">
+                    <h3 class="sidebar-title no-line">Kategoritë</h3>
+                    <ul class="sidebar-cat-list">
+                        <li>
+                            <a href="{{ url_for('main.products', category='all') }}" class="sidebar-cat-link {% if current_category == 'all' %}active{% endif %}">
+                                <span>Të Gjitha</span>
+                                <i class="fas fa-th-large"></i>
                             </a>
+                        </li>
+                        {% for cat_name, subcats in categories.items() %}
+                        <li>
+                            <div class="sidebar-cat-group">
+                                <a href="{{ url_for('main.products', category=cat_name) }}" class="sidebar-cat-link {% if current_category == cat_name %}active{% endif %}">
+                                    <span>{{ cat_name }}</span>
+                                    {% if subcats %}<i class="fas fa-chevron-right toggle-icon"></i>{% endif %}
+                                </a>
+                                {% if current_category == cat_name and subcats %}
+                                <ul class="sidebar-subcat-list">
+                                    {% for sub in subcats %}
+                                    <li>
+                                        <a href="{{ url_for('main.products', category=cat_name, subcategory=sub) }}" class="sidebar-subcat-link {% if current_subcategory == sub %}active{% endif %}">
+                                            {{ sub }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Only Discounts Filter -->
+                <div class="sidebar-block">
+                    <h3 class="sidebar-title">Filtroni Sipas</h3>
+                    <div class="filter-switch-row mb-3">
+                        <span class="switch-label">Shfaq vetëm ofertat</span>
+                        <label class="switch">
+                            <input type="checkbox" id="discount-only-filter" {% if discount_only %}checked{% endif %} onchange="updateShop()">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="filter-switch-row">
+                        <span class="switch-label">Më të shiturit</span>
+                        <label class="switch">
+                            <input type="checkbox" id="best-seller-filter" {% if best_sellers %}checked{% endif %} onchange="updateShop()">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Brand Filter -->
+                <div class="sidebar-block">
+                    <h3 class="sidebar-title">Brendet</h3>
+                    <div class="brand-filter-container">
+                        <ul class="brand-list">
+                            <li>
+                                <a href="{{ url_for('main.products', brand='all', category=current_category) }}" class="brand-link-item {% if current_brand == 'all' %}active{% endif %}">
+                                    Të gjitha
+                                </a>
+                            </li>
+                            {% for brand in brands %}
+                            <li>
+                                <a href="{{ url_for('main.products', brand=brand, category=current_category) }}" class="brand-link-item {% if current_brand == brand %}active{% endif %}">
+                                    {{ brand }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="sidebar-block">
+                    <h3 class="sidebar-title">Çmimi</h3>
+                    <div class="filter-group-price">
+                        <div class="price-inputs-wrapper">
+                            <div class="input-with-label">
+                                <span>Min</span>
+                                <input type="number" placeholder="0" id="min-price" class="price-input" value="{{ request.args.get('min_price', '') }}">
+                            </div>
+                            <div class="input-with-label">
+                                <span>Max</span>
+                                <input type="number" placeholder="1000" id="max-price" class="price-input" value="{{ request.args.get('max_price', '') }}">
+                            </div>
+                        </div>
+                        <button id="apply-price-filter" class="btn btn-sm btn-primary mt-3 w-100">Apliko</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Shop Content -->
+            <main class="shop-main-content">
+                <div class="shop-controls-container">
+                    <div class="results-count">
+                        Gjithsej <span id="current-count">{{ total_count }}</span> produkte
+                    </div>
+                    <div class="shop-sorting">
+                        <div class="dropdown" id="sortDropdown">
+                            <button class="btn btn-outline-secondary order-button" type="button" id="sortTrigger">
+                                Rendit: <span id="current-sort-label">Relevanca</span> <i class="fas fa-chevron-down ml-2"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end" id="sortMenu">
+                                <a class="dropdown-item sort-trigger active" data-sort="relevance">
+                                    <i class="fas fa-star"></i> Relevanca
+                                </a>
+                                <a class="dropdown-item sort-trigger" data-sort="price-low">
+                                    <i class="fas fa-sort-amount-down-alt"></i> Çmimi: Ulët - Lartë
+                                </a>
+                                <a class="dropdown-item sort-trigger" data-sort="price-high">
+                                    <i class="fas fa-sort-amount-up"></i> Çmimi: Lartë - Ulët
+                                </a>
+                                <a class="dropdown-item sort-trigger" data-sort="newest">
+                                    <i class="fas fa-clock"></i> Më të rejat
+                                </a>
+                                <a class="dropdown-item sort-trigger" data-sort="discount">
+                                    <i class="fas fa-tag"></i> Zbritjes (%) më të lartë
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            {% endfor %}
 
-            {% if not products %}
-                <div class="empty-state" style="grid-column: 1/-1;">
-                    <i class="fas fa-search"></i>
-                    <p>Nuk u gjetën produkte në këtë kategori.</p>
+                <div id="productGrid" class="product-grid-v2">
+                    {% for product in products %}
+                        <div class="product-card fade-in-section">
+                            <div class="product-image">
+                                {% if product.discount_price %}
+                                    <div class="special-offer-badge red-badge">Oferta Speciale</div>
+                                {% endif %}
+                                {% if product.is_best_seller %}
+                                    <div class="best-seller-badge">Më i Shituri</div>
+                                {% endif %}
+                                <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                                <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
+                                    <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
+                                </button>
+                                <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
+                            </div>
+                            <div class="product-info">
+                                <span class="product-category">{{ product.category }}</span>
+                                <h3 class="product-title">{{ product.name }}</h3>
+                                <div class="price-container">
+                                    {% if product.discount_price %}
+                                        <span class="price discounted">€{{ product.discount_price }}</span>
+                                        <span class="price original">€{{ product.price }}</span>
+                                        <span class="discount-badge">-{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
+                                    {% else %}
+                                        <span class="price">€{{ product.price }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    
+                    {% if not products %}
+                        <div class="empty-state" style="grid-column: 1/-1; padding: 4rem; text-align: center;">
+                            <i class="fas fa-search fa-3x mb-3" style="color: #cbd5e1;"></i>
+                            <p>Nuk u gjetën produkte në këtë kategori.</p>
+                            <a href="{{ url_for('main.products') }}" class="btn btn-primary mt-3">Shiko të gjitha</a>
+                        </div>
+                    {% endif %}
                 </div>
-            {% endif %}
-        </div>
 
-        <!-- Pagination Controls -->
-        <div id="paginationContainer">
-            {% if total_pages > 1 %}
-            <div class="pagination">
-                {% if page > 1 %}
-                <button class="page-btn filter-trigger" data-page="{{ page - 1 }}" data-category="{{ current_category }}" data-subcategory="{{ current_subcategory }}">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                {% endif %}
-                
-                {% for p in range(1, total_pages + 1) %}
-                    <button class="page-btn filter-trigger {{ 'active' if p == page else '' }}" data-page="{{ p }}" data-category="{{ current_category }}" data-subcategory="{{ current_subcategory }}">{{ p }}</button>
-                {% endfor %}
-
-                {% if page < total_pages %}
-                <button class="page-btn filter-trigger" data-page="{{ page + 1 }}" data-category="{{ current_category }}" data-subcategory="{{ current_subcategory }}">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-                {% endif %}
-            </div>
-            {% endif %}
+                <div class="load-more-container text-center {% if products|length < 20 %}d-none{% endif %}" style="margin-top: 4rem; margin-bottom: 4rem;">
+                    <button id="load-more-products" class="btn btn-outline-primary btn-load-more" data-page="1">
+                        Shiko të gjitha produktet <i class="fas fa-chevron-down ml-2"></i>
+                    </button>
+                </div>
+            </main>
         </div>
     </div>
 </section>
-
-<style>
-/* Modern Category Filter Styles */
-.shop-filter-system {
-    margin-bottom: 2rem;
-}
-
-.category-pills-container {
-    display: flex;
-    gap: 0.75rem;
-    overflow-x: auto;
-    padding: 0.5rem 0.25rem 1rem;
-    scrollbar-width: none; /* Hide scrollbar for clean look */
-    -ms-overflow-style: none;
-}
-
-.category-pills-container::-webkit-scrollbar {
-    display: none;
-}
-
-.category-pill {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: var(--radius-lg);
-    color: var(--text-muted);
-    font-weight: 600;
-    font-size: 0.85rem;
-    white-space: nowrap;
-    transition: var(--transition);
-    box-shadow: var(--shadow-sm);
-    cursor: pointer;
-    outline: none;
-}
-
-.category-pill i, .category-pill span {
-    pointer-events: none;
-}
-
-.category-pill i {
-    font-size: 1.1rem;
-    color: var(--primary);
-    transition: var(--transition);
-}
-
-.category-pill:hover {
-    transform: translateY(-4px);
-    border-color: var(--primary);
-    color: var(--primary);
-    box-shadow: var(--shadow-md);
-}
-
-.category-pill.active {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: white;
-    box-shadow: 0 10px 20px -5px rgba(5, 150, 105, 0.4);
-}
-
-.category-pill.active i {
-    color: white;
-}
-
-/* Subcategory Chips */
-.subcategory-chips-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 0.5rem;
-    padding: 0 0.25rem;
-}
-
-.sub-chip {
-    padding: 0.6rem 1.25rem;
-    background: #f1f5f9;
-    border: 1px solid transparent;
-    border-radius: var(--radius-full);
-    color: #64748b;
-    font-weight: 500;
-    font-size: 0.85rem;
-    transition: var(--transition);
-    cursor: pointer;
-    outline: none;
-}
-
-.sub-chip:hover {
-    background: #e2e8f0;
-    color: var(--primary);
-}
-
-.sub-chip.active {
-    background: var(--primary-light);
-    color: var(--primary-dark);
-    border-color: var(--primary);
-    font-weight: 700;
-}
-
-@media (max-width: 768px) {
-    .category-pill {
-        padding: 0.5rem 0.8rem;
-        font-size: 0.75rem;
-        border-radius: 10px;
-        gap: 0.4rem;
-    }
-    
-    .category-pill i {
-        font-size: 0.8rem;
-    }
-
-    .shop-filter-system {
-        margin-bottom: 1.25rem;
-    }
-
-    .category-pills-container {
-        gap: 0.5rem;
-        padding-bottom: 0.75rem;
-    }
-
-    .filter-container {
-        margin-top: -1rem !important;
-        margin-bottom: 1.5rem !important;
-    }
-
-    .filter-bar {
-        padding: 0.5rem 0.75rem !important;
-        margin-bottom: 1rem !important;
-    }
-
-    .search-wrapper input {
-        padding: 0.6rem 1rem 0.6rem 2.8rem !important;
-        font-size: 0.85rem !important;
-        height: 40px !important;
-    }
-
-    .search-wrapper i {
-        left: 1rem !important;
-        font-size: 0.9rem !important;
-    }
-}
-</style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const productGrid = document.getElementById('productGrid');
-        const subcategoryContainer = document.getElementById('subcategoryContainer');
-        const paginationContainer = document.getElementById('paginationContainer');
-
-        async function updateProducts(category = 'all', subcategory = 'all', page = 1) {
-            // Update URL without refreshing
-            const url = new URL(window.location);
-            url.searchParams.set('category', category);
-            url.searchParams.set('subcategory', subcategory);
-            url.searchParams.set('page', page);
-            window.history.pushState({}, '', url);
-
-            // Show loading state
-            productGrid.style.opacity = '0.5';
-            
-            try {
-                const response = await fetch(`/products?category=${encodeURIComponent(category)}&subcategory=${encodeURIComponent(subcategory)}&page=${page}`, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-                const data = await response.json();
-
-                // Update Category UI
-                document.querySelectorAll('.category-pill').forEach(p => {
-                    p.classList.toggle('active', p.dataset.category === data.current_category);
-                });
-
-                // Update Subcategory UI
-                if (data.current_category === 'all') {
-                    subcategoryContainer.style.display = 'none';
-                    subcategoryContainer.innerHTML = '';
-                } else {
-                    subcategoryContainer.style.display = 'flex';
-                    let subHtml = `<button type="button" class="sub-chip filter-trigger ${data.current_subcategory === 'all' ? 'active' : ''}" data-category="${data.current_category}" data-subcategory="all">Të Gjitha Në ${data.current_category}</button>`;
-                    
-                    const subs = data.categories_config[data.current_category] || [];
-                    subs.forEach(sub => {
-                        subHtml += `<button type="button" class="sub-chip filter-trigger ${data.current_subcategory === sub ? 'active' : ''}" data-category="${data.current_category}" data-subcategory="${sub}">${sub}</button>`;
-                    });
-                    subcategoryContainer.innerHTML = subHtml;
-                }
-
-                // Update Products
-            if (data.products.length === 0) {
-                productGrid.innerHTML = `
-                    <div class="empty-state" style="grid-column: 1/-1;">
-                        <i class="fas fa-search"></i>
-                        <p>Nuk u gjetën produkte në këtë kategori.</p>
-                    </div>
-                `;
-            } else {
-                    productGrid.innerHTML = data.products.map(p => `
-                        <div class="product-card">
-                            <div class="product-image carousel-container" data-index="0">
-                                <div class="carousel-track">
-                                    <img src="${p.image_url}" alt="${p.name}">
-                                    ${p.images && p.images.length > 1 ? p.images.slice(1).map(img => `<img src="${img}" alt="${p.name}">`).join('') : ''}
-                                </div>
-                                ${p.images && p.images.length > 1 ? `
-                                    <button class="carousel-arrow prev" onclick="moveCarousel(event, this, -1)"><i class="fas fa-chevron-left"></i></button>
-                                    <button class="carousel-arrow next" onclick="moveCarousel(event, this, 1)"><i class="fas fa-chevron-right"></i></button>
-                                    <div class="carousel-indicators">
-                                        <div class="indicator-dot active"></div>
-                                        ${p.images.slice(1).map(() => `<div class="indicator-dot"></div>`).join('')}
-                                    </div>
-                                ` : ''}
-                                ${p.discount_price ? `<span class="badge sale">-${Math.round((p.price - p.discount_price) / p.price * 100)}%</span>` : ''}
-                                ${!p.in_stock ? `<div class="out-of-stock-overlay"><span>Jashtë Stokut</span></div>` : ''}
-                                <button class="btn-favorite ${p.is_favorite ? 'active' : ''}" onclick="toggleFavorite(this, '${p.id}')">
-                                    <i class="${p.is_favorite ? 'fas' : 'far'} fa-heart"></i>
-                                </button>
-                                <a href="/product/${p.id}" class="product-card-link-overlay"></a>
-                            </div>
-                            <div class="product-info">
-                                <span class="product-category">${p.category}</span>
-                                <h3 class="product-title">${p.name}</h3>
-                                ${p.size ? `<span class="product-size">${p.size}</span>` : ''}
-                                <div class="price-container">
-                                    ${p.discount_price ? `
-                                        <span class="price discounted">€${p.discount_price}</span>
-                                        <span class="price original">€${p.price}</span>
-                                    ` : `<span class="price">€${p.price}</span>`}
-                                </div>
-                                <div class="product-actions">
-                                    <form action="/cart/add/${p.id}" method="POST">
-                                        <input type="hidden" name="csrf_token" value="${document.querySelector('meta[name="csrf-token"]').content}"/>
-                                        <button type="submit" class="btn btn-cart" ${!p.in_stock ? 'disabled' : ''}>
-                                            ${!p.in_stock ? 'Jashtë Stokut' : '<i class="fas fa-shopping-basket"></i> Në Shportë'}
-                                        </button>
-                                    </form>
-                                    <a href="/product/${p.id}" class="btn btn-details">Shiko Detajet</a>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-
-                // Update Pagination
-                if (data.total_pages > 1) {
-                    let pagHtml = `<div class="pagination">`;
-                    if (data.page > 1) {
-                        pagHtml += `<button class="page-btn filter-trigger" data-page="${data.page - 1}" data-category="${data.current_category}" data-subcategory="${data.current_subcategory}"><i class="fas fa-chevron-left"></i></button>`;
-                    }
-                    for (let i = 1; i <= data.total_pages; i++) {
-                        pagHtml += `<button class="page-btn filter-trigger ${i === data.page ? 'active' : ''}" data-page="${i}" data-category="${data.current_category}" data-subcategory="${data.current_subcategory}">${i}</button>`;
-                    }
-                    if (data.page < data.total_pages) {
-                        pagHtml += `<button class="page-btn filter-trigger" data-page="${data.page + 1}" data-category="${data.current_category}" data-subcategory="${data.current_subcategory}"><i class="fas fa-chevron-right"></i></button>`;
-                    }
-                    pagHtml += `</div>`;
-                    paginationContainer.innerHTML = pagHtml;
-                } else {
-                    paginationContainer.innerHTML = '';
-                }
-
-            } catch (err) {
-                console.error('Filter error:', err);
-                showToast('Ndodhi një gabim gjatë filtrimit.', 'error');
-            } finally {
-                productGrid.style.opacity = '1';
-            }
-        }
-
-        // Event Delegation for all filter triggers
-        document.body.addEventListener('click', (e) => {
-            const trigger = e.target.closest('.filter-trigger');
-            if (!trigger) return;
-
-            const category = trigger.dataset.category;
-            const subcategory = trigger.dataset.subcategory || 'all';
-            const page = trigger.dataset.page || 1;
-
-            updateProducts(category, subcategory, page);
-        });
-
-        // Initial scroll to active
-        const activePill = document.querySelector('.category-pill.active');
-        if (activePill) {
-            activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        }
-    });
-</script>
 {% endblock %}

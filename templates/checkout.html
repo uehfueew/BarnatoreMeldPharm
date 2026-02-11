@@ -2,9 +2,9 @@
 
 {% block content %}
 <div class="container">
-    <div class="section-container" style="max-width: 1200px; margin: 0 auto; padding-top: 2rem;">
+    <div class="section-container" style="max-width: 1200px; margin: 0 auto; padding-top: 1rem;">
         <div style="margin-bottom: 2rem;">
-            <a href="{{ url_for('cart.view_cart') }}" class="btn btn-sm btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; padding: 0.4rem 0.8rem;">
+            <a href="{{ url_for('cart.view_cart') }}" class="btn-back-standard">
                 <i class="fas fa-arrow-left"></i> Kthehu në Shportë
             </a>
         </div>
@@ -36,7 +36,11 @@
                     <div class="checkout-grid-2">
                         <div class="form-group">
                             <label for="country">Shteti</label>
-                            <input type="text" id="country" name="country" class="form-control" required placeholder="" value="{{ current_user.country if current_user.is_authenticated else 'Kosovë' }}">
+                            <select id="country" name="country" class="form-control country-select" required onchange="updateShipping(this.value)">
+                                <option value="Kosova" {% if (current_user.is_authenticated and current_user.country == 'Kosova') or (not current_user.is_authenticated) %}selected{% endif %}>Kosovë</option>
+                                <option value="Shqiperia" {% if current_user.is_authenticated and (current_user.country == 'Shqiperia' or current_user.country == 'Shqipëri') %}selected{% endif %}>Shqipëri</option>
+                                <option value="Maqedonia" {% if current_user.is_authenticated and (current_user.country == 'Maqedonia' or current_user.country == 'Maqedoni e Veriut') %}selected{% endif %}>Maqedoni e Veriut</option>
+                            </select>
                         </div>
 
                         <div class="form-group">
@@ -115,22 +119,25 @@
                     {% endfor %}
                 </div>
 
-                <div style="border-top: 2px solid #eee; padding-top: 1rem;">
+                <div style="border-top: 2px solid #eee; padding-top: 1rem;" id="summary-totals" data-subtotal="{{ total_price }}">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                         <span>Nëntotali</span>
                         <span>€{{ "%.2f"|format(total_price) }}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
                         <span>Dërgesa</span>
-                        {% if shipping_cost == 0 %}
-                            <span style="color: var(--primary);">Falas (Mbi €50)</span>
-                        {% else %}
-                            <span>€{{ "%.2f"|format(shipping_cost) }}</span>
-                        {% endif %}
+                        <span id="shipping-display">
+                            {% if shipping_cost == 0 %}
+                                <style>#shipping-display { color: var(--primary); font-weight: 500; }</style>
+                                Falas
+                            {% else %}
+                                €{{ "%.2f"|format(shipping_cost) }}
+                            {% endif %}
+                        </span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.2rem;">
                         <span>Totali</span>
-                        <span>€{{ "%.2f"|format(grand_total) }}</span>
+                        <span id="grand-total-display">€{{ "%.2f"|format(grand_total) }}</span>
                     </div>
                 </div>
             </div>
@@ -139,6 +146,43 @@
 </div>
 
 <script>
+    function updateShipping(country) {
+        const subtotal = parseFloat(document.getElementById('summary-totals').dataset.subtotal);
+        const shippingDisplay = document.getElementById('shipping-display');
+        const grandTotalDisplay = document.getElementById('grand-total-display');
+        
+        let fee = 0;
+        let threshold = 50;
+        let baseFee = 2;
+
+        if (country === 'Kosova') {
+            threshold = 50;
+            baseFee = 2;
+        } else {
+            threshold = 100;
+            baseFee = 5;
+        }
+
+        if (subtotal >= threshold) {
+            fee = 0;
+        } else {
+            fee = baseFee;
+        }
+
+        if (fee === 0) {
+            shippingDisplay.innerHTML = 'Falas';
+            shippingDisplay.style.color = 'var(--primary)';
+            shippingDisplay.style.fontWeight = '500';
+        } else {
+            shippingDisplay.innerHTML = '€' + fee.toFixed(2);
+            shippingDisplay.style.color = 'inherit';
+            shippingDisplay.style.fontWeight = 'normal';
+        }
+
+        const grandTotal = subtotal + fee;
+        grandTotalDisplay.innerHTML = '€' + grandTotal.toFixed(2);
+    }
+
     function toggleCardPayment(show) {
         const container = document.getElementById('card-element-container');
         const btn = document.querySelector('button[type="submit"]');

@@ -1,0 +1,67 @@
+{% extends "profile_layout.html" %}
+
+{% block profile_content %}
+<div class="profile-card-main">
+    <div class="content-header">
+        <h2 class="section-title">
+            <i class="fas fa-map-marker-alt"></i> Adresa
+        </h2>
+        <p class="section-subtitle">Informacionet për dërgesën e porosive tuaja</p>
+    </div>
+
+    <div class="card profile-form-card">
+        <form action="{{ url_for('main.address') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            
+            <div class="form-vertical-layout">
+                <div class="form-group mb-4">
+                    <label for="country">Shteti</label>
+                    <select id="country" name="country" class="form-control country-select">
+                        <option value="Kosova" {% if current_user.country == 'Kosova' or not current_user.country %}selected{% endif %}>Kosovë</option>
+                        <option value="Shqiperia" {% if current_user.country == 'Shqiperia' or current_user.country == 'Shqipëri' %}selected{% endif %}>Shqipëri</option>
+                        <option value="Maqedonia" {% if current_user.country == 'Maqedonia' or current_user.country == 'Maqedoni e Veriut' %}selected{% endif %}>Maqedoni e Veriut</option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="city">Qyteti</label>
+                    <input type="text" id="city" name="city" class="form-control" placeholder="Prizren" value="{{ current_user.city }}">
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="address">Adresa e plotë</label>
+                    <input type="text" id="address" name="address" class="form-control" placeholder="Rruga, numri i shtëpisë..." value="{{ current_user.address }}">
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="specifikat">Specifikat (Opsionale)</label>
+                    <textarea id="specifikat" name="specifikat" class="form-control" placeholder="Shtoni ndonjë detaj tjetër për adresën..." rows="3">{{ current_user.specifikat }}</textarea>
+                </div>
+            </div>
+
+            <div class="form-footer mt-4">
+                <button type="submit" class="btn btn-primary btn-save">
+                    <i class="fas fa-save"></i> Ruaj Adresën
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .content-header { margin-bottom: 2rem; }
+    .section-title { font-size: 1.5rem; color: var(--text-main); display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+    .section-title i { color: var(--primary); }
+    .section-subtitle { color: var(--text-muted); font-size: 0.95rem; }
+    
+    .profile-form-card { background: white; border-radius: 1.25rem; padding: 2.5rem; border: 1px solid #f1f5f9; box-shadow: var(--shadow-sm); width: 100% !important; max-width: 100% !important; }
+    .form-vertical-layout { display: flex; flex-direction: column; }
+    .form-group label { display: block; font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.75rem; }
+    .form-control { width: 100% !important; border-radius: 0.75rem; border: 1px solid #e2e8f0; padding: 0.75rem 1rem; transition: border-color 0.2s; }
+    .form-control:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+    
+    .btn-save { padding: 0.75rem 2rem; border-radius: 0.75rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+    
+    textarea.form-control { resize: vertical; min-height: 100px; }
+</style>
+{% endblock %}

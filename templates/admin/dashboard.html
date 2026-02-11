@@ -24,18 +24,33 @@
         <table class="table admin-table admin-product-table">
             <thead>
                 <tr>
-                    <th style="width: 40%;">Emri</th>
-                    <th style="width: 25%;">Kategoria</th>
-                    <th style="width: 15%;">Çmimi</th>
+                    <th style="width: 35%;">Emri</th>
+                    <th style="width: 20%;">Kategoria</th>
+                    <th style="width: 25%;">Çmimi</th>
                     <th style="width: 20%;">Veprime</th>
                 </tr>
             </thead>
             <tbody>
                 {% for product in products %}
                 <tr data-name="{{ product.name|lower }}" data-category="{{ product.category|lower }}">
-                    <td>{{ product.name }}</td>
+                    <td>
+                        {{ product.name }}
+                        {% if product.discount_price %}
+                            <br><span class="badge badge-success" style="font-size: 0.7rem; background: #10b981; color: white;">Në Ofertë</span>
+                            {% if product.discount_until %}
+                                <span style="font-size: 0.7rem; color: #64748b;"> (Deri: {{ product.discount_until.strftime('%d.%m.%Y') }})</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
                     <td>{{ product.category }}</td>
-                    <td>€{{ product.price }}</td>
+                    <td>
+                        {% if product.discount_price %}
+                            <span style="text-decoration: line-through; color: #94a3b8; font-size: 0.85rem;">€{{ product.price }}</span><br>
+                            <span style="color: #059669; font-weight: 700;">€{{ product.discount_price }}</span>
+                        {% else %}
+                            €{{ product.price }}
+                        {% endif %}
+                    </td>
                     <td>
                         <a href="{{ url_for('admin.edit_product', product_id=product._id) }}" class="btn btn-sm btn-info btn-icon-only" title="Ndrysho">
                             <i class="fas fa-edit"></i>

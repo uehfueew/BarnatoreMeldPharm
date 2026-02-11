@@ -1,23 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container section product-detail-container" style="padding-top: 1rem;">
-    <!-- Product Breadcrumbs -->
-    <nav class="product-breadcrumbs">
-        <a href="{{ url_for('main.index') }}">Ballina</a>
-        <span>/</span>
-        <a href="{{ url_for('main.products') }}">Dyqani</a>
-        {% if product.category %}
-            <span>/</span>
-            <a href="{{ url_for('main.products', category=product.category) }}">{{ product.category }}</a>
-        {% endif %}
-        <span>/</span>
-        <span class="current">{{ product.name }}</span>
-    </nav>
+<div class="container section product-detail-container" style="padding-top: 0.5rem;">
+    <div style="margin-bottom: 1.5rem;">
+        <a href="{{ url_for('main.products') }}" class="btn-back-standard">
+            <i class="fas fa-arrow-left"></i> Kthehu
+        </a>
+    </div>
 
-    <a href="{{ url_for('main.products') }}" class="btn btn-outline btn-back" style="margin-bottom: 2rem; display: inline-flex; align-items: center; gap: 0.75rem; border-radius: 12px; padding: 0.6rem 1.2rem; font-size: 0.9rem;">
-        <i class="fas fa-arrow-left"></i> Kthehu tek Dyqani
-    </a>
+    <!-- Product Breadcrumbs -->
+    <nav class="product-breadcrumbs" style="margin-bottom: 2rem; font-size: 0.9rem; color: #64748b;">
+        <a href="{{ url_for('main.index') }}" style="color: #64748b;">Ballina</a>
+        <span style="margin: 0 0.5rem;">/</span>
+        <a href="{{ url_for('main.products', category=product.category) }}" style="color: #64748b;">{{ product.category }}</a>
+        <span style="margin: 0 0.5rem;">/</span>
+        <span style="color: var(--text-main); font-weight: 500;">{{ product.name }}</span>
+    </nav>
 
     <div class="product-detail-grid">
         
@@ -74,49 +72,70 @@
 
         <!-- Info Section -->
         <div class="product-info-column" style="animation: slideUp 0.6s ease-out;">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <span class="product-category" style="font-size: 0.85rem; font-weight: 800;">{{ product.category }}</span>
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                <span class="product-category" style="font-size: 0.8rem; font-weight: 800; color: #64748b;">{{ product.category }}</span>
+                {% if product.is_best_seller %}
+                    <span style="background: #f59e0b; color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Më i Shituri</span>
+                {% endif %}
                 <span style="width: 4px; height: 4px; background: #cbd5e1; border-radius: 50%;"></span>
-                <span style="color: {{ 'var(--primary)' if product.in_stock != False else '#ef4444' }}; font-size: 0.85rem; font-weight: 700;">
+                <span style="color: {{ 'var(--primary)' if product.in_stock != False else '#ef4444' }}; font-size: 0.8rem; font-weight: 700;">
                     {{ 'Në Stok' if product.in_stock != False else 'Jashtë Stokut' }}
                 </span>
             </div>
             
-            <h1 class="product-title-detail" style="margin-bottom: 0.5rem; line-height: 1.1;">{{ product.name }}</h1>
+            {% if product.brand %}
+                <div class="product-brand" style="font-size: 1rem; font-weight: 600; color: var(--primary); margin-bottom: 0.25rem;">{{ product.brand }}</div>
+            {% endif %}
+
+            <h1 class="product-title-detail" style="margin-bottom: 0.5rem; line-height: 1.1; font-size: 1.5rem;">{{ product.name }}</h1>
             
-            {% if product.size %}<div class="product-size-detail" style="margin-bottom: 1.5rem; font-size: 1.1rem; color: #64748b; font-weight: 500;">{{ product.size }}</div>{% endif %}
-            
-            <div class="price-container" style="display: flex; align-items: flex-end; gap: 1rem; margin-bottom: 2.5rem;">
+            <div class="price-container" style="display: flex; align-items: flex-end; gap: 0.75rem; margin-bottom: 1.5rem;">
                 {% if product.discount_price %}
-                    <span class="price original" style="font-size: 1.25rem; text-decoration: line-through; color: #94a3b8; font-weight: 500;">€{{ product.price }}</span>
-                    <span class="price discounted" style="font-size: 3rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{ product.discount_price }}</span>
+                    <span class="price original" style="font-size: 1rem; text-decoration: line-through; color: #94a3b8; font-weight: 500;">€{{ product.price }}</span>
+                    <span class="price discounted" style="font-size: 1.8rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{ product.discount_price }}</span>
+                    <span class="discount-badge" style="background: #ef4444; color: white; padding: 0.35rem 0.6rem; border-radius: 8px; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; transform: translateY(-2px);">
+                        -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%
+                    </span>
                 {% else %}
-                    <span class="price main-price" style="font-size: 3rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{ product.price }}</span>
+                    <span class="price main-price" style="font-size: 1.8rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{ product.price }}</span>
                 {% endif %}
             </div>
-            
-            <div style="background: white; padding: 2.5rem; border-radius: var(--radius-xl); margin-bottom: 3rem; border: 1px solid #f1f5f9; box-shadow: var(--shadow-sm);">
-                <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--text-main);">Përshkrimi</h3>
-                <ul class="product-description-list">
+
+            <div style="background: white; padding: 2rem; border-radius: var(--radius-xl); margin-bottom: 2rem; border: 1px solid #f1f5f9; box-shadow: var(--shadow-sm);">
+                <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-main); font-weight: 700;">Përshkrimi i Produktit</h3>
+                <div class="product-description-content">
                     {% for line in product.description.split('\n') %}
-                        {% if line.strip() %}
-                            <li>{{ line.strip() }}</li>
+                        {% set cleaned_line = line.strip().lstrip('•*- ') %}
+                        {% if cleaned_line %}
+                            <p style="font-size: 0.95rem; color: #475569; margin-bottom: 0.5rem; line-height: 1.5;">{{ cleaned_line }}</p>
                         {% endif %}
                     {% endfor %}
-                </ul>
-            </div>
-            
-            <!-- Desktop Action Button -->
-            <div class="desktop-action-container">
-                 <button type="button" onclick="document.getElementById('addToCartForm').submit()" class="btn btn-primary btn-lg" style="width: 100%; padding: 1rem; font-size: 1.1rem; border-radius: 12px; margin-top: 1rem;" {% if product.in_stock == False %}disabled{% endif %}>
-                    {% if product.in_stock == False %}
-                        Jashtë Stokut
-                    {% else %}
-                        <i class="fas fa-shopping-cart" style="margin-right: 0.5rem;"></i> Shto në Shportë
-                    {% endif %}
-                </button>
+                </div>
             </div>
 
+            <!-- Desktop Action Buttons -->
+            <div class="desktop-action-container" style="margin-bottom: 2rem;">
+                <div style="display: flex; gap: 1rem; align-items: stretch; flex-wrap: wrap;">
+                    <div class="quantity-selector qty-lg" style="height: 54px;">
+                        <button type="button" class="qty-btn minus"><i class="fas fa-minus"></i></button>
+                        <input type="number" class="qty-input" value="1" min="1" readonly>
+                        <button type="button" class="qty-btn plus"><i class="fas fa-plus"></i></button>
+                    </div>
+                    
+                    <button type="button" onclick="buyNowWithQty('{{ product._id }}', this)" class="btn btn-primary btn-lg" style="flex: 1; min-width: 150px; padding: 0 1.5rem; height: 54px; font-size: 1rem; border-radius: 12px; font-weight: 700; background-color: #f15a24; border-color: #f15a24;" {% if product.in_stock == False %}disabled{% endif %}>
+                        Blej Tani
+                    </button>
+
+                    <button type="button" onclick="addToCartWithQty('{{ product._id }}', this)" class="btn btn-add-to-cart-light btn-lg" style="flex: 1; min-width: 200px; padding: 0 1.5rem; height: 54px; font-size: 1rem; border-radius: 12px; font-weight: 700; color: var(--primary); border: none; background: #f1f5f9; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;" {% if product.in_stock == False %}disabled{% endif %}>
+                        {% if product.in_stock == False %}
+                            Jashtë Stokut
+                        {% else %}
+                            <i class="fas fa-shopping-cart"></i> Shto në Shportë
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
+            
             <form id="addToCartForm" action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="display: none;">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <input type="hidden" name="quantity" value="1">
@@ -127,21 +146,36 @@
 
 <!-- Mobile Sticky Action Bar -->
 <div class="mobile-action-bar">
-    <div class="price-info">
-        {% if product.discount_price %}
-            <span class="price-detail" style="font-weight: 800; color: var(--primary); font-size: 1.3rem;">€{{ product.discount_price }}</span>
-        {% else %}
-            <span class="price-detail" style="font-weight: 800; color: var(--primary); font-size: 1.3rem;">€{{ product.price }}</span>
-        {% endif %}
+    <div class="mobile-btns" style="display: flex; gap: 0.5rem; width: 100%; align-items: center;">
+        <div class="quantity-selector" style="height: 48px; min-width: 90px;">
+            <button type="button" class="qty-btn minus"><i class="fas fa-minus"></i></button>
+            <input type="number" class="qty-input" value="1" min="1" readonly style="width: 25px;">
+            <button type="button" class="qty-btn plus"><i class="fas fa-plus"></i></button>
+        </div>
+        
+        <button type="button" onclick="buyNowWithQty('{{ product._id }}', this)" class="btn btn-primary" style="flex: 2; height: 48px; border-radius: 10px; font-weight: 700; font-size: 0.95rem; background-color: #f15a24; border: none; color: white;" {% if product.in_stock == False %}disabled{% endif %}>
+            Blej Tani
+        </button>
+
+        <button type="button" onclick="addToCartWithQty('{{ product._id }}', this)" class="btn btn-add-to-cart-light" style="flex: 1.2; height: 48px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; color: var(--primary); border: none; background: #f1f5f9; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;" {% if product.in_stock == False %}disabled{% endif %}>
+            <i class="fas fa-shopping-cart"></i>
+        </button>
     </div>
-    <button type="button" onclick="document.getElementById('addToCartForm').submit()" class="btn btn-primary btn-cart" style="padding: 0.8rem 2rem !important; border-radius: 12px !important;" {% if product.in_stock == False %}disabled{% endif %}>
-        {% if product.in_stock == False %}
-            Jashtë Stokut
-        {% else %}
-            <i class="fas fa-shopping-cart"></i> Shto në shportë
-        {% endif %}
-    </button>
 </div>
+
+<script>
+function addToCartWithQty(productId, btn) {
+    const container = btn.closest('.desktop-action-container') || btn.closest('.mobile-action-bar');
+    const qty = container.querySelector('.qty-input').value;
+    window.addToCartAJAX(productId, qty);
+}
+
+function buyNowWithQty(productId, btn) {
+    const container = btn.closest('.desktop-action-container') || btn.closest('.mobile-action-bar');
+    const qty = container.querySelector('.qty-input').value;
+    window.buyNow(productId, qty);
+}
+</script>
 
 {% block footer %}{% endblock %}
 
@@ -158,31 +192,36 @@
 }
 .btn-favorite, button, a.btn { z-index: 5 !important; }
 
-/* Responsive Action Bar */
-.mobile-action-bar {
-    display: none; /* Hidden on desktop */
+.btn-add-to-cart-light:hover:not(:disabled) {
+    background: #a7f3d0 !important; /* Slightly darker Emerald 200 */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.desktop-action-container {
-    display: block;
+.btn-add-to-cart-light:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* Responsive Action Bar */
+.mobile-action-bar {
+    display: none;
 }
 
 @media (max-width: 768px) {
     .mobile-action-bar {
         display: flex;
         position: fixed;
-        bottom: 0;
+        bottom: 60px; /* Above bottom navigation */
         left: 0;
         width: 100%;
         background: white;
-        padding: 1rem 1.5rem;
-        box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+        padding: 0.6rem 1rem;
+        box-shadow: 0 -8px 20px rgba(0,0,0,0.1);
         z-index: 3000;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1.5rem;
         border-top: 1px solid #f1f5f9;
-        padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+        padding-bottom: calc(0.6rem + env(safe-area-inset-bottom));
+        align-items: center;
+        justify-content: space-between;
     }
 
     .desktop-action-container {
@@ -191,29 +230,23 @@
 
     /* Add padding to body to prevent content being hidden behind bar */
     body {
-        padding-bottom: 90px !important;
-    }
-}
-
-@media (max-width: 768px) {
-    .mobile-action-bar {
-        padding: 0.8rem 1rem;
+        padding-bottom: 130px !important;
     }
 }
 </style>
 
 
     {% if related_products %}
-    <div class="container">
-        <div class="related-products" style="margin-top: 5rem; padding-bottom: 2rem;">
-            <h2 class="section-title">Produkte të Ngjashme</h2>
+    <div class="container container-wide">
+        <div class="related-products" style="margin-top: 8rem; padding-bottom: 5rem;">
+            <h2 class="section-title" style="margin-bottom: 3rem;">Produkte të Ngjashme</h2>
             <div class="product-grid">
                 {% for related in related_products %}
                 <div class="product-card">
                     <div class="product-image">
                         <img src="{{ related.image_url }}" alt="{{ related.name }}">
                         {% if related.discount_price %}
-                            <span class="badge sale">Zbritje -{{ ((related.price - related.discount_price) / related.price * 100)|round|int }}%</span>
+                            <div class="special-offer-badge red-badge">Oferta Speciale</div>
                         {% endif %}
 
                         {% if related.in_stock == False %}
@@ -230,29 +263,14 @@
                     <div class="product-info">
                         <span class="product-category">{{ related.category }}</span>
                         <h3 class="product-title">{{ related.name }}</h3>
-                        {% if related.size %}<span class="product-size">{{ related.size }}</span>{% endif %}
-                        <div class="price-container">
+                        {% if related.size %}<span class="product-size" style="display: block; font-size: 0.85rem; color: #64748b; margin-top: 0.25rem;">{{ related.size }}</span>{% endif %}
+                        <div class="price-container" style="margin-top: 0.75rem;">
                             {% if related.discount_price %}
                                 <span class="price discounted">€{{ related.discount_price }}</span>
                                 <span class="price original">€{{ related.price }}</span>
                             {% else %}
                                 <span class="price">€{{ related.price }}</span>
                             {% endif %}
-                        </div>
-                        
-                        <div class="product-actions">
-                            <form action="{{ url_for('cart.add_to_cart', product_id=related._id) }}" method="POST" style="margin-bottom: 0.5rem; width: 100%;">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;" {% if related.in_stock == False %}disabled{% endif %}>
-                                    {% if related.in_stock == False %}
-                                        Jashtë Stokut
-                                    {% else %}
-                                        <i class="fas fa-shopping-basket" style="margin-right: 0.5rem;"></i> Në Shportë
-                                    {% endif %}
-                                </button>
-                        </form>
-
-                            <a href="{{ url_for('main.product_detail', product_id=related._id) }}" class="btn btn-sm" style="width: 100%; justify-content: center;">Shiko Detajet</a>
                         </div>
                     </div>
                 </div>

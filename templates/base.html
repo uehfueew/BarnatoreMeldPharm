@@ -14,60 +14,213 @@
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </head>
 <body data-user-logged-in="{{ 'true' if current_user.is_authenticated else 'false' }}">
-    <!-- Menu Overlay/Backdrop -->
-    <div class="menu-backdrop"></div>
 
-    <nav class="navbar">
-        <div class="container nav-container">
-            <a href="{{ url_for('main.index') }}" class="logo">Meld <span class="highlight">Pharm</span></a>
-            
-            <!-- Mobile Toggle -->
-            <button class="menu-toggle" aria-label="Menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+    <!-- --- MOBILE HEADER --- -->
+    <header class="mobile-header">
+        <div class="mobile-top-row">
+            <a href="{{ url_for('main.index') }}" class="logo-text">Meld <span class="highlight">Pharm</span></a>
+            <a href="{{ url_for('main.wishlist') }}" class="mobile-wishlist-btn nav-icon-btn">
+                <i class="far fa-heart"></i>
+                <span class="cart-badge-wish wishlist-count {{ 'd-none' if not wishlist_count or wishlist_count == 0 else '' }}">{{ wishlist_count if wishlist_count else 0 }}</span>
+            </a>
+        </div>
+        <div class="mobile-search-row">
+            <form action="{{ url_for('main.products') }}" method="GET" class="mobile-search-form">
+                <input type="text" name="search" id="productSearchMobile" placeholder="Kërko produkte..." autocomplete="off">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+            <div id="searchPreviewMobile" class="search-preview-dropdown"></div>
+        </div>
+    </header>
 
-            <ul class="nav-links">
-                <!-- Mobile Header for Sidebar -->
-                <li class="mobile-menu-header" style="display: none;">
-                    <div style="display: flex; align-items: center; gap: 0.75rem;">
-                        <i class="fas fa-bars" style="color: var(--primary); font-size: 1.2rem;"></i>
-                        <span style="font-weight: 700; color: var(--primary); font-size: 1.3rem; letter-spacing: -0.02em;">Menu</span>
+    <!-- --- DESKTOP HEADER --- -->
+    <header class="desktop-header">
+        <div class="container desktop-nav-container">
+            <!-- Left: Logo -->
+            <a href="{{ url_for('main.index') }}" class="desktop-logo">Meld <span class="highlight">Pharm</span></a>
+
+            <!-- Center: Search Bar -->
+            <div class="desktop-search">
+                <form action="{{ url_for('main.products') }}" method="GET">
+                    <input type="text" name="search" id="productSearch" placeholder="Kërko produkte..." autocomplete="off">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+                <div id="searchPreview" class="search-preview-dropdown"></div>
+            </div>
+
+            <!-- Right: Icons & Profile -->
+            <div class="desktop-nav-right">
+                <!-- Wishlist -->
+                <a href="{{ url_for('main.wishlist') }}" class="nav-icon-btn wishlist-btn-desktop" title="Lista e dëshirave">
+                    <i class="far fa-heart"></i>
+                    <span class="cart-badge-wish wishlist-count {{ 'd-none' if not wishlist_count or wishlist_count == 0 else '' }}">{{ wishlist_count if wishlist_count else 0 }}</span>
+                </a>
+
+                <!-- Cart -->
+                <div class="cart-dropdown-wrapper">
+                    <button type="button" class="nav-icon-btn cart-btn-desktop" title="Shporta" id="cartBadgeBtn" onclick="toggleMiniCart(event)">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge {{ 'd-none' if not cart_count or cart_count == 0 else '' }}">{{ cart_count if cart_count else 0 }}</span>
+                    </button>
+                    
+                    <div class="mini-cart-dropdown" id="miniCart">
+                        <div class="mini-cart-header">
+                            <span class="items-count-text">{{ cart_count }} produkt(e)</span>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <a href="#" class="clear-cart-link" onclick="clearCart(event)">Fshij të gjitha</a>
+                                <button class="btn-close-mini" onclick="toggleMiniCart(event)"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="mini-cart-items">
+                            {% for item in cart_items %}
+                            <div class="mini-cart-item" data-id="{{ item._id }}">
+                                <div class="mini-cart-img-wrapper">
+                                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="mini-cart-img">
+                                </div>
+                                <div class="mini-cart-info">
+                                    <p class="mini-item-name">{{ item.name }}</p>
+                                    <p class="mini-item-price"><strong>€{{ "%.2f"|format(item.discount_price or item.price) }}</strong></p>
+                                    <div class="mini-qty-control">
+                                        <button class="qty-btn minus" onclick="updateMiniQty(event, '{{ item._id }}', 'decrease')">-</button>
+                                        <span class="qty-val">{{ item.quantity }}</span>
+                                        <button class="qty-btn plus" onclick="updateMiniQty(event, '{{ item._id }}', 'increase')">+</button>
+                                    </div>
+                                </div>
+                                <button class="remove-item-btn" onclick="updateMiniQty(event, '{{ item._id }}', 'remove')" title="Hiqe">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </div>
+                            {% endfor %}
+                            
+                            {% if not cart_items %}
+                            <div class="empty-mini-cart">
+                                <i class="fas fa-shopping-basket fa-3x mb-3"></i>
+                                <p>Shporta juaj është boshe.</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mini-cart-footer">
+                            <a href="{{ url_for('cart.view_cart') }}" class="btn-go-to-cart">
+                                SHKO NË SHPORTË ({{ "%.2f"|format(cart_total) }} €)
+                            </a>
+                        </div>
                     </div>
-                    <button class="menu-close-btn" style="margin: 0; padding: 5px;">&times;</button>
-                </li>
-                
-                <li><a href="{{ url_for('main.index') }}">Ballina</a></li>
-                <li><a href="{{ url_for('main.products') }}">Dyqani</a></li>
-                <li><a href="{{ url_for('main.about') }}">Rreth Nesh</a></li>
-                {% if current_user.is_authenticated or session.get('guest_mode') %}
-                    <li><a href="{{ url_for('main.orders') }}">Porositë</a></li>
-                {% endif %}
-                {% if current_user.is_authenticated %}
-                    {% if current_user.is_admin %}
-                        <li><a href="{{ url_for('admin.dashboard') }}">Admin</a></li>
+                </div>
+
+                <!-- Profile Section -->
+                <div class="profile-section">
+                    {% if current_user.is_authenticated %}
+                        <button class="profile-dropdown-btn" onclick="toggleProfileDropdown()">
+                            <i class="fas fa-user-circle profile-main-icon"></i>
+                            <span class="user-name">{{ current_user.first_name if current_user.first_name else current_user.email.split('@')[0] }}</span>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div class="profile-dropdown" id="desktopProfileDropdown">
+                            <div class="dropdown-header">
+                                <p class="u-name">{{ current_user.fullname }}</p>
+                                <p class="u-email">{{ current_user.email }}</p>
+                            </div>
+                            <ul class="dropdown-links">
+                                <li><a href="{{ url_for('main.profile') }}"><i class="fas fa-user-circle"></i> Detajet e Profilit</a></li>
+                                <li><a href="{{ url_for('main.address') }}"><i class="fas fa-map-marker-alt"></i> Adresa</a></li>
+                                <li><a href="{{ url_for('main.orders') }}"><i class="fas fa-box"></i> Porositë</a></li>
+                                <li><a href="{{ url_for('main.wishlist') }}"><i class="far fa-heart"></i> Lista e Dëshirave</a></li>
+                                {% if current_user.is_admin %}
+                                    <li class="admin-link"><a href="{{ url_for('admin.dashboard') }}"><i class="fas fa-shield-alt"></i> Admin Panel</a></li>
+                                {% endif %}
+                                <li class="logout-link"><a href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt"></i> Dil</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="login-text-btn">Kyçu</a>
                     {% endif %}
-                {% endif %}
-                <li>
-                    <a href="{{ url_for('cart.view_cart') }}" class="cart-icon">
-                        <span class="nav-label">Shporta</span><i class="fas fa-shopping-cart"></i>
-                        {% if cart_count and cart_count > 0 %}
-                            <span class="cart-badge">{{ cart_count }}</span>
-                        {% endif %}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url_for('main.profile') }}" class="profile-icon" title="Profili">
-                        <span class="nav-label">Profili Im</span><i class="fas fa-user"></i>
-                    </a>
-                </li>
-                {% if not current_user.is_authenticated %}
-                    <li><a href="{{ url_for('auth.login') }}" class="nav-login-btn">Kyçu</a></li>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- --- MOBILE BOTTOM NAVIGATION --- -->
+    <nav class="mobile-bottom-nav">
+        <a href="{{ url_for('main.index') }}" class="bottom-nav-item {{ 'active' if request.endpoint == 'main.index' }}">
+            <i class="fas fa-home"></i>
+        </a>
+        <button class="bottom-nav-item" onclick="openCategoriesModal()">
+            <i class="fas fa-th-large"></i> <!-- Categories Icon -->
+        </button>
+        <a href="{{ url_for('cart.view_cart') }}" class="bottom-nav-item {{ 'active' if request.endpoint == 'cart.view_cart' }}">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="mobile-cart-badge cart-count-badge {{ 'd-none' if not cart_count or cart_count == 0 else '' }}">{{ cart_count if cart_count else 0 }}</span>
+        </a>
+        <button class="bottom-nav-item" onclick="openProfileModal()">
+            <i class="fas fa-user"></i>
+        </button>
+    </nav>
+
+    <!-- --- MOBILE CATEGORIES MODAL --- -->
+    <div id="mobile-categories-modal" class="full-screen-modal">
+        <div class="modal-header">
+            <h3>Kategoritë</h3>
+            <button class="close-modal-btn" onclick="closeCategoriesModal()">&times;</button>
+        </div>
+        <div class="modal-content">
+            <ul class="mobile-cat-list">
+                {% if global_categories %}
+                    {% for category, subcats in global_categories.items() %}
+                    <li class="mobile-cat-item">
+                        <div class="cat-main" onclick="toggleSubcats(this)">
+                            <span>{{ category }}</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <ul class="mobile-subcat-list">
+                            {% for sub in subcats %}
+                            <li><a href="{{ url_for('main.products', category=category, subcategory=sub) }}">{{ sub }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% endfor %}
                 {% endif %}
             </ul>
         </div>
-    </nav>
+    </div>
+
+    <!-- --- MOBILE PROFILE MODAL --- -->
+    <div id="mobile-profile-modal" class="full-screen-modal">
+        <div class="modal-header">
+            <h3>Profili</h3>
+            <button class="close-modal-btn" onclick="closeProfileModal()">&times;</button>
+        </div>
+        <div class="modal-content profile-modal-content">
+            {% if current_user.is_authenticated %}
+                <div class="user-info-card">
+                    <div class="avatar-circle"><i class="fas fa-user-circle"></i></div>
+                    <h4>{{ current_user.fullname }}</h4>
+                    <p>{{ current_user.email }}</p>
+                </div>
+                
+                <ul class="mobile-profile-links">
+                    <li><a href="{{ url_for('main.profile') }}"><i class="fas fa-user-circle"></i> Detajet e Profilit</a></li>
+                    <li><a href="{{ url_for('main.address') }}"><i class="fas fa-map-marker-alt"></i> Adresa</a></li>
+                    <li><a href="{{ url_for('main.orders') }}"><i class="fas fa-box"></i> Porositë e mia</a></li>
+                    <li><a href="{{ url_for('main.wishlist') }}"><i class="far fa-heart"></i> Lista e Dëshirave</a></li>
+                    {% if current_user.is_admin %}
+                         <li class="admin-item"><a href="{{ url_for('admin.dashboard') }}"><i class="fas fa-shield-alt"></i> Admin Panel</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('auth.logout') }}" style="color: black;"><i class="fas fa-sign-out-alt"></i> Dil</a></li>
+                </ul>
+            {% else %}
+                <div class="not-logged-in-state">
+                    <i class="fas fa-user-lock"></i>
+                    <p>Nuk jeni i kyçur</p>
+                    <a href="{{ url_for('auth.login') }}" class="btn-primary-mobile">Kyçu</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn-secondary-mobile">Regjistrohu</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 
 
     <div class="main-content">

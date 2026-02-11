@@ -44,18 +44,36 @@
         </div>
         
         <div class="form-group">
-            <label for="price">Çmimi</label>
-            <input type="number" id="price" name="price" step="0.01" class="form-control" value="{{ product.price if product else '' }}" required>
+            <label for="price">Çmimi (€)</label>
+            <input type="number" id="price" name="price" step="0.01" min="0" class="form-control" 
+                   value="{{ product.price if product else '' }}" 
+                   required placeholder="0.00">
         </div>
         
         <div class="form-group">
             <label for="discount_price">Çmimi me Zbritje (Opsionale)</label>
-            <input type="number" id="discount_price" name="discount_price" step="0.01" class="form-control" value="{{ product.discount_price if product else '' }}">
+            <input type="number" id="discount_price" name="discount_price" step="0.01" min="0" class="form-control" 
+                   value="{{ product.discount_price if product else '' }}"
+                   placeholder="0.00">
+        </div>
+
+        <div class="form-group {% if not product or not product.discount_price %}d-none{% endif %}" id="discount-until-group">
+            <label for="discount_until">Data kur përfundon oferta (Opsionale)</label>
+            {% set discount_val = "" %}
+            {% if product and product.discount_until %}
+                {% if product.discount_until.strftime %}
+                    {% set discount_val = product.discount_until.strftime('%Y-%m-%d') %}
+                {% else %}
+                    {% set discount_val = product.discount_until[:10] %}
+                {% endif %}
+            {% endif %}
+            <input type="date" id="discount_until" name="discount_until" class="form-control" value="{{ discount_val }}">
+            <small class="form-text text-muted">Pas kësaj date, produkti do të kthehet automatikisht në çmimin normal.</small>
         </div>
         
         <div class="form-group">
             <label for="image_url">Linku i imazhit kryesor (URL)</label>
-            <input type="url" id="image_url" name="image_url" class="form-control" value="{{ product.image_url if product else '' }}" required>
+            <input type="url" id="image_url" name="image_url" class="form-control" value="{{ product.image_url if product else '' }}" required placeholder="https://...">
         </div>
 
         <div class="form-group">
@@ -124,6 +142,22 @@
     // Initialize on load if category already selected
     if (categorySelect.value) {
         updateSubcategories();
+    }
+
+    // Toggle discount until date based on discount price
+    const discountPriceInput = document.getElementById('discount_price');
+    const discountUntilGroup = document.getElementById('discount-until-group');
+    const discountUntilInput = document.getElementById('discount_until');
+
+    if (discountPriceInput && discountUntilGroup) {
+        discountPriceInput.addEventListener('input', function() {
+            if (this.value && parseFloat(this.value) > 0) {
+                discountUntilGroup.style.display = 'block';
+            } else {
+                discountUntilGroup.style.display = 'none';
+                if (discountUntilInput) discountUntilInput.value = '';
+            }
+        });
     }
 </script>
 {% endblock %}

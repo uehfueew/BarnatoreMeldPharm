@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container profile-page-container">
+    <div class="profile-layout">
+        <!-- Desktop Sidebar -->
+        <aside class="profile-sidebar-desktop">
+            <div class="sidebar-user-header">
+                <div class="avatar-circle-sm">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-meta">
+                    <h4>{{ current_user.fullname or 'Përdorues' }} <i class="fas fa-user"></i></h4>
+                    <p>{{ current_user.email }}</p>
+                </div>
+            </div>
+            <nav class="profile-nav">
+                <a href="{{ url_for('main.profile') }}" class="profile-nav-item {{ 'active' if request.endpoint == 'main.profile' }}">
+                    <i class="fas fa-user-circle"></i> Të dhënat personale
+                </a>
+                <a href="{{ url_for('main.address') }}" class="profile-nav-item {{ 'active' if request.endpoint == 'main.address' }}">
+                    <i class="fas fa-map-marker-alt"></i> Adresa
+                </a>
+                <a href="{{ url_for('main.orders') }}" class="profile-nav-item {{ 'active' if request.path.startswith('/orders') or request.endpoint == 'main.orders' }}">
+                    <i class="fas fa-box"></i> Porositë
+                </a>
+                <a href="{{ url_for('main.wishlist') }}" class="profile-nav-item {{ 'active' if request.endpoint == 'main.wishlist' }}">
+                    <i class="far fa-heart"></i> Lista e dëshirave
+                </a>
+                {% if current_user.is_admin %}
+                <a href="{{ url_for('admin.dashboard') }}" class="profile-nav-item admin-nav-item">
+                    <i class="fas fa-shield-alt"></i> Admin Panel
+                </a>
+                {% endif %}
+                <a href="{{ url_for('auth.logout') }}" class="profile-nav-item logout-nav-item">
+                    <i class="fas fa-sign-out-alt"></i> Dil
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="profile-content-area">
+            {% block profile_content %}{% endblock %}
+        </main>
+    </div>
+</div>
+{% endblock %}

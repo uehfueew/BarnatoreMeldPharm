@@ -4,6 +4,7 @@ from models.product import Product
 from models.order import Order
 from models.categories import CATEGORIES
 from functools import wraps
+from datetime import datetime
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -37,8 +38,19 @@ def update_order_status(order_id):
 @login_required
 @admin_required
 def dashboard():
-    products = Product.get_all()
-    return render_template('admin/dashboard.html', products=products)
+    # Automatically revert expired offers
+    Product.revert_expired_offers()
+    
+    filter_on_offer = request.args.get('on_offer') == '1'
+    
+    if filter_on_offer:
+        # We can use get_paginated logic or just filter the list
+        all_products = Product.get_all()
+        products = [p for p in all_products if p.get('discount_price')]
+    else:
+        products = Product.get_all()
+        
+    return render_template('admin/dashboard.html', products=products, filter_on_offer=filter_on_offer)
 
 @admin.route('/product/new', methods=['GET', 'POST'])
 @login_required
@@ -63,6 +75,7 @@ def new_product():
             "size": request.form.get('size'),
             "price": float(request.form.get('price')),
             "discount_price": float(request.form.get('discount_price')) if request.form.get('discount_price') else None,
+            "discount_until": datetime.strptime(request.form.get('discount_until'), '%Y-%m-%d') if request.form.get('discount_until') else None,
             "description": request.form.get('description'),
             "image_url": main_img,
             "images": images,
@@ -103,6 +116,7 @@ def edit_product(product_id):
             "size": request.form.get('size'),
             "price": float(request.form.get('price')),
             "discount_price": float(request.form.get('discount_price')) if request.form.get('discount_price') else None,
+            "discount_until": datetime.strptime(request.form.get('discount_until'), '%Y-%m-%d') if request.form.get('discount_until') else None,
             "description": request.form.get('description'),
             "image_url": main_img,
             "images": images,
