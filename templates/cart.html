@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="cart-container section-container" style="padding-top: 1rem;">
-    <div style="margin-bottom: 2rem;">
+<div class="cart-container section-container mobile-cart-page-wrapper">
+    <div class="back-btn-wrapper">
         <a href="{{ url_for('main.products') }}" class="btn-back-standard">
             <i class="fas fa-arrow-left"></i> Kthehu
         </a>
     </div>
-    <div class="cart-page-header" style="justify-content: flex-start; gap: 2rem; margin-top: 1rem;">
+    <div class="cart-page-header" style="justify-content: space-between; align-items: center; margin-top: 1rem;">
         <h1 class="section-title" style="margin: 0; text-align: left;">Shporta Juaj</h1>
+        <button onclick="clearCart(event)" class="btn-clear-all mobile-clear-btn">
+            <i class="far fa-trash-alt mr-1"></i> Fshij të gjitha
+        </button>
     </div>
     
     {% if cart_items %}
@@ -24,9 +27,9 @@
                                 <th>Sasia</th>
                                 <th>Nëntotali</th>
                                 <th style="text-align: right;">
-                                    <a href="#" onclick="clearCart(event)" class="text-danger" style="font-size: 0.8rem; font-weight: 500; text-decoration: underline;">
-                                        Fshij të gjitha
-                                    </a>
+                                    <button onclick="clearCart(event)" class="btn-clear-all">
+                                        <i class="far fa-trash-alt mr-1"></i> Fshij të gjitha
+                                    </button>
                                 </th>
                             </tr>
                         </thead>

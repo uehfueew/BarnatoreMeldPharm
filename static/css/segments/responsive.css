@@ -396,8 +396,8 @@
 }
 
 .shop-layout {
-    display: grid;
-    grid-template-columns: 280px 1fr;
+    display: grid !important;
+    grid-template-columns: 280px 1fr !important;
     gap: 2.5rem;
     align-items: start;
 }
@@ -764,35 +764,39 @@
     color: var(--primary);
 }
 .shop-layout {
-    display: grid;
-    grid-template-columns: 280px 1fr;
+    display: grid !important;
+    grid-template-columns: 280px 1fr !important;
     gap: 2rem;
     align-items: start;
+    width: 100%;
 }
 
 @media (max-width: 992px) {
     .shop-layout {
-        grid-template-columns: 1fr;
+        display: block !important;
+        grid-template-columns: none !important;
     }
     
     .shop-sidebar {
         position: fixed;
         top: 0;
-        right: -100%; /* Hidden by default */
+        right: -105%; /* Slightly more than 100 to ensure shadow is hidden */
         width: 85%;
         max-width: 400px;
         height: 100vh;
         background: white;
         z-index: 1000;
-        display: flex; /* Override display: none */
+        display: flex !important; /* Ensure it's not display: none */
+        visibility: hidden;
         flex-direction: column;
-        transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
         box-shadow: -10px 0 30px rgba(0,0,0,0.1);
         padding: 0;
     }
 
     .shop-sidebar.active {
         right: 0;
+        visibility: visible;
         display: flex !important;
     }
 
@@ -846,12 +850,18 @@
         height: 100%;
         background: rgba(0,0,0,0.5);
         z-index: 999;
-        display: none;
+        display: block !important;
+        visibility: hidden;
+        opacity: 0;
         backdrop-filter: blur(2px);
+        transition: opacity 0.4s ease, visibility 0.4s;
+        pointer-events: none;
     }
 
     .sidebar-overlay.active {
-        display: block;
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
     }
 
     /* Adjust main shop content padding on mobile */
@@ -952,9 +962,20 @@
     }
 
     .filter-mobile-toggle {
-        background: white;
+        background: #f8fafc;
         color: var(--text-main);
         border: 1px solid #e2e8f0;
+        font-weight: 700;
+        transition: all 0.2s ease;
+    }
+    
+    .filter-mobile-toggle i {
+        color: var(--primary);
+    }
+
+    .filter-mobile-toggle:active {
+        background: #f1f5f9;
+        transform: scale(0.98);
     }
 }
 

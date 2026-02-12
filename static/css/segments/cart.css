@@ -26,6 +26,33 @@
     border: 1px solid #bfdbfe;
 }
 
+.btn-clear-all {
+    background: #fff5f5;
+    color: #e53e3e;
+    border: 1px solid #feb2b2;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-clear-all:hover {
+    background: #e53e3e;
+    color: white;
+    border-color: #e53e3e;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(229, 62, 62, 0.2);
+}
+
+.btn-clear-all i {
+    font-size: 0.85rem;
+}
+
 
 html, body {
     overflow-x: hidden;

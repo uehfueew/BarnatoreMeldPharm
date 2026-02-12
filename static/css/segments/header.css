@@ -470,6 +470,7 @@
     color: var(--text-main);
     display: -webkit-box;
     -webkit-line-clamp: 1;
+    line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -513,18 +514,26 @@
 }
 
 .remove-item-btn {
-    background: none;
+    background: #fff1f2;
     border: none;
-    color: #94a3b8;
+    color: #ef4444;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
     cursor: pointer;
-    transition: 0.2s;
-    font-size: 1rem;
-    align-self: center;
-    padding: 5px;
+    transition: all 0.2s ease;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: 0.5rem;
 }
 
 .remove-item-btn:hover {
-    color: #ef4444;
+    background: #ef4444;
+    color: white;
+    transform: scale(1.1);
 }
 
 .empty-mini-cart {

@@ -649,6 +649,14 @@ document.addEventListener('DOMContentLoaded', () => {
         overlay.addEventListener('click', closeShopSidebar);
     }
 
+    window.openShopSidebar = function() {
+        const sidebar = document.getElementById('shopSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        if (sidebar) sidebar.classList.add('active');
+        if (overlay) overlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+    };
+
     window.closeShopSidebar = function() {
         const sidebar = document.getElementById('shopSidebar');
         const overlay = document.getElementById('sidebarOverlay');
@@ -845,12 +853,18 @@ window.updateGlobalBadges = function(data) {
 
     // 1. Update Cart Badges
     if (data.cart_count !== undefined) {
-        const cartBadges = document.querySelectorAll('.cart-badge, .mobile-cart-badge, .cart-count-badge');
+        const cartBadges = document.querySelectorAll('.cart-badge, .mobile-cart-badge, .cart-count-badge, .items-count-badge-mobile');
         cartBadges.forEach(badge => {
-            badge.textContent = data.cart_count;
+            if (badge.classList.contains('items-count-badge-mobile')) {
+                badge.textContent = `${data.cart_count} produkt(e)`;
+            } else {
+                badge.textContent = data.cart_count;
+            }
             if (data.cart_count > 0) {
                 badge.classList.remove('d-none');
-                badge.style.display = 'flex'; // Explicitly set display for flex layouts
+                if (!badge.classList.contains('items-count-badge-mobile')) {
+                    badge.style.display = 'flex';
+                }
             } else {
                 badge.classList.add('d-none');
                 badge.style.display = 'none';
@@ -935,17 +949,21 @@ window.updateMiniQty = function(event, productId, action) {
         event.stopPropagation();
     }
     
-    const itemRow = document.querySelector(`.mini-cart-item[data-id="${productId}"]`);
-    const qtySpan = itemRow ? itemRow.querySelector('.qty-val') : null;
-    const currentQty = qtySpan ? parseInt(qtySpan.textContent) : 1;
+    // Support both desktop mini-cart and mobile modal cart
+    const itemRows = document.querySelectorAll(`.mini-cart-item[data-id="${productId}"], .mobile-mini-cart-item[data-id="${productId}"]`);
+    
+    itemRows.forEach(row => {
+        const qtySpan = row.querySelector('.qty-val');
+        const currentQty = qtySpan ? parseInt(qtySpan.textContent) : 1;
 
-    if (itemRow && action === 'remove') {
-        itemRow.style.opacity = '0.5';
-        itemRow.style.pointerEvents = 'none';
-    } else if (qtySpan) {
-        if (action === 'increase') qtySpan.textContent = currentQty + 1;
-        else if (action === 'decrease' && currentQty > 1) qtySpan.textContent = currentQty - 1;
-    }
+        if (action === 'remove') {
+            row.style.opacity = '0.5';
+            row.style.pointerEvents = 'none';
+        } else if (qtySpan) {
+            if (action === 'increase') qtySpan.textContent = currentQty + 1;
+            else if (action === 'decrease' && currentQty > 1) qtySpan.textContent = currentQty - 1;
+        }
+    });
 
     const formData = new FormData();
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -961,20 +979,52 @@ window.updateMiniQty = function(event, productId, action) {
         if (data.success) {
             window.updateGlobalBadges(data);
 
-            if (action === 'remove' && itemRow) {
-                itemRow.remove();
-                if (data.cart_count === 0) {
-                    const itemsContainer = document.querySelector('.mini-cart-items');
-                    if (itemsContainer) {
-                        itemsContainer.innerHTML = `
-                            <div class="empty-mini-cart">
-                                <i class="fas fa-shopping-basket fa-3x mb-3"></i>
-                                <p>Shporta juaj është boshe.</p>
-                            </div>`;
+            itemRows.forEach(row => {
+                if (action === 'remove') {
+                    row.remove();
+                } else {
+                    const qtySpan = row.querySelector('.qty-val');
+                    if (qtySpan) qtySpan.textContent = data.quantity;
+                }
+            });
+
+            // Update totals if they exist
+            const footers = document.querySelectorAll('.mini-cart-footer, .modal-footer-cart');
+            footers.forEach(footer => {
+                const totalSpan = footer.querySelector('.btn-go-to-cart, .total-price');
+                if (totalSpan) {
+                    if (totalSpan.classList.contains('btn-go-to-cart')) {
+                        totalSpan.textContent = `SHKO NË SHPORTË (${data.cart_total.toFixed(2)} €)`;
+                    } else {
+                        totalSpan.textContent = `€${data.cart_total.toFixed(2)}`;
                     }
                 }
-            } else if (qtySpan) {
-                qtySpan.textContent = data.quantity;
+            });
+
+            if (data.cart_count === 0) {
+                // Desktop
+                const desktopContainer = document.querySelector('.mini-cart-items');
+                if (desktopContainer) {
+                    desktopContainer.innerHTML = `
+                        <div class="empty-mini-cart">
+                            <i class="fas fa-shopping-basket fa-3x mb-3"></i>
+                            <p>Shporta juaj është boshe.</p>
+                        </div>`;
+                }
+                // Mobile
+                const mobileContainer = document.querySelector('.mobile-cart-items-list');
+                if (mobileContainer) {
+                    mobileContainer.innerHTML = `
+                        <div class="empty-cart-state-mobile">
+                            <div class="icon-circle"><i class="fas fa-shopping-basket"></i></div>
+                            <h4>Shporta juaj është boshe</h4>
+                            <p>Ju nuk keni shtuar asnjë produkt në shportë akoma.</p>
+                            <button class="btn-primary-mobile" onclick="closeCartModal()">Fillo Blerjen</button>
+                        </div>`;
+                }
+                // Remove footer
+                const mobileFooter = document.querySelector('.modal-footer-cart');
+                if (mobileFooter) mobileFooter.remove();
             }
 
             if (window.location.pathname === '/cart/') {
@@ -1035,6 +1085,22 @@ window.openCategoriesModal = function() {
 
 window.closeCategoriesModal = function() {
     const modal = document.getElementById('mobile-categories-modal');
+    if(modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+};
+
+window.openCartModal = function() {
+    const modal = document.getElementById('mobile-cart-modal');
+    if(modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+};
+
+window.closeCartModal = function() {
+    const modal = document.getElementById('mobile-cart-modal');
     if(modal) {
         modal.classList.remove('active');
         document.body.style.overflow = '';

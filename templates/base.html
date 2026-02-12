@@ -161,13 +161,13 @@
             <i class="fas fa-th-large"></i>
             <span>Kategoritë</span>
         </button>
-        <a href="{{ url_for('cart.view_cart') }}" class="bottom-nav-item {{ 'active' if request.endpoint in ['cart.view_cart', 'cart.checkout'] }}">
+        <button class="bottom-nav-item" onclick="openCartModal()">
             <div class="icon-wrapper">
                 <i class="fas fa-shopping-cart"></i>
                 <span class="mobile-cart-badge cart-count-badge {{ 'd-none' if not cart_count or cart_count == 0 else '' }}">{{ cart_count if cart_count else 0 }}</span>
             </div>
             <span>Shporta</span>
-        </a>
+        </button>
         <button class="bottom-nav-item" onclick="openProfileModal()">
             <i class="fas fa-user"></i>
             <span>Profili</span>
@@ -200,6 +200,71 @@
                 {% endif %}
             </ul>
         </div>
+    </div>
+
+    <!-- --- MOBILE CART MODAL --- -->
+    <div id="mobile-cart-modal" class="full-screen-modal">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <h3>Shporta</h3>
+                <span class="items-count-badge-mobile {{ 'd-none' if not cart_count or cart_count == 0 else '' }}">{{ cart_count }} produkt(e)</span>
+            </div>
+            <button class="close-modal-btn" onclick="closeCartModal()">&times;</button>
+        </div>
+        <div class="modal-content">
+            <div class="mobile-mini-cart-header">
+                {% if cart_items %}
+                <a href="#" class="clear-cart-link-mobile" onclick="clearCart(event)">
+                    <i class="fas fa-trash-alt"></i> Pastro Shportën
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="mobile-cart-items-list">
+                {% for item in cart_items %}
+                <div class="mobile-mini-cart-item" data-id="{{ item._id }}">
+                    <div class="mobile-mini-cart-img">
+                        <img src="{{ item.image_url }}" alt="{{ item.name }}">
+                    </div>
+                    <div class="mobile-mini-cart-info">
+                        <p class="name">{{ item.name }}</p>
+                        <p class="price">€{{ "%.2f"|format(item.discount_price or item.price) }}</p>
+                        <div class="qty-control-mobile">
+                            <button class="qty-btn" onclick="updateMiniQty(event, '{{ item._id }}', 'decrease')">-</button>
+                            <span class="qty-val">{{ item.quantity }}</span>
+                            <button class="qty-btn" onclick="updateMiniQty(event, '{{ item._id }}', 'increase')">+</button>
+                        </div>
+                    </div>
+                    <button class="remove-btn" onclick="updateMiniQty(event, '{{ item._id }}', 'remove')">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
+                </div>
+                {% endfor %}
+
+                {% if not cart_items %}
+                <div class="empty-cart-state-mobile">
+                    <div class="icon-circle">
+                        <i class="fas fa-shopping-basket"></i>
+                    </div>
+                    <h4>Shporta juaj është boshe</h4>
+                    <p>Ju nuk keni shtuar asnjë produkt në shportë akoma.</p>
+                    <button class="btn-primary-mobile" onclick="closeCartModal()">Fillo Blerjen</button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if cart_items %}
+        <div class="modal-footer-cart">
+            <div class="total-row">
+                <span>Totali:</span>
+                <span class="total-price">€{{ "%.2f"|format(cart_total) }}</span>
+            </div>
+            <a href="{{ url_for('cart.view_cart') }}" class="btn-checkout-mobile">
+                SHKO TE POROSIA
+            </a>
+        </div>
+        {% endif %}
     </div>
 
     <!-- --- MOBILE PROFILE MODAL --- -->
@@ -274,6 +339,20 @@
                         <a href="https://www.tiktok.com/@barnatore.meld.ph" target="_blank" class="social-icon tiktok" title="TikTok">
                             <i class="fab fa-tiktok"></i>
                         </a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Lokacioni</h3>
+                    <div class="footer-map-container" style="width: 100%; height: 200px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <iframe 
+                            src="https://maps.google.com/maps?q=72%20Eqrem%20Çabej,%20Prishtina&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                            width="100%" 
+                            height="100%" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
                     </div>
                 </div>
             </div>
