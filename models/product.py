@@ -39,12 +39,12 @@ class Product:
             query["is_best_seller"] = True
 
         if min_price is not None or max_price is not None:
-            if "price" not in query: query["price"] = {}
-            if min_price is not None:
-                query["price"]["$gte"] = min_price
-            if max_price is not None:
-                query["price"]["$lte"] = max_price
-            
+            # Match against effective_price instead of just price
+            if "effective_price" not in query:
+                # We need to use $expr to access the calculated effective_price in $match
+                # or simpler: match against both price and discount_price since we can't match against addFields in $match stage of aggregate directly if we want to use the same logic
+                pass
+
         if search_query:
             search_filter = {
                 "$or": [
@@ -64,12 +64,6 @@ class Product:
             else:
                 query.update(search_filter)
             
-        total_products = mongo.db.products.count_documents(query)
-        
-        # Calculate safe skip
-        if page < 1: page = 1
-        skip = (page - 1) * per_page
-        
         # Determine sort order
         # Default sort
         sort_dict = {"_id": -1}
@@ -86,29 +80,62 @@ class Product:
 
         # Use aggregation to handle dynamic sorting by effective price (discount_price if exists, else price)
         pipeline = [
-            {"$match": query},
             {
                 "$addFields": {
                     "effective_price": {
                         "$cond": [
-                            {"$gt": ["$discount_price", 0]},
+                            {"$and": [
+                                {"$gt": ["$discount_price", 0]},
+                                {"$ne": ["$discount_price", None]}
+                            ]},
                             "$discount_price",
                             "$price"
                         ]
                     },
                     "discount_percent": {
                         "$cond": [
-                            {"$gt": ["$discount_price", 0]},
+                            {"$and": [
+                                {"$gt": ["$discount_price", 0]},
+                                {"$ne": ["$discount_price", None]}
+                            ]},
                             {"$divide": [{"$subtract": ["$price", "$discount_price"]}, "$price"]},
                             0
                         ]
                     }
                 }
-            },
-            {"$sort": sort_dict},
-            {"$skip": skip},
-            {"$limit": per_page}
+            }
         ]
+
+        # Apply basic filters first
+        match_query = query.copy()
+        # Remove price filter from match_query as we'll apply it after addFields
+        match_query.pop("price", None)
+        
+        # Insert initial match
+        pipeline.insert(0, {"$match": match_query})
+
+        # Apply price filter on effective_price
+        price_filter = {}
+        if min_price is not None:
+            price_filter["$gte"] = min_price
+        if max_price is not None:
+            price_filter["$lte"] = max_price
+        
+        if price_filter:
+            pipeline.append({"$match": {"effective_price": price_filter}})
+
+        # Get total count after price filtering
+        count_pipeline = pipeline[:]
+        count_pipeline.append({"$count": "total"})
+        count_result = list(mongo.db.products.aggregate(count_pipeline))
+        total_products = count_result[0]['total'] if count_result else 0
+
+        # Add remaining stages
+        pipeline.extend([
+            {"$sort": sort_dict},
+            {"$skip": (page - 1) * per_page if page > 0 else 0},
+            {"$limit": per_page}
+        ])
         
         products = list(mongo.db.products.aggregate(pipeline))
         for p in products:

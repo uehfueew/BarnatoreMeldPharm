@@ -43,7 +43,7 @@
         padding: 1rem 1rem 0.5rem;
         height: auto;
         max-height: 100px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         opacity: 1;
         overflow: hidden;
     }
@@ -75,7 +75,7 @@
         background: #fff;
         gap: 0; /* Remove gap to allow full width search */
         align-items: center;
-        transition: all 0.3s ease;
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .mobile-header.scrolled .mobile-search-row {
@@ -128,7 +128,7 @@
         opacity: 0;
         margin-left: 0 !important;
         overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         transform: scale(0.8); 
         padding: 0 !important;
         border: none !important;
@@ -159,7 +159,7 @@
         border-radius: 0 !important;
         padding: 4px !important;
         color: var(--text-main) !important;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
     .top-row-wishlist i {
@@ -293,22 +293,29 @@
         position: fixed;
         top: 0;
         left: 0;
+        right: 0;
+        bottom: 0;
         width: 100vw;
         height: 100vh;
+        height: 100dvh; /* Modern dynamic viewport height */
         background: #fff;
         z-index: 10001;
         display: flex !important; /* Override base.css display: none !important */
         flex-direction: column;
         transform: translateY(100%);
-        transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.7s;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
         visibility: hidden;
         pointer-events: none;
+    }
+
+    #mobile-cart-modal {
+        transform: translateX(100%);
     }
 
     /* Profile Partial Modal (Laptop/App Style) */
     .full-screen-modal.profile-partial {
         background: rgba(0,0,0,0);
-        transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.7s, background 0.7s;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s, background 0.6s;
     }
 
     .full-screen-modal.profile-partial.active {
@@ -322,14 +329,14 @@
     }
 
     .full-screen-modal.profile-partial .modal-header {
-        margin-top: auto; /* Push to bottom */
-        border-radius: 24px 24px 0 0;
-        padding: 1.5rem;
+        margin-top: 0; /* Changed from auto */
+        border-radius: 0; /* Full screen style */
+        padding: 1.25rem 1.5rem;
     }
 
     .full-screen-modal.profile-partial .modal-content {
-        height: auto;
-        max-height: 75vh;
+        height: 100%; /* Full height */
+        max-height: 100vh;
         padding-bottom: calc(env(safe-area-inset-bottom) + 2rem);
     }
 
@@ -337,6 +344,10 @@
         transform: translateY(0);
         visibility: visible;
         pointer-events: auto;
+    }
+
+    #mobile-cart-modal.active {
+        transform: translateX(0);
     }
 
     .modal-header {
@@ -452,61 +463,67 @@
 
     /* Profile Styling inside Modal */
     .user-info-card {
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        padding: 2.5rem 1.5rem;
-        border-radius: 20px;
-        text-align: center;
-        margin-bottom: 2rem;
-        color: #fff;
-        box-shadow: 0 10px 20px rgba(5, 150, 105, 0.2);
+        background: #f8fafc; /* Minimal light gray background */
+        padding: 1.5rem;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        text-align: left;
+        margin: 1rem;
+        color: var(--text-main);
+        border: 1px solid #f1f5f9;
+        box-shadow: none;
     }
 
     .avatar-circle {
-        width: 80px;
-        height: 80px;
-        background: rgba(255, 255, 255, 0.2);
-        color: #fff;
-        font-size: 2.5rem;
+        width: 45px;
+        height: 45px;
+        background: var(--primary-light);
+        color: var(--primary);
+        font-size: 1.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        margin: 0 auto 1.25rem auto;
-        border: 3px solid rgba(255, 255, 255, 0.3);
+        margin: 0;
+        border: none;
+        flex-shrink: 0;
     }
 
     .user-info-card h4 { 
-        margin-bottom: 0.25rem; 
+        margin-bottom: 0.1rem; 
         font-weight: 700; 
-        font-size: 1.25rem;
+        font-size: 1.1rem;
     }
     .user-info-card p { 
-        opacity: 0.9; 
-        font-size: 0.95rem; 
+        opacity: 0.7; 
+        font-size: 0.85rem; 
     }
 
     .mobile-profile-links { 
         list-style: none;
-        padding: 0 1rem;
+        padding: 0 0.5rem;
     }
 
     .mobile-profile-links li {
-        margin-bottom: 0.75rem;
+        margin-bottom: 0;
     }
 
     .mobile-profile-links li a {
         display: flex;
         align-items: center;
         gap: 1rem;
-        padding: 1.25rem;
-        background: #fff;
-        border-radius: 16px;
+        padding: 1rem 1.25rem;
+        background: transparent;
+        border-radius: 0;
         color: var(--text-main);
         text-decoration: none;
-        font-weight: 600;
-        border: 1px solid #f1f5f9;
+        font-weight: 500;
+        border: none;
+        border-bottom: 1px solid #f8fafc;
         transition: all 0.2s ease;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        box-shadow: none;
     }
 
     .mobile-profile-links li a i {
@@ -1110,10 +1127,10 @@
 
     .product-card .product-title {
         font-size: 0.85rem !important;
-        line-height: 1.25 !important;
+        line-height: 1.2 !important; /* Slightly tighter */
         margin-bottom: 0.2rem !important;
-        height: 2.2rem !important; /* Fixed height for 2 lines */
-        min-height: 2.2rem !important;
+        height: 2.05rem !important; /* Exactly 2 lines at 0.85 x 1.2 = 1.02 each */
+        min-height: 2.05rem !important;
         overflow: hidden !important;
         display: -webkit-box !important;
         -webkit-line-clamp: 2 !important;
@@ -2511,10 +2528,23 @@
     }
 
     /* Fix for "Shiko të gjitha ofertat" button Specifically */
+    #ofertat {
+        padding-bottom: 0.5rem !important;
+    }
+
+    #rekomanduara {
+        padding-top: 0.5rem !important;
+    }
+
+    .product-carousel {
+        padding-bottom: 0.75rem !important;
+    }
+
     #ofertat .section-header {
         flex-direction: column !important;
         align-items: flex-start !important;
         gap: 0.75rem;
+        margin-bottom: 1.5rem !important;
     }
 
     #ofertat .section-header .btn {
@@ -2528,7 +2558,7 @@
         padding: 0 !important;
         margin: 0 !important;
         max-width: 100% !important;
-        height: 600px !important; /* Extremely tall as requested */
+        height: 350px !important; /* Reduced from 600px/400px to make it smaller on mobile */
         background: #fff;
     }
     
@@ -2537,7 +2567,7 @@
         height: 100% !important; /* Use container height */
         border-radius: 0 !important;
         width: 100% !important;
-        padding: 0 !important;
+        padding: 0.5rem !important; /* Added padding to make the slide/image appear smaller/contained */
     }
 
     .hero-carousel {
@@ -2552,8 +2582,8 @@
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 120px;
-        background: linear-gradient(to top, rgba(0,0,0,0.3), transparent);
+        height: 60px; /* Reduced from 120px to match shorter hero */
+        background: linear-gradient(to top, rgba(0,0,0,0.2), transparent);
         pointer-events: none;
         z-index: 5;
     }
@@ -2561,7 +2591,7 @@
     .hero-img {
         height: 100% !important;
         width: 100% !important;
-        object-fit: cover !important; /* Fill the whole space */
+        object-fit: contain !important; /* Changed from cover to contain to avoid cropping and make it appear smaller */
         object-position: center;
         background: #fff !important;
     }
@@ -2597,11 +2627,10 @@
 
     /* Load More Button Mobile Scaling */
     .btn-load-more {
-        padding: 0.6rem 1.4rem !important; /* Smaller padding */
-        font-size: 0.85rem !important; /* Smaller text */
-        border-radius: 8px !important;
+        padding: 0.6rem 1.4rem !important; 
+        font-size: 0.85rem !important; 
         width: auto !important;
-        min-width: 180px;
+        min-width: 160px;
     }
 
     .load-more-container {

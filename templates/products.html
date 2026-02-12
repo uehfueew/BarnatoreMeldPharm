@@ -7,107 +7,115 @@
             <!-- Sidebar Filters -->
             <aside class="shop-sidebar" id="shopSidebar">
                 <div class="sidebar-mobile-header">
-                    <h3>Filtroni</h3>
-                    <button class="btn-close-sidebar" id="closeSidebar"><i class="fas fa-times"></i></button>
+                    <button class="btn-close-sidebar" id="closeSidebar" onclick="closeShopSidebar()"><i class="fas fa-times"></i></button>
+                    <h3>Filtroni Produktet</h3>
                 </div>
                 <div class="sidebar-content-wrapper">
+                    <div class="sidebar-block collapsible-sidebar-block" id="categoryBlock">
+                        <button class="sidebar-collapsible-trigger" onclick="toggleFilterSection(this)">
+                            <h3 class="sidebar-title no-line">Kategoritë</h3>
+                            <i class="fas fa-chevron-down toggle-chevron"></i>
+                        </button>
+                        <div class="collapsible-content">
+                            <ul class="sidebar-cat-list">
+                                <li>
+                                    <a href="{{ url_for('main.products', category='all') }}" class="sidebar-cat-link {% if current_category == 'all' %}active{% endif %}">
+                                        <span>Të Gjitha</span>
+                                        <i class="fas fa-th-large"></i>
+                                    </a>
+                                </li>
+                                {% for cat_name, subcats in categories.items() %}
+                                <li>
+                                    <div class="sidebar-cat-group">
+                                        <a href="{{ url_for('main.products', category=cat_name) }}" class="sidebar-cat-link {% if current_category == cat_name %}active{% endif %}">
+                                            <span>{{ cat_name }}</span>
+                                            {% if subcats %}<i class="fas fa-chevron-right toggle-icon"></i>{% endif %}
+                                        </a>
+                                        {% if current_category == cat_name and subcats %}
+                                        <ul class="sidebar-subcat-list">
+                                            {% for sub in subcats %}
+                                            <li>
+                                                <a href="{{ url_for('main.products', category=cat_name, subcategory=sub) }}" class="sidebar-subcat-link {% if current_subcategory == sub %}active{% endif %}">
+                                                    {{ sub }}
+                                                </a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Only Discounts Filter -->
                     <div class="sidebar-block">
-                    <h3 class="sidebar-title no-line">Kategoritë</h3>
-                    <ul class="sidebar-cat-list">
-                        <li>
-                            <a href="{{ url_for('main.products', category='all') }}" class="sidebar-cat-link {% if current_category == 'all' %}active{% endif %}">
-                                <span>Të Gjitha</span>
-                                <i class="fas fa-th-large"></i>
-                            </a>
-                        </li>
-                        {% for cat_name, subcats in categories.items() %}
-                        <li>
-                            <div class="sidebar-cat-group">
-                                <a href="{{ url_for('main.products', category=cat_name) }}" class="sidebar-cat-link {% if current_category == cat_name %}active{% endif %}">
-                                    <span>{{ cat_name }}</span>
-                                    {% if subcats %}<i class="fas fa-chevron-right toggle-icon"></i>{% endif %}
-                                </a>
-                                {% if current_category == cat_name and subcats %}
-                                <ul class="sidebar-subcat-list">
-                                    {% for sub in subcats %}
+                        <h3 class="sidebar-title">Statusi</h3>
+                        <div class="filter-switch-row mb-3">
+                            <span class="switch-label">Shfaq vetëm ofertat</span>
+                            <label class="switch">
+                                <input type="checkbox" id="discount-only-filter" {% if discount_only %}checked{% endif %} onchange="updateShop()">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="filter-switch-row">
+                            <span class="switch-label">Më të shiturit</span>
+                            <label class="switch">
+                                <input type="checkbox" id="best-seller-filter" {% if best_sellers %}checked{% endif %} onchange="updateShop()">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Brand Filter -->
+                    <div class="sidebar-block collapsible-sidebar-block" id="brandBlock">
+                        <button class="sidebar-collapsible-trigger" onclick="toggleFilterSection(this)">
+                            <h3 class="sidebar-title">Brendet</h3>
+                            <i class="fas fa-chevron-down toggle-chevron"></i>
+                        </button>
+                        <div class="collapsible-content">
+                            <div class="brand-filter-container">
+                                <ul class="brand-list">
                                     <li>
-                                        <a href="{{ url_for('main.products', category=cat_name, subcategory=sub) }}" class="sidebar-subcat-link {% if current_subcategory == sub %}active{% endif %}">
-                                            {{ sub }}
+                                        <a href="{{ url_for('main.products', brand='all', category=current_category) }}" class="brand-link-item {% if current_brand == 'all' %}active{% endif %}">
+                                            Të gjitha
+                                        </a>
+                                    </li>
+                                    {% for brand in brands %}
+                                    <li>
+                                        <a href="{{ url_for('main.products', brand=brand, category=current_category) }}" class="brand-link-item {% if current_brand == brand %}active{% endif %}">
+                                            {{ brand }}
                                         </a>
                                     </li>
                                     {% endfor %}
                                 </ul>
-                                {% endif %}
-                            </div>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-
-                <!-- Only Discounts Filter -->
-                <div class="sidebar-block">
-                    <h3 class="sidebar-title">Filtroni Sipas</h3>
-                    <div class="filter-switch-row mb-3">
-                        <span class="switch-label">Shfaq vetëm ofertat</span>
-                        <label class="switch">
-                            <input type="checkbox" id="discount-only-filter" {% if discount_only %}checked{% endif %} onchange="updateShop()">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                    <div class="filter-switch-row">
-                        <span class="switch-label">Më të shiturit</span>
-                        <label class="switch">
-                            <input type="checkbox" id="best-seller-filter" {% if best_sellers %}checked{% endif %} onchange="updateShop()">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Brand Filter -->
-                <div class="sidebar-block">
-                    <h3 class="sidebar-title">Brendet</h3>
-                    <div class="brand-filter-container">
-                        <ul class="brand-list">
-                            <li>
-                                <a href="{{ url_for('main.products', brand='all', category=current_category) }}" class="brand-link-item {% if current_brand == 'all' %}active{% endif %}">
-                                    Të gjitha
-                                </a>
-                            </li>
-                            {% for brand in brands %}
-                            <li>
-                                <a href="{{ url_for('main.products', brand=brand, category=current_category) }}" class="brand-link-item {% if current_brand == brand %}active{% endif %}">
-                                    {{ brand }}
-                                </a>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="sidebar-block">
-                    <h3 class="sidebar-title">Çmimi</h3>
-                    <div class="filter-group-price">
-                        <div class="price-inputs-wrapper">
-                            <div class="input-with-label">
-                                <span>Min</span>
-                                <input type="number" placeholder="0" id="min-price" class="price-input" value="{{ request.args.get('min_price', '') }}">
-                            </div>
-                            <div class="input-with-label">
-                                <span>Max</span>
-                                <input type="number" placeholder="1000" id="max-price" class="price-input" value="{{ request.args.get('max_price', '') }}">
                             </div>
                         </div>
-                        <button id="apply-price-filter" class="btn btn-sm btn-primary mt-3 w-100">Apliko</button>
                     </div>
-                </div>
+
+                    <div class="sidebar-block clickable-last-block">
+                        <h3 class="sidebar-title">Çmimi</h3>
+                        <div class="filter-group-price">
+                            <div class="price-inputs-wrapper" style="margin-bottom: 1rem;">
+                                <div class="input-with-label">
+                                    <span>Min</span>
+                                    <input type="number" placeholder="0" id="min-price" class="price-input" value="{{ request.args.get('min_price', '') }}">
+                                </div>
+                                <div class="input-with-label">
+                                    <span>Max</span>
+                                    <input type="number" placeholder="1000" id="max-price" class="price-input" value="{{ request.args.get('max_price', '') }}">
+                                </div>
+                            </div>
+                            <button id="apply-price-filter" class="btn btn-sm btn-primary w-100" onclick="updateShop()">Apliko Çmimin</button>
+                        </div>
+                    </div>
                 </div> <!-- End sidebar-content-wrapper -->
                 <div class="sidebar-mobile-footer d-md-none">
-                    <button class="btn btn-primary w-100" onclick="closeShopSidebar()">Apliko Filtrat</button>
+                    <button class="btn btn-primary w-100" onclick="closeShopSidebar()">Shiko Produktet</button>
                 </div>
             </aside>
             
-            <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
             <!-- Main Shop Content -->
             <main class="shop-main-content">
                 <div class="shop-controls-container">
@@ -116,7 +124,7 @@
                     </div>
                     <div class="shop-sorting" style="display: flex; gap: 0.5rem; align-items: center;">
                         <div class="dropdown" id="sortDropdown">
-                            <button class="btn btn-outline-secondary order-button" type="button" id="sortTrigger" onclick="window.toggleSortMenu(event)">
+                            <button class="btn btn-outline-secondary order-button" type="button" id="sortTrigger">
                                 Rendit: <span id="current-sort-label">Relevanca</span> <i class="fas fa-chevron-down ml-2"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" id="sortMenu">
@@ -138,7 +146,7 @@
                             </div>
                         </div>
                         <button class="btn btn-outline-secondary filter-mobile-toggle" onclick="openShopSidebar()">
-                             <i class="fas fa-filter"></i> <span>Filtro</span>
+                             <i class="fas fa-sliders-h"></i> <span>Filtro</span>
                         </button>
                     </div>
                 </div>
@@ -187,12 +195,13 @@
                 </div>
 
                 <div class="load-more-container text-center {{ 'd-none' if not total_pages or total_pages <= 1 else '' }}" style="margin-top: 4rem; margin-bottom: 4rem;">
-                    <button id="load-more-products" class="btn btn-outline-primary btn-load-more" data-page="1" onclick="window.updateShop(true)">
-                        Shiko të gjitha produktet <i class="fas fa-chevron-down ml-2"></i>
+                    <button id="load-more-products" class="btn btn-load-more" data-page="1" onclick="window.updateShop(true)">
+                        Shiko të gjitha <i class="fas fa-chevron-down ml-2"></i>
                     </button>
                 </div>
             </main>
         </div>
     </div>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeShopSidebar()"></div>
 </section>
 {% endblock %}

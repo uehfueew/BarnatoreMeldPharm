@@ -3,6 +3,7 @@
     overflow: hidden;
     position: relative;
     width: 100%;
+    touch-action: pan-y;
 }
 
 .carousel-track-container {
@@ -243,11 +244,11 @@
     .hero-inner-wrapper {
         width: 100%;
         max-width: 100%; 
-        height: auto !important; /* Allow height to move with image */
-        aspect-ratio: 1/1; /* Force square ratio to make it taller/bigger */
+        height: auto !important; 
+        aspect-ratio: 16/9; /* Changed from 1/1 to make it shorter/smaller */
         max-height: none;
-        min-height: 400px;
-        padding-bottom: 2rem;
+        min-height: 300px;
+        padding-bottom: 1rem;
     }
     .hero-img {
         object-fit: contain; 

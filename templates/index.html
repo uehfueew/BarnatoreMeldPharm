@@ -201,7 +201,7 @@
                 <span class="sub-title">Zbritjet e fundit</span>
                 <h2 class="section-title">Ofertat Ekskluzive</h2>
             </div>
-            <a href="{{ url_for('main.products', discount_only='true') }}" class="btn btn-primary" style="margin-bottom: 5px; border-radius: 50px; font-weight: 600;">
+            <a href="{{ url_for('main.products', discount_only='true') }}" class="btn btn-load-more">
                 <span>Shiko të gjitha ofertat</span> <i class="fas fa-arrow-right ml-2"></i>
             </a>
         </div>
@@ -311,10 +311,10 @@
             {% endfor %}
         </div>
         
-        <div class="load-more-container text-center {{ 'd-none' if not total_pages_regular or total_pages_regular <= 1 else '' }}" style="margin-top: 4rem; margin-bottom: 4rem;">
-            <button id="load-more-btn" class="btn btn-outline-primary btn-load-more" data-page="1" onclick="window.loadMoreHome()">
-                Shiko të gjitha produktet <i class="fas fa-chevron-down ml-2"></i>
-            </button>
+        <div class="load-more-container text-center" style="margin-top: 4rem; margin-bottom: 4rem;">
+            <a href="{{ url_for('main.products') }}" class="btn btn-load-more">
+                Shiko të gjitha produktet <i class="fas fa-arrow-right ml-2"></i>
+            </a>
         </div>
     </div>
 </section>

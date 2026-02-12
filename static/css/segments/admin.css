@@ -39,8 +39,21 @@
 .details-products-admin li {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     padding: 0.5rem 0;
     border-bottom: 1px solid #eee;
+    gap: 1rem;
+}
+
+.details-products-admin li span {
+    flex: 1;
+    word-break: normal;
+    overflow-wrap: break-word;
+}
+
+.details-products-admin li strong {
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .admin-total-row {
@@ -69,27 +82,32 @@
     /* Admin Order Details Fix */
     [id^="details-"] > td > div {
         grid-template-columns: 1fr !important;
-        gap: 1.5rem !important;
-        padding: 1rem !important;
+        gap: 1rem !important;
+        padding: 0.75rem !important;
     }
 
     [id^="details-"] h5 {
-        font-size: 0.9rem !important;
-        margin-bottom: 0.5rem !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 0.4rem !important;
+        font-weight: 700 !important;
     }
 
-    [id^="details-"] p, [id^="details-"] span, [id^="details-"] li, [id^="details-"] strong {
-        font-size: 0.75rem !important;
+    [id^="details-"] p, 
+    [id^="details-"] span, 
+    [id^="details-"] li, 
+    [id^="details-"] strong {
+        font-size: 0.7rem !important;
     }
 
     .order-details-wrapper {
-        padding: 1rem !important;
+        padding: 0.8rem !important;
     }
 
     .order-details-wrapper p,
     .order-details-wrapper li {
-        font-size: 0.68rem !important; /* Made even smaller as per request */
-        line-height: 1.3 !important;
+        font-size: 0.65rem !important;
+        line-height: 1.2 !important;
+        margin-bottom: 0.25rem !important;
     }
 
     .admin-details-grid {

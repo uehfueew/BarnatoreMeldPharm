@@ -93,9 +93,10 @@
     }
     
     .product-title {
-        font-size: 0.95rem !important;
+        font-size: 0.85rem !important;
         margin-bottom: 0.2rem !important;
-        min-height: auto !important; 
+        min-height: 2.05rem !important; 
+        line-height: 1.2 !important;
     }
     
     /* Remove Add to Cart Button on Mobile Home Page */
@@ -398,8 +399,10 @@
 .shop-layout {
     display: grid !important;
     grid-template-columns: 280px 1fr !important;
-    gap: 2.5rem;
+    gap: 1.5rem !important;
     align-items: start;
+    max-width: 1350px;
+    margin: 0 auto;
 }
 
 .shop-sidebar {
@@ -607,15 +610,15 @@
 .product-grid-dynamic {
     display: grid;
     grid-template-columns: repeat(5, 1fr); /* 5 products per row on laptop/desktop */
-    gap: 1.25rem; /* Smaller gap */
+    gap: 1rem;
     margin-top: 2rem;
     width: 100%;
 }
 
 @media (max-width: 1200px) {
     .product-grid-dynamic {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.25rem;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.75rem; /* Slightly smaller gap to fit 5 */
     }
 }
 
@@ -763,14 +766,6 @@
     background: var(--primary-light);
     color: var(--primary);
 }
-.shop-layout {
-    display: grid !important;
-    grid-template-columns: 280px 1fr !important;
-    gap: 2rem;
-    align-items: start;
-    width: 100%;
-}
-
 @media (max-width: 992px) {
     .shop-layout {
         display: block !important;
@@ -781,9 +776,9 @@
         position: fixed;
         top: 0;
         right: -105%; /* Slightly more than 100 to ensure shadow is hidden */
-        width: 85%;
-        max-width: 400px;
+        width: 100%; /* Full screen width for better UX */
         height: 100vh;
+        height: 100dvh;
         background: white;
         z-index: 11000;
         display: flex !important; /* Ensure it's not display: none */
@@ -800,33 +795,78 @@
         display: flex !important;
     }
 
-    .sidebar-mobile-header {
+/* Collapsible Shop Sidebar Blocks with Desktop Support */
+.sidebar-collapsible-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    cursor: pointer;
+    outline: none;
+}
+
+.sidebar-collapsible-trigger i {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    transition: transform 0.3s ease;
+}
+
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
+}
+
+.collapsible-sidebar-block.active .collapsible-content {
+    max-height: 2000px; /* Large enough to hold content */
+    transition: max-height 0.4s ease-in;
+}
+
+.collapsible-sidebar-block.active .sidebar-title {
+    margin-bottom: 1rem;
+}
+
+.sidebar-mobile-header {
         display: flex !important;
+        flex-direction: column;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
         padding: 1.5rem;
         border-bottom: 1px solid #f1f5f9;
         background: white;
+        position: relative;
     }
 
     .sidebar-mobile-header h3 {
-        margin: 0;
-        font-size: 1.25rem;
+        margin: 0.5rem 0 0 0;
+        font-size: 1.15rem;
         font-weight: 700;
         color: var(--text-main);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .btn-close-sidebar {
-        background: #f8fafc;
-        border: none;
-        width: 36px;
-        height: 36px;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #64748b;
+        color: var(--text-main);
         cursor: pointer;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s;
+    }
+    
+    .btn-close-sidebar:active {
+        transform: scale(0.9);
+        background: #e2e8f0;
     }
 
     .sidebar-content-wrapper {
@@ -889,15 +929,57 @@
     }
 }
 
+.sidebar-overlay {
+    display: none;
+}
+
 .sidebar-mobile-header, .sidebar-mobile-footer {
     display: none;
 }
 
 /* Ensure sidebar content doesn't have extra padding on desktop */
 @media (min-width: 993px) {
+    .shop-sidebar {
+        position: sticky !important;
+        top: 100px !important;
+        right: auto !important;
+        visibility: visible !important;
+        display: block !important;
+        width: 250px !important; /* Reduced from 280px */
+        height: auto !important;
+        z-index: 10;
+        box-shadow: var(--shadow-sm);
+        padding: 1.25rem !important; /* Slightly tighter padding */
+        border: 1px solid #f1f5f9;
+        border-radius: var(--radius-lg);
+    }
     .sidebar-content-wrapper {
         padding: 0;
         overflow: visible;
+    }
+    .collapsible-content {
+        max-height: none !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+    .toggle-chevron {
+        display: none !important;
+    }
+    .sidebar-collapsible-trigger {
+        cursor: default;
+        pointer-events: none;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        display: block !important;
+    }
+    .sidebar-title {
+        margin-bottom: 1.25rem !important;
+        padding: 0 !important;
+    }
+    .sidebar-mobile-header, .sidebar-mobile-footer {
+        display: none !important;
     }
 }
 
@@ -905,15 +987,21 @@
 /* --- Shop Page Overhaul & Grid Fixes --- */
 .product-grid-v2 {
     display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
-    gap: 2rem;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0.75rem !important;
     width: 100% !important;
+}
+
+@media (min-width: 1400px) {
+    .product-grid-v2 {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
 }
 
 @media (max-width: 768px) {
     .product-grid-v2 {
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 1rem;
+        gap: 0.75rem !important;
     }
 }
 
@@ -944,7 +1032,7 @@
     
     .order-button, .filter-mobile-toggle {
         flex: 1;
-        justify-content: space-between;
+        justify-content: center;
         white-space: nowrap;
         font-size: 0.85rem;
         padding: 0.6rem 1rem;
@@ -982,6 +1070,21 @@
 /* Enhanced Sorting Dropdown base cleaned for responsive - relying on products.css */
 .order-button {
     cursor: pointer;
+    background: #fff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: var(--text-main) !important;
+    padding: 0.6rem 1.2rem !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    transition: all 0.2s ease !important;
+}
+
+.order-button:hover {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
 }
 
 #sortMenu {
@@ -1062,18 +1165,19 @@
 }
 
 #apply-price-filter {
-    background-color: var(--primary);
+    background-color: var(--primary) !important;
     color: white !important;
     border: none;
-    margin-top: 1.5rem !important;
+    margin-top: 1rem !important;
     padding: 0.75rem !important;
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.2s;
+    display: block !important;
 }
 
 #apply-price-filter:hover {
-    background-color: var(--primary-dark);
+    background-color: var(--primary-dark) !important;
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2);
 }

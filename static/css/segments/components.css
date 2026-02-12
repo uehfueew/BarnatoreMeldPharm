@@ -40,18 +40,26 @@
 
 /* Load More Button Styling */
 .btn-load-more {
-    padding: 1rem 2.5rem !important;
-    font-weight: 700 !important;
-    font-size: 1.05rem !important;
-    border-radius: 12px !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    padding: 0.8rem 2.2rem !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    border-radius: 50px !important;
+    transition: all 0.3s ease !important;
+    background-color: #f1f5f9 !important; /* Soft gray */
+    border: 1px solid #e2e8f0 !important;
+    color: #475569 !important; /* Muted text */
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 .btn-load-more:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 10px 20px rgba(5, 150, 105, 0.15);
-    background-color: var(--primary) !important;
-    color: white !important;
+    transform: translateY(-2px) !important;
+    background-color: #e2e8f0 !important; /* Slightly darker gray */
+    color: #0f172a !important; /* Darker text */
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Toast Notification */
@@ -392,7 +400,7 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     gap: 1.5rem;
     overflow-x: auto;
     scroll-behavior: smooth;
-    padding: 1rem 0.5rem 2rem 0.5rem;
+    padding: 1rem 0.5rem 1.25rem 0.5rem;
     scroll-snap-type: x mandatory;
 }
 
