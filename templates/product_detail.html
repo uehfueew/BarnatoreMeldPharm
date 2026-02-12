@@ -147,9 +147,9 @@
 <!-- Mobile Sticky Action Bar -->
 <div class="mobile-action-bar">
     <div class="mobile-btns" style="display: flex; gap: 0.5rem; width: 100%; align-items: center;">
-        <div class="quantity-selector" style="height: 48px; min-width: 90px;">
+        <div class="quantity-selector" style="height: 48px; min-width: 100px;">
             <button type="button" class="qty-btn minus"><i class="fas fa-minus"></i></button>
-            <input type="number" class="qty-input" value="1" min="1" readonly style="width: 25px;">
+            <input type="number" class="qty-input" value="1" min="1" readonly>
             <button type="button" class="qty-btn plus"><i class="fas fa-plus"></i></button>
         </div>
         
@@ -211,7 +211,7 @@ function buyNowWithQty(productId, btn) {
     .mobile-action-bar {
         display: flex;
         position: fixed;
-        bottom: 60px; /* Above bottom navigation */
+        bottom: 70px; /* Above bottom navigation */
         left: 0;
         width: 100%;
         background: white;
@@ -238,7 +238,7 @@ function buyNowWithQty(productId, btn) {
 
     {% if related_products %}
     <div class="container container-wide">
-        <div class="related-products" style="margin-top: 8rem; padding-bottom: 5rem;">
+        <div class="related-products-section">
             <h2 class="section-title" style="margin-bottom: 3rem;">Produkte të Ngjashme</h2>
             <div class="product-grid">
                 {% for related in related_products %}
@@ -263,7 +263,7 @@ function buyNowWithQty(productId, btn) {
                     <div class="product-info">
                         <span class="product-category">{{ related.category }}</span>
                         <h3 class="product-title">{{ related.name }}</h3>
-                        {% if related.size %}<span class="product-size" style="display: block; font-size: 0.85rem; color: #64748b; margin-top: 0.25rem;">{{ related.size }}</span>{% endif %}
+                        {% if related.size %}<span class="product-size">{{ related.size }}</span>{% endif %}
                         <div class="price-container" style="margin-top: 0.75rem;">
                             {% if related.discount_price %}
                                 <span class="price discounted">€{{ related.discount_price }}</span>

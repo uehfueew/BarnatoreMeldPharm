@@ -36,6 +36,7 @@
                         <div class="product-info">
                             <span class="product-category">{{ product.category }}</span>
                             <h3 class="product-title">{{ product.name }}</h3>
+                            {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
                             <div class="price-container">
                             {% if product.discount_price %}
                                 <span class="price discounted">€{{ product.discount_price }}</span>

@@ -39,6 +39,7 @@
                                         <div class="product-details-text">
                                             <span class="product-name">{{ item.name }}</span>
                                             <span class="product-category">{{ item.category }}</span>
+                                            {% if item.size %}<span class="product-size" style="display: block; font-size: 0.8rem; color: #64748b; margin-top: 2px;">{{ item.size }}</span>{% endif %}
 
                                             {% if item.discount_price %}
                                                 <div class="item-savings-label" style="color: var(--primary); font-size: 0.8rem; font-weight: 500; margin-top: 4px;">
@@ -124,6 +125,7 @@
                             <div class="cart-item-details">
                                 <span class="cart-item-name">{{ item.name }}</span>
                                 <span class="cart-item-category">{{ item.category }}</span>
+                                {% if item.size %}<span class="cart-item-size" style="display: block; font-size: 0.75rem; color: #64748b; margin-top: 1px;">{{ item.size }}</span>{% endif %}
                                 {% if item.discount_price %}
                                     <div class="item-savings-label" style="color: var(--primary); font-size: 0.75rem; font-weight: 500; margin-top: 2px;">
                                         Kursyet: <span class="savings-amount">€{{ "%.2f"|format(item.item_savings) }}</span>

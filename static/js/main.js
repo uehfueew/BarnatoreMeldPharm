@@ -124,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     </div>
                                     <div class="preview-info">
                                         <span class="preview-name">${p.name}</span>
+                                        ${p.size ? `<span class="preview-size" style="font-size: 0.7rem; color: #64748b; display: block;">${p.size}</span>` : ''}
                                         <span class="preview-price" style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">€${p.discount_price || p.price}</span>
                                     </div>
                                 </a>
@@ -559,100 +560,116 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- SORT DROPDOWN ---
-    // Single delegated listener for Sort Toggle & Items to avoid event conflicts
-    document.addEventListener('click', function(e) {
-        const trigger = e.target.closest('#sortTrigger');
-        const menu = document.getElementById('sortMenu');
-        
-        // Handle Trigger Click
-        if (trigger && menu) {
+    const sortTrigger = document.getElementById('sortTrigger');
+    const sortMenu = document.getElementById('sortMenu');
+
+    if (sortTrigger && sortMenu) {
+        sortTrigger.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             
-            const isOpen = menu.classList.contains('show');
-            
-            // Close all other dropdowns
+            // Close other dropdowns
             document.querySelectorAll('.dropdown-menu.show').forEach(m => {
-                if(m !== menu) m.classList.remove('show');
-            });
-            document.querySelectorAll('.order-button.active').forEach(b => {
-                if(b !== trigger) b.classList.remove('active');
+                if(m !== sortMenu) m.classList.remove('show');
             });
             
-            // Toggle current
-            if (!isOpen) {
-                menu.classList.add('show');
-                trigger.classList.add('active');
-            } else {
-                menu.classList.remove('show');
-                trigger.classList.remove('active');
-            }
-            return;
-        }
+            sortMenu.classList.toggle('show');
+            sortTrigger.classList.toggle('active');
+        });
 
-        // Handle Item Click inside Sort Menu
-        const item = e.target.closest('.dropdown-item.sort-trigger');
-        if (item && !item.id) { 
-            e.preventDefault();
-            const sortVal = item.dataset.sort;
-            const labelText = item.textContent.trim();
-            
-            const sortMenu = document.getElementById('sortMenu');
-            const sortTrigger = document.getElementById('sortTrigger');
-            const labelSpan = document.getElementById('current-sort-label');
-
-            if (labelSpan) labelSpan.textContent = labelText;
-            
-            // Update Active State
-            if (sortMenu) {
+        // Handle Item Click
+        sortMenu.addEventListener('click', function(e) {
+            const item = e.target.closest('.sort-trigger');
+            if (item && !item.id) {
+                e.preventDefault();
+                const sortVal = item.dataset.sort;
+                const labelText = item.innerText.trim();
+                
+                const labelSpan = document.getElementById('current-sort-label');
+                if (labelSpan) labelSpan.textContent = labelText;
+                
                 sortMenu.querySelectorAll('.sort-trigger').forEach(el => el.classList.remove('active'));
                 item.classList.add('active');
-            }
 
-            // Sync URL and Refresh Shop
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set('sort', sortVal);
-            urlParams.set('page', 1);
-            window.history.pushState({}, '', `${window.location.pathname}?${urlParams.toString()}`);
-            
-            if (typeof updateShop === 'function') {
-                updateShop();
-            }
+                const urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('sort', sortVal);
+                urlParams.set('page', 1);
+                
+                window.history.pushState({}, '', `${window.location.pathname}?${urlParams.toString()}`);
+                
+                if (typeof updateShop === 'function') {
+                    updateShop();
+                }
 
-            // Close
-            if (sortMenu) sortMenu.classList.remove('show');
-            if (sortTrigger) sortTrigger.classList.remove('active');
-            return;
-        }
-
-        // Auto-close when clicking outside
-        const activeMenu = document.getElementById('sortMenu');
-        if (activeMenu && activeMenu.classList.contains('show')) {
-            if (!activeMenu.contains(e.target)) {
-                activeMenu.classList.remove('show');
-                const st = document.getElementById('sortTrigger');
-                if (st) st.classList.remove('active');
+                sortMenu.classList.remove('show');
+                sortTrigger.classList.remove('active');
             }
-        }
-    });
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!sortTrigger.contains(e.target) && !sortMenu.contains(e.target)) {
+                sortMenu.classList.remove('show');
+                sortTrigger.classList.remove('active');
+            }
+        });
+    }
 
     // --- SHOP FILTERS ---
     const brandSelect = document.getElementById('brand-select');
     if (brandSelect) brandSelect.addEventListener('change', updateShop);
 
     const applyPriceBtn = document.getElementById('apply-price-filter');
-    if (applyPriceBtn) applyPriceBtn.addEventListener('click', updateShop);
+    if (applyPriceBtn) applyPriceBtn.addEventListener('click', () => {
+        updateShop();
+        if (window.innerWidth <= 992) {
+            closeShopSidebar();
+        }
+    });
+
+    // Mobile Sidebar Toggle
+    const openSidebarBtn = document.getElementById('openSidebar');
+    const closeSidebarBtn = document.getElementById('closeSidebar');
+    const sidebar = document.getElementById('shopSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    if (openSidebarBtn && sidebar && overlay) {
+        openSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        });
+    }
+
+    if (closeSidebarBtn && sidebar && overlay) {
+        closeSidebarBtn.addEventListener('click', closeShopSidebar);
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', closeShopSidebar);
+    }
+
+    window.closeShopSidebar = function() {
+        const sidebar = document.getElementById('shopSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        if (sidebar) sidebar.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    };
 
     // --- LOAD MORE HANDLERS ---
     const loadMoreProductsBtn = document.getElementById('load-more-products');
     if (loadMoreProductsBtn) {
-        loadMoreProductsBtn.addEventListener('click', function() {
+        loadMoreProductsBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             const btn = this;
-            const nextPage = parseInt(btn.dataset.page) + 1;
+            const nextPage = (parseInt(btn.getAttribute('data-page')) || 1) + 1;
             const urlParams = new URLSearchParams(window.location.search);
             urlParams.set('page', nextPage);
             urlParams.set('ajax', 1);
+            
             btn.disabled = true;
+            const originalText = btn.innerHTML;
             btn.innerHTML = 'Duke u ngarkuar... <i class="fas fa-spinner fa-spin ml-2"></i>';
 
             fetch(`/products?${urlParams.toString()}`)
@@ -661,49 +678,74 @@ document.addEventListener('DOMContentLoaded', () => {
                     const productGrid = document.getElementById('productGrid');
                     if (data.products && data.products.length > 0 && productGrid) {
                         appendProducts(data.products, productGrid);
-                        btn.dataset.page = nextPage;
+                        btn.setAttribute('data-page', nextPage);
                         updateResultsCount(document.querySelectorAll('#productGrid .product-card').length);
-                        if (nextPage >= data.total_pages && btn.parentElement) {
-                            btn.parentElement.style.display = 'none';
+                        if (nextPage >= data.total_pages) {
+                            if (btn.parentElement) btn.parentElement.style.display = 'none';
                         }
-                    } else if (btn.parentElement) {
-                        btn.parentElement.style.display = 'none';
+                    } else {
+                        if (btn.parentElement) btn.parentElement.style.display = 'none';
                     }
                 })
-                .catch(err => console.error('Error loading more:', err))
+                .catch(err => {
+                    console.error('Error loading more:', err);
+                })
                 .finally(() => {
                     btn.disabled = false;
-                    btn.innerHTML = 'Shiko të gjitha produktet <i class="fas fa-chevron-down ml-2"></i>';
+                    btn.innerHTML = originalText;
                 });
         });
     }
 
     const loadMoreHomeBtn = document.getElementById('load-more-btn');
     if (loadMoreHomeBtn) {
-        loadMoreHomeBtn.addEventListener('click', function() {
+        loadMoreHomeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             const btn = this;
-            const nextPage = parseInt(btn.dataset.page) + 1;
+            const nextPage = (parseInt(btn.getAttribute('data-page')) || 1) + 1;
+            const category = btn.getAttribute('data-category') || 'all';
+            
             btn.disabled = true;
+            const originalText = btn.innerHTML;
             btn.innerHTML = 'Duke u ngarkuar... <i class="fas fa-spinner fa-spin ml-2"></i>';
 
-            fetch(`/products?page=${nextPage}&ajax=1&no_discount=true`)
+            let url = `/products?page=${nextPage}&ajax=1`;
+            if (category !== 'all') {
+                url += `&category=${encodeURIComponent(category)}`;
+            } else {
+                url += `&no_discount=true`;
+            }
+
+            fetch(url)
                 .then(res => res.json())
                 .then(data => {
                     const recommendedGrid = document.getElementById('recommended-grid');
                     if (data.products && data.products.length > 0 && recommendedGrid) {
                         appendProducts(data.products, recommendedGrid);
-                        btn.dataset.page = nextPage;
-                        if (nextPage >= data.total_pages && btn.parentElement) {
-                            btn.parentElement.style.display = 'none';
+                        btn.setAttribute('data-page', nextPage);
+                        // If we've reached the last page, hide the container
+                        if (nextPage >= data.total_pages) {
+                            if (btn.parentElement) btn.parentElement.style.display = 'none';
                         }
-                    } else if (btn.parentElement) {
-                        btn.parentElement.style.display = 'none';
+                    } else {
+                        if (btn.parentElement) btn.parentElement.style.display = 'none';
                     }
                 })
-                .catch(err => console.error('Error:', err))
+                .catch(err => {
+                    console.error('Error loading more:', err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gabim',
+                        text: 'Nuk u mundësua ngarkimi i produkteve shtesë.',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                })
                 .finally(() => {
                     btn.disabled = false;
-                    btn.innerHTML = 'Shiko të gjitha produktet <i class="fas fa-chevron-down ml-2"></i>';
+                    btn.innerHTML = originalText;
                 });
         });
     }
@@ -1324,18 +1366,25 @@ function updateShop() {
     urlParams.set('ajax', '1');
     urlParams.set('page', '1');
     productGrid.style.opacity = '0.5';
-    fetch(`/products?${urlParams.toString()}`)
+
+    // Use current pathname to preserve category/subcategory if present, otherwise default to /products
+    const currentPath = window.location.pathname.startsWith('/products') ? window.location.pathname : '/products';
+
+    fetch(`${currentPath}?${urlParams.toString()}`)
         .then(res => res.json())
         .then(data => {
             renderProducts(data.products, productGrid);
             updateResultsCount(data.total_count || data.products.length);
             const loadMoreBtn = document.getElementById('load-more-products');
             if (loadMoreBtn && loadMoreBtn.parentElement) {
-                loadMoreBtn.dataset.page = 1;
+                loadMoreBtn.setAttribute('data-page', '1');
                 loadMoreBtn.parentElement.style.display = data.total_pages > 1 ? 'block' : 'none';
+                // Also update d-none class for new load more logic
+                if (data.total_pages > 1) loadMoreBtn.parentElement.classList.remove('d-none');
+                else loadMoreBtn.parentElement.classList.add('d-none');
             }
             urlParams.delete('ajax');
-            window.history.pushState({}, '', `/products?${urlParams.toString()}`);
+            window.history.pushState({}, '', `${currentPath}?${urlParams.toString()}`);
         })
         .finally(() => {
             productGrid.style.opacity = '1';
@@ -1387,6 +1436,7 @@ function createProductCardHtml(p) {
             <div class="product-info">
                 <span class="product-category">${p.category}</span>
                 <h3 class="product-title">${p.name}</h3>
+                ${p.size ? `<span class="product-size">${p.size}</span>` : ''}
                 <div class="price-container">
                     ${p.discount_price ? `
                         <span class="price discounted">€${p.discount_price}</span>

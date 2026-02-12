@@ -137,11 +137,11 @@
 /* Custom Quantity Selector */
 .quantity-selector {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     background: #f1f5f9; /* Light gray background */
     border: 1px solid #cbd5e1;
     border-radius: 8px; /* Slightly rounded */
-    padding: 0.1rem;
+    padding: 2px;
     width: fit-content;
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); /* Subtle inner shadow */
 }
@@ -153,7 +153,8 @@
 
 .quantity-selector .qty-btn {
     width: 32px;
-    height: 32px;
+    height: auto;
+    min-height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -168,18 +169,18 @@
 }
 
 .quantity-selector .qty-btn:hover {
-    background: white;
+    background: #cbd5e1;
     color: var(--primary);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transform: none;
 }
 
 .quantity-selector .qty-btn:active {
-    transform: translateY(0);
+    transform: scale(0.95);
 }
 
 .quantity-selector .qty-input {
     width: 40px;
+    height: 100%;
     text-align: center;
     border: none;
     background: transparent;
@@ -197,23 +198,40 @@
 }
 
 .quantity-selector.qty-lg {
-    padding: 0.35rem;
-    border-radius: 15px;
+    padding: 0.25rem;
+    border-radius: 12px;
     background: #f1f5f9;
+    display: flex;
+    align-items: stretch;
 }
 
 .quantity-selector.qty-lg .qty-btn {
-    width: 45px;
-    height: 45px;
+    width: 48px;
+    height: auto;
     font-size: 0.95rem;
-    background: transparent;
-    box-shadow: none;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 8px;
 }
 
 .quantity-selector.qty-lg .qty-input {
     width: 60px;
+    height: auto;
     font-size: 1.2rem;
     font-weight: 700;
+}
+
+/* Related Products spacing */
+.related-products-section {
+    margin-top: 8rem;
+    padding-bottom: 5rem;
+}
+
+@media (max-width: 768px) {
+    .related-products-section {
+        margin-top: 2rem;
+        padding-bottom: 3rem;
+    }
 }
 
 .qty-btn {
@@ -321,8 +339,8 @@
     .mobile-action-bar {
         display: flex;
         position: fixed;
-        bottom: 60px; /* Above mobile-bottom-nav */
-        bottom: calc(60px + env(safe-area-inset-bottom));
+        bottom: 70px; /* Above mobile-bottom-nav */
+        bottom: calc(70px + env(safe-area-inset-bottom));
         left: 0;
         width: 100%;
         background: white;
