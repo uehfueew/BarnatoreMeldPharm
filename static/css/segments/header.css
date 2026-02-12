@@ -159,7 +159,7 @@
     position: absolute;
     top: -5px;
     right: -2px;
-    background: #ef4444; /* Match wishlist red */
+    background: #ef4444; /* Standard Red */
     color: white;
     font-size: 0.7rem;
     font-weight: bold;
@@ -176,7 +176,7 @@
     position: absolute;
     top: -5px;
     right: -2px;
-    background: #ef4444; /* Red for heart */
+    background: #ef4444; /* Standard Red */
     color: white;
     font-size: 0.7rem;
     font-weight: bold;

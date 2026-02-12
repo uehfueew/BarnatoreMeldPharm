@@ -39,19 +39,30 @@ class Product:
             query["is_best_seller"] = True
 
         if min_price is not None or max_price is not None:
-            query["price"] = {}
+            if "price" not in query: query["price"] = {}
             if min_price is not None:
                 query["price"]["$gte"] = min_price
             if max_price is not None:
                 query["price"]["$lte"] = max_price
             
         if search_query:
-            query["$or"] = [
-                {"name": {"$regex": search_query, "$options": "i"}},
-                {"brand": {"$regex": search_query, "$options": "i"}},
-                {"category": {"$regex": search_query, "$options": "i"}},
-                {"subcategory": {"$regex": search_query, "$options": "i"}}
-            ]
+            search_filter = {
+                "$or": [
+                    {"name": {"$regex": search_query, "$options": "i"}},
+                    {"brand": {"$regex": search_query, "$options": "i"}},
+                    {"category": {"$regex": search_query, "$options": "i"}},
+                    {"subcategory": {"$regex": search_query, "$options": "i"}}
+                ]
+            }
+            if "$or" in query:
+                # If we already have an $or (from no_discount), we must use $and to combine them
+                if "$and" not in query: query["$and"] = []
+                # Move existing $or to $and if it's there
+                existing_or = query.pop("$or")
+                query["$and"].append({"$or": existing_or})
+                query["$and"].append(search_filter)
+            else:
+                query.update(search_filter)
             
         total_products = mongo.db.products.count_documents(query)
         
@@ -60,23 +71,48 @@ class Product:
         skip = (page - 1) * per_page
         
         # Determine sort order
-        sort_criteria = [('_id', -1)] # Default newest
+        # Default sort
+        sort_dict = {"_id": -1}
         if sort == 'price-low':
-            # Use discount_price if it exists, otherwise price
-            # In MongoDB, sorting by price directly is easiest, but we can try to handle it
-            sort_criteria = [('price', 1)]
+            sort_dict = {"effective_price": 1}
         elif sort == 'price-high':
-            sort_criteria = [('price', -1)]
+            sort_dict = {"effective_price": -1}
         elif sort == 'newest':
-            sort_criteria = [('_id', -1)]
+            sort_dict = {"_id": -1}
         elif sort == 'discount':
-            # Sort by showing products with discounts first, then by largest discount if possible
-            # Here we just sort by discount_price presence
-            sort_criteria = [('discount_price', 1)] # This might be tricky in Mongo without aggregation
+            sort_dict = {"discount_percent": -1}
         elif sort == 'relevance':
-            sort_criteria = [('views', -1), ('_id', -1)] # Default to views or id
-            
-        products = list(mongo.db.products.find(query).sort(sort_criteria).skip(skip).limit(per_page))
+            sort_dict = {"is_best_seller": -1, "_id": -1}
+
+        # Use aggregation to handle dynamic sorting by effective price (discount_price if exists, else price)
+        pipeline = [
+            {"$match": query},
+            {
+                "$addFields": {
+                    "effective_price": {
+                        "$cond": [
+                            {"$gt": ["$discount_price", 0]},
+                            "$discount_price",
+                            "$price"
+                        ]
+                    },
+                    "discount_percent": {
+                        "$cond": [
+                            {"$gt": ["$discount_price", 0]},
+                            {"$divide": [{"$subtract": ["$price", "$discount_price"]}, "$price"]},
+                            0
+                        ]
+                    }
+                }
+            },
+            {"$sort": sort_dict},
+            {"$skip": skip},
+            {"$limit": per_page}
+        ]
+        
+        products = list(mongo.db.products.aggregate(pipeline))
+        for p in products:
+            p["_id"] = str(p["_id"])
         
         import math
         total_pages = math.ceil(total_products / per_page)

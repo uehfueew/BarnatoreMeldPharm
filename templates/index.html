@@ -267,61 +267,14 @@
 
         <div class="category-scroll-wrapper fade-in-section">
             <div class="category-scroll-container">
-                <button class="category-chip active" onclick="filterHomeProducts('all', this)">Për ty</button>
+                <button class="category-chip active" onclick="window.filterHomeCategory('all', this)">Për ty</button>
                 {% if global_categories %}
                     {% for category in global_categories.keys() %}
-                        <button class="category-chip" onclick="filterHomeProducts('{{ category }}', this)">{{ category }}</button>
+                        <button class="category-chip" onclick="window.filterHomeCategory('{{ category }}', this)">{{ category }}</button>
                     {% endfor %}
                 {% endif %}
             </div>
         </div>
-        
-        <script>
-        function filterHomeProducts(category, btn) {
-            // UI update
-            document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            
-            const grid = document.getElementById('recommended-grid');
-            const loadMoreBtn = document.getElementById('load-more-btn');
-            
-            grid.style.opacity = '0.5';
-            grid.style.pointerEvents = 'none';
-            
-            let url = `/products?page=1&ajax=1`;
-            if (category !== 'all') {
-                url += `&category=${encodeURIComponent(category)}`;
-            } else {
-                url += `&no_discount=true`;
-            }
-            
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    grid.innerHTML = '';
-                    if (data.products && data.products.length > 0) {
-                        appendProducts(data.products, grid);
-                        if (loadMoreBtn) {
-                            loadMoreBtn.setAttribute('data-page', '1');
-                            loadMoreBtn.setAttribute('data-category', category);
-                            if (1 >= data.total_pages) {
-                                loadMoreBtn.parentElement.style.display = 'none';
-                            } else {
-                                loadMoreBtn.parentElement.style.display = 'block';
-                            }
-                        }
-                    } else {
-                        grid.innerHTML = '<div class="no-products-found" style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #64748b;">Nuk u gjet asnjë produkt në këtë kategori.</div>';
-                        if (loadMoreBtn) loadMoreBtn.parentElement.style.display = 'none';
-                    }
-                })
-                .catch(err => console.error('Error:', err))
-                .finally(() => {
-                    grid.style.opacity = '1';
-                    grid.style.pointerEvents = 'auto';
-                });
-        }
-        </script>
         
         <div id="recommended-grid" class="product-grid-dynamic">
             <!-- Products will be loaded here via JS -->
@@ -359,7 +312,7 @@
         </div>
         
         <div class="load-more-container text-center {{ 'd-none' if not total_pages_regular or total_pages_regular <= 1 else '' }}" style="margin-top: 4rem; margin-bottom: 4rem;">
-            <button id="load-more-btn" class="btn btn-outline-primary btn-load-more" data-page="1">
+            <button id="load-more-btn" class="btn btn-outline-primary btn-load-more" data-page="1" onclick="window.loadMoreHome()">
                 Shiko të gjitha produktet <i class="fas fa-chevron-down ml-2"></i>
             </button>
         </div>

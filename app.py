@@ -60,11 +60,11 @@ def inject_cart_count():
     
     try:
         cart = session.get('cart', {})
-        cart_count = sum(int(v) for v in cart.values()) if cart else 0
         
         cart_items = []
         total_price = 0
         total_savings = 0
+        actual_cart_count = 0
         
         if cart:
             # Ensure mongo.db is available
@@ -99,6 +99,7 @@ def inject_cart_count():
                                 product['item_total'] = item_total
                                 product['item_savings'] = item_savings
                                 cart_items.append(product)
+                                actual_cart_count += qty_int
                             except (ValueError, TypeError):
                                 continue
 
@@ -120,7 +121,7 @@ def inject_cart_count():
             pass
 
         return dict(
-            cart_count=int(cart_count), 
+            cart_count=int(actual_cart_count), 
             cart_items=cart_items,
             cart_total=float(total_price),
             cart_savings=float(total_savings),

@@ -146,19 +146,19 @@
 
 <!-- Mobile Sticky Action Bar -->
 <div class="mobile-action-bar">
-    <div class="mobile-btns" style="display: flex; gap: 0.5rem; width: 100%; align-items: center;">
-        <div class="quantity-selector" style="height: 48px; min-width: 100px;">
+    <div class="mobile-btns" style="display: flex; gap: 0.4rem; width: 100%; align-items: center;">
+        <div class="quantity-selector" style="height: 42px; min-width: 80px;">
             <button type="button" class="qty-btn minus"><i class="fas fa-minus"></i></button>
             <input type="number" class="qty-input" value="1" min="1" readonly>
             <button type="button" class="qty-btn plus"><i class="fas fa-plus"></i></button>
         </div>
         
-        <button type="button" onclick="buyNowWithQty('{{ product._id }}', this)" class="btn btn-primary" style="flex: 2; height: 48px; border-radius: 10px; font-weight: 700; font-size: 0.95rem; background-color: #f15a24; border: none; color: white;" {% if product.in_stock == False %}disabled{% endif %}>
+        <button type="button" onclick="buyNowWithQty('{{ product._id }}', this)" class="btn btn-primary" style="flex: 2.5; height: 42px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; background-color: #f15a24; border: none; color: white;" {% if product.in_stock == False %}disabled{% endif %}>
             Blej Tani
         </button>
 
-        <button type="button" onclick="addToCartWithQty('{{ product._id }}', this)" class="btn btn-add-to-cart-light" style="flex: 1.2; height: 48px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; color: var(--primary); border: none; background: #f1f5f9; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;" {% if product.in_stock == False %}disabled{% endif %}>
-            <i class="fas fa-shopping-cart"></i>
+        <button type="button" onclick="addToCartWithQty('{{ product._id }}', this)" class="btn btn-add-to-cart-light" style="flex: 1.5; height: 42px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; color: var(--primary); border: none; background: #f1f5f9; display: flex; align-items: center; justify-content: center; gap: 0.4rem; transition: all 0.3s ease;" {% if product.in_stock == False %}disabled{% endif %}>
+            <i class="fas fa-shopping-cart"></i> <span style="font-size: 0.75rem;">Shto</span>
         </button>
     </div>
 </div>

@@ -47,6 +47,10 @@
         margin-bottom: 0.25rem !important;
     }
 
+    .highlight-title {
+        font-size: 1.5rem !important;
+    }
+
     .product-size-detail {
         font-size: 0.95rem !important;
         margin-bottom: 1rem !important;
@@ -86,28 +90,59 @@
         flex-wrap: nowrap !important;
     }
 
+    .quantity-selector {
+        height: 40px !important;
+        min-width: 80px !important;
+        padding: 0 0.25rem !important;
+    }
+
+    .quantity-selector .qty-btn {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .quantity-selector .qty-input {
+        font-size: 0.85rem !important;
+        width: 25px !important;
+    }
+
     .quantity-selector.qty-lg {
-        height: 45px !important;
-        min-width: 100px !important;
-        padding: 0 0.5rem !important;
+        height: 40px !important;
+        min-width: 90px !important;
+        padding: 0 0.35rem !important;
     }
 
     .quantity-selector.qty-lg .qty-btn {
-        width: 28px !important;
-        height: 28px !important;
-        font-size: 0.75rem !important;
+        width: 26px !important;
+        height: 26px !important;
+        font-size: 0.7rem !important;
     }
 
     .quantity-selector.qty-lg .qty-input {
-        font-size: 0.9rem !important;
-        width: 35px !important;
+        font-size: 0.85rem !important;
+        width: 30px !important;
     }
 
     #addToCartForm .btn-primary {
         padding: 0 1rem !important;
         font-size: 0.85rem !important;
-        min-height: 45px !important;
+        min-height: 40px !important;
         flex: 1 !important;
+    }
+
+    .mobile-action-bar {
+        padding: 0.5rem 0.75rem !important;
+        height: 60px !important;
+    }
+
+    .mobile-action-bar .quantity-selector {
+        height: 42px !important;
+        min-width: 85px !important;
+    }
+
+    .mobile-action-bar .btn {
+        height: 42px !important;
     }
 
     #addToCartForm .btn-primary i {

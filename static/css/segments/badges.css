@@ -7,6 +7,8 @@
     visibility: visible !important;
     opacity: 1 !important;
     z-index: 100 !important;
+    background: #ef4444 !important; /* Unified Red Badge */
+    color: #ffffff !important;
 }
 
 .cart-badge.d-none, 
@@ -19,6 +21,8 @@
 /* Ensure parents don't clip them */
 .nav-icon-btn, 
 .bottom-nav-item, 
-.cart-dropdown-wrapper {
+.cart-dropdown-wrapper,
+#sortDropdown,
+.shop-sorting {
     overflow: visible !important;
 }

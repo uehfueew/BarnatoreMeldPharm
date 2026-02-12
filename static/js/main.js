@@ -1,27 +1,301 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- FADE-IN ANIMATION OBSERVER ---
-    const fadeObserverOptions = {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px"
-    };
+// --- GLOBAL HELPERS ---
+window.updateResultsCount = function(count) {
+    const countEl = document.getElementById('current-count');
+    if (countEl) countEl.textContent = count;
+};
 
-    const fadeObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
+window.createProductCardHtml = function(p) {
+    const discountPercentage = p.discount_price ? Math.round(((p.price - p.discount_price) / p.price) * 100) : 0;
+    const isFav = p.is_favorite ? 'active' : '';
+    const heartIconClass = p.is_favorite ? 'fas' : 'far';
+    return `
+        <div class="product-card fade-in-section" data-id="${p.id}" data-category="${p.category}" data-name="${p.name}">
+            <div class="product-image">
+                ${p.discount_price ? `<div class="special-offer-badge red-badge">Oferta Speciale</div>` : ''}
+                ${p.is_best_seller ? `<div class="best-seller-badge">Më i Shituri</div>` : ''}
+                <img src="${p.image_url}" alt="${p.name}">
+                <button class="btn-favorite ${isFav}" onclick="toggleFavorite(this, '${p.id}')">
+                    <i class="${heartIconClass} fa-heart"></i>
+                </button>
+                <a href="/product/${p.id}" class="product-card-link-overlay"></a>
+            </div>
+            <div class="product-info">
+                <span class="product-category">${p.category}</span>
+                <h3 class="product-title">${p.name}</h3>
+                ${p.size ? `<span class="product-size">${p.size}</span>` : ''}
+                <div class="price-container">
+                    ${p.discount_price ? `
+                        <span class="price discounted">€${p.discount_price}</span>
+                        <span class="price original">€${p.price}</span>
+                        <span class="discount-badge">-${discountPercentage}%</span>
+                    ` : `<span class="price">€${p.price}</span>`}
+                </div>
+            </div>
+        </div>
+    `;
+};
+
+window.renderProducts = function(products, grid) {
+    if (!grid) return;
+    grid.innerHTML = products.map(p => window.createProductCardHtml(p)).join('');
+};
+
+window.appendProducts = function(products, grid) {
+    if (!grid) return;
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = products.map(p => window.createProductCardHtml(p)).join('');
+    
+    while (tempDiv.firstChild) {
+        const child = tempDiv.firstChild;
+        grid.appendChild(child);
+        // Trigger visibility if intersection observer is not used for These new items
+        setTimeout(() => child.classList.add('visible'), 50);
+    }
+};
+
+window.loadMoreHome = function() {
+    const btn = document.getElementById('load-more-btn');
+    const grid = document.getElementById('recommended-grid');
+    if (!btn || !grid) return;
+    
+    const nextPage = (parseInt(btn.getAttribute('data-page')) || 1) + 1;
+    const category = btn.getAttribute('data-category') || 'all';
+    
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'Duke u ngarkuar... <i class="fas fa-spinner fa-spin ml-2"></i>';
+
+    let url = `/products?page=${nextPage}&ajax=1`;
+    if (category !== 'all') {
+        url += `&category=${encodeURIComponent(category)}`;
+    } else {
+        url += `&no_discount=true`;
+    }
+
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            if (data.products && data.products.length > 0) {
+                window.appendProducts(data.products, grid);
+                btn.setAttribute('data-page', nextPage);
+                if (nextPage >= data.total_pages) {
+                    btn.parentElement.classList.add('d-none');
+                }
+            } else {
+                btn.parentElement.classList.add('d-none');
+            }
+        })
+        .catch(err => console.error('Error loading more home:', err))
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        });
+};
+
+// --- GLOBAL UI HANDLERS (Available immediately) ---
+window.openShopSidebar = function() {
+    const sidebar = document.getElementById('shopSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (sidebar) sidebar.classList.add('active');
+    if (overlay) overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeShopSidebar = function() {
+    const sidebar = document.getElementById('shopSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (sidebar) sidebar.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
+    document.body.style.overflow = '';
+};
+
+window.toggleSortMenu = function(e) {
+    if (e) {
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+    }
+    const sortMenu = document.getElementById('sortMenu');
+    const sortTrigger = document.getElementById('sortTrigger');
+    if (sortMenu && sortTrigger) {
+        const isShowing = sortMenu.classList.contains('show');
+        
+        // Close other dropdowns
+        document.querySelectorAll('.dropdown-menu.show').forEach(m => {
+            if (m !== sortMenu) m.classList.remove('show');
+        });
+        
+        if (!isShowing) {
+            sortMenu.classList.add('show');
+            sortTrigger.classList.add('active');
+        } else {
+            sortMenu.classList.remove('show');
+            sortTrigger.classList.remove('active');
+        }
+    }
+};
+
+window.updateShop = function(isLoadMore = false) {
+    const productGrid = document.getElementById('productGrid');
+    if (!productGrid) return;
+    
+    const loadMoreBtn = document.getElementById('load-more-products');
+    let page = 1;
+    if (isLoadMore && loadMoreBtn) {
+        page = (parseInt(loadMoreBtn.getAttribute('data-page')) || 1) + 1;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Add filters
+    const brandSelect = document.getElementById('brand-select');
+    if (brandSelect) urlParams.set('brand', brandSelect.value);
+    
+    const minPrice = document.getElementById('min-price'), maxPrice = document.getElementById('max-price');
+    if (minPrice && minPrice.value) urlParams.set('min_price', minPrice.value);
+    if (maxPrice && maxPrice.value) urlParams.set('max_price', maxPrice.value);
+    
+    const discountOnly = document.getElementById('discount-only-filter');
+    if (discountOnly && discountOnly.checked) urlParams.set('discount_only', 'true');
+    
+    const bestSellers = document.getElementById('best-seller-filter');
+    if (bestSellers && bestSellers.checked) urlParams.set('best_sellers', 'true');
+
+    urlParams.set('ajax', '1');
+    urlParams.set('page', page);
+    
+    if (!isLoadMore) productGrid.style.opacity = '0.5';
+
+    // Show loading state on button
+    let originalBtnText = '';
+    if (isLoadMore && loadMoreBtn) {
+        originalBtnText = loadMoreBtn.innerHTML;
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.innerHTML = 'Duke u ngarkuar... <i class="fas fa-spinner fa-spin ml-2"></i>';
+    }
+
+    const currentPath = window.location.pathname.includes('/products') ? window.location.pathname : '/products';
+
+    fetch(`${currentPath}?${urlParams.toString()}`)
+        .then(res => res.json())
+        .then(data => {
+            if (isLoadMore) {
+                if (data.products && data.products.length > 0) {
+                    appendProducts(data.products, productGrid);
+                    if (loadMoreBtn) loadMoreBtn.setAttribute('data-page', page);
+                }
+            } else {
+                renderProducts(data.products, productGrid);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            
+            updateResultsCount(document.querySelectorAll('#productGrid .product-card').length);
+            
+            if (loadMoreBtn) {
+                const totalPages = data.total_pages || 1;
+                const currentPage = isLoadMore ? page : 1;
+                if (currentPage >= totalPages) {
+                    loadMoreBtn.parentElement.classList.add('d-none');
+                } else {
+                    loadMoreBtn.parentElement.classList.remove('d-none');
+                    loadMoreBtn.setAttribute('data-page', currentPage);
+                }
+            }
+            
+            if (!isLoadMore) {
+                urlParams.delete('ajax');
+                window.history.pushState({}, '', `${currentPath}?${urlParams.toString()}`);
+            }
+        })
+        .catch(err => console.error('Error updating shop:', err))
+        .finally(() => {
+            productGrid.style.opacity = '1';
+            const sortMenu = document.getElementById('sortMenu');
+            if (sortMenu) sortMenu.classList.remove('show');
+            if (isLoadMore && loadMoreBtn) {
+                loadMoreBtn.disabled = false;
+                loadMoreBtn.innerHTML = originalBtnText;
             }
         });
-    }, fadeObserverOptions);
+};
 
-    // Function to observe all current fade-in sections
-    const observeSections = () => {
-        document.querySelectorAll('.fade-in-section:not(.visible)').forEach(section => {
-            fadeObserver.observe(section);
+window.filterHomeCategory = function(category, btnElement) {
+    // UI update for chips
+    document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+    if (btnElement) btnElement.classList.add('active');
+    
+    const grid = document.getElementById('recommended-grid');
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    if (!grid) return;
+    
+    grid.style.opacity = '0.5';
+    grid.style.pointerEvents = 'none';
+    
+    let url = `/products?page=1&ajax=1`;
+    if (category !== 'all') {
+        url += `&category=${encodeURIComponent(category)}`;
+    } else {
+        url += `&no_discount=true`;
+    }
+    
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            grid.innerHTML = '';
+            if (data.products && data.products.length > 0) {
+                appendProducts(data.products, grid);
+                if (loadMoreBtn) {
+                    loadMoreBtn.setAttribute('data-page', '1');
+                    loadMoreBtn.setAttribute('data-category', category);
+                    if (1 >= data.total_pages) {
+                        loadMoreBtn.parentElement.classList.add('d-none');
+                    } else {
+                        loadMoreBtn.parentElement.classList.remove('d-none');
+                    }
+                }
+            } else {
+                grid.innerHTML = '<div class="no-products-found" style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #64748b;">Nuk u gjet asnjë produkt në këtë kategori.</div>';
+                if (loadMoreBtn) loadMoreBtn.parentElement.classList.add('d-none');
+            }
+        })
+        .catch(err => console.error('Error filtering home products:', err))
+        .finally(() => {
+            grid.style.opacity = '1';
+            grid.style.pointerEvents = 'auto';
         });
-    };
+};
 
-    observeSections();
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if IntersectionObserver is supported
+    const hasIntersectionObserver = 'IntersectionObserver' in window;
+    
+    // --- FADE-IN ANIMATION OBSERVER ---
+    if (hasIntersectionObserver) {
+        const fadeObserverOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const fadeObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, fadeObserverOptions);
+
+        // Function to observe all current fade-in sections
+        const observeSections = () => {
+            document.querySelectorAll('.fade-in-section:not(.visible)').forEach(section => {
+                fadeObserver.observe(section);
+            });
+        };
+
+        observeSections();
+    } else {
+        // Fallback for older browsers
+        document.querySelectorAll('.fade-in-section').forEach(s => s.classList.add('visible'));
+    }
 
     // --- SEARCH FOCUS HANDLER ---
     document.querySelectorAll('input[type="text"][id*="Search"]').forEach(input => {
@@ -564,18 +838,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sortMenu = document.getElementById('sortMenu');
 
     if (sortTrigger && sortMenu) {
-        sortTrigger.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Close other dropdowns
-            document.querySelectorAll('.dropdown-menu.show').forEach(m => {
-                if(m !== sortMenu) m.classList.remove('show');
-            });
-            
-            sortMenu.classList.toggle('show');
-            sortTrigger.classList.toggle('active');
-        });
+        sortTrigger.addEventListener('click', window.toggleSortMenu);
 
         // Handle Item Click
         sortMenu.addEventListener('click', function(e) {
@@ -634,128 +897,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.getElementById('sidebarOverlay');
 
     if (openSidebarBtn && sidebar && overlay) {
-        openSidebarBtn.addEventListener('click', () => {
-            sidebar.classList.add('active');
-            overlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
-        });
+        openSidebarBtn.addEventListener('click', window.openShopSidebar);
     }
 
     if (closeSidebarBtn && sidebar && overlay) {
-        closeSidebarBtn.addEventListener('click', closeShopSidebar);
+        closeSidebarBtn.addEventListener('click', window.closeShopSidebar);
     }
 
     if (overlay) {
-        overlay.addEventListener('click', closeShopSidebar);
-    }
-
-    window.openShopSidebar = function() {
-        const sidebar = document.getElementById('shopSidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        if (sidebar) sidebar.classList.add('active');
-        if (overlay) overlay.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
-    };
-
-    window.closeShopSidebar = function() {
-        const sidebar = document.getElementById('shopSidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        if (sidebar) sidebar.classList.remove('active');
-        if (overlay) overlay.classList.remove('active');
-        document.body.style.overflow = ''; // Restore scrolling
-    };
-
-    // --- LOAD MORE HANDLERS ---
-    const loadMoreProductsBtn = document.getElementById('load-more-products');
-    if (loadMoreProductsBtn) {
-        loadMoreProductsBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const btn = this;
-            const nextPage = (parseInt(btn.getAttribute('data-page')) || 1) + 1;
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set('page', nextPage);
-            urlParams.set('ajax', 1);
-            
-            btn.disabled = true;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = 'Duke u ngarkuar... <i class="fas fa-spinner fa-spin ml-2"></i>';
-
-            fetch(`/products?${urlParams.toString()}`)
-                .then(res => res.json())
-                .then(data => {
-                    const productGrid = document.getElementById('productGrid');
-                    if (data.products && data.products.length > 0 && productGrid) {
-                        appendProducts(data.products, productGrid);
-                        btn.setAttribute('data-page', nextPage);
-                        updateResultsCount(document.querySelectorAll('#productGrid .product-card').length);
-                        if (nextPage >= data.total_pages) {
-                            if (btn.parentElement) btn.parentElement.style.display = 'none';
-                        }
-                    } else {
-                        if (btn.parentElement) btn.parentElement.style.display = 'none';
-                    }
-                })
-                .catch(err => {
-                    console.error('Error loading more:', err);
-                })
-                .finally(() => {
-                    btn.disabled = false;
-                    btn.innerHTML = originalText;
-                });
-        });
-    }
-
-    const loadMoreHomeBtn = document.getElementById('load-more-btn');
-    if (loadMoreHomeBtn) {
-        loadMoreHomeBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const btn = this;
-            const nextPage = (parseInt(btn.getAttribute('data-page')) || 1) + 1;
-            const category = btn.getAttribute('data-category') || 'all';
-            
-            btn.disabled = true;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = 'Duke u ngarkuar... <i class="fas fa-spinner fa-spin ml-2"></i>';
-
-            let url = `/products?page=${nextPage}&ajax=1`;
-            if (category !== 'all') {
-                url += `&category=${encodeURIComponent(category)}`;
-            } else {
-                url += `&no_discount=true`;
-            }
-
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    const recommendedGrid = document.getElementById('recommended-grid');
-                    if (data.products && data.products.length > 0 && recommendedGrid) {
-                        appendProducts(data.products, recommendedGrid);
-                        btn.setAttribute('data-page', nextPage);
-                        // If we've reached the last page, hide the container
-                        if (nextPage >= data.total_pages) {
-                            if (btn.parentElement) btn.parentElement.style.display = 'none';
-                        }
-                    } else {
-                        if (btn.parentElement) btn.parentElement.style.display = 'none';
-                    }
-                })
-                .catch(err => {
-                    console.error('Error loading more:', err);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gabim',
-                        text: 'Nuk u mundësua ngarkimi i produkteve shtesë.',
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                })
-                .finally(() => {
-                    btn.disabled = false;
-                    btn.innerHTML = originalText;
-                });
-        });
+        overlay.addEventListener('click', window.closeShopSidebar);
     }
 
     // Refresh cart & wishlist badges on load
@@ -906,10 +1056,11 @@ window.refreshMiniCart = function() {
         // Use the unified update function
         window.updateGlobalBadges(data);
 
-        const itemsContainer = document.querySelector('.mini-cart-items');
-        if (itemsContainer) {
+        // Update Desktop Mini Cart
+        const desktopContainer = document.querySelector('.mini-cart-items');
+        if (desktopContainer) {
             if (data.cart_items.length === 0) {
-                itemsContainer.innerHTML = `
+                desktopContainer.innerHTML = `
                     <div class="empty-mini-cart">
                         <i class="fas fa-shopping-basket fa-3x mb-3"></i>
                         <p>Shporta juaj është boshe.</p>
@@ -937,7 +1088,60 @@ window.refreshMiniCart = function() {
                         </button>
                     </div>`;
                 });
-                itemsContainer.innerHTML = html;
+                desktopContainer.innerHTML = html;
+            }
+        }
+
+        // Update Mobile Modal Cart
+        const mobileContainer = document.querySelector('.mobile-cart-items-list');
+        const mobileHeader = document.querySelector('.mobile-mini-cart-header');
+        
+        if (mobileContainer) {
+            if (data.cart_items.length === 0) {
+                // Update header (hide clear cart link)
+                if (mobileHeader) mobileHeader.innerHTML = '';
+                
+                mobileContainer.innerHTML = `
+                    <div class="empty-cart-state-mobile">
+                        <div class="icon-circle">
+                            <i class="fas fa-shopping-basket"></i>
+                        </div>
+                        <h4>Shporta juaj është boshe</h4>
+                        <p>Ju nuk keni shtuar asnjë produkt në shportë akoma.</p>
+                        <button class="btn-primary-mobile" onclick="closeCartModal()">Fillo Blerjen</button>
+                    </div>`;
+            } else {
+                // Update header
+                if (mobileHeader) {
+                    mobileHeader.innerHTML = `
+                        <a href="#" class="clear-cart-link-mobile" onclick="clearCart(event)">
+                            <i class="fas fa-trash-alt"></i> Pastro Shportën
+                        </a>`;
+                }
+
+                let html = '';
+                data.cart_items.forEach(item => {
+                    const price = item.discount_price || item.price;
+                    html += `
+                    <div class="mobile-mini-cart-item" data-id="${item._id}">
+                        <div class="mobile-mini-cart-img">
+                            <img src="${item.image_url}" alt="${item.name}">
+                        </div>
+                        <div class="mobile-mini-cart-info">
+                            <p class="name">${item.name}</p>
+                            <p class="price">€${parseFloat(price).toFixed(2)}</p>
+                            <div class="qty-control-mobile">
+                                <button class="qty-btn" onclick="updateMiniQty(event, '${item._id}', 'decrease')">-</button>
+                                <span class="qty-val">${item.quantity}</span>
+                                <button class="qty-btn" onclick="updateMiniQty(event, '${item._id}', 'increase')">+</button>
+                            </div>
+                        </div>
+                        <button class="remove-btn" onclick="updateMiniQty(event, '${item._id}', 'remove')">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                    </div>`;
+                });
+                mobileContainer.innerHTML = html;
             }
         }
     });
@@ -987,6 +1191,11 @@ window.updateMiniQty = function(event, productId, action) {
                     if (qtySpan) qtySpan.textContent = data.quantity;
                 }
             });
+
+            // If cart is empty now, refresh the whole UI to show empty state
+            if (data.cart_count === 0) {
+                window.refreshMiniCart();
+            }
 
             // Update totals if they exist
             const footers = document.querySelectorAll('.mini-cart-footer, .modal-footer-cart');
@@ -1094,6 +1303,10 @@ window.closeCategoriesModal = function() {
 window.openCartModal = function() {
     const modal = document.getElementById('mobile-cart-modal');
     if(modal) {
+        // Refresh cart data whenever opening the modal to ensure it's not empty/stale
+        if (typeof window.refreshMiniCart === 'function') {
+            window.refreshMiniCart();
+        }
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
@@ -1309,8 +1522,8 @@ function startSlideTimer() {
     slideInterval = setInterval(() => plusSlides(1), 5000);
 }
 
-function plusSlides(n) { showSlides(slideIndex += n); }
-function currentSlide(n) { showSlides(slideIndex = n); }
+window.plusSlides = function(n) { showSlides(slideIndex += n); }
+window.currentSlide = function(n) { showSlides(slideIndex = n); }
 
 function showSlides(n) {
     let i;
@@ -1391,6 +1604,11 @@ function addToCart(productId) {
                 total_price: data.total_price // Assuming total_price is returned
             });
             
+            // Refresh modal lists
+            if (typeof window.refreshMiniCart === 'function') {
+                window.refreshMiniCart();
+            }
+            
             btns.forEach(btn => {
                 btn.innerHTML = '<i class="fas fa-check"></i>';
                 btn.style.background = '#10b981';
@@ -1411,109 +1629,9 @@ function addToCart(productId) {
     });
 }
 
-function updateShop() {
-    const productGrid = document.getElementById('productGrid');
-    if (!productGrid) return;
-    const urlParams = new URLSearchParams(window.location.search);
-    const brandSelect = document.getElementById('brand-select');
-    if (brandSelect) urlParams.set('brand', brandSelect.value);
-    const minPrice = document.getElementById('min-price'), maxPrice = document.getElementById('max-price');
-    if (minPrice && minPrice.value) urlParams.set('min_price', minPrice.value);
-    if (maxPrice && maxPrice.value) urlParams.set('max_price', maxPrice.value);
-    
-    const discountOnly = document.getElementById('discount-only-filter');
-    if (discountOnly && discountOnly.checked) urlParams.set('discount_only', 'true');
-    else urlParams.delete('discount_only');
 
-    const bestSellers = document.getElementById('best-seller-filter');
-    if (bestSellers && bestSellers.checked) urlParams.set('best_sellers', 'true');
-    else urlParams.delete('best_sellers');
-
-    urlParams.set('ajax', '1');
-    urlParams.set('page', '1');
-    productGrid.style.opacity = '0.5';
-
-    // Use current pathname to preserve category/subcategory if present, otherwise default to /products
-    const currentPath = window.location.pathname.startsWith('/products') ? window.location.pathname : '/products';
-
-    fetch(`${currentPath}?${urlParams.toString()}`)
-        .then(res => res.json())
-        .then(data => {
-            renderProducts(data.products, productGrid);
-            updateResultsCount(data.total_count || data.products.length);
-            const loadMoreBtn = document.getElementById('load-more-products');
-            if (loadMoreBtn && loadMoreBtn.parentElement) {
-                loadMoreBtn.setAttribute('data-page', '1');
-                loadMoreBtn.parentElement.style.display = data.total_pages > 1 ? 'block' : 'none';
-                // Also update d-none class for new load more logic
-                if (data.total_pages > 1) loadMoreBtn.parentElement.classList.remove('d-none');
-                else loadMoreBtn.parentElement.classList.add('d-none');
-            }
-            urlParams.delete('ajax');
-            window.history.pushState({}, '', `${currentPath}?${urlParams.toString()}`);
-        })
-        .finally(() => {
-            productGrid.style.opacity = '1';
-            const sortMenu = document.getElementById('sortMenu');
-            if (sortMenu) sortMenu.classList.remove('show');
-        });
-}
-
-function renderProducts(products, grid) {
-    if (!grid) return;
-    grid.innerHTML = products.map(p => createProductCardHtml(p)).join('');
-}
-
-function appendProducts(products, grid) {
-    if (!grid) return;
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = products.map(p => createProductCardHtml(p)).join('');
-    
-    // Add elements and ensure they are visible if there's any animation class
-    while (tempDiv.firstChild) {
-        const child = tempDiv.firstChild;
-        grid.appendChild(child);
-        if (child.classList && child.classList.contains('fade-in-section')) {
-            setTimeout(() => child.classList.add('visible'), 50);
-        }
-    }
-}
-
-function updateResultsCount(count) {
-    const countEl = document.getElementById('current-count');
-    if (countEl) countEl.textContent = count;
-}
-
-function createProductCardHtml(p) {
-    const discountPercentage = p.discount_price ? Math.round(((p.price - p.discount_price) / p.price) * 100) : 0;
-    const isFav = p.is_favorite ? 'active' : '';
-    const heartIconClass = p.is_favorite ? 'fas' : 'far';
-    return `
-        <div class="product-card fade-in-section" data-id="${p.id}" data-category="${p.category}" data-name="${p.name}">
-            <div class="product-image">
-                ${p.discount_price ? `<div class="special-offer-badge red-badge">Oferta Speciale</div>` : ''}
-                ${p.is_best_seller ? `<div class="best-seller-badge">Më i Shituri</div>` : ''}
-                <img src="${p.image_url}" alt="${p.name}">
-                <button class="btn-favorite ${isFav}" onclick="toggleFavorite(this, '${p.id}')">
-                    <i class="${heartIconClass} fa-heart"></i>
-                </button>
-                <a href="/product/${p.id}" class="product-card-link-overlay"></a>
-            </div>
-            <div class="product-info">
-                <span class="product-category">${p.category}</span>
-                <h3 class="product-title">${p.name}</h3>
-                ${p.size ? `<span class="product-size">${p.size}</span>` : ''}
-                <div class="price-container">
-                    ${p.discount_price ? `
-                        <span class="price discounted">€${p.discount_price}</span>
-                        <span class="price original">€${p.price}</span>
-                        <span class="discount-badge">-${discountPercentage}%</span>
-                    ` : `<span class="price">€${p.price}</span>`}
-                </div>
-            </div>
-        </div>
-    `;
-}
+// Global Refresh to fix any badge visibility blockers removed as it causes delay
+// Relying on server-side rendering for initial load.
 
 // Global Refresh to fix any badge visibility blockers removed as it causes delay
 // Relying on server-side rendering for initial load.

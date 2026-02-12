@@ -116,7 +116,7 @@
                     </div>
                     <div class="shop-sorting" style="display: flex; gap: 0.5rem; align-items: center;">
                         <div class="dropdown" id="sortDropdown">
-                            <button class="btn btn-outline-secondary order-button" type="button" id="sortTrigger">
+                            <button class="btn btn-outline-secondary order-button" type="button" id="sortTrigger" onclick="window.toggleSortMenu(event)">
                                 Rendit: <span id="current-sort-label">Relevanca</span> <i class="fas fa-chevron-down ml-2"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" id="sortMenu">
@@ -187,7 +187,7 @@
                 </div>
 
                 <div class="load-more-container text-center {{ 'd-none' if not total_pages or total_pages <= 1 else '' }}" style="margin-top: 4rem; margin-bottom: 4rem;">
-                    <button id="load-more-products" class="btn btn-outline-primary btn-load-more" data-page="1">
+                    <button id="load-more-products" class="btn btn-outline-primary btn-load-more" data-page="1" onclick="window.updateShop(true)">
                         Shiko të gjitha produktet <i class="fas fa-chevron-down ml-2"></i>
                     </button>
                 </div>
