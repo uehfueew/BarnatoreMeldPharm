@@ -11,6 +11,25 @@
                     <h3>Filtroni Produktet</h3>
                 </div>
                 <div class="sidebar-content-wrapper">
+                    <!-- Switch Filters (Now First) -->
+                    <div class="sidebar-block">
+                        <h3 class="sidebar-title no-line">Filtro</h3>
+                        <div class="filter-switch-row mb-3">
+                            <span class="switch-label">Shfaq vetëm ofertat</span>
+                            <label class="switch">
+                                <input type="checkbox" id="discount-only-filter" {% if discount_only %}checked{% endif %} onchange="updateShop()">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="filter-switch-row">
+                            <span class="switch-label">Më të shiturit</span>
+                            <label class="switch">
+                                <input type="checkbox" id="best-seller-filter" {% if best_sellers %}checked{% endif %} onchange="updateShop()">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="sidebar-block collapsible-sidebar-block" id="categoryBlock">
                         <button class="sidebar-collapsible-trigger" onclick="toggleFilterSection(this)">
                             <h3 class="sidebar-title no-line">Kategoritë</h3>
@@ -46,24 +65,6 @@
                                 </li>
                                 {% endfor %}
                             </ul>
-                        </div>
-                    </div>
-
-                    <!-- Only Discounts Filter -->
-                    <div class="sidebar-block">
-                        <div class="filter-switch-row mb-3">
-                            <span class="switch-label">Shfaq vetëm ofertat</span>
-                            <label class="switch">
-                                <input type="checkbox" id="discount-only-filter" {% if discount_only %}checked{% endif %} onchange="updateShop()">
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                        <div class="filter-switch-row">
-                            <span class="switch-label">Më të shiturit</span>
-                            <label class="switch">
-                                <input type="checkbox" id="best-seller-filter" {% if best_sellers %}checked{% endif %} onchange="updateShop()">
-                                <span class="slider round"></span>
-                            </label>
                         </div>
                     </div>
 
