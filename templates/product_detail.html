@@ -89,7 +89,7 @@
 
             <h1 class="product-title-detail" style="margin-bottom: 0.5rem; line-height: 1.1; font-size: 1.5rem;">{{ product.name }}</h1>
             
-            <div class="price-container" style="display: flex; align-items: flex-end; gap: 0.75rem; margin-bottom: 1.5rem;">
+            <div class="price-container mobile-price-fix" style="display: flex; align-items: flex-end; gap: 0.75rem; margin-bottom: 1.5rem;">
                 {% if product.discount_price %}
                     <span class="price original" style="font-size: 1rem; text-decoration: line-through; color: #94a3b8; font-weight: 500;">€{{ product.price }}</span>
                     <span class="price discounted" style="font-size: 1.8rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{ product.discount_price }}</span>
@@ -100,6 +100,19 @@
                     <span class="price main-price" style="font-size: 1.8rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{ product.price }}</span>
                 {% endif %}
             </div>
+
+            <style>
+                @media (max-width: 768px) {
+                    .mobile-price-fix .price.discounted, 
+                    .mobile-price-fix .price.main-price {
+                        font-size: 1.4rem !important;
+                    }
+                    .mobile-price-fix .discount-badge {
+                        font-size: 0.75rem !important;
+                        padding: 0.25rem 0.4rem !important;
+                    }
+                }
+            </style>
 
             <div style="background: white; padding: 2rem; border-radius: var(--radius-xl); margin-bottom: 2rem; border: 1px solid #f1f5f9; box-shadow: var(--shadow-sm);">
                 <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-main); font-weight: 700;">Përshkrimi i Produktit</h3>

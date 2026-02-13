@@ -213,67 +213,49 @@
     <!-- --- MOBILE CART MODAL --- -->
     <div id="mobile-cart-modal" class="full-screen-modal">
         <div class="modal-header">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <h3>Shporta Juaj</h3>
-            </div>
+            <h3>Shporta Juaj</h3>
             <button class="close-modal-btn" onclick="closeCartModal()">&times;</button>
         </div>
-        <div class="modal-content" style="padding: 0;">
-            <div class="mobile-cart-items-list" style="padding: 1rem;">
+        <div class="modal-content">
+            <div class="mobile-cart-items-list">
                 {% if cart_items %}
-                    <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-                        <button onclick="clearCart(event)" class="btn-clear-all" style="background: transparent; border: none; color: #ef4444; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;">
-                            <i class="far fa-trash-alt"></i> Fshij të gjitha
+                    <div class="modal-items-header">
+                        <span class="items-count-badge-mobile">{{ cart_count }} produkt(e)</span>
+                        <button onclick="clearCart(event)" class="btn-clear-mini">
+                            <i class="far fa-trash-alt"></i> Pastro
                         </button>
                     </div>
 
                     {% for item in cart_items %}
-                    <div class="cart-item-card" data-id="{{ item._id }}" style="margin-bottom: 1rem; border: 1px solid #f1f5f9; border-radius: 16px; padding: 0.85rem; position: relative; display: flex; flex-direction: column; gap: 0.75rem; background: #fff;">
-                        <div style="display: flex; gap: 0.85rem; align-items: flex-start;">
-                            <img src="{{ item.image_url }}" alt="{{ item.name }}" style="width: 85px; height: 85px; min-width: 85px; object-fit: contain; border-radius: 12px; background: #f8fafc; padding: 6px; border: 1px solid #f1f5f9;">
-                            <div style="flex: 1; padding-right: 1.5rem; min-width: 0;">
-                                <h4 style="font-size: 0.95rem; margin-bottom: 0.25rem; font-weight: 700; line-height: 1.25; color: var(--text-main); word-wrap: break-word;">{{ item.name }}</h4>
-                                <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-bottom: 0.3rem;">
-                                    <span style="font-size: 0.7rem; color: var(--primary); font-weight: 600; background: var(--primary-light); padding: 1px 6px; border-radius: 4px;">{{ item.category }}</span>
-                                    {% if item.brand %}
-                                        <span style="font-size: 0.7rem; color: #64748b; font-weight: 600; background: #f1f5f9; padding: 1px 6px; border-radius: 4px;">{{ item.brand }}</span>
-                                    {% endif %}
-                                    {% if item.size %}
-                                        <span style="font-size: 0.7rem; color: #64748b; font-weight: 600; background: #f1f5f9; padding: 1px 6px; border-radius: 4px;">{{ item.size }}</span>
-                                    {% endif %}
+                    <div class="mobile-mini-cart-item" data-id="{{ item._id }}">
+                        <div class="item-main">
+                            <img src="{{ item.image_url }}" alt="{{ item.name }}" class="item-img">
+                            <div class="item-info">
+                                <h4 class="item-name">{{ item.name }}</h4>
+                                <div class="item-meta">
+                                    <span class="meta-tag cat">{{ item.category }}</span>
+                                    {% if item.size %}<span class="meta-tag">{{ item.size }}</span>{% endif %}
                                 </div>
-                                {% if item.discount_price %}
-                                    <div style="color: #ef4444; font-size: 0.7rem; font-weight: 700; margin-top: 2px;">
-                                        <i class="fas fa-tag"></i> Kursimi: €{{ "%.2f"|format(item.item_savings or 0) }}
+                                <div class="item-price-row">
+                                    <div class="price-stack">
+                                        {% if item.discount_price %}
+                                            <span class="price-curr">€{{ item.discount_price }}</span>
+                                            <span class="price-old">€{{ item.price }}</span>
+                                        {% else %}
+                                            <span class="price-curr">€{{ item.price }}</span>
+                                        {% endif %}
                                     </div>
-                                {% endif %}
-                            </div>
-                            <button class="remove-btn" onclick="updateMiniQty(event, '{{ item._id }}', 'remove')" style="position: absolute; top: 0.75rem; right: 0.75rem; background: #fff1f2; border: none; color: #ef4444; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>
-                        
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 0.5rem;">
-                            <div class="price-info" style="display: flex; flex-direction: column;">
-                                {% if item.discount_price %}
-                                    <span style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">€{{ item.discount_price }}</span>
-                                    <span style="text-decoration: line-through; color: #94a3b8; font-size: 0.8rem;">€{{ item.price }}</span>
-                                {% else %}
-                                    <span style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">€{{ item.price }}</span>
-                                {% endif %}
-                            </div>
-                            
-                            <div class="quantity-selector" style="display: flex; align-items: center; gap: 0.75rem;">
-                                <button class="qty-btn" onclick="updateMiniQty(event, '{{ item._id }}', 'decrease')" style="width: 28px; height: 28px; border: 1.5px solid #e2e8f0; background: transparent; border-radius: 50%; color: var(--text-main); font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem;">-</button>
-                                <span class="qty-val" style="font-weight: 800; font-size: 1rem; min-width: 20px; text-align: center;">{{ item.quantity }}</span>
-                                <button class="qty-btn" onclick="updateMiniQty(event, '{{ item._id }}', 'increase')" style="width: 28px; height: 28px; border: 1.5px solid var(--primary); background: transparent; border-radius: 50%; color: var(--primary); font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem;">+</button>
+                                    <div class="item-qty-selector">
+                                        <button onclick="updateMiniQty(event, '{{ item._id }}', 'decrease')">-</button>
+                                        <span class="qty-val">{{ item.quantity }}</span>
+                                        <button onclick="updateMiniQty(event, '{{ item._id }}', 'increase')">+</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; margin: 0 -0.85rem -0.85rem -0.85rem; padding: 0.6rem 0.85rem; border-radius: 0 0 16px 16px; border-top: 1px solid #f1f5f9;">
-                            <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Subtotal:</span>
-                            <span style="font-size: 1rem; font-weight: 800; color: var(--primary);">€{{ "%.2f"|format(item.item_total) }}</span>
-                        </div>
+                        <button class="item-remove-btn" onclick="updateMiniQty(event, '{{ item._id }}', 'remove')">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
                     {% endfor %}
                 {% endif %}
@@ -284,7 +266,7 @@
                         <i class="fas fa-shopping-basket"></i>
                     </div>
                     <h4>Shporta juaj është boshe</h4>
-                    <p>Ju nuk keni shtuar asnjë produkt në shportë akoma.</p>
+                    <p>Fillo blerjen duke shtuar produkte në shportë.</p>
                     <button class="btn-primary-mobile" onclick="closeCartModal()">Fillo Blerjen</button>
                 </div>
                 {% endif %}
@@ -292,30 +274,21 @@
         </div>
         
         {% if cart_items %}
-        <div class="modal-footer-cart" style="padding: 1.25rem; border-top: 1px solid #f1f5f9; background: white;">
-            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.95rem; color: #64748b;">
-                    <span>Nëntotali:</span>
-                    <span style="font-weight: 600; color: var(--text-main);">€{{ "%.2f"|format(cart_total) }}</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; font-size: 0.95rem; color: #64748b;">
+        <div class="modal-footer-cart">
+            <div class="summary-details">
+                <div class="summary-line">
                     <span>Transporti:</span>
-                    <span style="font-weight: 600; color: var(--text-main);">{{ "€%.2f"|format(delivery_fee) if delivery_fee > 0 else "Falas" }}</span>
+                    <span class="delivery-fee">{{ "€%.2f"|format(delivery_fee) if delivery_fee > 0 else "Falas" }}</span>
                 </div>
-                {% if cart_savings > 0 %}
-                <div style="display: flex; justify-content: space-between; font-size: 0.95rem; color: var(--primary);">
-                    <span>Kursimi:</span>
-                    <span style="font-weight: 600;">-€{{ "%.2f"|format(cart_savings) }}</span>
-                </div>
-                {% endif %}
-                <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; padding-top: 1rem; border-top: 1px solid #f8fafc;">
-                    <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">Gjithsej:</span>
-                    <span style="font-size: 1.4rem; font-weight: 800; color: var(--primary);">€{{ "%.2f"|format(grand_total) }}</span>
+                <div class="summary-line total">
+                    <span>Totali:</span>
+                    <span class="grand-total">€{{ "%.2f"|format(grand_total) }}</span>
                 </div>
             </div>
-            <a href="{{ url_for('cart.checkout') }}" class="btn-checkout-mobile" style="background: var(--primary); color: white; display: block; text-align: center; padding: 1rem; border-radius: 12px; font-weight: 700; font-size: 1.1rem; text-decoration: none;">
-                PROÇEDO ME POROSINË
-            </a>
+            <div class="footer-actions">
+                <a href="{{ url_for('cart.view_cart') }}" class="btn-view-cart-link">Shiko Shportën</a>
+                <a href="{{ url_for('cart.checkout') }}" class="btn-checkout-primary">PROÇEDO ME POROSINË</a>
+            </div>
         </div>
         {% endif %}
     </div>
