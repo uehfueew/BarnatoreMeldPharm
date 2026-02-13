@@ -26,10 +26,10 @@
                     <div class="carousel-track" style="height: 100%;">
                         {% if product.images %}
                             {% for img in product.images %}
-                            <img src="{{ img }}" alt="{{ product.name }}" class="product-image" style="padding: 1.5rem; object-fit: contain;">
+                            <img src="{{ img }}" alt="{{ product.name }}" class="product-image" style="padding: 1.5rem; object-fit: contain; cursor: pointer;" onclick="openImageModal(this.src)">
                             {% endfor %}
                         {% else %}
-                            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image" style="padding: 1.5rem; object-fit: contain;">
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image" style="padding: 1.5rem; object-fit: contain; cursor: pointer;" onclick="openImageModal(this.src)">
                         {% endif %}
                     </div>
                 </div>
@@ -175,6 +175,11 @@ function buyNowWithQty(productId, btn) {
     const qty = container.querySelector('.qty-input').value;
     window.buyNow(productId, qty);
 }
+
+// Add class to body to adjust floating contact button position
+document.addEventListener('DOMContentLoaded', function() {
+    document.body.classList.add('has-sticky-bar');
+});
 </script>
 
 {% block footer %}{% endblock %}
@@ -280,4 +285,100 @@ function buyNowWithQty(productId, btn) {
     </div>
     {% endif %}
 </div>
+
+<!-- Image Modal -->
+<div id="imageModal" class="image-modal" onclick="closeImageModal()">
+    <span class="close-modal" onclick="closeImageModal()">&times;</span>
+    <img class="modal-content" id="img01">
+</div>
+
+<script>
+function openImageModal(src) {
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("img01");
+    modal.style.display = "flex";
+    modalImg.src = src;
+    document.body.style.overflow = "hidden"; // Prevent scrolling
+}
+
+function closeImageModal() {
+    const modal = document.getElementById("imageModal");
+    modal.style.display = "none";
+    document.body.style.overflow = ""; // Restore scrolling
+}
+
+// Close on Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === "Escape") {
+        closeImageModal();
+    }
+});
+</script>
+
+<style>
+/* Image Modal Styles */
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 99999; /* Highest priority */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+    cursor: zoom-out;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+    margin: auto;
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 95%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 8px;
+    animation: zoom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    background: white;
+}
+
+@keyframes zoom {
+  from {transform: scale(0.7); opacity: 0;}
+  to {transform: scale(1); opacity: 1;}
+}
+
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #ffffff;
+    font-size: 50px;
+    font-weight: 300;
+    transition: 0.3s;
+    cursor: pointer;
+    z-index: 100000;
+    line-height: 1;
+}
+
+.close-modal:hover {
+    color: #cccccc;
+    transform: scale(1.1);
+}
+
+@media only screen and (max-width: 768px){
+    .modal-content {
+        max-width: 100%;
+        max-height: 80vh;
+    }
+    .close-modal {
+        right: 20px;
+        top: 15px;
+        font-size: 40px;
+    }
+}
+</style>
 {% endblock %}

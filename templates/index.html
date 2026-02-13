@@ -35,17 +35,28 @@
         <div class="hero-carousel">
             <!-- Slide 1: Eucerin -->
             <a href="{{ url_for('main.products', brand='Eucerin') }}" class="hero-slide active">
-                <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659727/IMG_4312_ul0exk.jpg" alt="Eucerin Products" class="hero-img">
+                <picture>
+                    <!-- Mobile Image (Vertical/Square optimization) -->
+                    <source media="(max-width: 768px)" srcset="https://res.cloudinary.com/drljgepgy/image/upload/v1770659727/IMG_4312_ul0exk.jpg">
+                    <!-- Desktop Image -->
+                    <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659727/IMG_4312_ul0exk.jpg" alt="Eucerin Products" class="hero-img">
+                </picture>
             </a>
 
             <!-- Slide 2: Vichy -->
             <a href="{{ url_for('main.products', brand='Vichy') }}" class="hero-slide">
-                <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659726/IMG_4310_eria9y.jpg" alt="Vichy Products" class="hero-img">
+                <picture>
+                    <source media="(max-width: 768px)" srcset="https://res.cloudinary.com/drljgepgy/image/upload/v1770659726/IMG_4310_eria9y.jpg">
+                    <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659726/IMG_4310_eria9y.jpg" alt="Vichy Products" class="hero-img">
+                </picture>
             </a>
 
             <!-- Slide 3: CeraVe -->
             <a href="{{ url_for('main.products', brand='CeraVe') }}" class="hero-slide">
-                <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659006/cerave_zbritje_f6uugd.jpg" alt="CeraVe Products" class="hero-img">
+                <picture>
+                    <source media="(max-width: 768px)" srcset="https://res.cloudinary.com/drljgepgy/image/upload/v1770659006/cerave_zbritje_f6uugd.jpg">
+                    <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659006/cerave_zbritje_f6uugd.jpg" alt="CeraVe Products" class="hero-img">
+                </picture>
             </a>
         </div>
         

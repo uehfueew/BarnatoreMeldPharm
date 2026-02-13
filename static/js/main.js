@@ -1054,12 +1054,10 @@ window.updateGlobalBadges = function(data) {
             }
             if (data.cart_count > 0) {
                 badge.classList.remove('d-none');
-                if (!badge.classList.contains('items-count-badge-mobile')) {
-                    badge.style.display = 'flex';
-                }
+                badge.style.setProperty('display', 'flex', 'important');
             } else {
                 badge.classList.add('d-none');
-                badge.style.display = 'none';
+                badge.style.setProperty('display', 'none', 'important');
             }
         });
         
@@ -1074,10 +1072,10 @@ window.updateGlobalBadges = function(data) {
             badge.textContent = data.wishlist_count;
             if (data.wishlist_count > 0) {
                 badge.classList.remove('d-none');
-                badge.style.display = 'flex';
+                badge.style.setProperty('display', 'flex', 'important');
             } else {
                 badge.classList.add('d-none');
-                badge.style.display = 'none';
+                badge.style.setProperty('display', 'none', 'important');
             }
         });
     }

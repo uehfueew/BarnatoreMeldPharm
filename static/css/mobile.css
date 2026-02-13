@@ -467,9 +467,10 @@
         padding: 1.5rem;
         border-radius: 16px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         gap: 1.25rem;
-        text-align: left;
+        text-align: center;
         margin: 1rem;
         color: var(--text-main);
         border: 1px solid #f1f5f9;
@@ -477,11 +478,11 @@
     }
 
     .avatar-circle {
-        width: 45px;
-        height: 45px;
+        width: 80px;
+        height: 80px;
         background: var(--primary-light);
         color: var(--primary);
-        font-size: 1.5rem;
+        font-size: 2.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -491,12 +492,21 @@
         flex-shrink: 0;
     }
 
+    .user-details {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+    }
+
     .user-info-card h4 { 
-        margin-bottom: 0.1rem; 
+        margin-bottom: 0; 
         font-weight: 700; 
         font-size: 1.1rem;
+        line-height: 1.2;
     }
     .user-info-card p { 
+        margin-bottom: 0;
         opacity: 0.7; 
         font-size: 0.85rem; 
     }

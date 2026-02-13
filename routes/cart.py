@@ -130,17 +130,28 @@ def get_mini_cart_data():
             product = products_db.get(str(product_id))
             if product:
                 price = product.get('discount_price') or product.get('price') or 0
+                original_price = product.get('price') or 0
                 qty = int(quantity)
                 item_total = float(price) * qty
+                
+                # Calculate item savings for AJAX response
+                item_savings = 0
+                if product.get('discount_price'):
+                    item_savings = (float(original_price) - float(price)) * qty
+                
                 total_price += item_total
                 cart_items.append({
                     '_id': str(product['_id']),
                     'name': product['name'],
                     'image_url': product['image_url'],
                     'price': price,
+                    'original_price': original_price,
                     'quantity': qty,
                     'item_total': item_total,
-                    'size': product.get('size')
+                    'item_savings': item_savings,
+                    'size': product.get('size'),
+                    'category': product.get('category'),
+                    'brand': product.get('brand')
                 })
         
     # Also get wishlist count to keep badges in sync
@@ -307,10 +318,19 @@ def checkout():
         product = Product.get_by_id(product_id)
         if product:
             price = product.get('discount_price') if product.get('discount_price') else product.get('price')
-            item_total = price * int(quantity)
+            original_price = product.get('price') or 0
+            qty_int = int(quantity)
+            item_total = price * qty_int
+            
+            # Calculate item savings for the template
+            item_savings = 0
+            if product.get('discount_price'):
+                item_savings = (float(original_price) - float(price)) * qty_int
+                
             total_price += item_total
-            product['quantity'] = quantity
+            product['quantity'] = qty_int
             product['item_total'] = item_total
+            product['item_savings'] = item_savings
             cart_items.append(product)
             
     country = current_user.country if current_user.is_authenticated and current_user.country else 'Kosova'
@@ -322,6 +342,7 @@ def checkout():
 @cart_bp.route('/place_order', methods=['POST'])
 def place_order():
     method = request.form.get('payment_method')
+    shipping_method = request.form.get('shipping_method', 'delivery')
     fullname = request.form.get('fullname')
     email = request.form.get('email')
     address = request.form.get('address')
@@ -329,6 +350,12 @@ def place_order():
     country = request.form.get('country')
     phone = request.form.get('phone')
     save_details = request.form.get('save_details') == '1'
+
+    # If pickup, we don't need address details
+    if shipping_method == 'pickup':
+        address = "Marrje në dyqan"
+        city = "N/A"
+        country = "Kosova"
     
     if method == 'card':
         flash('Pagesat me kartë nuk janë ende aktive.', 'warning')
@@ -340,8 +367,8 @@ def place_order():
         flash('Shporta është e zbrazët.', 'error')
         return redirect(url_for('main.products'))
 
-    # Save user details if requested
-    if current_user.is_authenticated and save_details:
+    # Save user details if requested (only if delivery)
+    if current_user.is_authenticated and save_details and shipping_method == 'delivery':
         User.update_profile(current_user.id, {
             'fullname': fullname,
             'address': address,
@@ -367,7 +394,11 @@ def place_order():
                 "item_total": item_total
             })
             
-    shipping_cost = calculate_shipping(total_price, country)
+    if shipping_method == 'pickup':
+        shipping_cost = 0
+    else:
+        shipping_cost = calculate_shipping(total_price, country)
+        
     grand_total = total_price + shipping_cost
 
     # Save to MongoDB
@@ -379,6 +410,7 @@ def place_order():
         "country": country,
         "phone": phone,
         "payment_method": method,
+        "shipping_method": shipping_method,
         "items": order_items,
         "total_price": total_price,
         "shipping_cost": shipping_cost,

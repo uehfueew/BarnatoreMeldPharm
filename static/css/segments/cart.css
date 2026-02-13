@@ -531,11 +531,20 @@ html, body {
     padding: 0.5rem;
 }
 
-.btn-clear-cart-link:hover {
-    color: #ef4444;
+.cart-table td {
+    padding: 1.5rem 1rem;
+    vertical-align: middle;
 }
 
-/* Individual Item Prices */
+.cart-table td:last-child {
+    text-align: right;
+}
+
+.cart-table .btn-icon {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .cart-item-prices .new-price {
     color: var(--primary);
     font-weight: 700;
@@ -647,7 +656,7 @@ button.hover-underline:hover {
 }
 
 /* Quantity Control */
-.quantity-control {
+.quantity-control, .quantity-selector {
     display: flex;
     align-items: center;
     background: #f8fafc;
@@ -655,6 +664,11 @@ button.hover-underline:hover {
     padding: 0.25rem;
     width: fit-content;
     border: 1px solid #e2e8f0;
+}
+
+.quantity-selector form {
+    display: flex;
+    align-items: center;
 }
 
 .qty-btn {

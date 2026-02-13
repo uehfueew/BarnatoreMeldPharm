@@ -1,6 +1,60 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .shipping-option {
+        display: block;
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+    }
+    .shipping-option input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+    .shipping-option .option-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1.25rem;
+        border: 2px solid #e5e7eb;
+        border-radius: var(--radius-md);
+        transition: all 0.2s ease;
+        text-align: center;
+        background: white;
+    }
+    .shipping-option .option-content i {
+        font-size: 1.5rem;
+        color: var(--text-muted);
+    }
+    .shipping-option .option-content span {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-main);
+    }
+    .shipping-option input:checked + .option-content {
+        border-color: var(--primary);
+        background: var(--primary-light);
+    }
+    .shipping-option input:checked + .option-content i {
+        color: var(--primary);
+    }
+    .shipping-option input:checked + .option-content span {
+        color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+        .checkout-grid {
+            grid-template-columns: 1fr !important;
+            gap: 2rem !important;
+        }
+        .order-summary {
+            order: -1; /* Show summary first on mobile */
+        }
+    }
+</style>
 <div class="container">
     <div class="section-container" style="max-width: 1200px; margin: 0 auto; padding-top: 1rem;">
         <div style="margin-bottom: 2rem;">
@@ -16,7 +70,26 @@
             <div class="checkout-form">
                 <form action="{{ url_for('cart.place_order') }}" method="POST" id="checkout-form">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                    <h3 style="margin-bottom: 1.5rem;">Të dhënat e dërgesës</h3>
+                    
+                    <h3 style="margin-bottom: 1.5rem;">Mënyra e Dërgesës</h3>
+                    <div class="shipping-method-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                        <label class="shipping-option">
+                            <input type="radio" name="shipping_method" value="delivery" checked onchange="toggleShippingMethod('delivery')">
+                            <div class="option-content">
+                                <i class="fas fa-truck"></i>
+                                <span>Dërgesa në shtëpi</span>
+                            </div>
+                        </label>
+                        <label class="shipping-option">
+                            <input type="radio" name="shipping_method" value="pickup" onchange="toggleShippingMethod('pickup')">
+                            <div class="option-content">
+                                <i class="fas fa-store"></i>
+                                <span>Marrja në dyqan</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <h3 style="margin-bottom: 1.5rem;">Të dhënat Personale</h3>
                     
                     <div class="form-group">
                         <label for="fullname">Emri dhe Mbiemri</label>
@@ -29,29 +102,32 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="address">Adresa</label>
-                        <input type="text" id="address" name="address" class="form-control" required placeholder="" value="{{ current_user.address if current_user.is_authenticated else '' }}">
-                    </div>
-
-                    <div class="checkout-grid-2">
-                        <div class="form-group">
-                            <label for="country">Shteti</label>
-                            <select id="country" name="country" class="form-control country-select" required onchange="updateShipping(this.value)">
-                                <option value="Kosova" {% if (current_user.is_authenticated and current_user.country == 'Kosova') or (not current_user.is_authenticated) %}selected{% endif %}>Kosovë</option>
-                                <option value="Shqiperia" {% if current_user.is_authenticated and (current_user.country == 'Shqiperia' or current_user.country == 'Shqipëri') %}selected{% endif %}>Shqipëri</option>
-                                <option value="Maqedonia" {% if current_user.is_authenticated and (current_user.country == 'Maqedonia' or current_user.country == 'Maqedoni e Veriut') %}selected{% endif %}>Maqedoni e Veriut</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="city">Qyteti</label>
-                            <input type="text" id="city" name="city" class="form-control" required placeholder="" value="{{ current_user.city if current_user.is_authenticated else '' }}">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="phone">Numri i Telefonit</label>
                         <input type="tel" id="phone" name="phone" class="form-control" required placeholder="" value="{{ current_user.phone if current_user.is_authenticated else '' }}">
+                    </div>
+
+                    <div id="address-fields-container">
+                        <h3 style="margin-top: 2rem; margin-bottom: 1.5rem;">Adresa e dërgesës</h3>
+                        <div class="form-group">
+                            <label for="address">Adresa</label>
+                            <input type="text" id="address" name="address" class="form-control" required placeholder="" value="{{ current_user.address if current_user.is_authenticated else '' }}">
+                        </div>
+
+                        <div class="checkout-grid-2">
+                            <div class="form-group">
+                                <label for="country">Shteti</label>
+                                <select id="country" name="country" class="form-control country-select" required onchange="updateShipping(this.value)">
+                                    <option value="Kosova" {% if (current_user.is_authenticated and current_user.country == 'Kosova') or (not current_user.is_authenticated) %}selected{% endif %}>Kosovë</option>
+                                    <option value="Shqiperia" {% if current_user.is_authenticated and (current_user.country == 'Shqiperia' or current_user.country == 'Shqipëri') %}selected{% endif %}>Shqipëri</option>
+                                    <option value="Maqedonia" {% if current_user.is_authenticated and (current_user.country == 'Maqedonia' or current_user.country == 'Maqedoni e Veriut') %}selected{% endif %}>Maqedoni e Veriut</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="city">Qyteti</label>
+                                <input type="text" id="city" name="city" class="form-control" required placeholder="" value="{{ current_user.city if current_user.is_authenticated else '' }}">
+                            </div>
+                        </div>
                     </div>
 
                     {% if current_user.is_authenticated %}
@@ -146,7 +222,52 @@
 </div>
 
 <script>
+    function toggleShippingMethod(method) {
+        const addressContainer = document.getElementById('address-fields-container');
+        const addressInput = document.getElementById('address');
+        const cityInput = document.getElementById('city');
+        const countrySelect = document.getElementById('country');
+        
+        if (method === 'pickup') {
+            addressContainer.style.display = 'none';
+            addressInput.required = false;
+            cityInput.required = false;
+            countrySelect.required = false;
+            
+            // Force shipping to 0 in summary
+            updateSummaryForPickup(true);
+        } else {
+            addressContainer.style.display = 'block';
+            addressInput.required = true;
+            cityInput.required = true;
+            countrySelect.required = true;
+            
+            // Recalculate based on current country
+            updateShipping(countrySelect.value);
+        }
+    }
+
+    function updateSummaryForPickup(isPickup) {
+        const shippingDisplay = document.getElementById('shipping-display');
+        const grandTotalDisplay = document.getElementById('grand-total-display');
+        const subtotal = parseFloat(document.getElementById('summary-totals').dataset.subtotal);
+        
+        if (isPickup) {
+            shippingDisplay.innerHTML = 'Falas (Në dyqan)';
+            shippingDisplay.style.color = 'var(--primary)';
+            shippingDisplay.style.fontWeight = '600';
+            grandTotalDisplay.innerHTML = '€' + subtotal.toFixed(2);
+        }
+    }
+
     function updateShipping(country) {
+        // If pick up is selected, don't update from country change
+        const shippingMethod = document.querySelector('input[name="shipping_method"]:checked').value;
+        if (shippingMethod === 'pickup') {
+            updateSummaryForPickup(true);
+            return;
+        }
+
         const subtotal = parseFloat(document.getElementById('summary-totals').dataset.subtotal);
         const shippingDisplay = document.getElementById('shipping-display');
         const grandTotalDisplay = document.getElementById('grand-total-display');
