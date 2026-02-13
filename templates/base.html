@@ -169,13 +169,13 @@
             <i class="fas fa-th-large"></i>
             <span>Kategoritë</span>
         </button>
-        <button class="bottom-nav-item" onclick="openCartModal()">
+        <a href="{{ url_for('cart.view_cart') }}" class="bottom-nav-item">
             <div class="icon-wrapper">
                 <i class="fas fa-shopping-cart"></i>
                 <span class="mobile-cart-badge cart-count-badge {{ 'd-none' if not cart_count or cart_count == 0 else '' }}">{{ cart_count if cart_count else 0 }}</span>
             </div>
             <span>Shporta</span>
-        </button>
+        </a>
         <button class="bottom-nav-item" onclick="openProfileModal()">
             <i class="fas fa-user"></i>
             <span>Profili</span>

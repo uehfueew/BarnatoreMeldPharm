@@ -307,9 +307,15 @@
 }
 
 .hero-prev:hover, .hero-next:hover {
-    background: var(--primary);
-    color: white;
+    background: white; /* Don't change background on hover/click to avoid clash */
+    color: var(--primary);
     transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.3);
+}
+
+.hero-prev:active, .hero-next:active {
+    transform: translateY(-50%) scale(0.95);
+    background: #f8fafc; /* Subtle click effect */
 }
 
 /* Position arrows at the edge of the wrapper (flanking the image) */

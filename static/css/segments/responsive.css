@@ -823,17 +823,17 @@
 
     .sidebar-mobile-header {
         display: flex !important;
-        flex-direction: column !important;
+        flex-direction: row-reverse !important; /* Move close button to right */
         align-items: center !important;
-        justify-content: center !important;
-        padding: 1.5rem !important;
+        justify-content: space-between !important;
+        padding: 1.25rem 1.5rem !important;
         border-bottom: 1px solid #f1f5f9 !important;
         background: #fff !important;
         position: relative !important;
     }
 
     .sidebar-mobile-header h3 {
-        margin: 0.5rem 0 0 0 !important;
+        margin: 0 !important;
         font-size: 1.15rem !important;
         font-weight: 700 !important;
         color: var(--text-main) !important;
@@ -844,15 +844,15 @@
     .btn-close-sidebar {
         background: #f1f5f9 !important;
         border: 1px solid #e2e8f0 !important;
-        width: 40px !important;
-        height: 40px !important;
-        border-radius: 50% !important;
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 8px !important; /* Slightly squared */
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         color: var(--text-main) !important;
         cursor: pointer !important;
-        margin-bottom: 0.5rem !important;
+        margin-bottom: 0 !important;
         transition: all 0.2s !important;
     }
 
@@ -860,6 +860,7 @@
         flex: 1 !important;
         overflow-y: auto !important;
         padding: 1rem !important;
+        -webkit-overflow-scrolling: touch; /* Better scrolling on iOS */
     }
 
     .sidebar-mobile-footer {
@@ -888,7 +889,8 @@
     background: none;
     border: none;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start; /* Move closer to text */
+    gap: 10px; /* Space between text and icon */
     align-items: center;
     padding: 0;
     cursor: pointer;
@@ -1016,31 +1018,32 @@
 @media (max-width: 640px) {
     .shop-controls-container {
         position: sticky !important;
-        top: 64px !important; /* Standard scrolled header height */
-        z-index: 99 !important;
+        top: 60px !important; /* Adjusted for mobile header height */
+        z-index: 100 !important; /* Lower than modals but higher than grid */
         background: #fff !important;
-        flex-direction: row !important; /* Row is better for 2 buttons */
+        flex-direction: row !important;
         justify-content: space-between !important;
         gap: 0.5rem !important;
         align-items: center !important;
-        padding: 0.75rem 1rem !important;
-        margin: -0.5rem -1rem 1.5rem -1rem !important;
-        border-radius: 0 !important;
-        border-bottom: 2px solid #f1f5f9 !important;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
+        padding: 0.6rem 0.75rem !important;
+        margin: 0 -1rem 1.5rem -1rem !important; /* Removed negative top margin */
+        border-radius: 4px !important; /* Squared as requested */
+        border: 1px solid #f1f5f9 !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06) !important;
     }
     
     .results-count {
-        display: none !important; /* Hide to save space on sticky bar */
+        display: none !important;
     }
     
     .order-button, .filter-mobile-toggle {
         flex: 1 !important;
         justify-content: center !important;
-        font-size: 0.85rem !important;
-        padding: 0.5rem !important;
-        height: 40px !important;
+        font-size: 0.8rem !important;
+        padding: 0.4rem 0.6rem !important;
+        height: 38px !important;
         margin: 0 !important;
+        border-radius: 4px !important; /* Squared */
     }
 
     .shop-sorting {
