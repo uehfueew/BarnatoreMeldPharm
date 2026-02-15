@@ -2685,25 +2685,32 @@
     }
 
     .cart-col-action {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        width: auto;
+        position: absolute !important;
+        top: 0.75rem !important;
+        right: 0.75rem !important;
+        width: auto !important;
+        z-index: 50 !important; /* Ensure it's above other elements */
     }
     
     .delete-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 0.9rem;
-        background: transparent;
-        color: #ef4444;
-        border: 1px solid #fee2e2;
-        padding: 0;
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1rem !important;
+        background: #fee2e2 !important; /* Soft red background */
+        color: #ef4444 !important;
+        border: none !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        cursor: pointer !important;
+        box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1) !important;
     }
     
-    .delete-btn:hover {
-        background: #fee2e2;
-        transform: none;
+    .delete-btn:active {
+        background: #fecaca !important;
+        transform: scale(0.9) !important;
     }
 
     .cart-footer-summary {
@@ -2838,16 +2845,17 @@
         padding: 0 !important;
         margin: 0 !important;
         max-width: 100% !important;
-        height: 350px !important; /* Reduced from 600px/400px to make it smaller on mobile */
-        background: #fff;
+        height: auto !important; /* Let aspect ratio define height */
+        background: #fff !important;
     }
     
     .hero-inner-wrapper {
         aspect-ratio: auto !important;
-        height: 100% !important; /* Use container height */
+        height: auto !important;
         border-radius: 0 !important;
         width: 100% !important;
-        padding: 0.5rem !important; /* Added padding to make the slide/image appear smaller/contained */
+        padding: 0 !important; /* Removed padding so it stays edge-to-edge */
+        background: #fff !important;
     }
 
     .hero-carousel {

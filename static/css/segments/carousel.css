@@ -174,8 +174,8 @@
 
 .hero-inner-wrapper {
     position: relative;
-    max-width: 900px; /* Reduced width to bring arrows closer to image */
-    margin: 0 auto;
+    max-width: 100%; /* Spans full width of its container (which is grid-adjusted in responsive.css) */
+    margin: 0;
     height: 550px; /* Fixed height to prevent collapse with absolute children */
     display: flex;
     justify-content: center;

@@ -372,10 +372,10 @@
 
 .hero-inner-wrapper {
     height: 100%;
-    border-radius: var(--radius-md);
+    border-radius: 0;
     overflow: hidden;
     position: relative;
-    box-shadow: var(--shadow-sm);
+    box-shadow: none;
 }
 
 .hero-img {
@@ -399,21 +399,23 @@
         border-radius: 0; 
         min-height: auto !important;
         padding-bottom: 0 !important;
-        margin-top: -10px !important; /* Move closer to header */
+        margin-top: 0 !important; 
+        background: #fff !important;
     }
     .hero-inner-wrapper { 
         border-radius: 0; 
         width: 100% !important;
         max-width: 100% !important;
         height: auto !important;
-        min-height: auto !important;
+        min-height: 250px !important; /* Minimum height for mobile hero */
+        background: #fff !important;
     }
     .hero-img { 
         height: auto !important; 
         width: 100% !important;
-        aspect-ratio: 1 / 1.1 !important; /* Vertical Taller Ratio for Mobile */
-        object-fit: cover !important; /* Cover the whole width */
-        background: #fff; 
+        aspect-ratio: 16 / 9 !important; /* Proper banner ratio for mobile */
+        object-fit: contain !important; /* Ensure the whole image is visible */
+        background: #fff !important;
     }
 }
 
@@ -421,6 +423,7 @@
 .shop-section {
     padding-top: 2rem;
     padding-bottom: 4rem;
+    position: relative;
 }
 
 .shop-layout {
@@ -432,15 +435,29 @@
     margin: 0 auto;
 }
 
+.shop-sidebar-desktop-spacer {
+    width: 280px;
+}
+
 .shop-sidebar {
-    position: sticky;
-    top: 90px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 280px;
     background: #fff;
     padding: 1.5rem;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     border: 1px solid #f1f5f9;
     z-index: 50;
+}
+
+/* On desktop, put it inside the grid space */
+@media (min-width: 993px) {
+    .shop-sidebar {
+        position: sticky;
+        top: 90px;
+    }
 }
 
 .sidebar-block {
@@ -721,23 +738,19 @@
         min-width: 180px !important;
     }
 
-    /* Brands Section Horizontal Scroll on Mobile */
+    /* Brands Section - Stacked on Mobile */
     .brand-grid {
-        display: flex !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        gap: 1rem !important;
-        margin-left: -1rem !important;
-        margin-right: -1rem !important;
-        padding: 1rem !important;
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
-        -ms-overflow-style: none;
-        touch-action: pan-y; /* Crucial: Allows vertical page scroll while on the horizontal scroller */
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 0 !important;
+        overflow-x: visible !important;
     }
 
-    .brand-grid::-webkit-scrollbar {
-        display: none;
+    .brand-card {
+        height: 200px !important;
     }
 
     .brand-card {
@@ -827,12 +840,11 @@
         left: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        background: rgba(0,0,0,0.5) !important;
+        background: rgba(0,0,0,0.6) !important;
         z-index: 1000000 !important; /* Just below sidebar */
         display: block !important;
         visibility: hidden !important;
         opacity: 0 !important;
-        backdrop-filter: blur(4px) !important; /* Added back slightly for focus */
         transition: opacity 0.3s ease, visibility 0.3s !important;
         pointer-events: none !important;
     }
@@ -1043,23 +1055,52 @@
     box-shadow: var(--shadow-sm);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 992px) {
     .shop-controls-container {
-        position: relative !important;
-        z-index: 1000 !important; /* Above products */
+        position: sticky !important;
+        top: 64px !important; /* Below the collapsed mobile header */
+        z-index: 990 !important; /* Below sidebar (1000001) and overlay (1000000) */
         background: #ffffff !important;
         flex-direction: row !important;
         justify-content: space-between !important;
         gap: 0.5rem !important;
         align-items: center !important;
         padding: 0.75rem 1rem !important;
-        margin: 0 -1rem 1.5rem -1rem !important; /* Removed negative top margin, full width */
+        margin: -2rem -1rem 1.5rem -1rem !important; /* Bridging the layout gap */
         border-radius: 0 !important;
-        border-top: 1px solid #f1f5f9 !important;
-        border-left: none !important;
+        border-top: none !important;
         border-right: none !important;
-        border-bottom: 2px solid #f1f5f9 !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+        border-left: none !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
+    }
+    
+    .shop-sorting {
+        flex: 1;
+        display: flex;
+        gap: 0.8rem;
+        width: 100%;
+    }
+
+    .order-button, .filter-mobile-toggle {
+        flex: 1;
+        background: #f8fafc !important; /* Light gray instead of plain white */
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: none !important;
+        height: 44px !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        color: var(--text-main) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 1rem !important;
+        border-radius: 10px !important;
+    }
+
+    .order-button:active, .filter-mobile-toggle:active {
+        background: #f1f5f9 !important;
+        transform: scale(0.98);
     }
     
     .results-count {
