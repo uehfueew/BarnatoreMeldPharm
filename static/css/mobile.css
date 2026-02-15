@@ -1777,35 +1777,39 @@
     /* Quantity Selector Styling */
     .quantity-selector {
         background: #f1f5f9;
-        border-radius: 6px;
+        border-radius: 12px;
         padding: 2px;
-        display: flex !important;
-        align-items: center !important;
-        gap: 0 !important;
+        display: flex;
+        align-items: center;
+        gap: 0;
     }
     
     .qty-btn {
-        width: 40px !important;
-        height: 100% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        background: white !important;
-        border-radius: 6px !important;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        color: var(--text-main) !important;
-        font-weight: 700 !important;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        border: 1px solid #d1d5db; /* Gray outline */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        color: var(--text-main);
+        font-weight: 700;
+        padding: 0;
     }
     
     .qty-input {
-        width: 44px !important;
-        height: 100% !important;
-        font-size: 1rem !important;
-        font-weight: 700 !important;
-        background: transparent !important;
-        border: none !important;
-        text-align: center !important;
-        color: var(--text-main) !important;
+        width: 36px;
+        height: auto;
+        font-size: 1rem;
+        font-weight: 700;
+        background: transparent;
+        border: none;
+        text-align: center;
+        color: var(--text-main);
+        margin: 0;
+        padding: 0;
     }
 
     /* Update Grid Template for Split Bottom Row */
@@ -2629,15 +2633,34 @@
     
     .quantity-control {
         margin: 0;
+        display: flex !important;
+        gap: 4px !important;
+        align-items: center !important;
     }
 
     .qty-btn {
-        width: 36px; /* Larger touch target */
-        height: 36px;
+        width: 36px !important; 
+        height: 36px !important;
+        background: #ffffff !important;
+        border: 1px solid #d1d5db !important; /* Gray outline */
+        border-radius: 10px !important; /* Rounded corners */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: var(--text-main) !important;
+        padding: 0 !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
     }
     
     .qty-input {
-        width: 45px;
+        width: 32px !important;
+        border: none !important;
+        background: transparent !important;
+        text-align: center !important;
+        font-weight: 700 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        color: var(--text-main) !important;
     }
 
     .cart-col-total {

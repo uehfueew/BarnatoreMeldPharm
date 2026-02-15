@@ -399,6 +399,7 @@
         border-radius: 0; 
         min-height: auto !important;
         padding-bottom: 0 !important;
+        margin-top: -10px !important; /* Move closer to header */
     }
     .hero-inner-wrapper { 
         border-radius: 0; 
@@ -410,8 +411,8 @@
     .hero-img { 
         height: auto !important; 
         width: 100% !important;
-        aspect-ratio: 16/9; /* Standard banner ratio */
-        object-fit: contain !important; 
+        aspect-ratio: 1 / 1.1 !important; /* Vertical Taller Ratio for Mobile */
+        object-fit: cover !important; /* Cover the whole width */
         background: #fff; 
     }
 }
@@ -468,43 +469,7 @@
     margin: 0;
 }
 
-.sidebar-cat-link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 0.5rem;
-    color: var(--text-main);
-    text-decoration: none;
-    transition: all 0.2s;
-    border-radius: 8px;
-    font-weight: 500;
-}
-
-.sidebar-cat-link:hover, .sidebar-cat-link.active {
-    background: #f8fafc;
-    color: var(--primary);
-    padding-left: 0.75rem;
-}
-
-.sidebar-cat-link i {
-    font-size: 0.8rem;
-    opacity: 0.5;
-}
-
-.sidebar-cat-link span {
-    order: -1; /* Ensures text is on the left */
-}
-
-/* Fix "Të Gjitha" specific alignment */
-.sidebar-cat-link[href*="category=all"] {
-    justify-content: flex-start;
-    gap: 10px;
-}
-
-.sidebar-cat-link[href*="category=all"] i {
-    order: -1; /* Move icon to leftmost */
-    opacity: 0.8;
-}
+/* Sidebar Category Styles handled in products.css */
 
 /* Sidebar Subcategories */
 .sidebar-subcat-list {
@@ -755,6 +720,31 @@
         flex: 0 0 180px !important;
         min-width: 180px !important;
     }
+
+    /* Brands Section Horizontal Scroll on Mobile */
+    .brand-grid {
+        display: flex !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        gap: 1rem !important;
+        margin-left: -1rem !important;
+        margin-right: -1rem !important;
+        padding: 1rem !important;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: none;
+        touch-action: pan-y; /* Crucial: Allows vertical page scroll while on the horizontal scroller */
+    }
+
+    .brand-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .brand-card {
+        flex: 0 0 280px !important;
+        min-width: 280px !important;
+        height: 180px !important;
+    }
 }
 
 /* Sorting Dropdown Fix */
@@ -810,11 +800,11 @@
         top: 0 !important;
         right: -100% !important;
         width: 85% !important; /* Most but not all */
-        max-width: 340px; /* Slightly wider for better text fit */
+        max-width: 320px;
         height: 100vh !important;
         height: 100dvh !important;
         background: #fff !important;
-        z-index: 100001 !important; /* HIGHER THAN OVERLAY */
+        z-index: 1000001 !important; /* Extremely high, guaranteed above overlay */
         display: flex !important;
         visibility: hidden !important;
         flex-direction: column !important;
@@ -822,11 +812,13 @@
         box-shadow: -5px 0 25px rgba(0,0,0,0.15) !important;
         padding: 0 !important;
         left: auto !important;
+        pointer-events: none; /* Blocked when hidden */
     }
 
     .shop-sidebar.active {
         right: 0 !important;
         visibility: visible !important;
+        pointer-events: auto !important; /* Enabled when active */
     }
 
     .sidebar-overlay {
@@ -835,12 +827,12 @@
         left: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        background: rgba(0,0,0,0.4) !important; /* Less dark */
-        z-index: 100000 !important; /* LOWER THAN SIDEBAR */
+        background: rgba(0,0,0,0.5) !important;
+        z-index: 1000000 !important; /* Just below sidebar */
         display: block !important;
         visibility: hidden !important;
         opacity: 0 !important;
-        backdrop-filter: none !important; /* Remove blur as requested */
+        backdrop-filter: blur(4px) !important; /* Added back slightly for focus */
         transition: opacity 0.3s ease, visibility 0.3s !important;
         pointer-events: none !important;
     }
@@ -1053,22 +1045,21 @@
 
 @media (max-width: 640px) {
     .shop-controls-container {
-        position: sticky !important;
-        top: 50px !important; /* Higher top to stay visible right below scrolled header */
-        z-index: 9000 !important; /* Below header (10000) but high enough */
-        background: #fff !important;
+        position: relative !important;
+        z-index: 1000 !important; /* Above products */
+        background: #ffffff !important;
         flex-direction: row !important;
         justify-content: space-between !important;
         gap: 0.5rem !important;
         align-items: center !important;
-        padding: 0.6rem 0.75rem !important;
-        margin: -0.5rem -1rem 1.5rem -1rem !important; /* Pulled up slightly */
-        border-radius: 0 !important; /* Full width mobile bar */
-        border-top: none !important;
+        padding: 0.75rem 1rem !important;
+        margin: 0 -1rem 1.5rem -1rem !important; /* Removed negative top margin, full width */
+        border-radius: 0 !important;
+        border-top: 1px solid #f1f5f9 !important;
         border-left: none !important;
         border-right: none !important;
-        border-bottom: 1px solid #f1f5f9 !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.04) !important;
+        border-bottom: 2px solid #f1f5f9 !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
     }
     
     .results-count {
@@ -1101,11 +1092,7 @@
         gap: 10px !important;
     }
 
-    .subcat-toggle-btn {
-        background: #f1f5f9 !important;
-        border-radius: 8px !important;
-        margin-left: 5px !important;
-    }
+/* Subcategory toggles handled in products.css */
 
     .sidebar-cat-link.active, .brand-link-item.active {
         background: var(--primary-light) !important;
@@ -1116,7 +1103,6 @@
 
     .brand-link-item:hover, .sidebar-cat-link:hover {
         background: #f1f5f9 !important;
-        padding-left: 1.1rem !important;
     }
 
     .sidebar-cat-group {

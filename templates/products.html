@@ -2,6 +2,9 @@
 
 {% block content %}
 <section class="section shop-section">
+    <!-- Sidebar Filters (Moved out of layout for global stacking context) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeShopSidebar()"></div>
+
     <div class="container container-wide">
         <div class="shop-layout">
             <!-- Sidebar Filters -->
@@ -35,76 +38,64 @@
                         </div>
                     </div>
 
-                    <div class="sidebar-block collapsible-sidebar-block" id="categoryBlock">
-                        <button class="sidebar-collapsible-trigger" onclick="toggleFilterSection(this)">
-                            <h3 class="sidebar-title no-line">Kategoritë</h3>
-                            <i class="fas fa-chevron-down toggle-chevron"></i>
-                        </button>
-                        <div class="collapsible-content">
-                            <ul class="sidebar-cat-list">
-                                <li>
-                                    <a href="#" onclick="filterByCategory(event, 'all')" class="sidebar-cat-link {% if current_category == 'all' %}active{% endif %}">
-                                        <div style="display: flex; align-items: center; gap: 10px;">
-                                            <i class="fas fa-th-large" style="width: 20px;"></i>
-                                            <span>Të Gjitha</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                {% for cat_name, subcats in categories.items() %}
-                                <li>
-                                    <div class="sidebar-cat-group">
-                                        <div class="sidebar-cat-row" style="display: flex; align-items: center; justify-content: space-between;">
-                                            <a href="#" onclick="filterByCategory(event, '{{ cat_name }}')" class="sidebar-cat-link {% if current_category == cat_name %}active{% endif %}" style="flex: 1;">
-                                                <span>{{ cat_name }}</span>
-                                            </a>
+                    <div class="sidebar-block" id="categoryBlock">
+                        <h3 class="sidebar-title">Kategoritë</h3>
+                        <ul class="sidebar-cat-list">
+                            <li>
+                                <a href="#" onclick="filterByCategory(event, 'all')" class="sidebar-cat-link {% if current_category == 'all' %}active{% endif %}">
+                                    <i class="fas fa-th-large" style="width: 20px; margin-right: 10px; opacity: 0.7;"></i>
+                                    <span>Të Gjitha</span>
+                                </a>
+                            </li>
+                            {% for cat_name, subcats in categories.items() %}
+                            <li>
+                                <div class="sidebar-cat-group">
+                                    <div class="sidebar-cat-row">
+                                        <a href="#" onclick="filterByCategory(event, '{{ cat_name }}')" class="sidebar-cat-link {% if current_category == cat_name %}active{% endif %}">
+                                            <span>{{ cat_name }}</span>
                                             {% if subcats %}
-                                            <button class="subcat-toggle-btn" onclick="toggleSubcats(event, this)" style="background: none; border: none; padding: 0.5rem 0.75rem; cursor: pointer; color: #94a3b8;">
+                                            <button class="subcat-toggle-btn" onclick="toggleSubcats(event, this)" title="Shfaq nënkategoritë">
                                                 <i class="fas fa-chevron-right toggle-icon {% if current_category == cat_name %}rotated{% endif %}"></i>
                                             </button>
                                             {% endif %}
-                                        </div>
-                                        
-                                        {% if subcats %}
-                                        <ul class="sidebar-subcat-list {% if current_category == cat_name %}show{% endif %}">
-                                            {% for sub in subcats %}
-                                            <li style="margin-bottom: 2px;">
-                                                <a href="#" onclick="filterBySubcategory(event, '{{ cat_name }}', '{{ sub }}')" class="sidebar-subcat-link {% if current_subcategory == sub %}active{% endif %}">
-                                                    {{ sub }}
-                                                </a>
-                                            </li>
-                                            {% endfor %}
-                                        </ul>
-                                        {% endif %}
+                                        </a>
                                     </div>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+                                    
+                                    {% if subcats %}
+                                    <ul class="sidebar-subcat-list {% if current_category == cat_name %}show{% endif %}">
+                                        {% for sub in subcats %}
+                                        <li style="margin-bottom: 2px;">
+                                            <a href="#" onclick="filterBySubcategory(event, '{{ cat_name }}', '{{ sub }}')" class="sidebar-subcat-link {% if current_subcategory == sub %}active{% endif %}">
+                                                {{ sub }}
+                                            </a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
                     </div>
 
                     <!-- Brand Filter -->
-                    <div class="sidebar-block collapsible-sidebar-block" id="brandBlock">
-                        <button class="sidebar-collapsible-trigger" onclick="toggleFilterSection(this)">
-                            <h3 class="sidebar-title">Brendet</h3>
-                            <i class="fas fa-chevron-down toggle-chevron"></i>
-                        </button>
-                        <div class="collapsible-content">
-                            <div class="brand-filter-container">
-                                <ul class="brand-list">
-                                    <li>
-                                        <a href="#" onclick="filterByBrand(event, 'all')" class="brand-link-item {% if current_brand == 'all' %}active{% endif %}">
-                                            Të gjitha
-                                        </a>
-                                    </li>
-                                    {% for brand in brands %}
-                                    <li>
-                                        <a href="#" onclick="filterByBrand(event, '{{ brand }}')" class="brand-link-item {% if current_brand == brand %}active{% endif %}">
-                                            {{ brand }}
-                                        </a>
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
+                    <div class="sidebar-block" id="brandBlock">
+                        <h3 class="sidebar-title">Brendet</h3>
+                        <div class="brand-filter-container">
+                            <ul class="brand-list">
+                                <li>
+                                    <a href="#" onclick="filterByBrand(event, 'all')" class="brand-link-item {% if current_brand == 'all' %}active{% endif %}">
+                                        Të gjitha
+                                    </a>
+                                </li>
+                                {% for brand in brands %}
+                                <li>
+                                    <a href="#" onclick="filterByBrand(event, '{{ brand }}')" class="brand-link-item {% if current_brand == brand %}active{% endif %}">
+                                        {{ brand }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
                         </div>
                     </div>
 
@@ -129,7 +120,7 @@
                     <button class="btn btn-primary w-100" onclick="closeShopSidebar()">Shiko Produktet</button>
                 </div>
             </aside>
-            
+
             <!-- Main Shop Content -->
             <main class="shop-main-content">
                 <div class="shop-controls-container">
@@ -216,6 +207,5 @@
             </main>
         </div>
     </div>
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeShopSidebar()"></div>
 </section>
 {% endblock %}

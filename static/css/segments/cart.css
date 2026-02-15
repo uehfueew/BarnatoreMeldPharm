@@ -698,11 +698,12 @@ button.hover-underline:hover {
 .quantity-control, .quantity-selector {
     display: flex;
     align-items: center;
-    background: #f8fafc;
-    border-radius: var(--radius-full);
-    padding: 0.25rem;
+    background: #f1f5f9;
+    border-radius: 12px;
+    padding: 2px;
     width: fit-content;
     border: 1px solid #e2e8f0;
+    gap: 0;
 }
 
 .quantity-selector form {
@@ -711,42 +712,44 @@ button.hover-underline:hover {
 }
 
 .qty-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
     background: white;
-    color: var(--text-muted);
+    color: var(--text-main);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: var(--transition);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    font-size: 0.8rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    font-size: 0.85rem;
 }
 
 .qty-btn:hover {
-    background: var(--primary);
-    color: white;
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: var(--primary);
 }
 
 .qty-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    background: #f1f5f9;
+    background: #f8fafc;
     color: #94a3b8;
+    border-color: #e2e8f0;
 }
 
 .qty-input {
-    width: 40px;
+    width: 36px;
     text-align: center;
     border: none;
     background: transparent;
-    font-weight: 600;
-    color: var(--text-muted);
+    font-weight: 700;
+    color: var(--text-main);
     padding: 0;
-    font-size: 0.95rem;
+    font-size: 1rem;
 }
 
 .delete-btn {
@@ -988,28 +991,47 @@ button.hover-underline:hover {
         margin: 0 !important;
     }
 
-    /* Remove big quantity container */
+    /* Refined quantity buttons on Mobile */
     .quantity-control {
         background: transparent !important;
         padding: 0 !important;
-        gap: 8px !important;
+        gap: 4px !important; /* Closer to the number */
         box-shadow: none !important;
         border: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        width: auto !important;
     }
 
     .qty-btn {
-        width: 32px !important;
-        height: 32px !important;
+        width: 36px !important; /* More square-like square */
+        height: 36px !important;
+        min-width: 36px !important;
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important; /* Gray outlines */
+        border-radius: 10px !important; /* Rounded corners */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: var(--text-main) !important;
+        padding: 0 !important;
+        transition: all 0.2s;
+    }
+
+    .qty-btn:active {
         background: #f1f5f9 !important;
-        border: none !important;
-        border-radius: 6px !important;
+        transform: scale(0.95);
     }
 
     .qty-input {
         background: transparent !important;
         border: none !important;
-        width: 30px !important;
-        font-weight: 600 !important;
+        width: 32px !important;
+        font-weight: 700 !important;
+        text-align: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        color: var(--text-main) !important;
     }
 
     /* Cart Action Buttons Size Match & Smaller */

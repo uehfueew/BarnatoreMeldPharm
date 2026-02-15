@@ -1566,14 +1566,6 @@ window.closeProfileModal = function() {
     }
 };
 
-window.toggleSubcats = function(element) {
-    const parent = element.parentElement;
-    if (parent) parent.classList.toggle('open'); 
-    element.classList.toggle('active');
-    const subList = element.nextElementSibling;
-    if(subList) subList.classList.toggle('active');
-};
-
 window.confirmDelete = function(formElement) {
     Swal.fire({
         title: 'A jeni i sigurt?',

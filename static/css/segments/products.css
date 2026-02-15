@@ -13,6 +13,67 @@
     color: var(--primary);
 }
 
+/* Sidebar Row Structure */
+.sidebar-cat-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.sidebar-cat-link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 0.65rem 0.75rem;
+    color: var(--text-main);
+    text-decoration: none;
+    transition: all 0.2s;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.sidebar-cat-link span {
+    flex: 1;
+}
+
+.sidebar-cat-link:hover, 
+.sidebar-cat-link.active {
+    background: #f1f5f9;
+    color: var(--primary);
+}
+
+.sidebar-cat-link.active {
+    font-weight: 700;
+}
+
+/* Sidebar Toggle Buttons */
+.subcat-toggle-btn {
+    background: transparent;
+    border: none;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    color: #94a3b8;
+    flex-shrink: 0;
+    padding: 0;
+    margin-right: -4px;
+}
+
+.subcat-toggle-btn:hover {
+    color: var(--primary);
+    transform: scale(1.1);
+}
+
+.subcat-toggle-btn:active {
+    transform: scale(0.9);
+}
+
 /* Sidebar Helpers */
 .toggle-icon {
     font-size: 0.75rem;
