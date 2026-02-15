@@ -421,13 +421,24 @@ html, body {
 }
 
 /* Cart Layout Grid - Desktop */
+@media (min-width: 769px) {
+    .mobile-clear-btn {
+        display: none !important;
+    }
+}
+
 @media (min-width: 993px) {
     .cart-layout-grid {
         display: grid;
-        grid-template-columns: 1fr 380px;
+        grid-template-columns: 1fr 320px; /* Reduced from 380px to make right side smaller */
         gap: 2.5rem;
         align-items: flex-start;
         margin-top: 1.5rem;
+    }
+
+    .product-name, .cart-item-name {
+        font-size: 0.9rem !important; /* Smaller font on laptop */
+        transition: all 0.2s ease;
     }
 
     .cart-summary-sidebar {
@@ -593,6 +604,34 @@ html, body {
     border-color: #6b7280;
     background: #6b7280;
     color: white;
+}
+
+/* Clickable Row & Hover Effects */
+.clickable-row {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clickable-row:hover {
+    background-color: #f1f5f9 !important;
+}
+
+.clickable-row:hover .product-name,
+.clickable-row:hover .cart-item-name {
+    color: var(--primary) !important;
+    text-decoration: underline !important;
+}
+
+.clickable-row:hover img {
+    filter: grayscale(0.2) brightness(0.9);
+}
+
+.clickable-row:active {
+    background-color: #f1f5f9 !important;
+}
+
+.cart-item-row:hover {
+    background-color: #f8fafc;
 }
 
 .btn-icon {
@@ -906,42 +945,6 @@ button.hover-underline:hover {
         gap: 0.75rem !important;
     }
 
-    /* Ensure buttons are clickable/sized correctly (+/-) */
-    .qty-btn {
-        width: 38px !important; /* Force bigger size */
-        height: 38px !important;
-        font-size: 1.1rem !important;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        background: white; 
-        color: var(--text-main);
-        border: 1px solid #e2e8f0;
-        border-radius: 6px !important; /* Squared look */
-        position: relative; 
-        z-index: 100; /* High z-index to ensure clickability */
-    }
-    
-    .quantity-control {
-        margin: 0 !important;
-        border-radius: 8px !important;
-        padding: 4px !important; 
-        position: relative;
-        z-index: 999; /* Super high z-index to avoid overlay issues */
-        gap: 5px; 
-        display: flex;
-        align-items: center;
-        background: #f1f5f9;
-    }
-    
-    .quantity-control form {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-    }
-    
     /* Ensure nothing overlays the buttons */
     .cart-col-action {
         width: auto;
@@ -952,58 +955,61 @@ button.hover-underline:hover {
 
 /* COMPACT CART MOBILE LAYOUT */
 @media (max-width: 768px) {
-    /* Header Reorganization: Title below Back Button */
-    .cart-page-header {
-        display: flex !important;
-        flex-direction: column-reverse !important; 
-        align-items: flex-start !important;
-        gap: 0.5rem !important;
-        margin-bottom: 1.5rem !important;
-    }
-    
-    /* Ensure the button is visually on top of the H1 because of column-reverse logic:
-       In column-reverse, the LAST element in HTML is shown FIRST (at the top). 
-       HTML: [Back Button, H1]
-       Column-Reverse puts H1 FIRST, Back Button SECOND (Bottom).
-       
-       Wait, that's what user complains about. They want "Shporta Juaj" UNDER "Vazhdo Blerjen".
-       If HTML is [Button, H1]:
-       flex-direction: column; -> Button Top, H1 Bottom.
-       flex-direction: column-reverse; -> H1 Top, Button Bottom.
-       
-       So I should use `flex-direction: column !important;` to ensure Button is Top, H1 is Bottom.
-    */
-    .cart-page-header {
-        flex-direction: column !important;
+    .mobile-cart-page-wrapper {
+        padding-top: 0 !important;
     }
 
-    .cart-page-header h1 {
-        margin: 0.5rem 0 0 0 !important;
-        font-size: 1.5rem !important;
-        order: 2; /* Explicitly order second */
+    .back-btn-wrapper {
+        margin-top: -1rem !important; /* Pull up higher */
     }
-    
-    .cart-page-header .btn {
-        width: auto !important;
-        padding: 0.4rem 0.8rem !important; /* Smaller button */
-        font-size: 0.85rem !important;
-        color: var(--text-muted);
-        order: 1; 
-        background: rgba(0,0,0,0.05); /* Slight bg to make it look like a button */
-        border-radius: 20px;
-    }
-    
-    .cart-page-header .btn i {
-        margin-right: 5px;
-        font-size: 0.8rem;
+
+    /* Header Reorganization: Title and Clear All on same row */
+    .cart-page-header {
+        display: flex !important;
+        flex-direction: row !important; /* Changed from column-reverse to row */
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        margin-bottom: 1rem !important;
+        margin-top: 0 !important;
     }
     
     /* Make Shporta Juaj bigger */
     .cart-page-header h1 {
-        margin: 0.8rem 0 0 0 !important;
-        font-size: 1.8rem !important; /* Bigger */
-        order: 2; 
+        margin: 0 !important;
+        font-size: 1.5rem !important; /* Slightly smaller to fit with button */
         font-weight: 800;
+        flex: 1;
+    }
+
+    .mobile-clear-btn {
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.75rem !important;
+        margin: 0 !important;
+    }
+
+    /* Remove big quantity container */
+    .quantity-control {
+        background: transparent !important;
+        padding: 0 !important;
+        gap: 8px !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    .qty-btn {
+        width: 32px !important;
+        height: 32px !important;
+        background: #f1f5f9 !important;
+        border: none !important;
+        border-radius: 6px !important;
+    }
+
+    .qty-input {
+        background: transparent !important;
+        border: none !important;
+        width: 30px !important;
+        font-weight: 600 !important;
     }
 
     /* Cart Action Buttons Size Match & Smaller */
@@ -1057,6 +1063,7 @@ button.hover-underline:hover {
         line-height: 1.25;
         margin-bottom: 0.2rem;
         font-weight: 600;
+        transition: all 0.2s ease;
     }
     
     .cart-item-category {
@@ -1098,25 +1105,6 @@ button.hover-underline:hover {
     .quantity-control-wrapper {
         display: flex;
         align-items: center;
-    }
-    
-    .quantity-control {
-        margin: 0 !important;
-        border-radius: 8px !important;
-        padding: 2px !important;
-    }
-    
-    .qty-btn {
-        width: 36px !important;
-        height: 36px !important;
-        font-size: 1rem !important;
-        border-radius: 6px !important;
-    }
-    
-    .qty-input {
-        height: 36px !important;
-        width: 45px !important;
-        font-size: 1rem !important;
     }
     
     /* Bottom Row: Total */

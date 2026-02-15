@@ -54,8 +54,8 @@
             <!-- Slide 3: CeraVe -->
             <a href="{{ url_for('main.products', brand='CeraVe') }}" class="hero-slide">
                 <picture>
-                    <source media="(max-width: 768px)" srcset="https://res.cloudinary.com/drljgepgy/image/upload/v1770659006/cerave_zbritje_f6uugd.jpg">
-                    <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659006/cerave_zbritje_f6uugd.jpg" alt="CeraVe Products" class="hero-img">
+                    <source media="(max-width: 768px)" srcset="https://res.cloudinary.com/drljgepgy/image/upload/v1771111803/cerave_image_rjyyra.jpg">
+                    <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1771111803/cerave_image_rjyyra.jpg" alt="CeraVe Products" class="hero-img">
                 </picture>
             </a>
         </div>
@@ -322,10 +322,10 @@
             {% endfor %}
         </div>
         
-        <div class="load-more-container text-center" style="margin-top: 4rem; margin-bottom: 4rem;">
-            <a href="{{ url_for('main.products') }}" class="btn btn-load-more">
-                Shiko të gjitha produktet <i class="fas fa-arrow-right ml-2"></i>
-            </a>
+        <div class="load-more-container text-center {{ 'd-none' if not total_pages_regular or total_pages_regular <= 1 else '' }}" style="margin-top: 4rem; margin-bottom: 4rem;">
+            <button id="load-more-btn" class="btn btn-load-more" onclick="loadMoreHome()" data-page="1" data-category="all">
+                <span>Shiko të gjitha produktet</span> <i class="fas fa-arrow-right ml-2"></i>
+            </button>
         </div>
     </div>
 </section>

@@ -35,7 +35,7 @@
                         </thead>
                         <tbody>
                             {% for item in cart_items %}
-                            <tr data-item-id="{{ item._id }}">
+                            <tr data-item-id="{{ item._id }}" class="cart-item-row clickable-row" data-href="{{ url_for('main.product_detail', product_id=item._id) }}">
                                 <td>
                                     <div class="cart-product-info">
                                         <img src="{{ item.image_url }}" alt="{{ item.name }}" class="cart-thumb">
@@ -63,7 +63,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="quantity-selector"> 
+                                    <div class="quantity-selector" onclick="event.stopPropagation()"> 
                                         <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='decrease') }}" method="POST">
                                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                             <button type="submit" class="qty-btn minus" {{ 'disabled' if item.quantity <= 1 }}>
@@ -84,7 +84,7 @@
                                 </td>
                                 <td class="item-total-cell">€{{ "%.2f"|format(item.item_total) }}</td>
                                 <td>
-                                    <form action="{{ url_for('cart.remove_from_cart', product_id=item._id) }}" method="POST">
+                                    <form action="{{ url_for('cart.remove_from_cart', product_id=item._id) }}" method="POST" onclick="event.stopPropagation()">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                         <button type="submit" class="btn-icon" title="Fshije">
                                             <i class="fas fa-trash-alt"></i>
@@ -110,11 +110,11 @@
 
                     <!-- Cart Items -->
                     {% for item in cart_items %}
-                    <div class="cart-item-card" data-item-id="{{ item._id }}">
+                    <div class="cart-item-card clickable-row" data-item-id="{{ item._id }}" data-href="{{ url_for('main.product_detail', product_id=item._id) }}">
                         <!-- Top Row: Image + Info + Delete Button -->
                         <div class="cart-mobile-top">
                             <!-- Action (Delete) - Absolute Positioned -->
-                            <div class="cart-col-action">
+                            <div class="cart-col-action" onclick="event.stopPropagation()">
                                 <form action="{{ url_for('cart.remove_from_cart', product_id=item._id) }}" method="POST">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                     <button type="submit" class="delete-btn" title="Fshije">
@@ -142,12 +142,13 @@
                             <div class="mobile-price">
                                 {% if item.discount_price %}
                                     <span class="new-price">€{{ item.discount_price }}</span>
+                                    <span class="old-price" style="text-decoration: line-through; color: #94a3b8; font-size: 0.75rem; margin-left: 5px;">€{{ item.price }}</span>
                                 {% else %}
                                     <span>€{{ item.price }}</span>
                                 {% endif %}
                             </div>
                             
-                            <div class="quantity-control-wrapper">
+                            <div class="quantity-control-wrapper" onclick="event.stopPropagation()">
                                 <div class="quantity-control">
                                     <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='decrease') }}" method="POST">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>

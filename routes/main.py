@@ -15,9 +15,8 @@ def index():
     best_sellers = Product.get_best_sellers(limit=20)
     
     # Get regular products with count and total pages for pagination
-    regular_products = Product.get_regular(limit=20)
-    total_regular = Product.get_regular_count()
-    total_pages_regular = math.ceil(total_regular / 20)
+    # Changed from get_regular to get_paginated(page=1) to include all products and match store logic
+    regular_products, total_pages_regular, total_regular = Product.get_paginated(page=1, per_page=20)
     
     return render_template('index.html', 
                             featured_products=featured_products, 

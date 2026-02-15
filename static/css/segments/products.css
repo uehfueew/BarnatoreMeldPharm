@@ -1,3 +1,41 @@
+.sidebar-subcat-link {
+    display: block;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.85rem;
+    color: #64748b;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.sidebar-subcat-link:hover, .sidebar-subcat-link.active {
+    background-color: #f1f5f9;
+    color: var(--primary);
+}
+
+/* Sidebar Helpers */
+.toggle-icon {
+    font-size: 0.75rem;
+    transition: transform 0.3s;
+    pointer-events: none;
+}
+
+.toggle-icon.rotated {
+    transform: rotate(90deg);
+}
+
+.sidebar-subcat-list {
+    display: none;
+    list-style: none;
+    padding-left: 1.5rem;
+    margin: 0.25rem 0 0.75rem 0;
+    border-left: 2px solid #f1f5f9;
+}
+
+.sidebar-subcat-list.show {
+    display: block;
+}
+
 /* Product Grid */
 .product-grid {
     display: grid;
