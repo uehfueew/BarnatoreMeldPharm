@@ -1070,27 +1070,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const applyPriceBtn = document.getElementById('apply-price-filter');
     if (applyPriceBtn) applyPriceBtn.addEventListener('click', () => {
         updateShop();
-        if (window.innerWidth <= 992) {
-            closeShopSidebar();
-        }
     });
 
     // Mobile Sidebar Toggle
     const openSidebarBtn = document.getElementById('openSidebar');
     const closeSidebarBtn = document.getElementById('closeSidebar');
+    const closeSidebarBtnAlt = document.getElementById('closeSidebarAlt');
     const sidebar = document.getElementById('shopSidebar');
     const overlay = document.getElementById('sidebarOverlay');
 
     if (openSidebarBtn && sidebar && overlay) {
-        openSidebarBtn.addEventListener('click', window.openShopSidebar);
+        openSidebarBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.openShopSidebar();
+        });
     }
 
     if (closeSidebarBtn && sidebar && overlay) {
-        closeSidebarBtn.addEventListener('click', window.closeShopSidebar);
+        closeSidebarBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.closeShopSidebar();
+        });
+    }
+
+    if (closeSidebarBtnAlt && sidebar && overlay) {
+        closeSidebarBtnAlt.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.closeShopSidebar();
+        });
     }
 
     if (overlay) {
         overlay.addEventListener('click', window.closeShopSidebar);
+    }
+
+    if (sidebar) {
+        sidebar.addEventListener('click', (e) => {
+            // Prevent clicks inside the sidebar from closing it (if bubbling to overlay)
+            e.stopPropagation();
+        });
     }
 
     // Refresh cart & wishlist badges on load

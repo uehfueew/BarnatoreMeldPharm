@@ -176,7 +176,8 @@
     position: relative;
     max-width: 100%; /* Spans full width of its container (which is grid-adjusted in responsive.css) */
     margin: 0;
-    height: 550px; /* Fixed height to prevent collapse with absolute children */
+    height: auto; /* Changed from 550px to auto to support the vertical mobile banners */
+    min-height: 480px; /* Kept for desktop appearance */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -198,12 +199,12 @@
     height: 100%;
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
-    background: transparent;
+    background: #fff; /* Ensure it's not transparent/gray */
     
-    /* Revert to Flex for centering */
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
 }
 
 /* Explicitly set container height to accommodate banner images approx aspect ratio */
@@ -218,6 +219,8 @@
     width: 100%; /* Restore full width usage */
     max-width: 100%;
     object-fit: contain; /* Keeps dimensions good/full */
+    background: #fff;
+}
     object-position: center; /* Ensures center alignment */
     display: block;
 }

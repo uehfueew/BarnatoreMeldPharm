@@ -3,14 +3,14 @@
 {% block content %}
 <section class="section shop-section">
     <!-- Sidebar Filters (Moved out of layout for global stacking context) -->
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeShopSidebar()"></div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
     
     <div class="container container-wide">
         <div class="shop-layout">
             <!-- Sidebar Filters -->
             <aside class="shop-sidebar" id="shopSidebar">
                 <div class="sidebar-mobile-header">
-                    <button class="btn-close-sidebar" id="closeSidebar" onclick="closeShopSidebar()"><i class="fas fa-times"></i></button>
+                    <button class="btn-close-sidebar" id="closeSidebar"><i class="fas fa-times"></i></button>
                     <h3>Filtroni Produktet</h3>
                 </div>
                 <div class="sidebar-content-wrapper">
@@ -112,15 +112,15 @@
                                     <input type="number" placeholder="1000" id="max-price" class="price-input" value="{{ request.args.get('max_price', '') }}">
                                 </div>
                             </div>
-                            <button id="apply-price-filter" class="btn btn-sm btn-primary w-100 d-none-mobile" onclick="updateShop()">Apliko Çmimin</button>
+                            <button id="apply-price-filter" class="btn btn-sm btn-primary w-100 d-none-mobile">Apliko Çmimin</button>
                         </div>
                     </div>
                 </div> <!-- End sidebar-content-wrapper -->
                 <div class="sidebar-mobile-footer d-md-none">
-                    <button class="btn btn-primary w-100" onclick="closeShopSidebar()">Shiko Produktet</button>
+                    <button class="btn btn-primary w-100" id="closeSidebarAlt">Shiko Produktet</button>
                 </div>
             </aside>
-
+            
             <!-- Main Shop Content -->
             <main class="shop-main-content">
                 <div class="shop-controls-container">
@@ -150,13 +150,13 @@
                                 </a>
                             </div>
                         </div>
-                        <button class="btn btn-outline-secondary filter-mobile-toggle" onclick="openShopSidebar()">
+                        <button class="btn btn-outline-secondary filter-mobile-toggle" id="openSidebar" onclick="openShopSidebar()">
                              <i class="fas fa-sliders-h"></i> <span>Filtro</span>
                         </button>
                     </div>
                 </div>
 
-                <div id="productGrid" class="product-grid-v2">
+                <div id="productGrid" class="product-grid">
                     {% for product in products %}
                         <div class="product-card fade-in-section">
                             <div class="product-image">

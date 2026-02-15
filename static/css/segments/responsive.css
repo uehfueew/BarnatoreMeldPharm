@@ -407,14 +407,14 @@
         width: 100% !important;
         max-width: 100% !important;
         height: auto !important;
-        min-height: 250px !important; /* Minimum height for mobile hero */
+        min-height: auto !important; /* Removed fixed min-height to allow full image scaling */
         background: #fff !important;
     }
     .hero-img { 
         height: auto !important; 
         width: 100% !important;
-        aspect-ratio: 16 / 9 !important; /* Proper banner ratio for mobile */
-        object-fit: contain !important; /* Ensure the whole image is visible */
+        aspect-ratio: auto !important; /* Allow image height to dictate size */
+        object-fit: contain !important; 
         background: #fff !important;
     }
 }
@@ -435,28 +435,22 @@
     margin: 0 auto;
 }
 
-.shop-sidebar-desktop-spacer {
-    width: 280px;
-}
-
 .shop-sidebar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 280px;
+    width: 100%;
     background: #fff;
     padding: 1.5rem;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     border: 1px solid #f1f5f9;
     z-index: 50;
+    position: sticky;
+    top: 100px;
 }
 
-/* On desktop, put it inside the grid space */
-@media (min-width: 993px) {
-    .shop-sidebar {
-        position: sticky;
-        top: 90px;
+/* On mobile, override layout */
+@media (max-width: 992px) {
+    .shop-layout {
+        display: block !important;
     }
 }
 
@@ -811,27 +805,26 @@
     .shop-sidebar {
         position: fixed !important;
         top: 0 !important;
-        right: -100% !important;
-        width: 85% !important; /* Most but not all */
+        right: 0 !important;
+        width: 85% !important;
         max-width: 320px;
         height: 100vh !important;
         height: 100dvh !important;
         background: #fff !important;
-        z-index: 1000001 !important; /* Extremely high, guaranteed above overlay */
+        z-index: 1000001 !important;
         display: flex !important;
-        visibility: hidden !important;
         flex-direction: column !important;
-        transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s !important;
-        box-shadow: -5px 0 25px rgba(0,0,0,0.15) !important;
+        transform: translateX(100%) !important;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.1) !important;
         padding: 0 !important;
         left: auto !important;
-        pointer-events: none; /* Blocked when hidden */
+        border-radius: 0 !important;
+        pointer-events: auto !important;
     }
 
     .shop-sidebar.active {
-        right: 0 !important;
-        visibility: visible !important;
-        pointer-events: auto !important; /* Enabled when active */
+        transform: translateX(0) !important;
     }
 
     .sidebar-overlay {
@@ -840,61 +833,54 @@
         left: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        background: rgba(0,0,0,0.6) !important;
-        z-index: 1000000 !important; /* Just below sidebar */
+        background: rgba(0,0,0,0.5) !important;
+        z-index: 1000000 !important;
         display: block !important;
-        visibility: hidden !important;
         opacity: 0 !important;
+        visibility: hidden !important;
         transition: opacity 0.3s ease, visibility 0.3s !important;
-        pointer-events: none !important;
+        pointer-events: auto !important;
     }
 
     .sidebar-overlay.active {
         visibility: visible !important;
         opacity: 1 !important;
-        pointer-events: auto !important;
     }
 
     .sidebar-mobile-header {
         display: flex !important;
-        flex-direction: row-reverse !important; /* Move close button to right */
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 1.25rem 1.5rem !important;
+        padding: 1rem 1.25rem !important;
         border-bottom: 1px solid #f1f5f9 !important;
         background: #fff !important;
-        position: relative !important;
     }
 
     .sidebar-mobile-header h3 {
         margin: 0 !important;
-        font-size: 1.15rem !important;
+        font-size: 1.1rem !important;
         font-weight: 700 !important;
         color: var(--text-main) !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.5px !important;
     }
 
     .btn-close-sidebar {
-        background: #f1f5f9 !important;
+        background: #f8fafc !important;
         border: 1px solid #e2e8f0 !important;
-        width: 36px !important;
-        height: 36px !important;
-        border-radius: 8px !important; /* Slightly squared */
+        width: 34px !important;
+        height: 34px !important;
+        border-radius: 8px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         color: var(--text-main) !important;
         cursor: pointer !important;
-        margin-bottom: 0 !important;
-        transition: all 0.2s !important;
     }
 
     .sidebar-content-wrapper {
         flex: 1 !important;
         overflow-y: auto !important;
-        padding: 1rem !important;
-        -webkit-overflow-scrolling: touch; /* Better scrolling on iOS */
+        padding: 1.25rem !important;
+        -webkit-overflow-scrolling: touch;
     }
 
     .sidebar-mobile-footer {
@@ -959,90 +945,9 @@
 }
 
 /* Mobile filters components hidden on desktop */
-.sidebar-overlay {
+.sidebar-overlay, .filter-mobile-toggle, .sidebar-mobile-header, .sidebar-mobile-footer {
     display: none;
 }
-.sidebar-mobile-header, .sidebar-mobile-footer {
-    display: none;
-}
-
-.filter-mobile-toggle {
-    display: none;
-    align-items: center;
-    gap: 8px;
-    padding: 0.6rem 1.2rem;
-    border-radius: 50px;
-    font-weight: 600;
-}
-
-/* Ensure sidebar content doesn't have extra padding on desktop */
-@media (min-width: 993px) {
-    .shop-sidebar {
-        position: sticky !important;
-        top: 90px !important;
-        right: auto !important;
-        visibility: visible !important;
-        display: block !important;
-        width: 250px !important; /* Reduced from 280px */
-        height: auto !important;
-        z-index: 50 !important;
-        box-shadow: var(--shadow-sm);
-        padding: 1.25rem !important; /* Slightly tighter padding */
-        border: 1px solid #f1f5f9;
-        border-radius: var(--radius-lg);
-    }
-    .sidebar-content-wrapper {
-        padding: 0;
-        overflow: visible;
-    }
-    .collapsible-content {
-        max-height: none !important;
-        overflow: visible !important;
-        display: block !important;
-    }
-    .toggle-chevron {
-        display: none !important;
-    }
-    .sidebar-collapsible-trigger {
-        cursor: default;
-        pointer-events: none;
-        background: transparent !important;
-        border: none !important;
-        padding: 0 !important;
-        box-shadow: none !important;
-        display: block !important;
-    }
-    .sidebar-title {
-        margin-bottom: 1.25rem !important;
-        padding: 0 !important;
-    }
-    .sidebar-mobile-header, .sidebar-mobile-footer {
-        display: none !important;
-    }
-}
-
-
-/* --- Shop Page Overhaul & Grid Fixes --- */
-.product-grid-v2 {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 0.75rem !important;
-    width: 100% !important;
-}
-
-@media (min-width: 1400px) {
-    .product-grid-v2 {
-        grid-template-columns: repeat(4, 1fr) !important;
-    }
-}
-
-@media (max-width: 768px) {
-    .product-grid-v2 {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.75rem !important;
-    }
-}
-
 .shop-controls-container {
     display: flex;
     justify-content: space-between;
@@ -1058,21 +963,18 @@
 @media (max-width: 992px) {
     .shop-controls-container {
         position: sticky !important;
-        top: 64px !important; /* Below the collapsed mobile header */
-        z-index: 990 !important; /* Below sidebar (1000001) and overlay (1000000) */
-        background: #ffffff !important;
+        top: 64px !important; /* Sticks right below the collapsed mobile header */
+        z-index: 990 !important;
+        background: var(--bg-body) !important; /* Use body background to blend in */
         flex-direction: row !important;
         justify-content: space-between !important;
         gap: 0.5rem !important;
         align-items: center !important;
         padding: 0.75rem 1rem !important;
-        margin: -2rem -1rem 1.5rem -1rem !important; /* Bridging the layout gap */
+        margin: 0 -1rem 1rem -1rem !important; /* Removed negative top margin to stop overlap */
         border-radius: 0 !important;
-        border-top: none !important;
-        border-right: none !important;
-        border-left: none !important;
-        border-bottom: 1px solid #f1f5f9 !important;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
+        border: none !important; /* Removed border */
+        box-shadow: none !important; /* Removed shadow container look */
     }
     
     .shop-sorting {
@@ -1208,58 +1110,6 @@
     }
 }
 
-/* Enhanced Sorting Dropdown base cleaned for responsive - relying on products.css */
-.order-button {
-    cursor: pointer;
-    background: #fff !important;
-    border: 1px solid #e2e8f0 !important;
-    color: var(--text-main) !important;
-    padding: 0.6rem 1.2rem !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    transition: all 0.2s ease !important;
-}
-
-.order-button:hover {
-    background: #f8fafc !important;
-    border-color: #cbd5e1 !important;
-}
-
-#sortMenu {
-    border: none !important;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.12) !important;
-    border-radius: 12px !important;
-    padding: 0.4rem !important;
-    min-width: 220px !important;
-    margin-top: 12px !important;
-    background: #fff !important;
-}
-
-#sortMenu .dropdown-item {
-    padding: 0.6rem 1rem !important;
-    border-radius: 8px !important;
-    font-size: 1.05rem !important;
-    line-height: 1.3 !important;
-    font-weight: 500 !important;
-    color: #475569 !important;
-    transition: all 0.2s ease !important;
-    margin-bottom: 2px !important;
-}
-
-#sortMenu .dropdown-item:hover {
-    background: #f1f5f9 !important;
-    color: var(--primary) !important;
-    transform: translateX(4px);
-}
-
-.results-count {
-    color: #64748b;
-    font-weight: 500;
-}
-
 /* Red Discount Badge Override for High Priority */
 .discount-badge {
     background: #ef4444 !important;
@@ -1271,56 +1121,6 @@
     margin-left: 8px;
     display: inline-block;
     box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
-}
-
-/* Brand List styling */
-.brand-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    list-style: none;
-    padding: 0;
-    margin: 1rem 0;
-}
-
-.brand-list li a {
-    color: #64748b;
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    display: block;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-}
-
-.brand-list li a:hover {
-    background: #f1f5f9;
-    color: var(--primary);
-    padding-left: 1rem;
-}
-
-.brand-link-item.active {
-    color: var(--primary) !important;
-    font-weight: 700 !important;
-}
-
-#apply-price-filter {
-    background-color: var(--primary) !important;
-    color: white !important;
-    border: none;
-    margin-top: 1rem !important;
-    padding: 0.75rem !important;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.2s;
-    display: block !important;
-}
-
-#apply-price-filter:hover {
-    background-color: var(--primary-dark) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2);
 }
 
 .product-card {
