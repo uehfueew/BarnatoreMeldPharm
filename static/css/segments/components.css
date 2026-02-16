@@ -4,9 +4,11 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.6rem 1.2rem;
-    background: #f1f5f9; /* Gray background */
+    background: #f1f5f9;
+    /* Gray background */
     border: 1px solid #e2e8f0;
-    color: #475569; /* Grayer text */
+    color: #475569;
+    /* Grayer text */
     border-radius: 12px;
     font-size: 0.95rem;
     font-weight: 600;
@@ -14,11 +16,13 @@
     text-decoration: none;
 }
 
-.btn-back-standard:hover {
-    background: #e2e8f0;
-    color: var(--text-main);
-    border-color: #cbd5e1;
-    transform: translateX(-3px);
+@media (hover: hover) {
+    .btn-back-standard:hover {
+        background: #e2e8f0;
+        color: var(--text-main);
+        border-color: #cbd5e1;
+        transform: translateX(-3px);
+    }
 }
 
 .btn-back-standard i {
@@ -32,7 +36,7 @@
         border-radius: 8px;
         gap: 0.5rem;
     }
-    
+
     .btn-back-standard i {
         font-size: 0.75rem;
     }
@@ -45,21 +49,27 @@
     font-size: 1rem !important;
     border-radius: 50px !important;
     transition: all 0.3s ease !important;
-    background-color: #f1f5f9 !important; /* Soft gray */
+    background-color: #f1f5f9 !important;
+    /* Soft gray */
     border: 1px solid #e2e8f0 !important;
-    color: #475569 !important; /* Muted text */
+    color: #475569 !important;
+    /* Muted text */
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
 }
 
-.btn-load-more:hover {
-    transform: translateY(-2px) !important;
-    background-color: #e2e8f0 !important; /* Slightly darker gray */
-    color: #0f172a !important; /* Darker text */
-    border-color: #cbd5e1 !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+@media (hover: hover) {
+    .btn-load-more:hover {
+        transform: translateY(-2px) !important;
+        background-color: #e2e8f0 !important;
+        /* Slightly darker gray */
+        color: #0f172a !important;
+        /* Darker text */
+        border-color: #cbd5e1 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    }
 }
 
 /* Toast Notification */
@@ -84,15 +94,36 @@
     min-width: 300px;
 }
 
-.toast.toast-success i { color: var(--primary); }
-.toast.toast-error i { color: #ef4444; }
-.toast.toast-danger i { color: #ef4444; }
-.toast.toast-warning i { color: #f59e0b; }
-.toast.toast-info i { color: #3b82f6; }
+.toast.toast-success i {
+    color: var(--primary);
+}
+
+.toast.toast-error i {
+    color: #ef4444;
+}
+
+.toast.toast-danger i {
+    color: #ef4444;
+}
+
+.toast.toast-warning i {
+    color: #f59e0b;
+}
+
+.toast.toast-info i {
+    color: #3b82f6;
+}
 
 @keyframes slideIn {
-    from { opacity: 0; transform: translateX(100%); }
-    to { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 /* Cart & Admin Tables */
@@ -110,10 +141,11 @@
     border-collapse: collapse;
 }
 
-.table th, .table td {
+.table th,
+.table td {
     padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     vertical-align: middle;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -133,7 +165,8 @@
 .cart-thumb {
     width: 65px;
     height: 65px;
-    object-fit: contain; /* Better to not crop product images in cart */
+    object-fit: contain;
+    /* Better to not crop product images in cart */
     padding: 2px;
     background: white;
     border: 1px solid #e2e8f0;
@@ -144,7 +177,7 @@
     position: absolute;
     top: -5px;
     right: -2px;
-    background: #ef4444; 
+    background: #ef4444;
     color: white;
     font-size: 0.7rem;
     font-weight: bold;
@@ -176,9 +209,12 @@
 .badge.sale {
     top: 1rem;
     left: 1rem;
-    right: auto; /* Override default if any */
-    bottom: auto; /* Override default if any */
-    background: #dc2626; /* Red color for sale */
+    right: auto;
+    /* Override default if any */
+    bottom: auto;
+    /* Override default if any */
+    background: #dc2626;
+    /* Red color for sale */
     color: white;
     padding: 0.25rem 0.5rem;
     border-radius: var(--radius-md);
@@ -254,6 +290,7 @@ div:where(.swal2-container) button:where(.swal2-styled).swal2-cancel:hover {
 div:where(.swal2-container) div:where(.swal2-actions) {
     gap: 1rem !important;
 }
+
 /* Badges */
 .badge {
     display: inline-flex;
@@ -269,9 +306,23 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     line-height: 1;
 }
 
-.badge-success { background-color: #10b981; color: white; box-shadow: 0 1px 2px rgba(16, 185, 129, 0.2); }
-.badge-warning { background-color: #f59e0b; color: white; box-shadow: 0 1px 2px rgba(245, 158, 11, 0.2); }
-.badge-danger { background-color: #ef4444; color: white; box-shadow: 0 1px 2px rgba(239, 68, 68, 0.2); }
+.badge-success {
+    background-color: #10b981;
+    color: white;
+    box-shadow: 0 1px 2px rgba(16, 185, 129, 0.2);
+}
+
+.badge-warning {
+    background-color: #f59e0b;
+    color: white;
+    box-shadow: 0 1px 2px rgba(245, 158, 11, 0.2);
+}
+
+.badge-danger {
+    background-color: #ef4444;
+    color: white;
+    box-shadow: 0 1px 2px rgba(239, 68, 68, 0.2);
+}
 
 /* Stylish Status Select */
 .status-select {
@@ -349,9 +400,17 @@ div:where(.swal2-container) div:where(.swal2-actions) {
 }
 
 @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 /* Profile Page Buttons */
@@ -360,9 +419,11 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     justify-content: flex-start !important;
     padding: 0.8rem 1.5rem !important;
     border-radius: 1rem !important;
-    background: #f0fdf4 !important; /* Emerald 50 */
+    background: #f0fdf4 !important;
+    /* Emerald 50 */
     color: var(--primary-dark) !important;
-    border: 1px solid #d1fae5 !important; /* Emerald 100 */
+    border: 1px solid #d1fae5 !important;
+    /* Emerald 100 */
     transition: var(--transition);
 }
 
@@ -439,8 +500,13 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     color: white;
 }
 
-.scroll-btn.prev { left: -10px; }
-.scroll-btn.next { right: -10px; }
+.scroll-btn.prev {
+    left: -10px;
+}
+
+.scroll-btn.next {
+    right: -10px;
+}
 
 /* --- Badges --- */
 .badge-container {
@@ -463,9 +529,17 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     width: fit-content;
 }
 
-.badge.sale { background: #ef4444; }
-.badge.new { background: #3b82f6; }
-.badge.best-seller { background: var(--accent); }
+.badge.sale {
+    background: #ef4444;
+}
+
+.badge.new {
+    background: #3b82f6;
+}
+
+.badge.best-seller {
+    background: var(--accent);
+}
 
 /* --- Quick View --- */
 .product-card {
@@ -478,7 +552,7 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -524,7 +598,7 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
     align-items: center;
     justify-content: center;
@@ -549,8 +623,15 @@ div:where(.swal2-container) div:where(.swal2-actions) {
 }
 
 @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-50px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .close-modal {
@@ -609,12 +690,15 @@ div:where(.swal2-container) div:where(.swal2-actions) {
 .qv-actions {
     display: flex;
     gap: 1rem;
-    flex-direction: row; /* Align side by side */
-    align-items: stretch; /* Stretch to same height */
+    flex-direction: row;
+    /* Align side by side */
+    align-items: stretch;
+    /* Stretch to same height */
 }
 
-.qv-actions > * {
-    flex: 1; /* Equal width */
+.qv-actions>* {
+    flex: 1;
+    /* Equal width */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -628,14 +712,19 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     display: flex;
 }
 
-.qv-actions button, .qv-actions a {
+.qv-actions button,
+.qv-actions a {
     width: 100%;
     height: 100%;
     padding: 0.8rem 1rem;
-    display: flex; /* Ensure flex context for centering */
-    align-items: center; /* Vertical center */
-    justify-content: center; /* Horizontal center */
-    min-height: 50px; /* Force minimum height */
+    display: flex;
+    /* Ensure flex context for centering */
+    align-items: center;
+    /* Vertical center */
+    justify-content: center;
+    /* Horizontal center */
+    min-height: 50px;
+    /* Force minimum height */
 }
 
 .btn-cart-icon {
@@ -653,20 +742,22 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     position: absolute;
     bottom: 1.5rem;
     right: 1.5rem;
-    z-index: 10; /* Ensure clickable */
+    z-index: 10;
+    /* Ensure clickable */
 }
 
 /* Ensure hidden on main products cards, if desired, or... */
 @media (max-width: 992px) {
     .btn-cart-icon {
-         /* Slightly larger touch target on mobile */
-         width: 44px;
-         height: 44px;
-         background: var(--primary); /* More visible on mobile */
-         color: white;
-         bottom: 1rem;
-         right: 1rem;
-         box-shadow: var(--shadow-md);
+        /* Slightly larger touch target on mobile */
+        width: 44px;
+        height: 44px;
+        background: var(--primary);
+        /* More visible on mobile */
+        color: white;
+        bottom: 1rem;
+        right: 1rem;
+        box-shadow: var(--shadow-md);
     }
 }
 
@@ -679,3 +770,69 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     justify-content: flex-start;
 }
 
+/* Skeleton Loader Styles */
+.skeleton {
+    background: #f1f5f9;
+    background: linear-gradient(90deg,
+            #f1f5f9 25%,
+            #e2e8f0 50%,
+            #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite linear;
+    border-radius: var(--radius-md);
+}
+
+@keyframes skeleton-shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.skeleton-text {
+    height: 1rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.skeleton-text.short {
+    width: 60%;
+}
+
+.skeleton-text.header {
+    height: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.skeleton-img {
+    aspect-ratio: 1/1;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.skeleton-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    border: 1px solid #f1f5f9;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.skeleton-card .skeleton-img {
+    border-radius: var(--radius-md);
+}
+
+/* Image Loading State */
+img.loading {
+    filter: blur(10px);
+    transition: filter 0.3s ease;
+}
+
+img.loaded {
+    filter: blur(0);
+}

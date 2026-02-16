@@ -1,0 +1,773 @@
+{% extends "base.html" %}
+
+{% block title %}Menaxhimi i Ofertave në Masë - Meld Pharm{% endblock %}
+
+{% block content %}
+<div class="admin-page-container">
+    <!-- Admin Navigation -->
+    <nav class="admin-v3-nav">
+        <div class="nav-brand">
+            <i class="fas fa-user-shield"></i> Admin Paneli
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-item">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a href="{{ url_for('admin.orders') }}" class="admin-nav-item">
+                <i class="fas fa-shopping-bag"></i> Porositë
+            </a>
+            <a href="{{ url_for('admin.bulk_offers') }}" class="admin-nav-item active">
+                <i class="fas fa-tags"></i> Ofertat në Masë
+            </a>
+            <a href="{{ url_for('admin.dashboard') }}#analytics" class="admin-nav-item">
+                <i class="fas fa-chart-pie"></i> Analitika
+            </a>
+        </div>
+        <div class="nav-right-spacer"></div>
+    </nav>
+
+    <div class="bulk-header-v4">
+        <div class="header-info">
+            <h1 class="v4-title">Konfigurimi i Ofertave në Masë</h1>
+            <p class="v4-subtitle">Zgjidhni produktet specifike ose filtroni grupet për të aplikuar zbritje manuale.</p>
+        </div>
+        <div class="header-visual">
+            <div class="visual-badge"><i class="fas fa-magic"></i> Smart Bulk Tools</div>
+        </div>
+    </div>
+
+    <form action="{{ url_for('admin.bulk_offers') }}" method="POST" id="bulkOfferForm">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <!-- Step 1: Offer Details (Sticky Bar) -->
+        <div class="offer-settings-card">
+            <div class="settings-grid">
+                <div class="setting-item">
+                    <label><i class="fas fa-percent"></i> Përqindja e Zbritjes</label>
+                    <div class="input-wrapper-v4">
+                        <input type="number" name="discount_percent" id="discountPercent" min="1" max="99"
+                            placeholder="Psh: 20">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label><i class="fas fa-calendar-alt"></i> Skadimi (Opsionale)</label>
+                    <div class="input-wrapper-v4">
+                        <input type="date" name="discount_until">
+                    </div>
+                </div>
+                <div class="setting-action">
+                    <button type="submit" name="action" value="apply" class="btn-apply-v4" id="submitBtn">
+                        <span>Aplikoni Ofertën</span>
+                        <i class="fas fa-check-circle"></i>
+                    </button>
+                    <button type="submit" name="action" value="remove" class="btn-remove-v4" id="removeBtn">
+                        <span>Hiq Ofertat</span>
+                        <i class="fas fa-times-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Filters & Selection -->
+        <div class="products-selection-section">
+            <div class="selection-controls">
+                <div class="filters-sidebar">
+                    <div class="filter-group-v4">
+                        <h3><i class="fas fa-filter"></i> Filtrat</h3>
+
+                        <div class="control-item">
+                            <label>Brendi</label>
+                            <select name="brand" id="brandFilter" class="v4-select">
+                                <option value="all">Të gjitha brendet</option>
+                                {% for brand in brands %}
+                                <option value="{{ brand }}">{{ brand }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="control-item">
+                            <label>Kategoria</label>
+                            <select name="category" id="categoryFilter" class="v4-select">
+                                <option value="all">Të gjitha kategoritë</option>
+                                {% for cat in categories.keys() %}
+                                <option value="{{ cat }}">{{ cat }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="control-item">
+                            <label>Nënkategoria</label>
+                            <select name="subcategory" id="subcategoryFilter" class="v4-select">
+                                <option value="all">Të gjitha</option>
+                            </select>
+                        </div>
+
+                        <div class="search-box-v4">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="productSearch" placeholder="Kërko produktet...">
+                        </div>
+                    </div>
+
+                    <div class="selection-summary-card">
+                        <div class="summary-stat">
+                            <span id="selectedCount">0</span>
+                            <label>Produkte të Zgjedhura</label>
+                        </div>
+                        <p class="summary-note">Nëse nuk zgjidhni asnjë produkt, oferta do të aplikohet për të gjitha
+                            produktet që përputhen me filtrat.</p>
+                    </div>
+                </div>
+
+                <div class="products-list-v4">
+                    <div class="list-actions">
+                        <label class="checkbox-container-v4">
+                            <input type="checkbox" id="selectAll">
+                            <span class="checkmark"></span>
+                            Zgjidh të gjitha në këtë listë
+                        </label>
+                    </div>
+
+                    <div class="v4-table-wrapper">
+                        <table class="v4-products-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;"></th>
+                                    <th>Produkti</th>
+                                    <th>Kategoria</th>
+                                    <th>Çmimi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTableBody">
+                                {% for p in all_products %}
+                                <tr class="v4-row" data-brand="{{ p.brand|lower }}"
+                                    data-category="{{ p.category|lower }}" data-subcategory="{{ p.subcategory|lower }}"
+                                    data-name="{{ p.name|lower }}">
+                                    <td>
+                                        <label class="checkbox-container-v4">
+                                            <input type="checkbox" name="selected_products" value="{{ p._id }}"
+                                                class="product-checkbox">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <div class="v4-product-cell">
+                                            <img src="{{ p.image_url }}" alt=""
+                                                onerror="this.src='/static/img/placeholder.png'">
+                                            <div class="v4-p-info">
+                                                <span class="v4-p-brand">{{ p.brand }}</span>
+                                                <span class="v4-p-name">{{ p.name }}</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="v4-cat-badge">{{ p.category }}</div>
+                                        <div class="v4-subcat">{{ p.subcategory }}</div>
+                                    </td>
+                                    <td class="v4-price">€{{ "%.2f"|format(p.price) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    :root {
+        --v4-primary: #059669;
+        --v4-bg: #f8fafc;
+        --v4-card: #ffffff;
+        --v4-text: #1e293b;
+        --v4-text-muted: #64748b;
+        --v4-border: #e2e8f0;
+    }
+
+    .admin-page-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+        background: var(--v4-bg);
+        min-height: 100vh;
+    }
+
+    /* Header */
+    .bulk-header-v4 {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 2.5rem;
+    }
+
+    .v4-title {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--v4-text);
+        letter-spacing: -1px;
+        margin-bottom: 0.5rem;
+    }
+
+    .v4-subtitle {
+        color: var(--v4-text-muted);
+        font-size: 1.1rem;
+    }
+
+    .visual-badge {
+        background: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 50px;
+        font-weight: 700;
+        color: var(--v4-primary);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Admin Nav Centered Styles - V4 Upgraded */
+    .admin-v3-nav {
+        background: white;
+        padding: 1.2rem 2.5rem;
+        border-radius: 1.5rem;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .nav-brand {
+        font-weight: 900;
+        font-size: 1.4rem;
+        color: #059669;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        position: absolute;
+        left: 2.5rem;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 1.25rem;
+        margin: 0 auto;
+    }
+
+    .admin-nav-item {
+        padding: 1rem 2.5rem;
+        border-radius: 14px;
+        text-decoration: none !important;
+        font-weight: 800;
+        color: #64748b;
+        font-size: 1.1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .admin-nav-item:hover {
+        background: #f8fafc;
+        color: #10b981;
+        transform: translateY(-2px);
+    }
+
+    .admin-nav-item.active {
+        background: #059669;
+        color: white !important;
+        box-shadow: 0 8px 20px rgba(5, 150, 105, 0.25);
+    }
+
+    /* Offer Settings (Sticky Bar) */
+    .offer-settings-card {
+        background: white;
+        padding: 1.5rem 2rem;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--v4-border);
+        margin-bottom: 2.5rem;
+        position: sticky;
+        top: 20px;
+        z-index: 100;
+    }
+
+    .settings-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 2rem;
+        align-items: flex-end;
+    }
+
+    .btn-apply-v4,
+    .btn-remove-v4 {
+        padding: 1.1rem 2.2rem;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        transition: all 0.3s;
+        border: none;
+    }
+
+    .btn-apply-v4 {
+        background: var(--v4-primary);
+        color: white;
+        box-shadow: 0 8px 20px rgba(5, 150, 105, 0.2);
+    }
+
+    .btn-remove-v4 {
+        background: #ef4444;
+        color: white;
+        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2);
+    }
+
+    .setting-action {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-apply-v4:hover,
+    .btn-remove-v4:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+    }
+
+    .setting-item label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--v4-text-muted);
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .input-wrapper-v4 {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-wrapper-v4 input {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        background: #f1f5f9;
+        border: 2px solid transparent;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .input-wrapper-v4 input:focus {
+        background: white;
+        border-color: var(--v4-primary);
+        box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+        outline: none;
+    }
+
+    .input-wrapper-v4 .unit {
+        position: absolute;
+        right: 1.25rem;
+        font-weight: 800;
+        color: var(--v4-text-muted);
+    }
+
+    .btn-apply-v4 {
+        background: var(--v4-primary);
+        color: white;
+        border: none;
+        padding: 1.1rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s;
+        box-shadow: 0 8px 20px rgba(5, 150, 105, 0.2);
+    }
+
+    .btn-apply-v4:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(5, 150, 105, 0.3);
+        filter: brightness(1.1);
+    }
+
+    /* Main Content Layout */
+    .selection-controls {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 2.5rem;
+    }
+
+    /* Sidebar */
+    .filter-group-v4 {
+        background: white;
+        padding: 2rem;
+        border-radius: 1.5rem;
+        border: 1px solid var(--v4-border);
+        margin-bottom: 1.5rem;
+    }
+
+    .filter-group-v4 h3 {
+        font-size: 1.2rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .control-item {
+        margin-bottom: 1.5rem;
+    }
+
+    .control-item label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--v4-text-muted);
+        margin-bottom: 0.5rem;
+    }
+
+    .v4-select {
+        width: 100%;
+        padding: 0.85rem;
+        background: #f8fafc;
+        border: 2px solid #eef2f6;
+        border-radius: 10px;
+        font-weight: 600;
+        color: var(--v4-text);
+        cursor: pointer;
+    }
+
+    .search-box-v4 {
+        position: relative;
+    }
+
+    .search-box-v4 i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--v4-text-muted);
+    }
+
+    .search-box-v4 input {
+        width: 100%;
+        padding: 0.85rem 1rem 0.85rem 2.5rem;
+        background: #f8fafc;
+        border: 2px solid #eef2f6;
+        border-radius: 10px;
+        font-weight: 500;
+    }
+
+    .selection-summary-card {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        padding: 2rem;
+        border-radius: 1.5rem;
+        color: white;
+    }
+
+    .summary-stat {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .summary-stat span {
+        font-size: 3rem;
+        font-weight: 900;
+        display: block;
+        color: var(--v4-primary);
+        line-height: 1;
+    }
+
+    .summary-stat label {
+        font-weight: 700;
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    .summary-note {
+        font-size: 0.8rem;
+        opacity: 0.6;
+        line-height: 1.4;
+        text-align: center;
+    }
+
+    /* Products List */
+    .products-list-v4 {
+        background: white;
+        border-radius: 1.5rem;
+        border: 1px solid var(--v4-border);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .list-actions {
+        padding: 1.5rem 2rem;
+        background: #fbfcfd;
+        border-bottom: 1px solid var(--v4-border);
+    }
+
+    .v4-table-wrapper {
+        flex: 1;
+        max-height: 800px;
+        overflow-y: auto;
+    }
+
+    .v4-products-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .v4-products-table th {
+        text-align: left;
+        padding: 1.25rem 2rem;
+        background: white;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        font-weight: 700;
+        color: var(--v4-text-muted);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 1px solid var(--v4-border);
+    }
+
+    .v4-row {
+        transition: background 0.2s;
+    }
+
+    .v4-row:hover {
+        background: #f8fafc;
+    }
+
+    .v4-row td {
+        padding: 1.25rem 2rem;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .v4-product-cell {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+    }
+
+    .v4-product-cell img {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        object-fit: contain;
+        background: #f8fafc;
+        border: 1px solid #eef2f6;
+    }
+
+    .v4-p-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .v4-p-brand {
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: var(--v4-primary);
+        text-transform: uppercase;
+    }
+
+    .v4-p-name {
+        font-weight: 700;
+        color: var(--v4-text);
+        font-size: 1rem;
+    }
+
+    .v4-cat-badge {
+        display: inline-block;
+        padding: 0.25rem 0.6rem;
+        background: #f1f5f9;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #475569;
+    }
+
+    .v4-subcat {
+        font-size: 0.8rem;
+        color: var(--v4-text-muted);
+        margin-top: 0.25rem;
+    }
+
+    .v4-price {
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: var(--v4-text);
+    }
+
+    /* Custom Checkbox */
+    .checkbox-container-v4 {
+        display: block;
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 0;
+        cursor: pointer;
+        font-size: 1rem;
+        user-select: none;
+        font-weight: 600;
+    }
+
+    .checkbox-container-v4 input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 22px;
+        width: 22px;
+        background-color: #f1f5f9;
+        border: 2px solid #e2e8f0;
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+
+    .checkbox-container-v4:hover input~.checkmark {
+        background-color: #e2e8f0;
+    }
+
+    .checkbox-container-v4 input:checked~.checkmark {
+        background-color: var(--v4-primary);
+        border-color: var(--v4-primary);
+    }
+
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    .checkbox-container-v4 input:checked~.checkmark:after {
+        display: block;
+    }
+
+    .checkbox-container-v4 .checkmark:after {
+        left: 7px;
+        top: 3px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+
+    @media (max-width: 1024px) {
+        .selection-controls {
+            grid-template-columns: 1fr;
+        }
+
+        .settings-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .setting-action {
+            grid-column: span 2;
+        }
+    }
+</style>
+
+<script id="categories-data" type="application/json">
+    {{ categories | tojson | safe }}
+</script>
+
+<script>
+    const subcats = JSON.parse(document.getElementById('categories-data').textContent);
+    const categorySelect = document.getElementById('categoryFilter');
+    const subcategorySelect = document.getElementById('subcategoryFilter');
+    const brandSelect = document.getElementById('brandFilter');
+    const searchInput = document.getElementById('productSearch');
+    const rows = document.querySelectorAll('.v4-row');
+    const selectAll = document.getElementById('selectAll');
+    const productCheckboxes = document.querySelectorAll('.product-checkbox');
+    const selectedCount = document.getElementById('selectedCount');
+
+    // Subcategory logic
+    categorySelect.addEventListener('change', function () {
+        const cat = this.value;
+        subcategorySelect.innerHTML = '<option value="all">Të gjitha</option>';
+        if (cat !== 'all' && subcats[cat]) {
+            subcats[cat].forEach(sub => {
+                const opt = document.createElement('option');
+                opt.value = sub;
+                opt.textContent = sub;
+                subcategorySelect.appendChild(opt);
+            });
+        }
+        filterList();
+    });
+
+    [subcategorySelect, brandSelect].forEach(el => el.addEventListener('change', filterList));
+    searchInput.addEventListener('input', filterList);
+
+    function filterList() {
+        const cat = categorySelect.value.toLowerCase();
+        const sub = subcategorySelect.value.toLowerCase();
+        const brand = brandSelect.value.toLowerCase();
+        const query = searchInput.value.toLowerCase();
+
+        rows.forEach(row => {
+            const rowBrand = row.dataset.brand;
+            const rowCat = row.dataset.category;
+            const rowSub = row.dataset.subcategory;
+            const rowName = row.dataset.name;
+
+            const matchCat = (cat === 'all' || rowCat === cat);
+            const matchSub = (sub === 'all' || rowSub === sub);
+            const matchBrand = (brand === 'all' || rowBrand === brand);
+            const matchQuery = (rowName.includes(query));
+
+            if (matchCat && matchSub && matchBrand && matchQuery) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+                // Also uncheck if hidden? Maybe not, but Select All should only affect visible
+            }
+        });
+    }
+
+    // Selection Logic
+    selectAll.addEventListener('change', function () {
+        const checked = this.checked;
+        rows.forEach(row => {
+            if (row.style.display !== 'none') {
+                row.querySelector('.product-checkbox').checked = checked;
+            }
+        });
+        updateSelectedCount();
+    });
+
+    productCheckboxes.forEach(cb => {
+        cb.addEventListener('change', updateSelectedCount);
+    });
+
+    function updateSelectedCount() {
+        const count = document.querySelectorAll('.product-checkbox:checked').length;
+        selectedCount.textContent = count;
+    }
+</script>
+{% endblock %}

@@ -10,67 +10,267 @@
         </div>
         <ul class="d-cat-list">
             {% if global_categories %}
-                {% for category, subcats in global_categories.items() %}
-                <li class="d-cat-item">
-                    <a href="{{ url_for('main.products', category=category) }}" class="d-cat-link">
-                        <span>{{ category }}</span>
-                        <i class="fas fa-chevron-right"></i>
-                    </a>
-                    <div class="d-subcat-popup">
-                        <ul>
-                            {% for sub in subcats %}
-                            <li><a href="{{ url_for('main.products', category=category, subcategory=sub) }}">{{ sub }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </li>
-                {% endfor %}
+            {% for category, subcats in global_categories.items() %}
+            <li class="d-cat-item">
+                <a href="{{ url_for('main.products', category=category) }}" class="d-cat-link">
+                    <span>{{ category }}</span>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                <div class="d-subcat-popup">
+                    <ul>
+                        {% for sub in subcats %}
+                        <li><a href="{{ url_for('main.products', category=category, subcategory=sub) }}">{{ sub }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </li>
+            {% endfor %}
             {% endif %}
         </ul>
     </aside>
 
     <!-- Modern Hero Carousel Section -->
     <header class="hero-carousel-container">
-    <div class="hero-inner-wrapper">
-        <div class="hero-carousel">
-            <!-- Slide 1: Eucerin -->
-            <a href="{{ url_for('main.products', brand='Eucerin') }}" class="hero-slide active">
-                <picture>
-                    <!-- Mobile Image (Vertical/Square optimization) -->
-                    <source media="(max-width: 768px)" srcset="https://res.cloudinary.com/drljgepgy/image/upload/v1770659727/IMG_4312_ul0exk.jpg">
-                    <!-- Desktop Image -->
-                    <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659727/IMG_4312_ul0exk.jpg" alt="Eucerin Products" class="hero-img">
-                </picture>
-            </a>
+        <div class="hero-inner-wrapper">
+            <div class="hero-carousel">
+                <!-- Slide 1: Eucerin Banner -->
+                <a href="{{ url_for('main.products', brand='Eucerin') }}" class="hero-slide active">
+                    <div class="hero-content-wrapper banner-only">
+                        <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659727/IMG_4312_ul0exk.jpg"
+                            alt="Eucerin Banner" class="hero-img-full">
+                    </div>
+                </a>
 
-            <!-- Slide 2: Vichy -->
-            <a href="{{ url_for('main.products', brand='Vichy') }}" class="hero-slide">
-                <picture>
-                    <source media="(max-width: 768px)" srcset="https://res.cloudinary.com/drljgepgy/image/upload/v1770659726/IMG_4310_eria9y.jpg">
-                    <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659726/IMG_4310_eria9y.jpg" alt="Vichy Products" class="hero-img">
-                </picture>
-            </a>
+                <!-- Slide 2: CeraVe Banner -->
+                <a href="{{ url_for('main.products', brand='CeraVe') }}" class="hero-slide">
+                    <div class="hero-content-wrapper banner-only">
+                        <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1771111803/cerave_image_rjyyra.jpg"
+                            alt="CeraVe Banner" class="hero-img-full">
+                    </div>
+                </a>
 
-            <!-- Slide 3: CeraVe -->
-            <a href="{{ url_for('main.products', brand='CeraVe') }}" class="hero-slide">
-                <picture>
-                    <source media="(max-width: 768px)" srcset="https://res.cloudinary.com/drljgepgy/image/upload/v1771111803/cerave_image_rjyyra.jpg">
-                    <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1771111803/cerave_image_rjyyra.jpg" alt="CeraVe Products" class="hero-img">
-                </picture>
-            </a>
+                <!-- Slide 3: Vichy Banner -->
+                <a href="{{ url_for('main.products', brand='Vichy') }}" class="hero-slide">
+                    <div class="hero-content-wrapper banner-only">
+                        <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659726/IMG_4310_eria9y.jpg"
+                            alt="Vichy Banner" class="hero-img-full">
+                    </div>
+                </a>
+            </div>
+
+            <button class="hero-prev" onclick="plusSlides(-1)"><i class="fas fa-chevron-left"></i></button>
+            <button class="hero-next" onclick="plusSlides(1)"><i class="fas fa-chevron-right"></i></button>
         </div>
-        
-        <button class="hero-prev" onclick="plusSlides(-1)"><i class="fas fa-chevron-left"></i></button>
-        <button class="hero-next" onclick="plusSlides(1)"><i class="fas fa-chevron-right"></i></button>
-    </div>
-    
-    <div class="hero-dots">
-        <span class="dot active" onclick="currentSlide(1)"></span>
-        <span class="dot" onclick="currentSlide(2)"></span>
-        <span class="dot" onclick="currentSlide(3)"></span>
-    </div>
-</header>
+
+        <div class="hero-dots">
+            <span class="dot active" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+    </header>
+
 </div> <!-- End home-layout-container -->
+
+<!-- New Premium Skin Advisor Section -->
+<section class="skin-advisor-feature">
+    <div class="container">
+        <div class="advisor-card-v3">
+            <div class="advisor-content">
+                <div class="advisor-badge">Konsultë Profesionale</div>
+                <h2 class="advisor-title">Zbuloni rutinën tuaj ideale</h2>
+                <p class="advisor-description">
+                    Analizoni nevojat e lëkurës tuaj dhe merrni rekomandime të personalizuara nga stafi ynë.
+                </p>
+
+                <div class="advisor-features">
+                    <div class="feat-item">
+                        <i class="fas fa-check"></i>
+                        <span>Analizë Digjitale</span>
+                    </div>
+                    <div class="feat-item">
+                        <i class="fas fa-check"></i>
+                        <span>Rekomandime</span>
+                    </div>
+                </div>
+
+                <a href="{{ url_for('main.quiz', skip_intro='true') }}" class="btn-advisor-v3">
+                    Nis Konsultën <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="advisor-illustration">
+                <img src="https://static.vecteezy.com/system/resources/thumbnails/012/747/545/small_2x/cosmetic-laboratory-research-and-development-science-bio-skincare-cream-serum-product-with-leaves-natural-organic-beauty-cosmetics-concept-cosmetology-photo.jpg"
+                    alt="Cosmetic Research">
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .skin-advisor-feature {
+        padding: 3rem 0;
+        background: #fff;
+    }
+
+    .advisor-card-v3 {
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        border-radius: 2rem;
+        display: flex;
+        align-items: center;
+        padding: 2.5rem 4rem;
+        color: #065f46;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px -5px rgba(6, 95, 70, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.1);
+    }
+
+    .advisor-content {
+        flex: 1.5;
+        z-index: 2;
+    }
+
+    .advisor-badge {
+        background: white;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+        color: #059669;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .advisor-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+        color: #064e3b !important;
+    }
+
+    .advisor-description {
+        font-size: 1.1rem;
+        color: #374151;
+        max-width: 500px;
+        margin-bottom: 2rem;
+        line-height: 1.5;
+    }
+
+    .advisor-features {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .feat-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #065f46;
+    }
+
+    .feat-item i {
+        color: white;
+        background: #059669;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 0.8rem;
+    }
+
+    .btn-advisor-v3 {
+        background: #059669 !important;
+        color: white !important;
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 15px rgba(5, 150, 105, 0.2);
+    }
+
+    .btn-advisor-v3:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(5, 150, 105, 0.3);
+        background: #047857 !important;
+    }
+
+    .advisor-illustration {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .advisor-illustration img {
+        width: 100%;
+        max-width: 380px;
+        border-radius: 1.5rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        transform: rotate(2deg);
+    }
+
+    @media (max-width: 1200px) {
+        .advisor-card-v3 {
+            padding: 2.5rem 3rem;
+        }
+
+        .advisor-title {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .advisor-card-v3 {
+            flex-direction: column;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .advisor-title {
+            font-size: 2rem;
+        }
+
+        .advisor-description {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .advisor-features {
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .advisor-illustration {
+            margin-top: 2.5rem;
+            justify-content: center;
+        }
+
+        .advisor-illustration img {
+            max-width: 280px;
+            transform: none;
+        }
+
+        .btn-advisor-v3 {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
 
 <!-- Categories Section -->
 <section class="section categories-preview" style="margin-top: 4rem;">
@@ -78,11 +278,13 @@
         <div class="section-center-header fade-in-section">
             <h2 class="section-title">Eksploro Sipas Nevojës</h2>
         </div>
-        
+
         <div class="category-grid-v2">
             <!-- 1. Dermokozmetikë & Bukuri -->
-            <a href="{{ url_for('main.products', category='Dermokozmetikë') }}" class="category-card-v2 fade-in-section">
-                <img src="https://elipharmacy.com/wp-content/uploads/2023/10/Dermocosmetics.png" alt="Dermokozmetikë" class="category-bg">
+            <a href="{{ url_for('main.products', category='Dermokozmetikë') }}"
+                class="category-card-v2 fade-in-section">
+                <img src="https://elipharmacy.com/wp-content/uploads/2023/10/Dermocosmetics.png" alt="Dermokozmetikë"
+                    class="category-bg">
                 <div class="category-overlay">
                     <span class="category-title">Dermokozmetikë</span>
                     <span class="category-count">Kujdesi për bukurinë</span>
@@ -90,8 +292,10 @@
             </a>
 
             <!-- 2. Suplemente & Vitamina -->
-            <a href="{{ url_for('main.products', category='Suplemente & Vitamina') }}" class="category-card-v2 fade-in-section">
-                <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770480662/vitamina_gmssbh.jpg" alt="Suplemente & Vitamina" class="category-bg">
+            <a href="{{ url_for('main.products', category='Suplemente & Vitamina') }}"
+                class="category-card-v2 fade-in-section">
+                <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770480662/vitamina_gmssbh.jpg"
+                    alt="Suplemente & Vitamina" class="category-bg">
                 <div class="category-overlay">
                     <span class="category-title">Vitamina</span>
                     <span class="category-count">Suplemente & Shëndet</span>
@@ -99,8 +303,10 @@
             </a>
 
             <!-- 3. Kujdes Personal & Higjienë -->
-            <a href="{{ url_for('main.products', category='Kujdes Personal & Higjienë') }}" class="category-card-v2 fade-in-section">
-                <img src="https://c8.alamy.com/comp/2HTMPXA/personal-care-products-made-from-natural-materialsflat-lay-of-personal-care-zero-waste-suppliesplastic-free-conceptitems-for-hygiene-and-face-and-2HTMPXA.jpg" alt="Kujdes Personal & Higjienë" class="category-bg">
+            <a href="{{ url_for('main.products', category='Kujdes Personal & Higjienë') }}"
+                class="category-card-v2 fade-in-section">
+                <img src="https://c8.alamy.com/comp/2HTMPXA/personal-care-products-made-from-natural-materialsflat-lay-of-personal-care-zero-waste-suppliesplastic-free-conceptitems-for-hygiene-and-face-and-2HTMPXA.jpg"
+                    alt="Kujdes Personal & Higjienë" class="category-bg">
                 <div class="category-overlay">
                     <span class="category-title">Higjienë</span>
                     <span class="category-count">Kujdesi Personal</span>
@@ -108,8 +314,10 @@
             </a>
 
             <!-- 4. Pajisje Mjekësore -->
-            <a href="{{ url_for('main.products', category='Pajisje Mjekësore') }}" class="category-card-v2 fade-in-section">
-                <img src="https://solutionscience.co.ke/cdn/shop/collections/medical_equipment.webp?v=1743573391&width=750" alt="Pajisje Mjekësore" class="category-bg">
+            <a href="{{ url_for('main.products', category='Pajisje Mjekësore') }}"
+                class="category-card-v2 fade-in-section">
+                <img src="https://solutionscience.co.ke/cdn/shop/collections/medical_equipment.webp?v=1743573391&width=750"
+                    alt="Pajisje Mjekësore" class="category-bg">
                 <div class="category-overlay">
                     <span class="category-title">Pajisje Mjekësore</span>
                     <span class="category-count">Matës & Instrumente</span>
@@ -118,7 +326,8 @@
 
             <!-- 5. Nënë & Fëmijë -->
             <a href="{{ url_for('main.products', category='Nënë & Fëmijë') }}" class="category-card-v2 fade-in-section">
-                <img src="https://www.circlecareclinic.com/wp-content/uploads/2024/09/mother-baby-care.jpg" alt="Nënë & Fëmijë" class="category-bg">
+                <img src="https://www.circlecareclinic.com/wp-content/uploads/2024/09/mother-baby-care.jpg"
+                    alt="Nënë & Fëmijë" class="category-bg">
                 <div class="category-overlay">
                     <span class="category-title">Nënë & Fëmijë</span>
                     <span class="category-count">Për më të vegjëlit</span>
@@ -126,8 +335,10 @@
             </a>
 
             <!-- 6. Pajisje Ortopedike -->
-            <a href="{{ url_for('main.products', category='Pajisje Ortopedike') }}" class="category-card-v2 fade-in-section">
-                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop" alt="Pajisje Ortopedike" class="category-bg">
+            <a href="{{ url_for('main.products', category='Pajisje Ortopedike') }}"
+                class="category-card-v2 fade-in-section">
+                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop"
+                    alt="Pajisje Ortopedike" class="category-bg">
                 <div class="category-overlay">
                     <span class="category-title">Ortopedi</span>
                     <span class="category-count">Mbështetje & Lëvizje</span>
@@ -135,8 +346,10 @@
             </a>
 
             <!-- 7. Produkte Natyrale & Bimore -->
-            <a href="{{ url_for('main.products', category='Produkte Natyrale & Bimore') }}" class="category-card-v2 fade-in-section">
-                <img src="https://assets.clevelandclinic.org/transform/LargeFeatureImage/496eae84-691f-4e90-80fe-aa0827825d97/essentialOils-899747886-770x533-1_jpg" alt="Produkte Natyrale & Bimore" class="category-bg">
+            <a href="{{ url_for('main.products', category='Produkte Natyrale & Bimore') }}"
+                class="category-card-v2 fade-in-section">
+                <img src="https://assets.clevelandclinic.org/transform/LargeFeatureImage/496eae84-691f-4e90-80fe-aa0827825d97/essentialOils-899747886-770x533-1_jpg"
+                    alt="Produkte Natyrale & Bimore" class="category-bg">
                 <div class="category-overlay">
                     <span class="category-title">Bio & Natyrale</span>
                     <span class="category-count">Çajra & Vajra</span>
@@ -155,11 +368,13 @@
                 <h2 class="section-title">Eksploro Markat</h2>
             </div>
         </div>
-        
+
         <div class="brand-grid">
             <!-- Brand 1: Eucerin -->
-            <a href="{{ url_for('main.products', brand='Eucerin') }}" class="brand-card fade-in-section" style="text-decoration: none;">
-                <img src="https://images-static.nykaa.com/contentmedia/scms-assets/uploads/2024/11/eucerin-banner.jpg" alt="Eucerin" class="brand-img">
+            <a href="{{ url_for('main.products', brand='Eucerin') }}" class="brand-card fade-in-section"
+                style="text-decoration: none;">
+                <img src="https://images-static.nykaa.com/contentmedia/scms-assets/uploads/2024/11/eucerin-banner.jpg"
+                    alt="Eucerin" class="brand-img">
                 <div class="brand-overlay">
                     <h3 class="brand-name" style="color: white;">Eucerin</h3>
                     <div class="brand-link" style="color: white; opacity: 0.9;">
@@ -169,8 +384,10 @@
             </a>
 
             <!-- Brand 2: Vichy -->
-            <a href="{{ url_for('main.products', brand='Vichy') }}" class="brand-card fade-in-section" style="text-decoration: none;">
-                <img src="https://www.vichy.sg/site/pages/showImageResized.aspx?EncMediaId=VEtnUmJta1U3NHU2MFBWUW93ZnA4UT09&ImageFormatAppCode=IMAGEFORMAT_ORIGINAL&v=20220129080715&mode=0&ShowCopyRight=False" alt="Vichy" class="brand-img">
+            <a href="{{ url_for('main.products', brand='Vichy') }}" class="brand-card fade-in-section"
+                style="text-decoration: none;">
+                <img src="https://www.vichy.sg/site/pages/showImageResized.aspx?EncMediaId=VEtnUmJta1U3NHU2MFBWUW93ZnA4UT09&ImageFormatAppCode=IMAGEFORMAT_ORIGINAL&v=20220129080715&mode=0&ShowCopyRight=False"
+                    alt="Vichy" class="brand-img">
                 <div class="brand-overlay">
                     <h3 class="brand-name" style="color: white;">Vichy</h3>
                     <div class="brand-link" style="color: white; opacity: 0.9;">
@@ -180,8 +397,10 @@
             </a>
 
             <!-- Brand 3: La Roche-Posay -->
-            <a href="{{ url_for('main.products', brand='La Roche-Posay') }}" class="brand-card fade-in-section" style="text-decoration: none;">
-                <img src="https://mir-s3-cdn-cf.behance.net/projects/808/77ccfb218995929.Y3JvcCwyNTU2LDIwMDAsMCww.png" alt="La Roche-Posay" class="brand-img">
+            <a href="{{ url_for('main.products', brand='La Roche-Posay') }}" class="brand-card fade-in-section"
+                style="text-decoration: none;">
+                <img src="https://mir-s3-cdn-cf.behance.net/projects/808/77ccfb218995929.Y3JvcCwyNTU2LDIwMDAsMCww.png"
+                    alt="La Roche-Posay" class="brand-img">
                 <div class="brand-overlay">
                     <h3 class="brand-name" style="color: white;">La Roche-Posay</h3>
                     <div class="brand-link" style="color: white; opacity: 0.9;">
@@ -191,7 +410,8 @@
             </a>
 
             <!-- Brand 4: CeraVe -->
-            <a href="{{ url_for('main.products', brand='CeraVe') }}" class="brand-card fade-in-section" style="text-decoration: none;">
+            <a href="{{ url_for('main.products', brand='CeraVe') }}" class="brand-card fade-in-section"
+                style="text-decoration: none;">
                 <img src="https://cerave.lk/wp-content/uploads/2024/10/banner-1.jpg" alt="CeraVe" class="brand-img">
                 <div class="brand-overlay">
                     <h3 class="brand-name" style="color: white;">CeraVe</h3>
@@ -207,7 +427,8 @@
 <!-- Featured / Ofertat Section -->
 <section id="ofertat" class="section featured-products">
     <div class="container">
-        <div class="section-header fade-in-section" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
+        <div class="section-header fade-in-section"
+            style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
             <div>
                 <span class="sub-title">Zbritjet e fundit</span>
                 <h2 class="section-title">Ofertat Ekskluzive</h2>
@@ -216,53 +437,64 @@
                 <span>Shiko të gjitha ofertat</span> <i class="fas fa-arrow-right ml-2"></i>
             </a>
         </div>
-        
+
         <div class="product-carousel-wrapper ofertas-style">
-            <button class="scroll-btn prev" onclick="scrollCarousel(this, -1)"><i class="fas fa-chevron-left"></i></button>
+            <button class="scroll-btn prev" onclick="scrollCarousel(this, -1)"><i
+                    class="fas fa-chevron-left"></i></button>
             <div class="product-carousel no-scrollbar creative-offers-grid">
                 {% for product in featured_products %}
-                    <div class="product-card fade-in-section" data-id="{{ product._id }}">
-                        <div class="product-image">
-                            {% if product.discount_price %}
-                                <div class="special-offer-badge red-badge">Oferta Speciale</div>
-                            {% endif %}
-                            {% if product.is_best_seller %}
-                                <div class="best-seller-badge">Më i Shituri</div>
-                            {% endif %}
+                <div class="product-card fade-in-section" data-id="{{ product._id }}">
+                    <div class="product-image">
+                        {% if product.discount_price %}
+                        <div class="special-offer-badge red-badge">Oferta Speciale</div>
+                        {% endif %}
+                        {% if product.is_best_seller %}
+                        <div class="best-seller-badge">Më i Shituri</div>
+                        {% endif %}
+                        {% if product.is_pharmacist_choice %}
+                        <div class="pharmacist-badge"><i class="fas fa-user-md"></i> Farmacisti</div>
+                        {% endif %}
 
-                            <img src="{{ product.image_url }}" alt="{{ product.name }}">
-                            
-                            {% if product.in_stock == False %}
-                                <div class="out-of-stock-overlay">
-                                    <span>Jashtë Stokut</span>
-                                </div>
-                            {% endif %}
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}">
 
-                            <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
-                                <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
-                            </button>
-                            <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
+                        {% if product.in_stock == False %}
+                        <div class="out-of-stock-overlay">
+                            <span>Jashtë Stokut</span>
                         </div>
-                        
-                        <div class="product-info">
-                            <span class="product-category" style="color: var(--primary); font-weight: 700;">{{ product.brand if product.brand else product.category }}</span>
-                            <h3 class="product-title">{{ product.name }}</h3>
-                            {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
-                            
-                            <div class="price-container">
-                                {% if product.discount_price %}
-                                    <span class="price discounted">€{{ product.discount_price }}</span>
-                                    <span class="price original">€{{ product.price }}</span>
-                                    <span class="discount-badge">-{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
-                                {% else %}
-                                    <span class="price">€{{ product.price }}</span>
-                                {% endif %}
-                            </div>
+                        {% endif %}
+
+                        <button
+                            class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}"
+                            onclick="toggleFavorite(this, '{{ product._id }}')">
+                            <i
+                                class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
+                        </button>
+                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}"
+                            class="product-card-link-overlay"></a>
+                    </div>
+
+                    <div class="product-info">
+                        <span class="product-category" style="color: var(--primary); font-weight: 700;">{{ product.brand
+                            if product.brand else product.category }}</span>
+                        <h3 class="product-title">{{ product.name }}</h3>
+                        {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
+
+                        <div class="price-container">
+                            {% if product.discount_price %}
+                            <span class="price discounted">€{{ product.discount_price }}</span>
+                            <span class="price original">€{{ product.price }}</span>
+                            <span class="discount-badge">-{{ ((product.price - product.discount_price) / product.price *
+                                100)|round|int }}%</span>
+                            {% else %}
+                            <span class="price">€{{ product.price }}</span>
+                            {% endif %}
                         </div>
                     </div>
+                </div>
                 {% endfor %}
             </div>
-            <button class="scroll-btn next" onclick="scrollCarousel(this, 1)"><i class="fas fa-chevron-right"></i></button>
+            <button class="scroll-btn next" onclick="scrollCarousel(this, 1)"><i
+                    class="fas fa-chevron-right"></i></button>
         </div>
     </div>
 </section>
@@ -280,50 +512,59 @@
             <div class="category-scroll-container">
                 <button class="category-chip active" onclick="window.filterHomeCategory('all', this)">Për ty</button>
                 {% if global_categories %}
-                    {% for category in global_categories.keys() %}
-                        <button class="category-chip" onclick="window.filterHomeCategory('{{ category }}', this)">{{ category }}</button>
-                    {% endfor %}
+                {% for category in global_categories.keys() %}
+                <button class="category-chip" onclick="window.filterHomeCategory('{{ category }}', this)">{{ category
+                    }}</button>
+                {% endfor %}
                 {% endif %}
             </div>
         </div>
-        
+
         <div id="recommended-grid" class="product-grid-dynamic">
             <!-- Products will be loaded here via JS -->
             {% for product in regular_products[:20] %} <!-- Assuming regular_products has all or we load more -->
-                <div class="product-card fade-in-section">
-                    <div class="product-image">
+            <div class="product-card fade-in-section">
+                <div class="product-image">
+                    {% if product.discount_price %}
+                    <div class="special-offer-badge red-badge">Oferta Speciale</div>
+                    {% endif %}
+                    {% if product.is_best_seller %}
+                    <div class="best-seller-badge">Më i Shituri</div>
+                    {% endif %}
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                    <button
+                        class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}"
+                        onclick="toggleFavorite(this, '{{ product._id }}')">
+                        <i
+                            class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
+                    </button>
+                    <a href="{{ url_for('main.product_detail', product_id=product._id) }}"
+                        class="product-card-link-overlay"></a>
+                </div>
+                <div class="product-info">
+                    <span class="product-category" style="color: var(--primary); font-weight: 700;">{{ product.brand if
+                        product.brand else product.category }}</span>
+                    <h3 class="product-title">{{ product.name }}</h3>
+                    {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
+                    <div class="price-container">
                         {% if product.discount_price %}
-                            <div class="special-offer-badge red-badge">Oferta Speciale</div>
+                        <span class="price discounted">€{{ product.discount_price }}</span>
+                        <span class="price original">€{{ product.price }}</span>
+                        <span class="discount-badge">-{{ ((product.price - product.discount_price) / product.price *
+                            100)|round|int }}%</span>
+                        {% else %}
+                        <span class="price">€{{ product.price }}</span>
                         {% endif %}
-                        {% if product.is_best_seller %}
-                            <div class="best-seller-badge">Më i Shituri</div>
-                        {% endif %}
-                        <img src="{{ product.image_url }}" alt="{{ product.name }}">
-                        <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
-                            <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
-                        </button>
-                        <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
-                    </div>
-                    <div class="product-info">
-                        <span class="product-category" style="color: var(--primary); font-weight: 700;">{{ product.brand if product.brand else product.category }}</span>
-                        <h3 class="product-title">{{ product.name }}</h3>
-                        {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
-                        <div class="price-container">
-                            {% if product.discount_price %}
-                                <span class="price discounted">€{{ product.discount_price }}</span>
-                                <span class="price original">€{{ product.price }}</span>
-                                <span class="discount-badge">-{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
-                            {% else %}
-                                <span class="price">€{{ product.price }}</span>
-                            {% endif %}
-                        </div>
                     </div>
                 </div>
+            </div>
             {% endfor %}
         </div>
-        
-        <div class="load-more-container text-center {{ 'd-none' if not total_pages_regular or total_pages_regular <= 1 else '' }}" style="margin-top: 4rem; margin-bottom: 4rem;">
-            <button id="load-more-btn" class="btn btn-load-more" onclick="loadMoreHome()" data-page="1" data-category="all">
+
+        <div class="load-more-container text-center {{ 'd-none' if not total_pages_regular or total_pages_regular <= 1 else '' }}"
+            style="margin-top: 4rem; margin-bottom: 4rem;">
+            <button id="load-more-btn" class="btn btn-load-more" onclick="loadMoreHome()" data-page="1"
+                data-category="all">
                 <span>Shiko të gjitha produktet</span> <i class="fas fa-arrow-right ml-2"></i>
             </button>
         </div>

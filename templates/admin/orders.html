@@ -1,81 +1,169 @@
 {% extends "base.html" %}
 
+{% block title %}Menaxhimi i Porosive - Meld Pharm{% endblock %}
+
 {% block content %}
-<div class="container section">
-    <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2.5rem;">
-        <div class="admin-orders-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-            <h2 class="section-title" style="font-size: 1.75rem; margin-bottom: 0;">Menaxhimi i Porosive</h2>
-            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Kthehu te Paneli</a>
+<div class="admin-orders-container">
+    <!-- Admin Navigation -->
+    <nav class="admin-v3-nav">
+        <div class="nav-brand">
+            <i class="fas fa-user-shield"></i> Admin Paneli
         </div>
-        
-        <div class="admin-search-wrapper" style="position: relative; width: 100%;">
-            <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 1.1rem;"></i>
-            <input type="text" id="adminOrderSearch" placeholder="Kërko porositë sipas ID, emrit të klientit, qytetit ose statusit..." 
-                   style="width: 100%; padding: 1rem 1.5rem 1rem 3rem; border: 1px solid #e2e8f0; border-radius: 20px; outline: none; transition: var(--transition); font-size: 1rem; box-shadow: var(--shadow-md); height: 50px;">
+        <div class="nav-links">
+            <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-item">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a href="{{ url_for('admin.orders') }}" class="admin-nav-item active">
+                <i class="fas fa-shopping-bag"></i> Porositë
+            </a>
+            <a href="{{ url_for('admin.bulk_offers') }}" class="admin-nav-item">
+                <i class="fas fa-tags"></i> Ofertat në Masë
+            </a>
+            <a href="{{ url_for('admin.dashboard') }}#analytics" class="admin-nav-item">
+                <i class="fas fa-chart-pie"></i> Analitika
+            </a>
+        </div>
+        <div class="nav-right-spacer"></div>
+    </nav>
+
+    <div class="admin-header-v2">
+        <div class="header-main">
+            <h1 class="admin-title-v2">
+                <i class="fas fa-shopping-bag"></i> Menaxhimi i Porosive
+            </h1>
+            <p class="admin-subtitle text-muted">Mbikëqyrni porositë e klientëve dhe ndryshoni statusin e tyre.</p>
+        </div>
+        <div class="header-stats">
+            <div class="stat-card">
+                <span class="stat-value">{{ orders|length }}</span>
+                <span class="stat-label">Gjithsej</span>
+            </div>
+            <div class="stat-card warning">
+                <span class="stat-value">{% set pending = orders|selectattr('status', 'equalto',
+                    'Delivering')|list|length %}{{ pending }}</span>
+                <span class="stat-label">Në Dërgesë</span>
+            </div>
         </div>
     </div>
-    
+
+    <div class="admin-actions-bar wide-search-bar">
+        <div class="search-and-filter" style="width: 100%;">
+            <div class="admin-search-wrapper" style="max-width: 100%; flex: 1;">
+                <i class="fas fa-search"></i>
+                <input type="text" id="adminOrderSearch"
+                    placeholder="Kërko sipas ID-së, Klientit, Qytetit ose Statusit...">
+            </div>
+        </div>
+    </div>
+
     {% if orders %}
+    <div class="admin-table-card">
         <div class="table-responsive">
-            <table class="table admin-table">
+            <table class="premium-admin-table" id="orderTable">
                 <thead>
                     <tr>
-                        <th style="width: 12%;">ID</th>
-                        <th style="width: 25%;">Klienti</th>
-                        <th style="width: 18%;" class="date-col">Data</th>
-                        <th style="width: 10%;">Totali</th>
-                        <th style="width: 20%;">Statusi</th>
-                        <th style="width: 15%;">Veprime</th>
+                        <th>ID / Data</th>
+                        <th>Klienti</th>
+                        <th>Adresa</th>
+                        <th>Pagesa</th>
+                        <th>Totali</th>
+                        <th>Statusi</th>
+                        <th style="text-align: right;">Veprime</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for order in orders %}
-                    <tr data-id="{{ order._id|string }}" data-fullname="{{ order.fullname|lower }}" data-city="{{ order.city|lower }}" data-status="{{ order.status|lower }}">
-                        <td><small>#{{ order._id|string|truncate(6, True, '') }}</small></td>
-                        <td>{{ order.fullname }}<br><small>{{ order.email if order.email else order.city }}</small></td>
-                        <td class="date-col">{{ order.created_at.strftime('%d-%m-%Y %H:%M') }}</td>
-                        <td>€{{ "%.2f"|format(order.grand_total) }}</td>
+                    <tr class="order-parent-row" data-id="{{ order._id|string }}"
+                        data-fullname="{{ order.fullname|lower }}" data-city="{{ order.city|lower }}"
+                        data-status="{{ order.status|lower }}">
                         <td>
-                            <form action="{{ url_for('admin.update_order_status', order_id=order._id) }}" method="POST" style="display: flex; align-items: center; gap: 0.5rem;">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                <select name="status" class="form-select status-select" onchange="this.form.submit()">
-                                    <option value="Delivering" {{ 'selected' if order.status == 'Delivering' else '' }}>Delivering</option>
-                                    <option value="Received" {{ 'selected' if order.status == 'Received' else '' }}>Received</option>
-                                    <option value="Cancelled" {{ 'selected' if order.status == 'Cancelled' else '' }}>Cancelled</option>
-                                </select>
+                            <div class="order-id-group">
+                                <span class="order-id">#{{ order._id|string|truncate(8, True, '') }}</span>
+                                <span class="order-date text-muted">{{ order.created_at.strftime('%d.%m.%Y - %H:%M')
+                                    }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="order-customer-info">
+                                <span class="customer-name">{{ order.fullname }}</span>
+                                <span class="customer-tel text-muted"><i class="fas fa-phone"></i> {{ order.phone
+                                    }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="order-location">
+                                <span class="location-city">{{ order.city }}</span>
+                                <span class="location-address text-muted">{{ order.address|truncate(30) }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="payment-badge">{{ order.payment_method }}</div>
+                        </td>
+                        <td>
+                            <div class="order-total-val">€{{ "%.2f"|format(order.grand_total) }}</div>
+                        </td>
+                        <td>
+                            <form action="{{ url_for('admin.update_order_status', order_id=order._id) }}" method="POST"
+                                id="form-{{ order._id }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                <div class="premium-select-wrapper">
+                                    <select name="status" class="premium-status-select {{ order.status|lower }}"
+                                        onchange="this.form.submit()">
+                                        <option value="Delivering" {{ 'selected' if order.status=='Delivering' else ''
+                                            }}>Në Dërgesë</option>
+                                        <option value="Received" {{ 'selected' if order.status=='Received' else '' }}>
+                                            Pranuar</option>
+                                        <option value="Cancelled" {{ 'selected' if order.status=='Cancelled' else '' }}>
+                                            Anuluar</option>
+                                    </select>
+                                </div>
                             </form>
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-info" onclick="toggleDetails('{{ order._id }}')">
-                                Detajet
-                            </button>
+                            <div class="table-actions">
+                                <button class="action-btn toggle-details" onclick="toggleDetails('{{ order._id }}')"
+                                    title="Shiko detajet">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
-                    <tr id="details-{{ order._id }}" style="display: none; background-color: #f8fafc;">
-                        <td colspan="6">
-                            <div class="order-details-wrapper">
-                                <div class="admin-details-grid">
-                                    <div class="details-section">
-                                        <h5 class="details-title">Informacionet e Dërgesës</h5>
-                                        <p><strong>Emri:</strong> {{ order.fullname }}</p>
-                                        <p><strong>Email:</strong> {{ order.email }}</p>
-                                        <p><strong>Adresa:</strong> {{ order.address }}, {{ order.city }}</p>
-                                        <p><strong>Telefoni:</strong> {{ order.phone }}</p>
-                                        <p><strong>Pagesa:</strong> {{ order.payment_method }}</p>
+                    <tr id="details-{{ order._id }}" class="details-row" style="display: none;">
+                        <td colspan="7">
+                            <div class="order-expanded-details">
+                                <div class="details-grid">
+                                    <div class="details-col">
+                                        <h4 class="details-subtitle"><i class="fas fa-user-circle"></i> Klienti dhe
+                                            Dërgesa</h4>
+                                        <div class="details-list">
+                                            <div class="details-item"><span>Emri:</span> <strong>{{ order.fullname
+                                                    }}</strong></div>
+                                            <div class="details-item"><span>Email:</span> <strong>{{ order.email if
+                                                    order.email else 'Nuk ka' }}</strong></div>
+                                            <div class="details-item"><span>Tel:</span> <strong>{{ order.phone
+                                                    }}</strong></div>
+                                            <div class="details-item"><span>Qyteti:</span> <strong>{{ order.city
+                                                    }}</strong></div>
+                                            <div class="details-item"><span>Adresa:</span> <strong>{{ order.address
+                                                    }}</strong></div>
+                                        </div>
                                     </div>
-                                    <div class="details-section">
-                                        <h5 class="details-title">Produktet</h5>
-                                        <ul class="details-products-admin">
+                                    <div class="details-col">
+                                        <h4 class="details-subtitle"><i class="fas fa-box"></i> Produktet e Porositura
+                                        </h4>
+                                        <div class="order-items-list">
                                             {% for item in order['items'] %}
-                                                <li>
-                                                    <span>{{ item.quantity }}x {{ item.name }}</span>
-                                                    <strong class="details-price">€{{ "%.2f"|format(item.item_total) }}</strong>
-                                                </li>
+                                            <div class="order-item-product">
+                                                <span class="item-qty">{{ item.quantity }}x</span>
+                                                <span class="item-name">{{ item.name }}</span>
+                                                <span class="item-price">€{{ "%.2f"|format(item.item_total) }}</span>
+                                            </div>
                                             {% endfor %}
-                                            <li class="admin-total-row">
-                                                <strong>Total: €{{ "%.2f"|format(order.grand_total) }}</strong>
-                                            </li>
-                                        </ul>
+                                            <div class="order-item-summary mt-2">
+                                                <div class="details-item total-row"><span>Totali:</span> <strong>€{{
+                                                        "%.2f"|format(order.grand_total) }}</strong></div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -85,60 +173,624 @@
                 </tbody>
             </table>
         </div>
+    </div>
     {% else %}
-        <div class="empty-state">
-            <p>Nuk ka asnjë porosi në sistem.</p>
+    <div class="admin-table-card">
+        <div class="empty-table-state py-5">
+            <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
+            <p>Nuk u gjet asnjë porosi në sistem.</p>
         </div>
+    </div>
     {% endif %}
 </div>
 
-<script>
-document.getElementById('adminOrderSearch').addEventListener('keyup', function(e) {
-    const term = e.target.value.toLowerCase();
-    const rows = document.querySelectorAll('.table tbody tr:not([id^="details-"])');
-    
-    rows.forEach(row => {
-        // Use Data Attributes for Robust Search
-        const id = row.getAttribute('data-id') || '';
-        const fullname = row.getAttribute('data-fullname') || '';
-        const city = row.getAttribute('data-city') || '';
-        const status = row.getAttribute('data-status') || '';
-        const visibleText = row.textContent.toLowerCase();
-        
-        if (id.includes(term) || fullname.includes(term) || city.includes(term) || status.includes(term) || visibleText.includes(term)) {
-            row.classList.remove('d-none-impt');
-            row.style.setProperty('display', '', 'important'); 
-        } else {
-            row.classList.add('d-none-impt');
-            row.style.setProperty('display', 'none', 'important');
-            
-            // Hide details if parent is hidden
-            const btn = row.querySelector('button[onclick^="toggleDetails"]');
-            if (btn) {
-                 const match = btn.getAttribute('onclick').match(/'(.+?)'/);
-                 if (match) {
-                    const detailsRow = document.getElementById('details-' + match[1]);
-                    if (detailsRow) {
-                        detailsRow.classList.add('d-none-impt');
-                        detailsRow.style.setProperty('display', 'none', 'important');
-                    }
-                 }
-            }
-        }
-    });
-});
-
-document.getElementById('adminOrderSearch').addEventListener('input', function(e) {
-    this.dispatchEvent(new Event('keyup'));
-});
-
-function toggleDetails(id) {
-    const el = document.getElementById('details-' + id);
-    if (el.style.display === 'none') {
-        el.style.display = 'table-row';
-    } else {
-        el.style.display = 'none';
+<style>
+    .admin-orders-container {
+        max-width: 1400px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
     }
-}
+
+    /* Admin Nav Centered Styles - V4 Upgraded */
+    .admin-v3-nav {
+        background: white;
+        padding: 1.2rem 2.5rem;
+        border-radius: 1.5rem;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .nav-brand {
+        font-weight: 900;
+        font-size: 1.4rem;
+        color: #059669;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        position: absolute;
+        left: 2.5rem;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 1.25rem;
+        margin: 0 auto;
+    }
+
+    .admin-nav-item {
+        padding: 1rem 2.5rem;
+        border-radius: 14px;
+        text-decoration: none !important;
+        font-weight: 800;
+        color: #64748b;
+        font-size: 1.1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .admin-nav-item:hover {
+        background: #f8fafc;
+        color: #10b981;
+        transform: translateY(-2px);
+    }
+
+    .admin-nav-item.active {
+        background: #059669;
+        color: white !important;
+        box-shadow: 0 8px 20px rgba(5, 150, 105, 0.25);
+    }
+
+    /* Top Navigation */
+    .admin-top-nav {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .btn-top-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.25rem;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        color: #64748b !important;
+        font-weight: 600;
+        text-decoration: none !important;
+        transition: all 0.2s;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .btn-top-back:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        transform: translateX(-4px);
+        color: var(--primary) !important;
+    }
+
+    /* Shared Admin Header */
+    .admin-header-v2 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+        gap: 2rem;
+    }
+
+    .admin-title-v2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .admin-title-v2 i {
+        color: var(--primary);
+    }
+
+    .header-stats {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.25rem 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 120px;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--text-main);
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+    }
+
+    .stat-card.warning .stat-value {
+        color: #f59e0b;
+    }
+
+    /* Actions Bar */
+    .admin-actions-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        padding: 1.25rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+        border: 1px solid #f1f5f9;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .admin-search-wrapper {
+        position: relative;
+        flex: 1;
+        max-width: 600px;
+    }
+
+    .admin-search-wrapper i {
+        position: absolute;
+        left: 1.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+
+    .admin-search-wrapper input {
+        width: 100%;
+        padding: 0.85rem 1rem 0.85rem 3rem;
+        background: #f8fafc;
+        border: 2px solid #f1f5f9;
+        border-radius: 14px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .admin-search-wrapper input:focus {
+        background: white;
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.08);
+    }
+
+    .btn-outline-admin {
+        background: white;
+        border: 2px solid #f1f5f9;
+        color: var(--text-main) !important;
+        padding: 0.85rem 1.5rem;
+        border-radius: 14px;
+        font-weight: 700;
+        text-decoration: none !important;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s;
+    }
+
+    .btn-outline-admin:hover {
+        border-color: #cbd5e1;
+        background: #f8fafc;
+    }
+
+    /* Table Styles */
+    .admin-table-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9;
+        overflow: hidden;
+    }
+
+    .premium-admin-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .premium-admin-table th {
+        background: #f8fafc;
+        padding: 1.25rem 1.5rem;
+        text-align: left;
+        font-weight: 700;
+        color: #64748b;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .premium-admin-table td {
+        padding: 1.5rem;
+        border-bottom: 1px solid #f8fafc;
+        vertical-align: middle;
+    }
+
+    .premium-admin-table tr.order-parent-row:hover td {
+        background: #fbfdfc;
+        cursor: pointer;
+    }
+
+    .order-id-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .order-id {
+        font-weight: 700;
+        color: var(--text-main);
+        font-family: monospace;
+        font-size: 1rem;
+    }
+
+    .order-date {
+        font-size: 0.8rem;
+    }
+
+    .order-customer-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .customer-name {
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .customer-tel {
+        font-size: 0.8rem;
+    }
+
+    .order-location {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .location-city {
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .location-address {
+        font-size: 0.8rem;
+    }
+
+    .payment-badge {
+        display: inline-block;
+        padding: 0.35rem 0.75rem;
+        background: #f1f5f9;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #475569;
+    }
+
+    .order-total-val {
+        font-weight: 800;
+        color: var(--text-main);
+        font-size: 1.1rem;
+    }
+
+    /* Status Select */
+    .premium-select-wrapper {
+        position: relative;
+    }
+
+    .premium-status-select {
+        appearance: none;
+        padding: 0.5rem 2rem 0.5rem 0.75rem;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        border: 2px solid transparent;
+        cursor: pointer;
+        width: 140px;
+    }
+
+    .premium-status-select.delivering {
+        background: #fffbeb;
+        color: #d97706;
+        border-color: #fef3c7;
+    }
+
+    .premium-status-select.received {
+        background: #f0fdf4;
+        color: #16a34a;
+        border-color: #dcfce7;
+    }
+
+    .premium-status-select.cancelled {
+        background: #fef2f2;
+        color: #dc2626;
+        border-color: #fee2e2;
+    }
+
+    .premium-select-wrapper::after {
+        content: '\f107';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        opacity: 0.6;
+    }
+
+    .action-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: #f1f5f9;
+        color: var(--primary);
+    }
+
+    .action-btn:hover {
+        background: var(--primary);
+        color: white;
+    }
+
+    /* Details Styling */
+    .details-row td {
+        padding: 0 !important;
+        background: #f8fafc !important;
+    }
+
+    .order-expanded-details {
+        padding: 2rem;
+        border-top: 1px solid #e2e8f0;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 3rem;
+    }
+
+    .details-subtitle {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--text-main);
+    }
+
+    .details-subtitle i {
+        color: var(--primary);
+    }
+
+    .details-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .details-item {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.95rem;
+    }
+
+    .details-item span {
+        color: #64748b;
+    }
+
+    .details-item.total-row {
+        padding-top: 1rem;
+        border-top: 1px solid #e2e8f0;
+        font-size: 1.2rem;
+    }
+
+    .order-items-list {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        border: 1px solid #e2e8f0;
+    }
+
+    .order-item-product {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f5f9;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .order-item-product:last-child {
+        border-bottom: none;
+    }
+
+    .item-qty {
+        font-weight: 800;
+        color: var(--primary);
+        background: #f0fdf4;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+    }
+
+    .item-name {
+        flex: 1;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .item-price {
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    @media (max-width: 992px) {
+        .admin-header-v2 {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+
+        .header-stats {
+            width: 100%;
+        }
+
+        .stat-card {
+            flex: 1;
+        }
+
+        .details-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .admin-orders-container {
+            padding: 0 1rem;
+            margin: 1rem auto;
+        }
+
+        .admin-title-v2 {
+            font-size: 2rem;
+        }
+
+        .admin-actions-bar.wide-search-bar {
+            padding: 1rem;
+        }
+
+        /* Table to Mobile Cards */
+        .premium-admin-table thead {
+            display: none;
+        }
+
+        .premium-admin-table td {
+            display: block;
+            width: 100% !important;
+            text-align: left !important;
+            padding: 0.75rem 1.25rem;
+            border: none;
+        }
+
+        .premium-admin-table tr.order-parent-row {
+            display: block;
+            background: white;
+            border: 1px solid #f1f5f9;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .order-id-group {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f8fafc;
+            padding-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .premium-status-select {
+            width: 100%;
+        }
+
+        .table-actions {
+            justify-content: center;
+            width: 100%;
+        }
+
+        .action-btn.toggle-details {
+            width: 100%;
+            height: 44px;
+            border-radius: 12px;
+        }
+
+        .order-expanded-details {
+            padding: 1.5rem 1rem;
+        }
+
+        .order-item-product {
+            flex-wrap: wrap;
+        }
+
+        .item-name {
+            width: 100%;
+            flex: none;
+            margin-top: 0.25rem;
+            font-size: 0.85rem;
+            order: 3;
+        }
+    }
+</style>
+
+<script>
+    document.getElementById('adminOrderSearch').addEventListener('input', function (e) {
+        const term = e.target.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#orderTable tbody tr.order-parent-row');
+
+        rows.forEach(row => {
+            const id = row.getAttribute('data-id') || '';
+            const fullname = row.getAttribute('data-fullname') || '';
+            const city = row.getAttribute('data-city') || '';
+            const status = row.getAttribute('data-status') || '';
+            const textContent = row.textContent.toLowerCase();
+
+            if (term === '' || id.includes(term) || fullname.includes(term) || city.includes(term) || status.includes(term) || textContent.includes(term)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+                const details = document.getElementById('details-' + row.getAttribute('data-id'));
+                if (details) details.style.display = 'none';
+            }
+        });
+    });
+
+    function toggleDetails(id) {
+        const el = document.getElementById('details-' + id);
+        const parentRow = el.previousElementSibling;
+        if (el.style.display === 'none') {
+            el.style.display = 'table-row';
+        } else {
+            el.style.display = 'none';
+        }
+    }
+
+    // Allow clicking the parent row to toggle (except on the select/buttons)
+    document.querySelectorAll('.order-parent-row').forEach(row => {
+        row.addEventListener('click', function (e) {
+            if (!e.target.closest('form') && !e.target.closest('.action-btn')) {
+                toggleDetails(this.getAttribute('data-id'));
+            }
+        });
+    });
 </script>
 {% endblock %}

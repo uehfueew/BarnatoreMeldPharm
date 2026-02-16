@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- Security: CSRF Token for AJAX -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -13,6 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </head>
+
 <body data-user-logged-in="{{ 'true' if current_user.is_authenticated else 'false' }}">
 
     <!-- --- MOBILE HEADER --- -->
@@ -22,21 +24,26 @@
             <div class="mobile-header-top-right">
                 <a href="{{ url_for('main.wishlist') }}" class="mobile-wishlist-btn nav-icon-btn top-row-wishlist">
                     <i class="far fa-heart"></i>
-                    <span class="cart-badge-wish wishlist-count {{ 'd-none' if not wishlist_count or wishlist_count == 0 else '' }}">{{ wishlist_count if wishlist_count else 0 }}</span>
+                    <span
+                        class="cart-badge-wish wishlist-count {{ 'd-none' if not wishlist_count or wishlist_count == 0 else '' }}">{{
+                        wishlist_count if wishlist_count else 0 }}</span>
                 </a>
             </div>
         </div>
         <div class="mobile-search-row">
             <div class="mobile-search-container">
                 <form action="{{ url_for('main.products') }}" method="GET" class="mobile-search-form">
-                    <input type="text" name="search" id="productSearchMobile" placeholder="Kërko produkte..." autocomplete="off">
+                    <input type="text" name="search" id="productSearchMobile" placeholder="Kërko produkte..."
+                        autocomplete="off">
                     <button type="submit"><i class="fas fa-search"></i></button>
                 </form>
                 <div id="searchPreviewMobile" class="search-preview-dropdown"></div>
             </div>
             <a href="{{ url_for('main.wishlist') }}" class="mobile-wishlist-btn nav-icon-btn search-row-wishlist">
                 <i class="far fa-heart"></i>
-                <span class="cart-badge-wish wishlist-count {{ 'd-none' if not wishlist_count or wishlist_count == 0 else '' }}">{{ wishlist_count if wishlist_count else 0 }}</span>
+                <span
+                    class="cart-badge-wish wishlist-count {{ 'd-none' if not wishlist_count or wishlist_count == 0 else '' }}">{{
+                    wishlist_count if wishlist_count else 0 }}</span>
             </a>
         </div>
     </header>
@@ -50,7 +57,8 @@
             <!-- Center: Search Bar -->
             <div class="desktop-search">
                 <form action="{{ url_for('main.products') }}" method="GET">
-                    <input type="text" name="search" id="productSearch" placeholder="Kërko produkte..." autocomplete="off">
+                    <input type="text" name="search" id="productSearch" placeholder="Kërko produkte..."
+                        autocomplete="off">
                     <button type="submit"><i class="fas fa-search"></i></button>
                 </form>
                 <div id="searchPreview" class="search-preview-dropdown"></div>
@@ -59,18 +67,23 @@
             <!-- Right: Icons & Profile -->
             <div class="desktop-nav-right">
                 <!-- Wishlist -->
-                <a href="{{ url_for('main.wishlist') }}" class="nav-icon-btn wishlist-btn-desktop" title="Lista e dëshirave">
+                <a href="{{ url_for('main.wishlist') }}" class="nav-icon-btn wishlist-btn-desktop"
+                    title="Lista e dëshirave">
                     <i class="far fa-heart"></i>
-                    <span class="cart-badge-wish wishlist-count {{ 'd-none' if not wishlist_count or wishlist_count == 0 else '' }}">{{ wishlist_count if wishlist_count else 0 }}</span>
+                    <span
+                        class="cart-badge-wish wishlist-count {{ 'd-none' if not wishlist_count or wishlist_count == 0 else '' }}">{{
+                        wishlist_count if wishlist_count else 0 }}</span>
                 </a>
 
                 <!-- Cart -->
                 <div class="cart-dropdown-wrapper">
-                    <button type="button" class="nav-icon-btn cart-btn-desktop" title="Shporta" id="cartBadgeBtn" onclick="toggleMiniCart(event)">
+                    <button type="button" class="nav-icon-btn cart-btn-desktop" title="Shporta" id="cartBadgeBtn"
+                        onclick="toggleMiniCart(event)">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-badge {{ 'd-none' if not cart_count or cart_count == 0 else '' }}">{{ cart_count if cart_count else 0 }}</span>
+                        <span class="cart-badge {{ 'd-none' if not cart_count or cart_count == 0 else '' }}">{{
+                            cart_count if cart_count else 0 }}</span>
                     </button>
-                    
+
                     <div class="mini-cart-dropdown" id="miniCart">
                         <div class="mini-cart-header">
                             <span class="items-count-text">{{ cart_count }} produkt(e)</span>
@@ -78,37 +91,45 @@
                                 <button class="clear-cart-btn-mini" onclick="clearCart(event)">
                                     <i class="far fa-trash-alt"></i> Fshij të gjitha
                                 </button>
-                                <button class="btn-close-mini" onclick="toggleMiniCart(event)"><i class="fas fa-times"></i></button>
+                                <button class="btn-close-mini" onclick="toggleMiniCart(event)"><i
+                                        class="fas fa-times"></i></button>
                             </div>
                         </div>
-                        
+
                         <div class="mini-cart-items">
                             {% for item in cart_items %}
-                            <div class="mini-cart-item" data-id="{{ item._id }}" onclick="window.location.href='/product/{{ item._id }}';">
-                                <a href="{{ url_for('main.product_detail', product_id=item._id) }}" class="mini-cart-img-wrapper" onclick="event.stopPropagation()">
+                            <div class="mini-cart-item" data-id="{{ item._id }}"
+                                onclick="window.location.href='/product/{{ item._id }}';">
+                                <a href="{{ url_for('main.product_detail', product_id=item._id) }}"
+                                    class="mini-cart-img-wrapper" onclick="event.stopPropagation()">
                                     <img src="{{ item.image_url }}" alt="{{ item.name }}" class="mini-cart-img">
                                 </a>
                                 <div class="mini-cart-info">
-                                    <a href="{{ url_for('main.product_detail', product_id=item._id) }}" class="mini-item-name" onclick="event.stopPropagation()">{{ item.name }}</a>
+                                    <a href="{{ url_for('main.product_detail', product_id=item._id) }}"
+                                        class="mini-item-name" onclick="event.stopPropagation()">{{ item.name }}</a>
                                     <div class="mini-item-meta">
-                                        <span class="mini-item-price">€{{ "%.2f"|format(item.discount_price or item.price) }}</span>
+                                        <span class="mini-item-price">€{{ "%.2f"|format(item.discount_price or
+                                            item.price) }}</span>
                                         <div class="mini-qty-control" onclick="event.stopPropagation()">
-                                            <button class="qty-control-btn minus" onclick="updateMiniQty(event, '{{ item._id }}', 'decrease')">
+                                            <button class="qty-control-btn minus"
+                                                onclick="updateMiniQty(event, '{{ item._id }}', 'decrease')">
                                                 <i class="fas fa-minus"></i>
                                             </button>
                                             <span class="qty-val">{{ item.quantity }}</span>
-                                            <button class="qty-control-btn plus" onclick="updateMiniQty(event, '{{ item._id }}', 'increase')">
+                                            <button class="qty-control-btn plus"
+                                                onclick="updateMiniQty(event, '{{ item._id }}', 'increase')">
                                                 <i class="fas fa-plus"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
-                                <button class="remove-item-btn" onclick="updateMiniQty(event, '{{ item._id }}', 'remove')" title="Hiqe">
+                                <button class="remove-item-btn"
+                                    onclick="updateMiniQty(event, '{{ item._id }}', 'remove')" title="Hiqe">
                                     <i class="far fa-trash-alt"></i>
                                 </button>
                             </div>
                             {% endfor %}
-                            
+
                             {% if not cart_items %}
                             <div class="empty-mini-cart">
                                 <i class="fas fa-shopping-basket fa-3x mb-3"></i>
@@ -116,7 +137,7 @@
                             </div>
                             {% endif %}
                         </div>
-                        
+
                         <div class="mini-cart-footer">
                             <a href="{{ url_for('cart.view_cart') }}" class="btn-go-to-cart">
                                 SHKO NË SHPORTË ({{ "%.2f"|format(cart_total) }} €)
@@ -128,31 +149,37 @@
                 <!-- Profile Section -->
                 <div class="profile-section">
                     {% if current_user.is_authenticated %}
-                        <button class="profile-dropdown-btn" onclick="toggleProfileDropdown()">
-                            <i class="fas fa-user-circle profile-main-icon"></i>
-                            <span class="user-name">{{ current_user.first_name if current_user.first_name else current_user.email.split('@')[0] }}</span>
-                            <i class="fas fa-chevron-down chevron"></i>
-                        </button>
-                        
-                        <!-- Dropdown Menu -->
-                        <div class="profile-dropdown" id="desktopProfileDropdown">
-                            <div class="dropdown-header">
-                                <p class="u-name">{{ current_user.fullname }}</p>
-                                <p class="u-email">{{ current_user.email }}</p>
-                            </div>
-                            <ul class="dropdown-links">
-                                <li><a href="{{ url_for('main.profile') }}"><i class="fas fa-user-circle"></i> Detajet e Profilit</a></li>
-                                <li><a href="{{ url_for('main.address') }}"><i class="fas fa-map-marker-alt"></i> Adresa</a></li>
-                                <li><a href="{{ url_for('main.orders') }}"><i class="fas fa-box"></i> Porositë</a></li>
-                                <li><a href="{{ url_for('main.wishlist') }}"><i class="far fa-heart"></i> Lista e Dëshirave</a></li>
-                                {% if current_user.is_admin %}
-                                    <li class="admin-link"><a href="{{ url_for('admin.dashboard') }}"><i class="fas fa-shield-alt"></i> Admin Panel</a></li>
-                                {% endif %}
-                                <li class="logout-link"><a href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt"></i> Dil</a></li>
-                            </ul>
+                    <button class="profile-dropdown-btn" onclick="toggleProfileDropdown()">
+                        <i class="fas fa-user-circle profile-main-icon"></i>
+                        <span class="user-name">{{ current_user.first_name if current_user.first_name else
+                            current_user.email.split('@')[0] }}</span>
+                        <i class="fas fa-chevron-down chevron"></i>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="profile-dropdown" id="desktopProfileDropdown">
+                        <div class="dropdown-header">
+                            <p class="u-name">{{ current_user.fullname }}</p>
+                            <p class="u-email">{{ current_user.email }}</p>
                         </div>
+                        <ul class="dropdown-links">
+                            <li><a href="{{ url_for('main.profile') }}"><i class="fas fa-user-circle"></i> Detajet e
+                                    Profilit</a></li>
+                            <li><a href="{{ url_for('main.address') }}"><i class="fas fa-map-marker-alt"></i> Adresa</a>
+                            </li>
+                            <li><a href="{{ url_for('main.orders') }}"><i class="fas fa-box"></i> Porositë</a></li>
+                            <li><a href="{{ url_for('main.wishlist') }}"><i class="far fa-heart"></i> Lista e
+                                    Dëshirave</a></li>
+                            {% if current_user.is_admin %}
+                            <li class="admin-link"><a href="{{ url_for('admin.dashboard') }}"><i
+                                        class="fas fa-shield-alt"></i> Admin Panel</a></li>
+                            {% endif %}
+                            <li class="logout-link"><a href="{{ url_for('auth.logout') }}"><i
+                                        class="fas fa-sign-out-alt"></i> Dil</a></li>
+                        </ul>
+                    </div>
                     {% else %}
-                        <a href="{{ url_for('auth.login') }}" class="login-text-btn">Kyçu</a>
+                    <a href="{{ url_for('auth.login') }}" class="login-text-btn">Kyçu</a>
                     {% endif %}
                 </div>
             </div>
@@ -161,7 +188,8 @@
 
     <!-- --- MOBILE BOTTOM NAVIGATION --- -->
     <nav class="mobile-bottom-nav">
-        <a href="{{ url_for('main.index') }}" class="bottom-nav-item {{ 'active' if request.endpoint == 'main.index' }}" onclick="closeCategoriesModal(); closeCartModal(); closeProfileModal();">
+        <a href="{{ url_for('main.index') }}" class="bottom-nav-item {{ 'active' if request.endpoint == 'main.index' }}"
+            onclick="closeCategoriesModal(); closeCartModal(); closeProfileModal();">
             <i class="fas fa-home"></i>
             <span>Ballina</span>
         </a>
@@ -172,7 +200,9 @@
         <a href="{{ url_for('cart.view_cart') }}" class="bottom-nav-item">
             <div class="icon-wrapper">
                 <i class="fas fa-shopping-cart"></i>
-                <span class="mobile-cart-badge cart-count-badge {{ 'd-none' if not cart_count or cart_count == 0 else '' }}">{{ cart_count if cart_count else 0 }}</span>
+                <span
+                    class="mobile-cart-badge cart-count-badge {{ 'd-none' if not cart_count or cart_count == 0 else '' }}">{{
+                    cart_count if cart_count else 0 }}</span>
             </div>
             <span>Shporta</span>
         </a>
@@ -191,20 +221,23 @@
         <div class="modal-content">
             <ul class="mobile-cat-list">
                 {% if global_categories %}
-                    {% for category, subcats in global_categories.items() %}
-                    <li class="mobile-cat-item">
-                        <div class="cat-main" onclick="toggleSubcats(this)">
-                            <span>{{ category }}</span>
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                        <ul class="mobile-subcat-list">
-                            <li><a href="{{ url_for('main.products', category=category) }}" style="font-weight: 700; color: var(--primary);">Shiko të gjitha</a></li>
-                            {% for sub in subcats %}
-                            <li><a href="{{ url_for('main.products', category=category, subcategory=sub) }}">{{ sub }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                    {% endfor %}
+                {% for category, subcats in global_categories.items() %}
+                <li class="mobile-cat-item">
+                    <div class="cat-main" onclick="toggleSubcats(this)">
+                        <span>{{ category }}</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <ul class="mobile-subcat-list">
+                        <li><a href="{{ url_for('main.products', category=category) }}" onclick="closeCategoriesModal()"
+                                style="font-weight: 700; color: var(--primary);">Shiko të gjitha</a></li>
+                        {% for sub in subcats %}
+                        <li><a href="{{ url_for('main.products', category=category, subcategory=sub) }}"
+                                onclick="closeCategoriesModal()">{{ sub }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
                 {% endif %}
             </ul>
         </div>
@@ -219,45 +252,45 @@
         <div class="modal-content">
             <div class="mobile-cart-items-list">
                 {% if cart_items %}
-                    <div class="modal-items-header">
-                        <span class="items-count-badge-mobile">{{ cart_count }} produkt(e)</span>
-                        <button onclick="clearCart(event)" class="btn-clear-mini">
-                            <i class="far fa-trash-alt"></i> Pastro
-                        </button>
-                    </div>
+                <div class="modal-items-header">
+                    <span class="items-count-badge-mobile">{{ cart_count }} produkt(e)</span>
+                    <button onclick="clearCart(event)" class="btn-clear-mini">
+                        <i class="far fa-trash-alt"></i> Pastro
+                    </button>
+                </div>
 
-                    {% for item in cart_items %}
-                    <div class="mobile-mini-cart-item" data-id="{{ item._id }}">
-                        <div class="item-main">
-                            <img src="{{ item.image_url }}" alt="{{ item.name }}" class="item-img">
-                            <div class="item-info">
-                                <h4 class="item-name">{{ item.name }}</h4>
-                                <div class="item-meta">
-                                    <span class="meta-tag cat">{{ item.category }}</span>
-                                    {% if item.size %}<span class="meta-tag">{{ item.size }}</span>{% endif %}
+                {% for item in cart_items %}
+                <div class="mobile-mini-cart-item" data-id="{{ item._id }}">
+                    <div class="item-main">
+                        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="item-img">
+                        <div class="item-info">
+                            <h4 class="item-name">{{ item.name }}</h4>
+                            <div class="item-meta">
+                                <span class="meta-tag cat">{{ item.category }}</span>
+                                {% if item.size %}<span class="meta-tag">{{ item.size }}</span>{% endif %}
+                            </div>
+                            <div class="item-price-row">
+                                <div class="price-stack">
+                                    {% if item.discount_price %}
+                                    <span class="price-curr">€{{ item.discount_price }}</span>
+                                    <span class="price-old">€{{ item.price }}</span>
+                                    {% else %}
+                                    <span class="price-curr">€{{ item.price }}</span>
+                                    {% endif %}
                                 </div>
-                                <div class="item-price-row">
-                                    <div class="price-stack">
-                                        {% if item.discount_price %}
-                                            <span class="price-curr">€{{ item.discount_price }}</span>
-                                            <span class="price-old">€{{ item.price }}</span>
-                                        {% else %}
-                                            <span class="price-curr">€{{ item.price }}</span>
-                                        {% endif %}
-                                    </div>
-                                    <div class="item-qty-selector">
-                                        <button onclick="updateMiniQty(event, '{{ item._id }}', 'decrease')">-</button>
-                                        <span class="qty-val">{{ item.quantity }}</span>
-                                        <button onclick="updateMiniQty(event, '{{ item._id }}', 'increase')">+</button>
-                                    </div>
+                                <div class="item-qty-selector">
+                                    <button onclick="updateMiniQty(event, '{{ item._id }}', 'decrease')">-</button>
+                                    <span class="qty-val">{{ item.quantity }}</span>
+                                    <button onclick="updateMiniQty(event, '{{ item._id }}', 'increase')">+</button>
                                 </div>
                             </div>
                         </div>
-                        <button class="item-remove-btn" onclick="updateMiniQty(event, '{{ item._id }}', 'remove')">
-                            <i class="fas fa-times"></i>
-                        </button>
                     </div>
-                    {% endfor %}
+                    <button class="item-remove-btn" onclick="updateMiniQty(event, '{{ item._id }}', 'remove')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                {% endfor %}
                 {% endif %}
 
                 {% if not cart_items %}
@@ -272,13 +305,14 @@
                 {% endif %}
             </div>
         </div>
-        
+
         {% if cart_items %}
         <div class="modal-footer-cart">
             <div class="summary-details">
                 <div class="summary-line">
                     <span>Transporti:</span>
-                    <span class="delivery-fee">{{ "€%.2f"|format(delivery_fee) if delivery_fee > 0 else "Falas" }}</span>
+                    <span class="delivery-fee">{{ "€%.2f"|format(delivery_fee) if delivery_fee > 0 else "Falas"
+                        }}</span>
                 </div>
                 <div class="summary-line total">
                     <span>Totali:</span>
@@ -301,31 +335,34 @@
         </div>
         <div class="modal-content profile-modal-content">
             {% if current_user.is_authenticated %}
-                <div class="user-info-card">
-                    <div class="avatar-circle"><i class="fas fa-user-circle"></i></div>
-                    <div class="user-details">
-                        <h4>{{ current_user.fullname }}</h4>
-                        <p>{{ current_user.email }}</p>
-                    </div>
+            <div class="user-info-card">
+                <div class="avatar-circle"><i class="fas fa-user-circle"></i></div>
+                <div class="user-details">
+                    <h4>{{ current_user.fullname }}</h4>
+                    <p>{{ current_user.email }}</p>
                 </div>
-                
-                <ul class="mobile-profile-links">
-                    <li><a href="{{ url_for('main.profile') }}"><i class="fas fa-user-circle"></i> Detajet e Profilit</a></li>
-                    <li><a href="{{ url_for('main.address') }}"><i class="fas fa-map-marker-alt"></i> Adresa</a></li>
-                    <li><a href="{{ url_for('main.orders') }}"><i class="fas fa-box"></i> Porositë e mia</a></li>
-                    <li><a href="{{ url_for('main.wishlist') }}"><i class="far fa-heart"></i> Lista e Dëshirave</a></li>
-                    {% if current_user.is_admin %}
-                         <li class="admin-item"><a href="{{ url_for('admin.dashboard') }}"><i class="fas fa-shield-alt"></i> Admin Panel</a></li>
-                    {% endif %}
-                    <li><a href="{{ url_for('auth.logout') }}" style="color: black;"><i class="fas fa-sign-out-alt"></i> Dil</a></li>
-                </ul>
+            </div>
+
+            <ul class="mobile-profile-links">
+                <li><a href="{{ url_for('main.profile') }}"><i class="fas fa-user-circle"></i> Detajet e Profilit</a>
+                </li>
+                <li><a href="{{ url_for('main.address') }}"><i class="fas fa-map-marker-alt"></i> Adresa</a></li>
+                <li><a href="{{ url_for('main.orders') }}"><i class="fas fa-box"></i> Porositë e mia</a></li>
+                <li><a href="{{ url_for('main.wishlist') }}"><i class="far fa-heart"></i> Lista e Dëshirave</a></li>
+                {% if current_user.is_admin %}
+                <li class="admin-item"><a href="{{ url_for('admin.dashboard') }}"><i class="fas fa-shield-alt"></i>
+                        Admin Panel</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('auth.logout') }}" style="color: black;"><i class="fas fa-sign-out-alt"></i>
+                        Dil</a></li>
+            </ul>
             {% else %}
-                <div class="not-logged-in-state">
-                    <i class="fas fa-user-lock"></i>
-                    <p>Nuk jeni i kyçur</p>
-                    <a href="{{ url_for('auth.login') }}" class="btn-primary-mobile">Kyçu</a>
-                    <a href="{{ url_for('auth.register') }}" class="btn-secondary-mobile">Regjistrohu</a>
-                </div>
+            <div class="not-logged-in-state">
+                <i class="fas fa-user-lock"></i>
+                <p>Nuk jeni i kyçur</p>
+                <a href="{{ url_for('auth.login') }}" class="btn-primary-mobile">Kyçu</a>
+                <a href="{{ url_for('auth.register') }}" class="btn-secondary-mobile">Regjistrohu</a>
+            </div>
             {% endif %}
         </div>
     </div>
@@ -341,11 +378,13 @@
     <!-- Floating Contact Button -->
     <div class="floating-contact-wrapper">
         <div class="contact-options" id="contactOptions">
-            <a href="https://www.facebook.com/profile.php?id=100067645081992" target="_blank" class="contact-option facebook" title="Na vizitoni në Facebook">
+            <a href="https://www.facebook.com/profile.php?id=100067645081992" target="_blank"
+                class="contact-option facebook" title="Na vizitoni në Facebook">
                 <i class="fab fa-facebook"></i>
                 <span>Facebook</span>
             </a>
-            <a href="https://www.instagram.com/barnatoremeld/" target="_blank" class="contact-option instagram" title="Na shkruani në Instagram">
+            <a href="https://www.instagram.com/barnatoremeld/" target="_blank" class="contact-option instagram"
+                title="Na shkruani në Instagram">
                 <i class="fab fa-instagram"></i>
                 <span>Instagram</span>
             </a>
@@ -359,136 +398,143 @@
     </div>
 
     <script>
-    function toggleContactMenu() {
-        const wrapper = document.querySelector('.floating-contact-wrapper');
-        wrapper.classList.toggle('active');
-    }
-    
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-        const wrapper = document.querySelector('.floating-contact-wrapper');
-        if (!wrapper.contains(e.target) && wrapper.classList.contains('active')) {
-            wrapper.classList.remove('active');
+        function toggleContactMenu() {
+            const wrapper = document.querySelector('.floating-contact-wrapper');
+            wrapper.classList.toggle('active');
         }
-    });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const wrapper = document.querySelector('.floating-contact-wrapper');
+            if (!wrapper.contains(e.target) && wrapper.classList.contains('active')) {
+                wrapper.classList.remove('active');
+            }
+        });
     </script>
 
     <style>
-    .floating-contact-wrapper {
-        position: fixed;
-        right: 30px;
-        bottom: 30px;
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 15px;
-    }
-
-    .contact-main-btn {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: var(--primary);
-        color: white;
-        border: none;
-        box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        position: relative;
-    }
-
-    .contact-main-btn:hover {
-        transform: scale(1.1);
-        background: var(--primary-dark);
-    }
-
-    .contact-main-btn .close-icon {
-        display: none;
-        position: absolute;
-    }
-
-    .floating-contact-wrapper.active .contact-main-btn {
-        background: #64748b;
-        transform: rotate(90deg);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-
-    .floating-contact-wrapper.active .contact-main-btn .fas:first-child {
-        display: none;
-    }
-
-    .floating-contact-wrapper.active .contact-main-btn .close-icon {
-        display: block;
-    }
-
-    .contact-options {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 12px;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(20px);
-        transition: all 0.3s ease;
-    }
-
-    .floating-contact-wrapper.active .contact-options {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-    }
-
-    .contact-option {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 10px 20px;
-        border-radius: 50px;
-        color: white;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.9rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        transition: all 0.2s ease;
-        white-space: nowrap;
-        width: 150px; /* Fixed width for uniform size */
-        justify-content: flex-start;
-    }
-
-    .contact-option:hover {
-        transform: translateX(-5px);
-        filter: brightness(1.1);
-    }
-
-    .contact-option.facebook { background: #1877F2; }
-    .contact-option.instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
-
-    @media (max-width: 768px) {
         .floating-contact-wrapper {
-            right: 20px;
-            bottom: 85px; /* Above mobile bottom nav */
-        }
-        
-        /* Adjust for Product Detail sticky bar */
-        body.has-sticky-bar .floating-contact-wrapper {
-            bottom: 140px;
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 15px;
         }
 
         .contact-main-btn {
-            width: 50px;
-            height: 50px;
-            font-size: 1.2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
         }
-        
-        .option-label {
-            font-size: 0.8rem;
+
+        .contact-main-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary-dark);
         }
-    }
+
+        .contact-main-btn .close-icon {
+            display: none;
+            position: absolute;
+        }
+
+        .floating-contact-wrapper.active .contact-main-btn {
+            background: #64748b;
+            transform: rotate(90deg);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .floating-contact-wrapper.active .contact-main-btn .fas:first-child {
+            display: none;
+        }
+
+        .floating-contact-wrapper.active .contact-main-btn .close-icon {
+            display: block;
+        }
+
+        .contact-options {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .floating-contact-wrapper.active .contact-options {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .contact-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            width: 150px;
+            /* Fixed width for uniform size */
+            justify-content: flex-start;
+        }
+
+        .contact-option:hover {
+            transform: translateX(-5px);
+            filter: brightness(1.1);
+        }
+
+        .contact-option.facebook {
+            background: #1877F2;
+        }
+
+        .contact-option.instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+
+        @media (max-width: 768px) {
+            .floating-contact-wrapper {
+                right: 20px;
+                bottom: 85px;
+                /* Above mobile bottom nav */
+            }
+
+            /* Adjust for Product Detail sticky bar */
+            body.has-sticky-bar .floating-contact-wrapper {
+                bottom: 140px;
+            }
+
+            .contact-main-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .option-label {
+                font-size: 0.8rem;
+            }
+        }
     </style>
 
     {% block footer %}
@@ -499,7 +545,8 @@
                     <h3>Meld Pharm</h3>
                     <p>Burimi juaj i besuar për përkujdesje ndaj lëkurës dhe vitamina.</p>
                     <div class="opening-hours" style="margin-top: 1.5rem;">
-                        <h4 style="color: white; font-size: 1rem; margin-bottom: 0.5rem;"><i class="far fa-clock"></i> Orari i Punës</h4>
+                        <h4 style="color: white; font-size: 1rem; margin-bottom: 0.5rem;"><i class="far fa-clock"></i>
+                            Orari i Punës</h4>
                         <p style="margin-bottom: 0.25rem;">E Hënë - E Shtunë: <strong>08:00 - 22:00</strong></p>
                         <p>E Diel: <strong>08:00 - 21:00</strong></p>
                     </div>
@@ -508,30 +555,31 @@
                     <h3>Kontakt</h3>
                     <p><strong>Lokacioni:</strong><br>72 Eqrem Çabej, Prishtina 10000</p>
                     <p><strong>Email:</strong><br>meldpharm@gmail.com</p>
-                    
-                    <p style="margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Na kontaktoni në mediat sociale:</p>
+
+                    <p style="margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Na kontaktoni në mediat
+                        sociale:</p>
                     <div style="display: flex; gap: 1rem;">
-                        <a href="https://www.instagram.com/barnatoremeld/" target="_blank" class="social-icon instagram" title="Instagram">
+                        <a href="https://www.instagram.com/barnatoremeld/" target="_blank" class="social-icon instagram"
+                            title="Instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="https://www.facebook.com/profile.php?id=100067645081992" target="_blank" class="social-icon facebook" title="Facebook">
+                        <a href="https://www.facebook.com/profile.php?id=100067645081992" target="_blank"
+                            class="social-icon facebook" title="Facebook">
                             <i class="fab fa-facebook"></i>
                         </a>
-                        <a href="https://www.tiktok.com/@barnatore.meld.ph" target="_blank" class="social-icon tiktok" title="TikTok">
+                        <a href="https://www.tiktok.com/@barnatore.meld.ph" target="_blank" class="social-icon tiktok"
+                            title="TikTok">
                             <i class="fab fa-tiktok"></i>
                         </a>
                     </div>
                 </div>
                 <div class="footer-section">
                     <h3>Lokacioni</h3>
-                    <div class="footer-map-container" style="width: 100%; height: 200px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                        <iframe 
+                    <div class="footer-map-container"
+                        style="width: 100%; height: 200px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <iframe
                             src="https://maps.google.com/maps?q=72%20Eqrem%20Çabej,%20Prishtina&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                            width="100%" 
-                            height="100%" 
-                            style="border:0;" 
-                            allowfullscreen="" 
-                            loading="lazy" 
+                            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade">
                         </iframe>
                     </div>
@@ -545,25 +593,66 @@
     {% endblock %}
 
     <!-- Toast Logic for Flask Flash Messages -->
-    <div id="flash-messages" data-messages='{{ get_flashed_messages(with_categories=true) | tojson | safe }}' style="display: none;"></div>
+    <div id="flash-messages" data-messages='{{ get_flashed_messages(with_categories=true) | tojson | safe }}'
+        style="display: none;"></div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-             const flashEl = document.getElementById('flash-messages');
-             if (flashEl) {
-                 try {
-                     const messages = JSON.parse(flashEl.dataset.messages);
-                     messages.forEach(([category, message], index) => {
-                         setTimeout(() => {
-                             if (typeof showToast === 'function') {
+            const flashEl = document.getElementById('flash-messages');
+            if (flashEl) {
+                try {
+                    const messages = JSON.parse(flashEl.dataset.messages);
+                    messages.forEach(([category, message], index) => {
+                        setTimeout(() => {
+                            if (typeof showToast === 'function') {
                                 showToast(message, category);
-                             }
-                         }, index * 500);
-                     });
-                 } catch (e) {
-                     console.error("Failed to parse flash messages:", e);
-                 }
-             }
+                            }
+                        }, index * 500);
+                    });
+                } catch (e) {
+                    console.error("Failed to parse flash messages:", e);
+                }
+            }
+        });
+    </script>
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top" title="Kthehu në fillim">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script>
+        // Back to Top functionality
+        const backToTopBtn = document.getElementById('backToTop');
+        if (backToTopBtn) {
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrolled > 400) {
+                    backToTopBtn.classList.add('visible');
+                } else {
+                    backToTopBtn.classList.remove('visible');
+                }
+            });
+            backToTopBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    </script>
+    <script>
+        // Global Image Loading Smoothness
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('img').forEach(img => {
+                if (!img.complete) {
+                    img.classList.add('loading');
+                    img.addEventListener('load', () => {
+                        img.classList.remove('loading');
+                        img.classList.add('loaded');
+                    });
+                } else {
+                    img.classList.add('loaded');
+                }
+            });
         });
     </script>
 </body>
+
 </html>

@@ -120,7 +120,10 @@ def inject_cart_count():
         wish_count = 0
         try:
             if current_user.is_authenticated:
-                wish_count = mongo.db.products.count_documents({"favorites": str(current_user.id)})
+                wish_count = mongo.db.products.count_documents({
+                    "favorites": str(current_user.id),
+                    "is_deleted": {"$ne": True}
+                })
             else:
                 wish_count = len(session.get('liked_products', []))
         except Exception as we:

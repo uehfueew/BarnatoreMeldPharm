@@ -3,107 +3,611 @@
 {% block title %}{{ 'Ndrysho Produktin' if product else 'Shto Produkt Të Ri' }}{% endblock %}
 
 {% block content %}
-<div class="form-container section-container">
-    <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 2rem;">{{ 'Ndrysho Produktin' if product else 'Shto Produkt Të Ri' }}</h2>
-    
-    <form method="POST" class="auth-form product-form">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-        <div class="form-group">
-            <label for="name">Emri i Produktit</label>
-            <input type="text" id="name" name="name" class="form-control" value="{{ product.name if product else '' }}" required>
+<div class="admin-page-container">
+    <!-- Admin Navigation -->
+    <nav class="admin-v3-nav">
+        <div class="nav-brand">
+            <i class="fas fa-user-shield"></i> Admin Paneli
         </div>
+        <div class="nav-links">
+            <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-item">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a href="{{ url_for('admin.orders') }}" class="admin-nav-item">
+                <i class="fas fa-shopping-bag"></i> Porositë
+            </a>
+            <a href="{{ url_for('admin.bulk_offers') }}" class="admin-nav-item">
+                <i class="fas fa-tags"></i> Ofertat në Masë
+            </a>
+            <a href="{{ url_for('admin.dashboard') }}#analytics" class="admin-nav-item">
+                <i class="fas fa-chart-pie"></i> Analitika
+            </a>
+        </div>
+        <div class="nav-right-spacer"></div>
+    </nav>
 
-        <div class="form-group">
-            <label for="brand">Marka (Brand)</label>
-            <input type="text" id="brand" name="brand" class="form-control" value="{{ product.brand if product else '' }}" required placeholder="Psh: Eucerin, Vichy, La Roche-Posay">
+    <div class="admin-header">
+        <div class="admin-header-content">
+            <h2 class="admin-title">
+                <i class="fas fa-box-open"></i>
+                {{ 'Ndrysho Produktin' if product else 'Shto Produkt Të Ri' }}
+            </h2>
+            <p class="admin-subtitle text-muted">Plotësoni të dhënat më poshtë për të menaxhuar katalogun e produkteve.
+            </p>
         </div>
-        
-        <div class="form-group">
-            <label for="category">Kategoria Kryesore</label>
-            <select id="category" name="category" class="form-control" required>
-                <option value="">Zgjidh Kategorinë</option>
-                {% for cat_name in categories.keys() %}
-                    <option value="{{ cat_name }}" {% if product and product.category == cat_name %}selected{% endif %}>{{ cat_name }}</option>
-                {% endfor %}
-            </select>
-        </div>
+    </div>
 
-        <div class="form-group">
-            <label for="subcategory">Nënkategoria</label>
-            <select id="subcategory" name="subcategory" class="form-control" required>
-                <option value="">Së pari zgjidhni kategorinë</option>
-                {% if product and product.subcategory %}
-                    <option value="{{ product.subcategory }}" selected>{{ product.subcategory }}</option>
-                {% endif %}
-            </select>
-        </div>
+    <form method="POST" class="premium-product-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
-        <div class="form-group">
-            <label for="size">Sasia (p.sh. 50ml, 200g, 30 Kapsula)</label>
-            <input type="text" id="size" name="size" class="form-control" value="{{ product.size if product else '' }}" placeholder="Psh: 50ml, 100g">
-        </div>
-        
-        <div class="form-group">
-            <label for="price">Çmimi (€)</label>
-            <input type="number" id="price" name="price" step="0.01" min="0" class="form-control" 
-                   value="{{ product.price if product else '' }}" 
-                   required placeholder="0.00">
-        </div>
-        
-        <div class="form-group">
-            <label for="discount_price">Çmimi me Zbritje (Opsionale)</label>
-            <input type="number" id="discount_price" name="discount_price" step="0.01" min="0" class="form-control" 
-                   value="{{ product.discount_price if product else '' }}"
-                   placeholder="0.00">
-        </div>
+        <div class="form-grid">
+            <!-- Left Column: Basic Info & Pricing -->
+            <div class="form-column">
+                <div class="form-card">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle"></i> Informacione Bazë
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="name">Emri i Produktit</label>
+                            <input type="text" id="name" name="name" class="form-control premium-input"
+                                value="{{ product.name if product else '' }}" required
+                                placeholder="Psh: Eucerin Hyaluron-Filler Day Cream">
+                        </div>
 
-        <div class="form-group {% if not product or not product.discount_price %}d-none{% endif %}" id="discount-until-group">
-            <label for="discount_until">Data kur përfundon oferta (Opsionale)</label>
-            {% set discount_val = "" %}
-            {% if product and product.discount_until %}
-                {% if product.discount_until.strftime %}
-                    {% set discount_val = product.discount_until.strftime('%Y-%m-%d') %}
-                {% else %}
-                    {% set discount_val = product.discount_until[:10] %}
-                {% endif %}
-            {% endif %}
-            <input type="date" id="discount_until" name="discount_until" class="form-control" value="{{ discount_val }}">
-            <small class="form-text text-muted">Pas kësaj date, produkti do të kthehet automatikisht në çmimin normal.</small>
-        </div>
-        
-        <div class="form-group">
-            <label for="image_url">Linku i imazhit kryesor (URL)</label>
-            <input type="url" id="image_url" name="image_url" class="form-control" value="{{ product.image_url if product else '' }}" required placeholder="https://...">
-        </div>
+                        <div class="form-group">
+                            <label for="brand">Marka (Brand)</label>
+                            <input type="text" id="brand" name="brand" class="form-control premium-input"
+                                value="{{ product.brand if product else '' }}" required
+                                placeholder="Psh: Eucerin, Vichy, La Roche-Posay">
+                        </div>
 
-        <div class="form-group">
-            <label for="additional_images">Imazhe shtesë (URL, një në cdo rresht)</label>
-            <textarea id="additional_images" name="additional_images" class="form-control" rows="4" placeholder="https://example.com/image2.jpg&#10;https://example.com/image3.jpg">{% if product and product.images %}{% for img in product.images %}{% if img != product.image_url %}{{ img }}&#10;{% endif %}{% endfor %}{% endif %}</textarea>
-        </div>
-        
-        <div class="form-group">
-            <label for="description">Përshkrimi</label>
-            <textarea id="description" name="description" class="form-control" rows="4">{{ product.description if product else '' }}</textarea>
-        </div>
-        
-        <div class="form-group checkbox-group">
-            <input type="checkbox" id="in_stock" name="in_stock" {% if product is none or product.in_stock %}checked{% endif %}>
-            <label for="in_stock">Në Stok?</label>
-        </div>
-        
-        <div class="form-group checkbox-group">
-            <input type="checkbox" id="featured" name="featured" {% if product and product.featured %}checked{% endif %}>
-            <label for="featured">Produkt i Veçuar (Featured)?</label>
-        </div>
+                        <div class="form-row">
+                            <div class="form-group col-half">
+                                <label for="category">Kategoria Kryesore</label>
+                                <div class="select-wrapper">
+                                    <select id="category" name="category" class="form-control premium-input" required>
+                                        <option value="">Zgjidh Kategorinë</option>
+                                        {% for cat_name in categories.keys() %}
+                                        <option value="{{ cat_name }}" {% if product and product.category==cat_name
+                                            %}selected{% endif %}>{{ cat_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-half">
+                                <label for="subcategory">Nënkategoria</label>
+                                <div class="select-wrapper">
+                                    <select id="subcategory" name="subcategory" class="form-control premium-input"
+                                        required>
+                                        <option value="">Zgjidh Kategorinë</option>
+                                        {% if product and product.subcategory %}
+                                        <option value="{{ product.subcategory }}" selected>{{ product.subcategory }}
+                                        </option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
-        <div class="form-group checkbox-group">
-            <input type="checkbox" id="is_best_seller" name="is_best_seller" {% if product and product.is_best_seller %}checked{% endif %}>
-            <label for="is_best_seller">Më i Shituri (Best Seller)?</label>
+                        <div class="form-group">
+                            <label for="size">Sasia / Madhësia</label>
+                            <input type="text" id="size" name="size" class="form-control premium-input"
+                                value="{{ product.size if product else '' }}" placeholder="Psh: 50ml, 100g, 30 Kapsula">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <div class="card-header">
+                        <i class="fas fa-tag"></i> Çmimi dhe Oferta
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-half">
+                                <label for="price">Çmimi Normal (€)</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-euro-sign"></i>
+                                    <input type="number" id="price" name="price" step="0.01" min="0"
+                                        class="form-control premium-input"
+                                        value="{{ product.price if product else '' }}" required placeholder="0.00">
+                                </div>
+                            </div>
+                            <div class="form-group col-half">
+                                <label for="discount_price">Çmimi me Zbritje (Opsionale)</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-percentage"></i>
+                                    <input type="number" id="discount_price" name="discount_price" step="0.01" min="0"
+                                        class="form-control premium-input"
+                                        value="{{ product.discount_price if product else '' }}" placeholder="0.00">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group {% if not product or not product.discount_price %}hidden-group{% endif %}"
+                            id="discount-until-group">
+                            <label for="discount_until">Data e Përfundimit të Ofertës</label>
+                            {% set discount_val = "" %}
+                            {% if product and product.discount_until %}
+                            {% if product.discount_until.strftime %}
+                            {% set discount_val = product.discount_until.strftime('%Y-%m-%d') %}
+                            {% else %}
+                            {% set discount_val = product.discount_until[:10] %}
+                            {% endif %}
+                            {% endif %}
+                            <input type="date" id="discount_until" name="discount_until"
+                                class="form-control premium-input" value="{{ discount_val }}">
+                            <small class="helper-text"><i class="fas fa-info-circle"></i> Pas kësaj date, produkti
+                                kthehet në çmimin normal.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <div class="card-header">
+                        <i class="fas fa-sliders-h"></i> Cilësimet e Shfaqjes
+                    </div>
+                    <div class="card-body">
+                        <div class="settings-grid">
+                            <label class="switch-container">
+                                <input type="checkbox" id="in_stock" name="in_stock" {% if product is none or
+                                    product.in_stock %}checked{% endif %}>
+                                <span class="switch-slider"></span>
+                                <span class="switch-label">Në Stok</span>
+                            </label>
+
+                            <label class="switch-container">
+                                <input type="checkbox" id="featured" name="featured" {% if product and product.featured
+                                    %}checked{% endif %}>
+                                <span class="switch-slider"></span>
+                                <span class="switch-label">Veçuar (Featured)</span>
+                            </label>
+
+                            <label class="switch-container">
+                                <input type="checkbox" id="is_best_seller" name="is_best_seller" {% if product and
+                                    product.is_best_seller %}checked{% endif %}>
+                                <span class="switch-slider"></span>
+                                <span class="switch-label">Më i Shituri</span>
+                            </label>
+
+                            <label class="switch-container">
+                                <input type="checkbox" id="is_pharmacist_choice" name="is_pharmacist_choice" {% if
+                                    product and product.is_pharmacist_choice %}checked{% endif %}>
+                                <span class="switch-slider"></span>
+                                <span class="switch-label">Zgjedhja e Farmacistit</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Media & Description -->
+            <div class="form-column">
+                <div class="form-card">
+                    <div class="card-header">
+                        <i class="fas fa-images"></i> Media dhe Galeria
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="image_url">Imazhi Kryesor (URL)</label>
+                            <input type="url" id="image_url" name="image_url" class="form-control premium-input"
+                                value="{{ product.image_url if product else '' }}" required
+                                placeholder="https://example.com/image.jpg">
+                        </div>
+
+                        <div class="image-preview-container" id="main-image-preview">
+                            <div class="preview-placeholder">Duke pritur URL-në e imazhit...</div>
+                            <img src="{{ product.image_url if product and product.image_url else '' }}"
+                                style="display: none;" alt="Preview">
+                        </div>
+
+                        <div class="form-group mt-large">
+                            <label for="additional_images">Imazhe Shtesë (Një për rresht - URL)</label>
+                            <textarea id="additional_images" name="additional_images" class="form-control premium-input"
+                                rows="4"
+                                placeholder="https://example.com/image2.jpg&#10;https://example.com/image3.jpg">{% if product and product.images %}{% for img in product.images %}{% if img != product.image_url %}{{ img }}&#10;{% endif %}{% endfor %}{% endif %}</textarea>
+                        </div>
+
+                        <div class="horizontal-previews" id="gallery-previews">
+                            <!-- Dynamic previews injected via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <div class="card-header">
+                        <i class="fas fa-align-left"></i> Përshkrimi i Detajuar
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group no-margin">
+                            <textarea id="description" name="description" class="form-control premium-input" rows="8"
+                                placeholder="Shkruani një përshkrim të detajuar për produktin...">{{ product.description if product else '' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <div class="card-header">
+                        <i class="fas fa-list-ul"></i> Detaje Shtesë
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="how_to_use">Si të përdoret (How to Use)</label>
+                            <textarea id="how_to_use" name="how_to_use" class="form-control premium-input" rows="5"
+                                placeholder="Udhëzime se si të përdoret produkti...">{{ product.how_to_use if product else '' }}</textarea>
+                        </div>
+                        <div class="form-group no-margin">
+                            <label for="key_ingredients">Përbërësit Kryesorë (Key Ingredients)</label>
+                            <textarea id="key_ingredients" name="key_ingredients" class="form-control premium-input"
+                                rows="5"
+                                placeholder="Psh: Hyaluronic Acid, Vitamin C, Niacinamide...">{{ product.key_ingredients if product else '' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions-card">
+                    <button type="submit" class="btn-submit-premium">
+                        {{ 'Ruaj Ndryshimet' if product else 'Krijo Produktin' }}
+                        <i class="fas fa-check-circle"></i>
+                    </button>
+                </div>
+            </div>
         </div>
-        
-        <button type="submit" class="btn btn-primary btn-block">{{ 'Përditëso' if product else 'Krijo' }}</button>
     </form>
 </div>
+
+<style>
+    /* Admin General Layout */
+    .admin-page-container {
+        max-width: 1400px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+    }
+
+    /* Admin Nav Centered Styles - V4 Upgraded */
+    .admin-v3-nav {
+        background: white;
+        padding: 1.2rem 2.5rem;
+        border-radius: 1.5rem;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .nav-brand {
+        font-weight: 900;
+        font-size: 1.4rem;
+        color: #059669;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        position: absolute;
+        left: 2.5rem;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 1.25rem;
+        margin: 0 auto;
+    }
+
+    .admin-nav-item {
+        padding: 1rem 2.5rem;
+        border-radius: 14px;
+        text-decoration: none !important;
+        font-weight: 800;
+        color: #64748b;
+        font-size: 1.1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .admin-nav-item:hover {
+        background: #f8fafc;
+        color: #10b981;
+        transform: translateY(-2px);
+    }
+
+    .admin-nav-item.active {
+        background: #059669;
+        color: white !important;
+        box-shadow: 0 8px 20px rgba(5, 150, 105, 0.25);
+    }
+
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .admin-title {
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: var(--text-main);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .admin-title i {
+        color: var(--primary);
+        font-size: 1.8rem;
+    }
+
+    .admin-subtitle {
+        font-size: 1.05rem;
+    }
+
+    /* Form Grid */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 2rem;
+        align-items: start;
+    }
+
+    @media (max-width: 992px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+    }
+
+    /* Cards */
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: #f8fafc;
+        padding: 1.25rem 1.5rem;
+        font-weight: 700;
+        color: var(--text-main);
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .card-header i {
+        color: var(--primary);
+        opacity: 0.8;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    /* Inputs */
+    .premium-input {
+        background-color: #fbfdfd !important;
+        border: 2px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        padding: 0.85rem 1rem !important;
+        font-size: 1rem !important;
+        color: var(--text-main) !important;
+        box-shadow: none !important;
+    }
+
+    .premium-input:focus {
+        border-color: var(--primary) !important;
+        background-color: #fff !important;
+        box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.08) !important;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 1.25rem;
+        margin-bottom: 0;
+    }
+
+    .col-half {
+        flex: 1;
+    }
+
+    /* Custom Switch Container */
+    .settings-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .switch-container {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+        gap: 1rem;
+    }
+
+    .switch-container input {
+        display: none;
+    }
+
+    .switch-slider {
+        position: relative;
+        width: 48px;
+        height: 24px;
+        background-color: #cbd5e1;
+        border-radius: 20px;
+        transition: .3s;
+    }
+
+    .switch-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        border-radius: 50%;
+        transition: .3s;
+    }
+
+    input:checked+.switch-slider {
+        background-color: var(--primary);
+    }
+
+    input:checked+.switch-slider:before {
+        transform: translateX(24px);
+    }
+
+    .switch-label {
+        font-weight: 600;
+        color: #475569;
+        font-size: 0.95rem;
+    }
+
+    /* Image Preview */
+    .image-preview-container {
+        margin-top: 1rem;
+        border: 2px dashed #e2e8f0;
+        border-radius: 12px;
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: #f8fafc;
+    }
+
+    .image-preview-container img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    .preview-placeholder {
+        color: #94a3b8;
+        font-size: 0.9rem;
+    }
+
+    .horizontal-previews {
+        display: flex;
+        gap: 10px;
+        margin-top: 1rem;
+        overflow-x: auto;
+        padding-bottom: 5px;
+    }
+
+    .thumb-p {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        object-fit: contain;
+        background: white;
+    }
+
+    /* Submitting */
+    .btn-submit-premium {
+        width: 100%;
+        padding: 1.25rem;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-size: 1.1rem;
+        font-weight: 800;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.25);
+        transition: all 0.3s ease;
+    }
+
+    .btn-submit-premium:hover {
+        background: #059669;
+        transform: translateY(-2px);
+        box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-submit-premium:active {
+        transform: translateY(0);
+    }
+
+    .helper-text {
+        display: block;
+        margin-top: 0.5rem;
+        color: #64748b;
+        font-size: 0.85rem;
+    }
+
+    .hidden-group {
+        display: none;
+    }
+
+    .mt-large {
+        margin-top: 2rem;
+    }
+
+    .no-margin {
+        margin-bottom: 0;
+    }
+
+    /* Select Styling */
+    .select-wrapper {
+        position: relative;
+    }
+
+    .select-wrapper::after {
+        content: '\f107';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: #64748b;
+    }
+
+    select.premium-input {
+        -webkit-appearance: none;
+        appearance: none;
+        padding-right: 2.5rem !important;
+    }
+
+    /* Pricing Icons */
+    .input-with-icon {
+        position: relative;
+    }
+
+    .input-with-icon i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+
+    .input-with-icon input {
+        padding-left: 2.5rem !important;
+    }
+</style>
 
 <script id="product-form-config" type="application/json">
 {
@@ -122,42 +626,97 @@
     function updateSubcategories() {
         const selectedCategory = categorySelect.value;
         const subcategories = categoriesData[selectedCategory] || [];
-        
-        // Clear previous options
+
         subcategorySelect.innerHTML = '<option value="">Zgjidh Nënkategorinë</option>';
-        
+
         subcategories.forEach(sub => {
             const option = document.createElement('option');
             option.value = sub;
             option.textContent = sub;
-            if (sub === currentSubcategory) {
-                option.selected = true;
-            }
+            if (sub === currentSubcategory) option.selected = true;
             subcategorySelect.appendChild(option);
         });
     }
 
     categorySelect.addEventListener('change', updateSubcategories);
-    
-    // Initialize on load if category already selected
-    if (categorySelect.value) {
-        updateSubcategories();
-    }
+    if (categorySelect.value) updateSubcategories();
 
-    // Toggle discount until date based on discount price
+    // Toggle discount until
     const discountPriceInput = document.getElementById('discount_price');
     const discountUntilGroup = document.getElementById('discount-until-group');
-    const discountUntilInput = document.getElementById('discount_until');
 
     if (discountPriceInput && discountUntilGroup) {
-        discountPriceInput.addEventListener('input', function() {
+        discountPriceInput.addEventListener('input', function () {
             if (this.value && parseFloat(this.value) > 0) {
-                discountUntilGroup.style.display = 'block';
+                discountUntilGroup.classList.remove('hidden-group');
             } else {
-                discountUntilGroup.style.display = 'none';
-                if (discountUntilInput) discountUntilInput.value = '';
+                discountUntilGroup.classList.add('hidden-group');
             }
         });
     }
+
+    // Image Previews
+    const mainImageUrlInput = document.getElementById('image_url');
+    const mainPreview = document.getElementById('main-image-preview');
+    const additionalImagesInput = document.getElementById('additional_images');
+    const galleryPreviews = document.getElementById('gallery-previews');
+
+    function updateMainPreview() {
+        const url = mainImageUrlInput.value.trim();
+        const img = mainPreview.querySelector('img');
+        const placeholder = mainPreview.querySelector('.preview-placeholder');
+
+        if (url) {
+            img.src = url;
+            img.style.display = 'block';
+            placeholder.style.display = 'none';
+            img.onerror = () => {
+                img.style.display = 'none';
+                placeholder.style.display = 'block';
+                placeholder.textContent = 'Imazh i pasaktë';
+            };
+        } else {
+            img.style.display = 'none';
+            placeholder.style.display = 'block';
+        }
+    }
+
+    function updateGalleryPreviews() {
+        const lines = additionalImagesInput.value.split('\n');
+        galleryPreviews.innerHTML = '';
+        lines.forEach(line => {
+            const url = line.trim();
+            if (url) {
+                const img = document.createElement('img');
+                img.src = url;
+                img.className = 'thumb-p';
+                img.title = url;
+                galleryPreviews.appendChild(img);
+            }
+        });
+    }
+
+    // Character Count for Description
+    const descTextarea = document.getElementById('description');
+    const charCountDisplay = document.createElement('div');
+    charCountDisplay.className = 'char-count text-muted mt-1';
+    charCountDisplay.style.fontSize = '0.75rem';
+    charCountDisplay.style.textAlign = 'right';
+    descTextarea.parentNode.appendChild(charCountDisplay);
+
+    function updateCharCount() {
+        const len = descTextarea.value.length;
+        charCountDisplay.textContent = `${len} karaktere`;
+    }
+
+    descTextarea.addEventListener('input', updateCharCount);
+    updateCharCount();
+
+    mainImageUrlInput.addEventListener('input', updateMainPreview);
+    additionalImagesInput.addEventListener('input', updateGalleryPreviews);
+
+    // Initial triggers
+    updateMainPreview();
+    updateGalleryPreviews();
 </script>
 {% endblock %}

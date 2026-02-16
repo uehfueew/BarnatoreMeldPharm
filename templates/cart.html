@@ -3,7 +3,7 @@
 {% block content %}
 <div class="cart-container section-container mobile-cart-page-wrapper">
     <div class="back-btn-wrapper">
-        <a href="{{ url_for('main.products') }}" class="btn-back-standard">
+        <a href="#" onclick="history.back(); return false;" class="btn-back-standard">
             <i class="fas fa-arrow-left"></i> Kthehu
         </a>
     </div>
@@ -13,220 +13,249 @@
             <i class="far fa-trash-alt mr-1"></i> Fshij të gjitha
         </button>
     </div>
-    
-    {% if cart_items %}
-        <div class="cart-layout-grid">
-            <div class="cart-main-content">
-                <!-- DESKTOP TABLE VIEW -->
-                <div class="table-responsive desktop-cart-view">
-                    <table class="table cart-table">
-                        <thead>
-                            <tr>
-                                <th>Produkti</th>
-                                <th>Çmimi</th>
-                                <th>Sasia</th>
-                                <th>Nëntotali</th>
-                                <th style="text-align: right;">
-                                    <button onclick="clearCart(event)" class="btn-clear-all">
-                                        <i class="far fa-trash-alt mr-1"></i> Fshij të gjitha
-                                    </button>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in cart_items %}
-                            <tr data-item-id="{{ item._id }}" class="cart-item-row clickable-row" data-href="{{ url_for('main.product_detail', product_id=item._id) }}">
-                                <td>
-                                    <div class="cart-product-info">
-                                        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="cart-thumb">
-                                        <div class="product-details-text">
-                                            <span class="product-name">{{ item.name }}</span>
-                                            
-                                            {% if item.size %}<span class="product-size" style="display: block; font-size: 0.8rem; color: #64748b; margin-top: 2px;">{{ item.size }}</span>{% endif %}
 
-                                            {% if item.discount_price %}
-                                                <div class="item-savings-label" style="color: var(--primary); font-size: 0.8rem; font-weight: 500; margin-top: 4px;">
-                                                    Kursyet: <span class="savings-amount">€{{ "%.2f"|format(item.item_savings) }}</span>
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="cart-item-prices">
+    {% if cart_items %}
+    <div class="cart-layout-grid">
+        <div class="cart-main-content">
+            <!-- DESKTOP TABLE VIEW -->
+            <div class="table-responsive desktop-cart-view">
+                <table class="table cart-table">
+                    <thead>
+                        <tr>
+                            <th>Produkti</th>
+                            <th>Çmimi</th>
+                            <th>Sasia</th>
+                            <th>Nëntotali</th>
+                            <th style="text-align: right;">
+                                <button onclick="clearCart(event)" class="btn-clear-all">
+                                    <i class="far fa-trash-alt mr-1"></i> Fshij të gjitha
+                                </button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr data-item-id="{{ item._id }}" class="cart-item-row clickable-row"
+                            data-href="{{ url_for('main.product_detail', product_id=item._id) }}">
+                            <td>
+                                <div class="cart-product-info">
+                                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="cart-thumb">
+                                    <div class="product-details-text">
+                                        <span class="product-name">{{ item.name }}</span>
+
+                                        {% if item.size %}<span class="product-size"
+                                            style="display: block; font-size: 0.8rem; color: #64748b; margin-top: 2px;">{{
+                                            item.size }}</span>{% endif %}
+
                                         {% if item.discount_price %}
-                                            <span class="new-price">€{{ item.discount_price }}</span>
-                                            <span class="old-price" style="text-decoration: line-through; color: #94a3b8; font-size: 0.85rem; margin-left: 5px;">€{{ item.price }}</span>
-                                        {% else %}
-                                            <span>€{{ item.price }}</span>
+                                        <div class="item-savings-label"
+                                            style="color: var(--primary); font-size: 0.8rem; font-weight: 500; margin-top: 4px;">
+                                            Kursyet: <span class="savings-amount">€{{ "%.2f"|format(item.item_savings)
+                                                }}</span>
+                                        </div>
                                         {% endif %}
                                     </div>
-                                </td>
-                                <td>
-                                    <div class="quantity-selector" onclick="event.stopPropagation()"> 
-                                        <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='decrease') }}" method="POST">
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                            <button type="submit" class="qty-btn minus" {{ 'disabled' if item.quantity <= 1 }}>
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                        </form>
-                                        <form action="{{ url_for('cart.set_quantity', product_id=item._id) }}" method="POST" class="qty-set-form">
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                            <input type="number" name="quantity" class="qty-input" value="{{ item.quantity }}" min="1" step="1" {% if item.in_stock == False %}disabled{% endif %}>
-                                        </form>
-                                        <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='increase') }}" method="POST">
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                            <button type="submit" class="qty-btn plus">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                                <td class="item-total-cell">€{{ "%.2f"|format(item.item_total) }}</td>
-                                <td>
-                                    <form action="{{ url_for('cart.remove_from_cart', product_id=item._id) }}" method="POST" onclick="event.stopPropagation()">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                        <button type="submit" class="btn-icon" title="Fshije">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- MOBILE GRID/CARD VIEW -->
-                <div class="cart-grid-container mobile-cart-view">
-                    <!-- Headers (Hidden on Mobile) -->
-                    <div class="cart-header-row-grid">
-                        <div class="col-product">Produkti</div>
-                        <div class="col-price">Çmimi</div>
-                        <div class="col-quantity">Sasia</div>
-                        <div class="col-total">Nëntotali</div>
-                        <div class="col-action"></div>
-                    </div>
-
-                    <!-- Cart Items -->
-                    {% for item in cart_items %}
-                    <div class="cart-item-card clickable-row" data-item-id="{{ item._id }}" data-href="{{ url_for('main.product_detail', product_id=item._id) }}">
-                        <!-- Top Row: Image + Info + Delete Button -->
-                        <div class="cart-mobile-top">
-                            <!-- Action (Delete) - Absolute Positioned -->
-                            <div class="cart-col-action" onclick="event.stopPropagation()">
-                                <form action="{{ url_for('cart.remove_from_cart', product_id=item._id) }}" method="POST">
-                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                    <button type="submit" class="delete-btn" title="Fshije">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            </div>
-
-                            <img src="{{ item.image_url }}" alt="{{ item.name }}" class="cart-item-image">
-                            
-                            <div class="cart-item-details">
-                                <span class="cart-item-name">{{ item.name }}</span>
-                                
-                                {% if item.size %}<span class="cart-item-size" style="display: block; font-size: 0.75rem; color: #64748b; margin-top: 1px;">{{ item.size }}</span>{% endif %}
-                                {% if item.discount_price %}
-                                    <div class="item-savings-label" style="color: var(--primary); font-size: 0.75rem; font-weight: 500; margin-top: 2px;">
-                                        Kursyet: <span class="savings-amount">€{{ "%.2f"|format(item.item_savings) }}</span>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <!-- Middle Row: Price and Quantity Side-by-Side -->
-                        <div class="cart-mobile-middle">
-                            <div class="mobile-price">
-                                {% if item.discount_price %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cart-item-prices">
+                                    {% if item.discount_price %}
                                     <span class="new-price">€{{ item.discount_price }}</span>
-                                    <span class="old-price" style="text-decoration: line-through; color: #94a3b8; font-size: 0.75rem; margin-left: 5px;">€{{ item.price }}</span>
-                                {% else %}
+                                    <span class="old-price"
+                                        style="text-decoration: line-through; color: #94a3b8; font-size: 0.85rem; margin-left: 5px;">€{{
+                                        item.price }}</span>
+                                    {% else %}
                                     <span>€{{ item.price }}</span>
-                                {% endif %}
-                            </div>
-                            
-                            <div class="quantity-control-wrapper" onclick="event.stopPropagation()">
-                                <div class="quantity-control">
-                                    <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='decrease') }}" method="POST">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                        <button type="submit" class="qty-btn" {{ 'disabled' if item.quantity <= 1 }}>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="quantity-selector" onclick="event.stopPropagation()">
+                                    <form
+                                        action="{{ url_for('cart.update_quantity', product_id=item._id, action='decrease') }}"
+                                        method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                        <button type="submit" class="qty-btn minus" {{ 'disabled' if item.quantity <=1
+                                            }}>
                                             <i class="fas fa-minus"></i>
                                         </button>
                                     </form>
-                                    <form action="{{ url_for('cart.set_quantity', product_id=item._id) }}" method="POST" class="qty-form qty-set-form">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                        <input type="number" name="quantity" class="qty-input" value="{{ item.quantity }}" min="1" step="1" {% if item.in_stock == False %}disabled{% endif %}>
+                                    <form action="{{ url_for('cart.set_quantity', product_id=item._id) }}" method="POST"
+                                        class="qty-set-form">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                        <input type="number" name="quantity" class="qty-input"
+                                            value="{{ item.quantity }}" min="1" step="1" {% if item.in_stock==False
+                                            %}disabled{% endif %}>
                                     </form>
-                                    <form action="{{ url_for('cart.update_quantity', product_id=item._id, action='increase') }}" method="POST">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                        <button type="submit" class="qty-btn">
+                                    <form
+                                        action="{{ url_for('cart.update_quantity', product_id=item._id, action='increase') }}"
+                                        method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                        <button type="submit" class="qty-btn plus">
                                             <i class="fas fa-plus"></i>
                                         </button>
                                     </form>
                                 </div>
+                            </td>
+                            <td class="item-total-cell">€{{ "%.2f"|format(item.item_total) }}</td>
+                            <td>
+                                <form action="{{ url_for('cart.remove_from_cart', product_id=item._id) }}" method="POST"
+                                    onclick="event.stopPropagation()">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                    <button type="submit" class="btn-icon" title="Fshije">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- MOBILE GRID/CARD VIEW -->
+            <div class="cart-grid-container mobile-cart-view">
+                <!-- Headers (Hidden on Mobile) -->
+                <div class="cart-header-row-grid">
+                    <div class="col-product">Produkti</div>
+                    <div class="col-price">Çmimi</div>
+                    <div class="col-quantity">Sasia</div>
+                    <div class="col-total">Nëntotali</div>
+                    <div class="col-action"></div>
+                </div>
+
+                <!-- Cart Items -->
+                {% for item in cart_items %}
+                <div class="cart-item-card clickable-row" data-item-id="{{ item._id }}"
+                    data-href="{{ url_for('main.product_detail', product_id=item._id) }}">
+                    <!-- Top Row: Image + Info + Delete Button -->
+                    <div class="cart-mobile-top">
+                        <!-- Action (Delete) - Absolute Positioned -->
+                        <div class="cart-col-action" onclick="event.stopPropagation()">
+                            <form action="{{ url_for('cart.remove_from_cart', product_id=item._id) }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                <button type="submit" class="delete-btn" title="Fshije">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="cart-item-image">
+
+                        <div class="cart-item-details">
+                            <span class="cart-item-name">{{ item.name }}</span>
+
+                            {% if item.size %}<span class="cart-item-size"
+                                style="display: block; font-size: 0.75rem; color: #64748b; margin-top: 1px;">{{
+                                item.size }}</span>{% endif %}
+                            {% if item.discount_price %}
+                            <div class="item-savings-label"
+                                style="color: var(--primary); font-size: 0.75rem; font-weight: 500; margin-top: 2px;">
+                                Kursyet: <span class="savings-amount">€{{ "%.2f"|format(item.item_savings) }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Middle Row: Price and Quantity Side-by-Side -->
+                    <div class="cart-mobile-middle">
+                        <div class="mobile-price">
+                            {% if item.discount_price %}
+                            <span class="new-price">€{{ item.discount_price }}</span>
+                            <span class="old-price"
+                                style="text-decoration: line-through; color: #94a3b8; font-size: 0.75rem; margin-left: 5px;">€{{
+                                item.price }}</span>
+                            {% else %}
+                            <span>€{{ item.price }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="quantity-control-wrapper" onclick="event.stopPropagation()">
+                            <div class="quantity-control">
+                                <form
+                                    action="{{ url_for('cart.update_quantity', product_id=item._id, action='decrease') }}"
+                                    method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                    <button type="submit" class="qty-btn" {{ 'disabled' if item.quantity <=1 }}>
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </form>
+                                <form action="{{ url_for('cart.set_quantity', product_id=item._id) }}" method="POST"
+                                    class="qty-form qty-set-form">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                    <input type="number" name="quantity" class="qty-input" value="{{ item.quantity }}"
+                                        min="1" step="1" {% if item.in_stock==False %}disabled{% endif %}>
+                                </form>
+                                <form
+                                    action="{{ url_for('cart.update_quantity', product_id=item._id, action='increase') }}"
+                                    method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                    <button type="submit" class="qty-btn">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </form>
                             </div>
                         </div>
-
-                        <!-- Bottom Row: Subtotal -->
-                        <div class="cart-mobile-bottom">
-                            <span class="mobile-label">Totali: &nbsp;</span>
-                            <span class="total-amount item-total-mobile">€{{ "%.2f"|format(item.item_total) }}</span>
-                        </div>
                     </div>
-                    {% endfor %}
+
+                    <!-- Bottom Row: Subtotal -->
+                    <div class="cart-mobile-bottom">
+                        <span class="mobile-label">Totali: &nbsp;</span>
+                        <span class="total-amount item-total-mobile">€{{ "%.2f"|format(item.item_total) }}</span>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
+        </div>
 
-            <div class="cart-summary-sidebar">
-                <div class="summary-card">
-                    <h3 class="summary-title">Përmbledhja e Porosisë</h3>
-                    
-                    <div class="summary-row">
-                        <span>Nëntotali:</span>
-                        <span class="summary-total-price">€{{ "%.2f"|format(total_price) }}</span>
-                    </div>
-                    
-                    <div class="summary-row">
-                        <span>Transporti:</span>
-                        <span class="summary-delivery-fee">{{ "€%.2f"|format(delivery_fee) if delivery_fee > 0 else "Falas" }}</span>
-                    </div>
+        <div class="cart-summary-sidebar">
+            <div class="summary-card">
+                <h3 class="summary-title">Përmbledhja e Porosisë</h3>
 
-                    {% if total_savings and total_savings > 0 %}
-                    <div class="summary-row savings-row" style="color: var(--primary); font-weight: 600;">
-                        <span>Keni Kursyer:</span>
-                        <span class="summary-total-savings">-€{{ "%.2f"|format(total_savings) }}</span>
-                    </div>
-                    {% endif %}
-                    
-                    <div class="summary-divider"></div>
-                    
-                    <div class="summary-row total-row">
-                        <span class="grand-total-label">Gjithsej:</span>
-                        <span class="grand-total-amount grand-total">€{{ "%.2f"|format(grand_total) }}</span>
-                    </div>
+                <div class="summary-row">
+                    <span>Nëntotali:</span>
+                    <span class="summary-total-price">€{{ "%.2f"|format(total_price) }}</span>
+                </div>
 
-                    <div class="summary-actions">
-                        <a href="{{ url_for('cart.checkout') }}" class="btn btn-primary btn-block checkout-btn">
-                             PROÇEDO ME POROSINË <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
+                <div class="summary-row">
+                    <span>Transporti:</span>
+                    <span class="summary-delivery-fee">{{ "€%.2f"|format(delivery_fee) if delivery_fee > 0 else "Falas"
+                        }}</span>
+                </div>
+
+                {% if total_savings and total_savings > 0 %}
+                <div class="summary-row savings-row" style="color: var(--primary); font-weight: 600;">
+                    <span>Keni Kursyer:</span>
+                    <span class="summary-total-savings">-€{{ "%.2f"|format(total_savings) }}</span>
+                </div>
+                {% endif %}
+
+                <div class="summary-divider"></div>
+
+                <div class="summary-row total-row">
+                    <span class="grand-total-label">Gjithsej:</span>
+                    <span class="grand-total-amount grand-total">€{{ "%.2f"|format(grand_total) }}</span>
+                </div>
+
+                <div class="summary-actions">
+                    <a href="{{ url_for('cart.checkout') }}" class="btn btn-primary btn-block checkout-btn">
+                        PROÇEDO ME POROSINË <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
             </div>
         </div>
+    </div>
     {% else %}
-        <div class="empty-cart-state">
-            <div class="icon-circle">
-                <i class="fas fa-shopping-basket"></i>
-            </div>
-            <h2>Shporta juaj është e zbrazët</h2>
-            <p>Duket se nuk keni shtuar asgjë në shportën tuaj ende.</p>
-            <a href="{{ url_for('main.products') }}" class="btn btn-primary">
-                Fillo Blerjen
-            </a>
+    <div class="empty-cart-state">
+        <div class="icon-circle">
+            <i class="fas fa-shopping-basket"></i>
         </div>
+        <h2>Shporta juaj është e zbrazët</h2>
+        <p>Duket se nuk keni shtuar asgjë në shportën tuaj ende.</p>
+        <a href="{{ url_for('main.products') }}" class="btn btn-primary">
+            Fillo Blerjen
+        </a>
+    </div>
     {% endif %}
 </div>
 

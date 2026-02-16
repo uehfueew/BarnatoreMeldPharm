@@ -8,11 +8,13 @@
         cursor: pointer;
         user-select: none;
     }
+
     .shipping-option input {
         position: absolute;
         opacity: 0;
         cursor: pointer;
     }
+
     .shipping-option .option-content {
         display: flex;
         flex-direction: column;
@@ -25,23 +27,28 @@
         text-align: center;
         background: white;
     }
+
     .shipping-option .option-content i {
         font-size: 1.5rem;
         color: var(--text-muted);
     }
+
     .shipping-option .option-content span {
         font-weight: 600;
         font-size: 0.95rem;
         color: var(--text-main);
     }
-    .shipping-option input:checked + .option-content {
+
+    .shipping-option input:checked+.option-content {
         border-color: var(--primary);
         background: var(--primary-light);
     }
-    .shipping-option input:checked + .option-content i {
+
+    .shipping-option input:checked+.option-content i {
         color: var(--primary);
     }
-    .shipping-option input:checked + .option-content span {
+
+    .shipping-option input:checked+.option-content span {
         color: var(--primary);
     }
 
@@ -50,38 +57,43 @@
             grid-template-columns: 1fr !important;
             gap: 2rem !important;
         }
+
         .order-summary {
-            order: -1; /* Show summary first on mobile */
+            order: -1;
+            /* Show summary first on mobile */
         }
     }
 </style>
 <div class="container">
     <div class="section-container" style="max-width: 1200px; margin: 0 auto; padding-top: 1rem;">
         <div style="margin-bottom: 2rem;">
-            <a href="{{ url_for('cart.view_cart') }}" class="btn-back-standard">
-                <i class="fas fa-arrow-left"></i> Kthehu në Shportë
+            <a href="#" onclick="history.back(); return false;" class="btn-back-standard">
+                <i class="fas fa-arrow-left"></i> Kthehu
             </a>
         </div>
-        
+
         <h1 class="section-title" style="margin-bottom: 3rem;">Përfundo Porosinë</h1>
 
         <div class="checkout-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
             <!-- Checkout Form -->
             <div class="checkout-form">
                 <form action="{{ url_for('cart.place_order') }}" method="POST" id="checkout-form">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                    
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
                     <h3 style="margin-bottom: 1.5rem;">Mënyra e Dërgesës</h3>
-                    <div class="shipping-method-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                    <div class="shipping-method-options"
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
                         <label class="shipping-option">
-                            <input type="radio" name="shipping_method" value="delivery" checked onchange="toggleShippingMethod('delivery')">
+                            <input type="radio" name="shipping_method" value="delivery" checked
+                                onchange="toggleShippingMethod('delivery')">
                             <div class="option-content">
                                 <i class="fas fa-truck"></i>
                                 <span>Dërgesa në shtëpi</span>
                             </div>
                         </label>
                         <label class="shipping-option">
-                            <input type="radio" name="shipping_method" value="pickup" onchange="toggleShippingMethod('pickup')">
+                            <input type="radio" name="shipping_method" value="pickup"
+                                onchange="toggleShippingMethod('pickup')">
                             <div class="option-content">
                                 <i class="fas fa-store"></i>
                                 <span>Marrja në dyqan</span>
@@ -90,49 +102,62 @@
                     </div>
 
                     <h3 style="margin-bottom: 1.5rem;">Të dhënat Personale</h3>
-                    
+
                     <div class="form-group">
                         <label for="fullname">Emri dhe Mbiemri</label>
-                        <input type="text" id="fullname" name="fullname" class="form-control" required placeholder="" value="{{ current_user.fullname if current_user.is_authenticated else '' }}">
+                        <input type="text" id="fullname" name="fullname" class="form-control" required placeholder=""
+                            value="{{ current_user.fullname if current_user.is_authenticated else '' }}">
                     </div>
 
                     <div class="form-group">
                         <label for="email">Email Adresa</label>
-                        <input type="email" id="email" name="email" class="form-control" required placeholder="" value="{{ current_user.email if current_user.is_authenticated else '' }}">
+                        <input type="email" id="email" name="email" class="form-control" required placeholder=""
+                            value="{{ current_user.email if current_user.is_authenticated else '' }}">
                     </div>
 
                     <div class="form-group">
                         <label for="phone">Numri i Telefonit</label>
-                        <input type="tel" id="phone" name="phone" class="form-control" required placeholder="" value="{{ current_user.phone if current_user.is_authenticated else '' }}">
+                        <input type="tel" id="phone" name="phone" class="form-control" required placeholder=""
+                            value="{{ current_user.phone if current_user.is_authenticated else '' }}">
                     </div>
 
                     <div id="address-fields-container">
                         <h3 style="margin-top: 2rem; margin-bottom: 1.5rem;">Adresa e dërgesës</h3>
                         <div class="form-group">
                             <label for="address">Adresa</label>
-                            <input type="text" id="address" name="address" class="form-control" required placeholder="" value="{{ current_user.address if current_user.is_authenticated else '' }}">
+                            <input type="text" id="address" name="address" class="form-control" required placeholder=""
+                                value="{{ current_user.address if current_user.is_authenticated else '' }}">
                         </div>
 
                         <div class="checkout-grid-2">
                             <div class="form-group">
                                 <label for="country">Shteti</label>
-                                <select id="country" name="country" class="form-control country-select" required onchange="updateShipping(this.value)">
-                                    <option value="Kosova" {% if (current_user.is_authenticated and current_user.country == 'Kosova') or (not current_user.is_authenticated) %}selected{% endif %}>Kosovë</option>
-                                    <option value="Shqiperia" {% if current_user.is_authenticated and (current_user.country == 'Shqiperia' or current_user.country == 'Shqipëri') %}selected{% endif %}>Shqipëri</option>
-                                    <option value="Maqedonia" {% if current_user.is_authenticated and (current_user.country == 'Maqedonia' or current_user.country == 'Maqedoni e Veriut') %}selected{% endif %}>Maqedoni e Veriut</option>
+                                <select id="country" name="country" class="form-control country-select" required
+                                    onchange="updateShipping(this.value)">
+                                    <option value="Kosova" {% if (current_user.is_authenticated and
+                                        current_user.country=='Kosova' ) or (not current_user.is_authenticated)
+                                        %}selected{% endif %}>Kosovë</option>
+                                    <option value="Shqiperia" {% if current_user.is_authenticated and
+                                        (current_user.country=='Shqiperia' or current_user.country=='Shqipëri' )
+                                        %}selected{% endif %}>Shqipëri</option>
+                                    <option value="Maqedonia" {% if current_user.is_authenticated and
+                                        (current_user.country=='Maqedonia' or current_user.country=='Maqedoni e Veriut'
+                                        ) %}selected{% endif %}>Maqedoni e Veriut</option>
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label for="city">Qyteti</label>
-                                <input type="text" id="city" name="city" class="form-control" required placeholder="" value="{{ current_user.city if current_user.is_authenticated else '' }}">
+                                <input type="text" id="city" name="city" class="form-control" required placeholder=""
+                                    value="{{ current_user.city if current_user.is_authenticated else '' }}">
                             </div>
                         </div>
                     </div>
 
                     {% if current_user.is_authenticated %}
                     <div class="form-group" style="margin-top: 1rem;">
-                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem;">
+                        <label
+                            style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem;">
                             <input type="checkbox" name="save_details" value="1">
                             Ruaj të dhënat për porositë e ardhshme
                         </label>
@@ -140,62 +165,77 @@
                     {% endif %}
 
                     <h3 style="margin-top: 2rem; margin-bottom: 1.5rem;">Mënyra e Pagesës</h3>
-                    
+
                     <div style="margin-bottom: 1rem;">
-                        <label style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid #e5e7eb; border-radius: var(--radius-md); cursor: pointer;">
-                            <input type="radio" name="payment_method" value="cash" checked onchange="toggleCardPayment(false)">
+                        <label
+                            style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid #e5e7eb; border-radius: var(--radius-md); cursor: pointer;">
+                            <input type="radio" name="payment_method" value="cash" checked
+                                onchange="toggleCardPayment(false)">
                             <i class="fas fa-money-bill-wave" style="color: var(--primary); font-size: 1.2rem;"></i>
                             <div>
                                 <span style="font-weight: 600; display: block;">Paguj në Dorëzim</span>
-                                <span style="font-size: 0.85rem; color: var(--text-muted);">Paguani kur të arrin porosia</span>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Paguani kur të arrin
+                                    porosia</span>
                             </div>
                         </label>
                     </div>
 
                     <div style="margin-bottom: 2rem;">
-                        <label style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid #e5e7eb; border-radius: var(--radius-md); cursor: pointer;">
+                        <label
+                            style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid #e5e7eb; border-radius: var(--radius-md); cursor: pointer;">
                             <input type="radio" name="payment_method" value="card" onchange="toggleCardPayment(true)">
                             <i class="far fa-credit-card" style="color: var(--text-muted); font-size: 1.2rem;"></i>
                             <div>
                                 <span style="font-weight: 600; display: block;">Kartë Bankare (Stripe)</span>
-                                <span style="font-size: 0.85rem; color: var(--text-muted);">Visa, Mastercard, etj.</span>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Visa, Mastercard,
+                                    etj.</span>
                             </div>
                         </label>
                     </div>
 
                     <!-- Placeholder for Card Element -->
-                    <div id="card-element-container" style="display: none; padding: 1rem; background: #f9fafb; border-radius: var(--radius-md); margin-bottom: 2rem;">
-                         <p style="color: var(--text-muted); font-size: 0.9rem;">
-                             <i class="fas fa-info-circle"></i> Pagesat me kartë janë duke u konfiguruar dhe do të jenë së shpejti në dispozicion. Ju lutem zgjedhni "Paguj në Dorëzim".
-                         </p>
+                    <div id="card-element-container"
+                        style="display: none; padding: 1rem; background: #f9fafb; border-radius: var(--radius-md); margin-bottom: 2rem;">
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">
+                            <i class="fas fa-info-circle"></i> Pagesat me kartë janë duke u konfiguruar dhe do të jenë
+                            së shpejti në dispozicion. Ju lutem zgjedhni "Paguj në Dorëzim".
+                        </p>
                     </div>
 
-                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem;">
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; justify-content: center; padding: 1rem;">
                         Konfirmo Porosinë
                     </button>
                 </form>
             </div>
 
             <!-- Order Summary -->
-            <div class="order-summary" style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius-lg); height: fit-content; box-shadow: var(--shadow-sm);">
+            <div class="order-summary"
+                style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius-lg); height: fit-content; box-shadow: var(--shadow-sm);">
                 <h3 style="margin-bottom: 1.5rem;">Përmbledhja</h3>
-                
+
                 <div style="margin-bottom: 2rem;">
                     {% for item in cart_items %}
-                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;">
+                    <div
+                        style="display: flex; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;">
                         <div style="position: relative; flex-shrink: 0; width: 60px; height: 60px;">
-                            <img src="{{ item.image_url }}" alt="{{ item.name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-sm);">
-                            <span style="position: absolute; top: -8px; right: -8px; background: var(--primary); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">{{ item.quantity }}</span>
+                            <img src="{{ item.image_url }}" alt="{{ item.name }}"
+                                style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-sm);">
+                            <span
+                                style="position: absolute; top: -8px; right: -8px; background: var(--primary); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">{{
+                                item.quantity }}</span>
                         </div>
                         <div style="flex: 1;">
                             <h4 style="font-size: 0.95rem; margin-bottom: 0.25rem;">{{ item.name }}</h4>
-                            <p style="font-size: 0.9rem; color: var(--text-muted);">€{{ "%.2f"|format(item.item_total) }}</p>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">€{{ "%.2f"|format(item.item_total)
+                                }}</p>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
 
-                <div style="border-top: 2px solid #eee; padding-top: 1rem;" id="summary-totals" data-subtotal="{{ total_price }}">
+                <div style="border-top: 2px solid #eee; padding-top: 1rem;" id="summary-totals"
+                    data-subtotal="{{ total_price }}">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                         <span>Nëntotali</span>
                         <span>€{{ "%.2f"|format(total_price) }}</span>
@@ -204,10 +244,15 @@
                         <span>Dërgesa</span>
                         <span id="shipping-display">
                             {% if shipping_cost == 0 %}
-                                <style>#shipping-display { color: var(--primary); font-weight: 500; }</style>
-                                Falas
+                            <style>
+                                #shipping-display {
+                                    color: var(--primary);
+                                    font-weight: 500;
+                                }
+                            </style>
+                            Falas
                             {% else %}
-                                €{{ "%.2f"|format(shipping_cost) }}
+                            €{{ "%.2f"|format(shipping_cost) }}
                             {% endif %}
                         </span>
                     </div>
@@ -227,13 +272,13 @@
         const addressInput = document.getElementById('address');
         const cityInput = document.getElementById('city');
         const countrySelect = document.getElementById('country');
-        
+
         if (method === 'pickup') {
             addressContainer.style.display = 'none';
             addressInput.required = false;
             cityInput.required = false;
             countrySelect.required = false;
-            
+
             // Force shipping to 0 in summary
             updateSummaryForPickup(true);
         } else {
@@ -241,7 +286,7 @@
             addressInput.required = true;
             cityInput.required = true;
             countrySelect.required = true;
-            
+
             // Recalculate based on current country
             updateShipping(countrySelect.value);
         }
@@ -251,7 +296,7 @@
         const shippingDisplay = document.getElementById('shipping-display');
         const grandTotalDisplay = document.getElementById('grand-total-display');
         const subtotal = parseFloat(document.getElementById('summary-totals').dataset.subtotal);
-        
+
         if (isPickup) {
             shippingDisplay.innerHTML = 'Falas (Në dyqan)';
             shippingDisplay.style.color = 'var(--primary)';
@@ -271,7 +316,7 @@
         const subtotal = parseFloat(document.getElementById('summary-totals').dataset.subtotal);
         const shippingDisplay = document.getElementById('shipping-display');
         const grandTotalDisplay = document.getElementById('grand-total-display');
-        
+
         let fee = 0;
         let threshold = 50;
         let baseFee = 2;
@@ -307,7 +352,7 @@
     function toggleCardPayment(show) {
         const container = document.getElementById('card-element-container');
         const btn = document.querySelector('button[type="submit"]');
-        
+
         if (show) {
             container.style.display = 'block';
             btn.disabled = true; // Disable until we actually implement Stripe

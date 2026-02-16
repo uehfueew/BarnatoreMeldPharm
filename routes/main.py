@@ -55,11 +55,13 @@ def products():
     if request.args.get('all') == 'true':
         per_page = 1000 # Show all products
     
+    pharmacist_choice = request.args.get('pharmacist_choice') == 'true'
+    
     products, total_pages, total_count = Product.get_paginated(
         page, per_page, category, search_query, subcategory, 
         sort=sort, brand=brand, min_price=min_price, max_price=max_price,
         discount_only=discount_only, best_seller_only=best_sellers,
-        no_discount=no_discount
+        no_discount=no_discount, pharmacist_choice=pharmacist_choice
     )
     
     # Get all unique brands for the filter sidebar
@@ -136,6 +138,15 @@ def product_detail(product_id):
     product = Product.get_by_id(product_id)
     if not product:
         return render_template('index.html') # Should be 404
+    
+    # Increment view count
+    try:
+        from bson import ObjectId
+        from .db import mongo
+        mongo.db.products.update_one({"_id": ObjectId(product_id)}, {"$inc": {"views": 1}})
+    except Exception as e:
+        print(f"Error incrementing views: {e}")
+    
     
     favorite_usernames = []
     if product.get('favorites'):
@@ -264,3 +275,29 @@ def search_api():
         })
     
     return jsonify(results)
+
+@main.route('/quiz')
+def quiz():
+    return render_template('quiz.html')
+
+@main.route('/quiz/results')
+def quiz_results():
+    skin_type = request.args.get('skin_type', '')
+    concern = request.args.get('concern', '')
+    
+    # Advanced logic: Map concerns to specific subcategories
+    mapping = {
+        'Akne': 'Kundër Akneve',
+        'Anti-aging': 'Anti-aging & Rrudhat',
+        'Hidratim': 'Hidratues',
+        'Shkëlqim': 'Serume & Trajtime'
+    }
+    
+    subcategory = mapping.get(concern)
+    
+    if subcategory:
+        return redirect(url_for('main.products', category='Dermokozmetikë', subcategory=subcategory))
+    
+    # Fallback to general search if no direct subcategory match
+    query = f"{skin_type} {concern}".strip()
+    return redirect(url_for('main.products', category='Dermokozmetikë', q=query))

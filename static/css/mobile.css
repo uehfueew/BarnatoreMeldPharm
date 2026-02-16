@@ -1,20 +1,26 @@
 /* Mobile specific styles */
 @media (max-width: 992px) {
+
     /* --- HIDE DESKTOP ELEMENTS --- */
-    .desktop-header { display: none !important; }
-    
-    /* --- SHOW MOBILE ELEMENTS --- */
-    .mobile-header { 
-        display: block !important; 
+    .desktop-header {
+        display: none !important;
     }
+
+    /* --- SHOW MOBILE ELEMENTS --- */
+    .mobile-header {
+        display: block !important;
+    }
+
     .mobile-bottom-nav {
         display: flex !important;
     }
 
     /* Adjust main content spacing */
     .main-content {
-        margin-top: 150px; /* Increased to fix overlap with header */
-        padding-bottom: 140px; /* Space for bottom nav + action bar */
+        margin-top: 150px;
+        /* Increased to fix overlap with header */
+        padding-bottom: 140px;
+        /* Space for bottom nav + action bar */
     }
 
     /* --- MOBILE HEADER --- */
@@ -25,12 +31,12 @@
         width: 100% !important;
         background: #fff;
         z-index: 10000 !important;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .mobile-header.scrolled {
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
@@ -73,7 +79,8 @@
         display: flex !important;
         padding: 0.5rem 1rem 1rem;
         background: #fff;
-        gap: 0; /* Remove gap to allow full width search */
+        gap: 0;
+        /* Remove gap to allow full width search */
         align-items: center;
         transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -129,7 +136,7 @@
         margin-left: 0 !important;
         overflow: hidden;
         transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        transform: scale(0.8); 
+        transform: scale(0.8);
         padding: 0 !important;
         border: none !important;
         background: transparent !important;
@@ -170,7 +177,7 @@
         top: -2px !important;
         right: -6px !important;
     }
-    
+
     .nav-icon-btn {
         position: relative;
         width: 44px;
@@ -198,7 +205,8 @@
         position: absolute;
         top: -4px;
         right: -4px;
-        background: #ef4444; /* Standard Red */
+        background: #ef4444;
+        /* Standard Red */
         color: white;
         font-size: 0.65rem;
         padding: 2px 6px;
@@ -210,8 +218,9 @@
         justify-content: center;
         font-weight: 700;
         border: 2px solid #fff;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+
     .mobile-bottom-nav {
         position: fixed;
         bottom: 0;
@@ -243,7 +252,7 @@
         gap: 4px;
         transition: all 0.2s ease;
     }
-    
+
     .bottom-nav-item i {
         font-size: 1.3rem;
         transition: transform 0.2s ease;
@@ -272,9 +281,10 @@
 
     .mobile-cart-badge {
         position: absolute;
-        top: -4px; /* Move to top right of icon */
+        top: -4px;
+        /* Move to top right of icon */
         right: -6px;
-        background: #ef4444; 
+        background: #ef4444;
         color: white;
         font-size: 0.65rem;
         min-width: 18px;
@@ -299,15 +309,18 @@
         bottom: 0;
         width: 100vw;
         height: 100vh;
-        height: 100dvh; /* Modern dynamic viewport height */
+        height: 100dvh;
+        /* Modern dynamic viewport height */
         background: #fff;
         z-index: 10001;
-        display: flex !important; /* Override base.css display: none !important */
+        display: flex !important;
+        /* Override base.css display: none !important */
         flex-direction: column;
         transform: translateY(100%);
         transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
         visibility: hidden;
         pointer-events: none;
+        overscroll-behavior: contain;
     }
 
     #mobile-cart-modal {
@@ -316,12 +329,12 @@
 
     /* Profile Partial Modal (Laptop/App Style) */
     .full-screen-modal.profile-partial {
-        background: rgba(0,0,0,0);
+        background: rgba(0, 0, 0, 0);
         transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s, background 0.6s;
     }
 
     .full-screen-modal.profile-partial.active {
-        background: rgba(0,0,0,0.5);
+        background: rgba(0, 0, 0, 0.5);
     }
 
     .full-screen-modal.profile-partial .modal-header,
@@ -331,13 +344,16 @@
     }
 
     .full-screen-modal.profile-partial .modal-header {
-        margin-top: 0; /* Changed from auto */
-        border-radius: 0; /* Full screen style */
+        margin-top: 0;
+        /* Changed from auto */
+        border-radius: 0;
+        /* Full screen style */
         padding: 1.25rem 1.5rem;
     }
 
     .full-screen-modal.profile-partial .modal-content {
-        height: 100%; /* Full height */
+        height: 100%;
+        /* Full height */
         max-height: 100vh;
         padding-bottom: calc(env(safe-area-inset-bottom) + 2rem);
     }
@@ -419,13 +435,13 @@
         background: #fff;
         cursor: pointer;
     }
-    
+
     .cat-main i {
         color: #94a3b8;
         font-size: 0.9rem;
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     .mobile-cat-item.open {
         background: #f8fafc;
         border-color: var(--primary-light);
@@ -444,7 +460,7 @@
         background: #f8fafc;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     .mobile-cat-item.open .mobile-subcat-list {
         max-height: 500px;
         padding-bottom: 1.25rem;
@@ -458,7 +474,7 @@
         font-size: 0.95rem;
         text-decoration: none;
     }
-    
+
     .mobile-subcat-list li:last-child a {
         border-bottom: none;
     }
@@ -469,7 +485,8 @@
         padding: 1.25rem;
         border-radius: 12px;
         display: flex;
-        flex-direction: row; /* Horizontal for less height */
+        flex-direction: row;
+        /* Horizontal for less height */
         align-items: center;
         gap: 1rem;
         text-align: left;
@@ -480,7 +497,8 @@
     }
 
     .avatar-circle {
-        width: 60px; /* Smaller */
+        width: 60px;
+        /* Smaller */
         height: 60px;
         background: var(--primary-light);
         color: var(--primary);
@@ -501,16 +519,17 @@
         gap: 0;
     }
 
-    .user-info-card h4 { 
-        margin-bottom: 0; 
-        font-weight: 700; 
+    .user-info-card h4 {
+        margin-bottom: 0;
+        font-weight: 700;
         font-size: 1rem;
         line-height: 1.2;
     }
-    .user-info-card p { 
+
+    .user-info-card p {
         margin-bottom: 0;
-        opacity: 0.7; 
-        font-size: 0.8rem; 
+        opacity: 0.7;
+        font-size: 0.8rem;
     }
 
     /* --- NEW MOBILE CART MODAL STYLES --- */
@@ -668,7 +687,7 @@
         padding: 1.25rem;
         background: #fff;
         border-top: 1px solid #f1f5f9;
-        box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+        box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
     }
 
     .summary-details {
@@ -758,7 +777,7 @@
         margin-top: 1rem;
     }
 
-    .mobile-profile-links { 
+    .mobile-profile-links {
         list-style: none;
         padding: 0 0.5rem;
     }
@@ -803,7 +822,7 @@
     .mobile-profile-links li.admin-item a i {
         color: #f59e0b;
     }
-    
+
     .mobile-profile-links li:last-child a {
         color: #ef4444;
     }
@@ -829,7 +848,8 @@
         font-size: 1.1rem;
     }
 
-    .btn-primary-mobile, .btn-secondary-mobile {
+    .btn-primary-mobile,
+    .btn-secondary-mobile {
         display: block;
         width: 100%;
         padding: 1.25rem;
@@ -893,7 +913,7 @@
         border: 1px solid #f1f5f9;
         border-radius: 16px;
         align-items: center;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
     }
 
     .mobile-mini-cart-img {
@@ -959,7 +979,7 @@
         justify-content: center;
         font-weight: bold;
         cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
     .qty-control-mobile .qty-val {
@@ -1022,7 +1042,7 @@
         position: sticky;
         bottom: 0;
         z-index: 10;
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
     }
 
     .total-row {
@@ -1057,7 +1077,7 @@
         font-size: 1.1rem;
         box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.3);
     }
-    
+
     .mobile-profile-links li {
         margin-bottom: 0.75rem;
     }
@@ -1074,17 +1094,25 @@
         box-shadow: var(--shadow-sm);
         transition: transform 0.2s;
     }
-    
-    .mobile-profile-links a:active { transform: scale(0.98); }
-    
+
+    .mobile-profile-links a:active {
+        transform: scale(0.98);
+    }
+
     .mobile-profile-links a i {
         color: var(--primary);
         font-size: 1.2rem;
         width: 24px;
         text-align: center;
     }
-    .text-danger { color: #e11d48 !important; }
-    .text-danger i { color: #e11d48 !important; }
+
+    .text-danger {
+        color: #e11d48 !important;
+    }
+
+    .text-danger i {
+        color: #e11d48 !important;
+    }
 
     .not-logged-in-state {
         display: flex;
@@ -1095,14 +1123,18 @@
         gap: 1.5rem;
         text-align: center;
     }
-    
-    .not-logged-in-state i { font-size: 4rem; color: #cbd5e1; }
-    .not-logged-in-state p { 
-        font-size: 1.2rem; 
-        font-weight: 600; 
-        color: var(--text-muted); 
+
+    .not-logged-in-state i {
+        font-size: 4rem;
+        color: #cbd5e1;
     }
-    
+
+    .not-logged-in-state p {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-muted);
+    }
+
     .btn-primary-mobile {
         width: 100%;
         padding: 1rem;
@@ -1113,7 +1145,7 @@
         font-weight: 600;
         box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.4);
     }
-    
+
     .btn-secondary-mobile {
         width: 100%;
         padding: 1rem;
@@ -1125,15 +1157,17 @@
     }
 
     /* --- Rest of Mobile Styles (Product Grids etc) --- */
-    
+
     /* Hero Section Fixes */
     .hero {
-        padding: 2rem 0 3rem !important; /* Reduced padding */
+        padding: 2rem 0 3rem !important;
+        /* Reduced padding */
         overflow: hidden !important;
     }
 
     .hero-container {
-        flex-direction: column-reverse !important; /* Text top, Image bottom */
+        flex-direction: column-reverse !important;
+        /* Text top, Image bottom */
         gap: 1.5rem !important;
         text-align: center;
         padding: 0 1rem !important;
@@ -1148,13 +1182,15 @@
     }
 
     .hero-text h1 {
-        font-size: 1.8rem !important; /* Much smaller as requested */
+        font-size: 1.8rem !important;
+        /* Much smaller as requested */
         margin-bottom: 0.75rem !important;
         line-height: 1.2;
     }
-    
+
     .hero-text p {
-        font-size: 0.9rem !important; /* Smaller text */
+        font-size: 0.9rem !important;
+        /* Smaller text */
         margin-bottom: 1.5rem !important;
         line-height: 1.5;
         padding: 0 0.5rem;
@@ -1176,16 +1212,20 @@
     /* Hero Search Fixes */
     .hero-search-container {
         margin: 1rem 0 1.5rem !important;
-        max-width: 95% !important; /* Limit width */
-        position: relative; /* Ensure dropdown is relative to this */
+        max-width: 95% !important;
+        /* Limit width */
+        position: relative;
+        /* Ensure dropdown is relative to this */
     }
 
     .search-wrapper input {
-        height: 42px !important; /* Smaller search bar */
-        font-size: 16px !important; /* Force 16px to stop zoom */
+        height: 42px !important;
+        /* Smaller search bar */
+        font-size: 16px !important;
+        /* Force 16px to stop zoom */
         padding: 0.4rem 1rem 0.4rem 2.5rem !important;
     }
-    
+
     .search-wrapper i {
         left: 0.8rem !important;
         font-size: 0.9rem !important;
@@ -1195,11 +1235,13 @@
     .search-preview-dropdown {
         width: 100% !important;
         left: 0 !important;
-        max-height: 40vh !important; /* Limit height */
+        max-height: 40vh !important;
+        /* Limit height */
         overflow-y: auto !important;
-        overflow-x: hidden !important; /* Prevent horizontal scroll */
+        overflow-x: hidden !important;
+        /* Prevent horizontal scroll */
         border-radius: 12px !important;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
     }
 
     .preview-item {
@@ -1211,8 +1253,10 @@
     .preview-item img {
         width: 32px !important;
         height: 32px !important;
-        min-width: 32px !important; /* Prevent squishing */
-        object-fit: contain !important; /* Changed to contain */
+        min-width: 32px !important;
+        /* Prevent squishing */
+        object-fit: contain !important;
+        /* Changed to contain */
         border-radius: 6px !important;
     }
 
@@ -1221,7 +1265,8 @@
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
-        align-items: flex-start !important; /* Left align text */
+        align-items: flex-start !important;
+        /* Left align text */
         text-align: left !important;
     }
 
@@ -1242,7 +1287,7 @@
         line-height: 1.1 !important;
         margin-bottom: 0 !important;
     }
-    
+
     .preview-item p {
         font-size: 0.75rem !important;
         margin-bottom: 0 !important;
@@ -1265,33 +1310,39 @@
     .filter-bar {
         padding: 0.4rem !important;
     }
-    
+
     .filter-bar .search-wrapper input {
         height: 42px !important;
     }
 
     /* ALIGN NAVBAR ITEMS CENTER except close button */
     .nav-links {
-        align-items: center !important; /* Center items */
+        align-items: center !important;
+        /* Center items */
         text-align: left;
     }
-    
+
     .nav-links li {
         width: 100%;
-        border-bottom: 1px solid #f1f5f9; /* Separator lines */
+        border-bottom: 1px solid #f1f5f9;
+        /* Separator lines */
     }
 
     .nav-links a {
-        justify-content: flex-start !important; /* Keep icons/text left aligned within the item */
+        justify-content: flex-start !important;
+        /* Keep icons/text left aligned within the item */
         width: 100%;
-        padding: 1rem 0.5rem !important; /* Tap targets */
+        padding: 1rem 0.5rem !important;
+        /* Tap targets */
     }
 
     /* Fix Cart/Profile being stuck left/right */
-    .cart-icon, .profile-icon {
+    .cart-icon,
+    .profile-icon {
         display: flex !important;
         width: 100% !important;
-        justify-content: flex-start !important; /* Align left */
+        justify-content: flex-start !important;
+        /* Align left */
         color: var(--text-muted) !important;
     }
 
@@ -1302,28 +1353,33 @@
 
     .cart-badge {
         position: absolute !important;
-        left: 20px !important; /* Position relative to icon (which is left aligned) */
+        left: 20px !important;
+        /* Position relative to icon (which is left aligned) */
         top: -5px !important;
-        right: auto !important; /* Cancel right: -10px from desktop */
+        right: auto !important;
+        /* Cancel right: -10px from desktop */
     }
-    
+
     .nav-label {
         font-weight: 500 !important;
     }
 
     .sub-title {
-        font-size: 0.75rem !important; /* Smaller sub-titles */
+        font-size: 0.75rem !important;
+        /* Smaller sub-titles */
         margin-bottom: 0.25rem !important;
     }
-    
-    .section-header, .section-center-header {
+
+    .section-header,
+    .section-center-header {
         margin-bottom: 1.5rem !important;
-        flex-direction: row; /* Keep row for title + view all */
+        flex-direction: row;
+        /* Keep row for title + view all */
         align-items: center;
         justify-content: space-between;
         text-align: left;
     }
-    
+
     .section-center-header {
         text-align: center;
         flex-direction: column;
@@ -1344,20 +1400,27 @@
 
     .product-grid {
         display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important; /* Strictly 2 columns */
-        gap: 0.5rem !important; /* Small uniform gap */
+        grid-template-columns: repeat(2, 1fr) !important;
+        /* Strictly 2 columns */
+        grid-auto-rows: 1fr !important;
+        /* Force equal heights */
+        align-items: stretch !important;
+        gap: 0.5rem !important;
+        /* Small uniform gap */
         margin-bottom: 2rem !important;
     }
 
     .product-card {
         padding: 0.5rem !important;
-        min-height: auto !important;
-        display: flex;
-        flex-direction: column;
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-self: stretch !important;
     }
 
     .product-image {
-        aspect-ratio: 1 / 1 !important; /* Square */
+        aspect-ratio: 1 / 1 !important;
+        /* Square */
         height: auto !important;
         width: 100% !important;
         margin-bottom: 0.5rem !important;
@@ -1367,11 +1430,12 @@
     .product-image img {
         width: 100% !important;
         height: 100% !important;
-        object-fit: contain !important; /* Center and fit fully */
+        object-fit: contain !important;
+        /* Center and fit fully */
         object-position: center !important;
         padding: 0.25rem !important;
     }
-    
+
     .product-info {
         padding: 0 !important;
     }
@@ -1384,9 +1448,11 @@
 
     .product-card .product-title {
         font-size: 0.85rem !important;
-        line-height: 1.2 !important; /* Slightly tighter */
+        line-height: 1.2 !important;
+        /* Slightly tighter */
         margin-bottom: 0.2rem !important;
-        height: 2.05rem !important; /* Exactly 2 lines at 0.85 x 1.2 = 1.02 each */
+        height: 2.05rem !important;
+        /* Exactly 2 lines at 0.85 x 1.2 = 1.02 each */
         min-height: 2.05rem !important;
         overflow: hidden !important;
         display: -webkit-box !important;
@@ -1395,7 +1461,7 @@
         -webkit-box-orient: vertical !important;
         text-overflow: ellipsis !important;
     }
-    
+
     .product-card .product-size {
         display: block !important;
         font-size: 0.75rem !important;
@@ -1412,11 +1478,11 @@
     .price {
         font-size: 0.9rem !important;
     }
-    
+
     .price.discounted {
         font-size: 0.95rem !important;
     }
-    
+
     .price.original {
         font-size: 0.75rem !important;
     }
@@ -1429,7 +1495,8 @@
         white-space: nowrap !important;
     }
 
-    .special-offer-badge, .best-seller-badge {
+    .special-offer-badge,
+    .best-seller-badge {
         font-size: 0.5rem !important;
         padding: 2px 6px !important;
         top: 4px !important;
@@ -1437,7 +1504,7 @@
         letter-spacing: 0 !important;
     }
 
-    .special-offer-badge + .best-seller-badge {
+    .special-offer-badge+.best-seller-badge {
         top: 22px !important;
     }
 
@@ -1457,7 +1524,8 @@
 
     .category-scroll-container {
         overflow-x: auto !important;
-        overflow-y: hidden !important; /* Prevent vertical scrolling/movement */
+        overflow-y: hidden !important;
+        /* Prevent vertical scrolling/movement */
         padding-bottom: 2px !important;
         -webkit-overflow-scrolling: touch;
         display: flex !important;
@@ -1470,10 +1538,13 @@
     }
 
     .category-chip {
-        padding: 8px 12px !important; /* Reduced from 10px 14px */
-        font-size: 0.85rem !important; /* Reduced from 1rem */
+        padding: 8px 12px !important;
+        /* Reduced from 10px 14px */
+        font-size: 0.85rem !important;
+        /* Reduced from 1rem */
         border-bottom-width: 2px !important;
-        margin-bottom: 0 !important; /* Reset offset for mobile height stability */
+        margin-bottom: 0 !important;
+        /* Reset offset for mobile height stability */
     }
 
     /* Category Grid Fix */
@@ -1488,37 +1559,50 @@
         height: 120px !important;
         border-radius: 12px !important;
     }
-    
+
     .category-card-v2 .category-overlay {
         padding: 0.75rem !important;
     }
-    
+
     .category-card-v2 .category-title {
         font-size: 0.95rem !important;
     }
-    
+
     .category-card-v2 .category-count {
         font-size: 0.65rem !important;
     }
 
     /* General Typography Fixes */
-    h1 { font-size: 2rem !important; }
-    h2 { font-size: 1.5rem !important; }
-    h3 { font-size: 1.1rem !important; }
-    p { font-size: 0.9rem !important; }
+    h1 {
+        font-size: 2rem !important;
+    }
+
+    h2 {
+        font-size: 1.5rem !important;
+    }
+
+    h3 {
+        font-size: 1.1rem !important;
+    }
+
+    p {
+        font-size: 0.9rem !important;
+    }
 
     /* Hide background elements */
-    .hero-bg-shapes { display: none !important; }
-    
+    .hero-bg-shapes {
+        display: none !important;
+    }
+
     /* Cart & Order Page Mobile Fixes */
     .cart-container {
         padding-top: 1rem !important;
     }
-    
+
 
     /* Strict Mobile Menu Labels Force - LEFT ALIGNED */
     .nav-links {
-        align-items: flex-start !important; 
+        align-items: flex-start !important;
         text-align: left;
     }
 
@@ -1539,18 +1623,23 @@
 
     .nav-label {
         display: inline-block !important;
-        margin-left: 0 !important; 
-        margin-right: 0.5rem !important; /* Text Margin Right */
-        font-size: 1rem !important; /* MATCH REGULAR LINKS */
+        margin-left: 0 !important;
+        margin-right: 0.5rem !important;
+        /* Text Margin Right */
+        font-size: 1rem !important;
+        /* MATCH REGULAR LINKS */
         color: var(--text-main);
-        order: 1; /* Text First */
+        order: 1;
+        /* Text First */
     }
-    
-    .cart-icon, .profile-icon {
+
+    .cart-icon,
+    .profile-icon {
         color: var(--text-muted) !important;
         display: inline-flex !important;
         width: auto !important;
-        position: relative !important; /* For Badge */
+        position: relative !important;
+        /* For Badge */
         overflow: visible !important;
         align-items: center !important;
     }
@@ -1558,35 +1647,43 @@
     .nav-links i {
         min-width: 20px;
         text-align: center;
-        order: 2; /* Icon Second */
+        order: 2;
+        /* Icon Second */
         font-size: 1.1rem !important;
     }
-    
+
     /* Cart Badge adjustment - attached to icon */
     .cart-badge {
         position: relative !important;
-        top: -10px !important; /* Higher up */
+        top: -10px !important;
+        /* Higher up */
         right: auto !important;
-        left: -12px !important; /* Move more left onto the icon */
+        left: -12px !important;
+        /* Move more left onto the icon */
         margin-left: 0 !important;
         order: 3 !important;
         z-index: 10;
-        box-shadow: 0 0 0 1.5px white !important; /* Border for separation */
-        font-size: 0.55rem !important; /* Smaller Text */
-        padding: 0.1rem 0.3rem !important; /* Smaller Padding */
+        box-shadow: 0 0 0 1.5px white !important;
+        /* Border for separation */
+        font-size: 0.55rem !important;
+        /* Smaller Text */
+        padding: 0.1rem 0.3rem !important;
+        /* Smaller Padding */
         min-width: auto !important;
         line-height: 1 !important;
         border-radius: 99px !important;
     }
 
     /* GLOBAL MOBILE OVERFLOW FIX */
-    html, body {
+    html,
+    body {
         overflow-x: hidden !important;
         width: 100vw !important;
         max-width: 100% !important;
     }
-    
-    .section-container, .container {
+
+    .section-container,
+    .container {
         padding-left: 1rem !important;
         padding-right: 1rem !important;
         overflow-x: hidden !important;
@@ -1611,17 +1708,18 @@
     /* Cart Header Layout - Reversed */
     .cart-header-row {
         display: flex !important;
-        flex-direction: column-reverse !important; /* Button Top, Title Bottom */
+        flex-direction: column-reverse !important;
+        /* Button Top, Title Bottom */
         align-items: flex-start !important;
         gap: 1rem !important;
         margin-bottom: 2rem !important;
     }
-    
+
     .cart-header-row .btn {
         align-self: flex-start !important;
         margin-bottom: 0 !important;
     }
-    
+
     .cart-header-row h1 {
         margin-top: 0 !important;
         font-size: 1.75rem !important;
@@ -1652,7 +1750,8 @@
             "img info"
             "img price"
             "qty total";
-        gap: 0.5rem 1rem !important; /* Row Gap, Column Gap */
+        gap: 0.5rem 1rem !important;
+        /* Row Gap, Column Gap */
         background: white;
         border: 1px solid #e2e8f0;
         border-radius: 12px;
@@ -1677,7 +1776,8 @@
 
     /* 1. IMAGE (Area: img) */
     .cart-product-info {
-        display: contents !important; /* Unwrap the wrapper */
+        display: contents !important;
+        /* Unwrap the wrapper */
     }
 
     .cart-product-info .cart-thumb {
@@ -1687,7 +1787,8 @@
         object-fit: contain;
         background: #f8fafc;
         border-radius: 8px;
-        align-self: start; /* Align to top */
+        align-self: start;
+        /* Align to top */
     }
 
     /* 2. PRODUCT NAME & INFO (Area: info) */
@@ -1697,8 +1798,9 @@
         flex-direction: column !important;
         justify-content: flex-start !important;
         /* Prevent overlap with delete button which is absolute */
-        padding-right: 2rem !important; 
-        min-width: 0 !important; /* Flex child truncation fix */
+        padding-right: 2rem !important;
+        min-width: 0 !important;
+        /* Flex child truncation fix */
     }
 
     .product-name {
@@ -1756,7 +1858,7 @@
     .cart-table td:nth-child(5) {
         /* Cannot use display: contents for absolute positioning parent? */
         /* Actually, absolute pos relies on 'tr' which is relative */
-        display: block !important; 
+        display: block !important;
         position: absolute !important;
         top: 0.75rem !important;
         right: 0.5rem !important;
@@ -1765,7 +1867,7 @@
         z-index: 10;
         height: auto !important;
     }
-    
+
     .remove-btn {
         background: transparent !important;
         color: #ef4444 !important;
@@ -1783,7 +1885,7 @@
         align-items: center;
         gap: 0;
     }
-    
+
     .qty-btn {
         width: 36px;
         height: 36px;
@@ -1791,14 +1893,16 @@
         align-items: center;
         justify-content: center;
         background: #ffffff;
-        border: 1px solid #d1d5db; /* Gray outline */
-        border-radius: 10px; /* Rounded corners */
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        border: 1px solid #d1d5db;
+        /* Gray outline */
+        border-radius: 10px;
+        /* Rounded corners */
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         color: var(--text-main);
         font-weight: 700;
         padding: 0;
     }
-    
+
     .qty-input {
         width: 36px;
         height: auto;
@@ -1819,7 +1923,7 @@
             "img price"
             "qty total" !important;
     }
-    
+
     /* 5. DELETE BUTTON (Top Right Absolute) */
     .cart-table td:nth-child(5) {
         position: absolute !important;
@@ -1830,7 +1934,7 @@
         z-index: 10;
         background: transparent !important;
     }
-    
+
     .cart-table td:nth-child(5) .btn-icon {
         color: #ef4444 !important;
         background: transparent !important;
@@ -1839,11 +1943,11 @@
         box-shadow: none !important;
         font-size: 1rem !important;
     }
-    
+
     .btn-icon {
         background: #fee2e2;
         color: #ef4444;
-        width: 28px !important; 
+        width: 28px !important;
         height: 28px !important;
         border-radius: 50%;
         display: flex;
@@ -1855,146 +1959,174 @@
 
     /* FIX: Orders Page & Admin Orders - CARD VIEW (No Scroll) */
     .table-responsive {
-        overflow-x: hidden !important; /* Disable horizontal scroll globally for this container */
+        overflow-x: hidden !important;
+        /* Disable horizontal scroll globally for this container */
         padding: 0 !important;
         width: 100% !important;
         box-sizing: border-box !important;
-        max-width: 100vw !important; /* Force screen width limit */
+        max-width: 100vw !important;
+        /* Force screen width limit */
     }
-    
-    .admin-table tbody, .table tbody {
+
+    .admin-table tbody,
+    .table tbody {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem !important; /* Reduced card gap */
+        gap: 0.5rem !important;
+        /* Reduced card gap */
         width: 100% !important;
         max-width: 100% !important;
-        background: transparent !important; 
+        background: transparent !important;
     }
 
     /* ADMIN DASHBOARD HEADER FIXES */
-    .admin-header > div:first-child,
-    .admin-orders-header { /* Applied to both dashboards */
+    .admin-header>div:first-child,
+    .admin-orders-header {
+        /* Applied to both dashboards */
         flex-direction: column !important;
-        align-items: center !important; /* CENTER TEXT */
+        align-items: center !important;
+        /* CENTER TEXT */
         width: 100% !important;
-        gap: 2rem !important; /* Increased Gap (Space between Text and Buttons) */
+        gap: 2rem !important;
+        /* Increased Gap (Space between Text and Buttons) */
         margin-top: 0.5rem !important;
         margin-bottom: 1rem !important;
         text-align: center !important;
     }
-    
+
     /* Order Title Fixes */
     .admin-orders-header h2 {
-        margin-top: 0 !important; /* Remove top margin to pull up */
+        margin-top: 0 !important;
+        /* Remove top margin to pull up */
         margin-bottom: 0.5rem !important;
-        font-size: 2rem !important; /* BIGGER (Was 1.8) */
+        font-size: 2rem !important;
+        /* BIGGER (Was 1.8) */
         font-weight: 800 !important;
     }
-    
+
     /* Pull the whole container up */
     .container.section {
-        padding-top: 1rem !important; /* Reduced from default large padding */
+        padding-top: 1rem !important;
+        /* Reduced from default large padding */
     }
 
     /* Buttons Container - Force Horizontal Row */
-    .admin-header > div:first-child > div,
+    .admin-header>div:first-child>div,
     .admin-actions-group {
         width: 100% !important;
         display: flex !important;
-        flex-direction: row !important; /* Force Row */
+        flex-direction: row !important;
+        /* Force Row */
         gap: 0.5rem !important;
         justify-content: space-between !important;
-        order: 2 !important; /* Ensure buttons are below title */
+        order: 2 !important;
+        /* Ensure buttons are below title */
     }
-    
+
     /* Layout Admin Header: Title Top, Buttons Bottom */
-    .admin-header > div:first-child {
+    .admin-header>div:first-child {
         display: flex !important;
         flex-direction: column !important;
     }
 
     .admin-header .section-title {
-        order: -1 !important; /* Ensure Title is First */
-        font-size: 2.2rem !important; /* Bigger Title Text */
+        order: -1 !important;
+        /* Ensure Title is First */
+        font-size: 2.2rem !important;
+        /* Bigger Title Text */
         font-weight: 800 !important;
     }
 
     .admin-actions-group {
-        order: 2 !important; /* Ensure Buttons are Second/Last */
+        order: 2 !important;
+        /* Ensure Buttons are Second/Last */
     }
-    
+
     /* Buttons Container - Force Horizontal Row */
-    .admin-header > div:first-child > div,
+    .admin-header>div:first-child>div,
     .admin-actions-group {
         width: 100% !important;
         display: flex !important;
-        flex-direction: row !important; /* Force Row */
+        flex-direction: row !important;
+        /* Force Row */
         gap: 0.5rem !important;
         justify-content: space-between !important;
     }
-    
+
     /* Buttons - Mobile Size Optimization */
     .admin-header .btn {
-        flex: 1 !important; /* Equal width */
+        flex: 1 !important;
+        /* Equal width */
         width: auto !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         text-align: center !important;
-        font-size: 0.75rem !important; /* Smaller text */
-        padding: 0.5rem 0.2rem !important; /* Compact padding */
-        height: 38px !important; /* Fixed height */
+        font-size: 0.75rem !important;
+        /* Smaller text */
+        padding: 0.5rem 0.2rem !important;
+        /* Compact padding */
+        height: 38px !important;
+        /* Fixed height */
         margin: 0 !important;
     }
-    
+
     /* GLOBAL FIX: Prevent Zoom on Input Focus (iOS) */
-    input[type="text"], 
-    input[type="number"], 
-    input[type="password"], 
-    input[type="email"], 
-    select, 
+    input[type="text"],
+    input[type="number"],
+    input[type="password"],
+    input[type="email"],
+    select,
     textarea {
-        font-size: 16px !important; /* Must be 16px to prevent zoom */
+        font-size: 16px !important;
+        /* Must be 16px to prevent zoom */
     }
 
     /* Convert Table Rows to Compact Cards - CHANGED SELECTOR to exclude details row */
-    .admin-table tr:not([id^="details-"]), .table tr:not([id^="details-"]) {
+    .admin-table tr:not([id^="details-"]),
+    .table tr:not([id^="details-"]) {
         display: flex !important;
         flex-direction: column;
         background: white;
-        border: 1px solid #f1f5f9; 
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* Lighter shadow */
-        border-radius: 8px; /* Tighter radius */
-        padding: 0.75rem !important; /* Reduced padding */
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        /* Lighter shadow */
+        border-radius: 8px;
+        /* Tighter radius */
+        padding: 0.75rem !important;
+        /* Reduced padding */
         position: relative;
         width: 100% !important;
-        max-width: 100% !important; 
+        max-width: 100% !important;
         box-sizing: border-box !important;
-        overflow: hidden !important; 
-        margin-bottom: 0 !important; 
+        overflow: hidden !important;
+        margin-bottom: 0 !important;
     }
-    
+
     /* Hide Table Headers for Orders/Admin tables on mobile */
-    .admin-table thead, .table thead {
+    .admin-table thead,
+    .table thead {
         display: none !important;
     }
-    
-    .admin-table td, .table td {
+
+    .admin-table td,
+    .table td {
         display: block !important;
         width: 100% !important;
         max-width: 100% !important;
-        padding: 0 !important; /* Removed vertical padding */
+        padding: 0 !important;
+        /* Removed vertical padding */
         border: none !important;
         text-align: left !important;
-        font-size: 0.75rem !important; 
-        word-break: break-all !important; 
+        font-size: 0.75rem !important;
+        word-break: break-all !important;
         line-height: normal !important;
         white-space: normal !important;
     }
 
     /* ID - Top Left, Bold */
-    .admin-table td:first-child, 
-    .table td:first-child { 
+    .admin-table td:first-child,
+    .table td:first-child {
         display: inline-block !important;
         width: auto !important;
         font-size: 0.85rem !important;
@@ -2007,10 +2139,10 @@
     /* USER TABLE: Date (2nd) - Absolute positioned to be closer to status */
     .table:not(.admin-table) td:nth-child(2) {
         position: absolute !important;
-        top: 1rem !important; 
-        right: 5rem !important;  
+        top: 1rem !important;
+        right: 5rem !important;
         width: auto !important;
-        font-size: 0.75rem !important; 
+        font-size: 0.75rem !important;
         color: var(--text-muted) !important;
         text-align: right !important;
         background: transparent !important;
@@ -2022,7 +2154,8 @@
         font-size: 0.85rem !important;
         color: var(--text-main) !important;
         margin-bottom: 0.1rem !important;
-        margin-top: 0.2rem !important; /* Reduced top margin to pull it up */
+        margin-top: 0.2rem !important;
+        /* Reduced top margin to pull it up */
         line-height: 1.2 !important;
     }
 
@@ -2030,7 +2163,8 @@
     .admin-table td:nth-child(3) {
         position: absolute !important;
         top: 0.75rem !important;
-        right: 8rem !important; /* Adjusted position */
+        right: 8rem !important;
+        /* Adjusted position */
         width: auto !important;
         font-size: 0.75rem !important;
         color: var(--text-muted) !important;
@@ -2038,31 +2172,37 @@
         padding: 0 !important;
         background: transparent !important;
     }
-    
+
     /* Price - Compact */
-    .admin-table td:nth-child(4), /* Admin Price */
-    .table:not(.admin-table) td:nth-child(3) { /* User Price */
-        display: block !important; 
-        font-size: 0.9rem !important; 
+    .admin-table td:nth-child(4),
+    /* Admin Price */
+    .table:not(.admin-table) td:nth-child(3) {
+        /* User Price */
+        display: block !important;
+        font-size: 0.9rem !important;
         font-weight: 700 !important;
         color: var(--primary) !important;
         margin-bottom: 0.25rem !important;
         clear: both !important;
         margin-top: 0.1rem !important;
     }
-    
+
     /* Status - Shifted to TOP RIGHT */
-    .admin-table td:nth-child(5) { 
+    .admin-table td:nth-child(5) {
         position: absolute !important;
-        top: 0.5rem !important; /* Slightly higher */
-        right: 0.5rem !important; /* Not flush to edge, easier to see */
-        width: auto !important; /* Auto width */
+        top: 0.5rem !important;
+        /* Slightly higher */
+        right: 0.5rem !important;
+        /* Not flush to edge, easier to see */
+        width: auto !important;
+        /* Auto width */
         padding: 0 !important;
         text-align: right !important;
         z-index: 5;
     }
 
-    .table:not(.admin-table) td:nth-child(4) { /* User Status (Badge) */
+    .table:not(.admin-table) td:nth-child(4) {
+        /* User Status (Badge) */
         position: absolute !important;
         top: 0.75rem !important;
         right: 0.75rem !important;
@@ -2070,11 +2210,13 @@
         padding: 0 !important;
         text-align: right !important;
     }
-    
+
     /* Form Select inside Admin Table - Bigger */
     .admin-table .form-select {
-        padding: 0.25rem 1.4rem 0.25rem 0.6rem !important; /* More comfortable padding */
-        font-size: 0.8rem !important; /* Bigger font */
+        padding: 0.25rem 1.4rem 0.25rem 0.6rem !important;
+        /* More comfortable padding */
+        font-size: 0.8rem !important;
+        /* Bigger font */
         font-weight: 500 !important;
         height: auto !important;
         background-position: right 0.3rem center !important;
@@ -2082,32 +2224,38 @@
         border-width: 1px !important;
     }
 
-    .status-badge, .badge {
-        font-size: 0.6rem !important; 
+    .status-badge,
+    .badge {
+        font-size: 0.6rem !important;
         padding: 2px 5px !important;
     }
-    
+
     /* BUTTON FIX: Admin Details Button - BOTTOM RIGHT & Box Style */
     .admin-table td:nth-child(6) {
-        border-top: none !important; 
+        border-top: none !important;
         padding: 0 !important;
         margin: 0 !important;
         position: absolute !important;
-        top: auto !important; 
-        bottom: 0.75rem !important; /* Bottom */
-        right: 0.5rem !important; /* Right */
+        top: auto !important;
+        bottom: 0.75rem !important;
+        /* Bottom */
+        right: 0.5rem !important;
+        /* Right */
         width: auto !important;
         display: block !important;
-        z-index: 6; 
+        z-index: 6;
     }
-    
+
     .admin-table td:nth-child(6) .btn {
-        padding: 0.5rem 1.25rem !important; /* Larger touch target */
-        font-size: 0.85rem !important; 
+        padding: 0.5rem 1.25rem !important;
+        /* Larger touch target */
+        font-size: 0.85rem !important;
         width: auto !important;
         height: auto !important;
-        background: #10b981 !important; /* GREEN (Success) */
-        color: white !important; /* White Text */
+        background: #10b981 !important;
+        /* GREEN (Success) */
+        color: white !important;
+        /* White Text */
         border: none !important;
         border-radius: 6px;
         box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.5) !important;
@@ -2123,16 +2271,19 @@
         padding-top: 0 !important;
         border-top: none !important;
         position: absolute !important;
-        top: 2.5rem !important; /* Adjusted */
+        top: 2.5rem !important;
+        /* Adjusted */
         right: 0.75rem !important;
         width: auto !important;
         text-align: right !important;
         background: transparent !important;
     }
-    
+
     .btn-sm {
-        padding: 0.2rem 0.5rem !important; /* Smaller button padding */
-        font-size: 0.7rem !important; /* Smaller button text */
+        padding: 0.2rem 0.5rem !important;
+        /* Smaller button padding */
+        font-size: 0.7rem !important;
+        /* Smaller button text */
         height: auto !important;
     }
 
@@ -2150,15 +2301,16 @@
 
     /* DETAILS ROW FIX: Reset Defaults for Details Card */
     .table tr[id^="details-"] {
-        display: none; /* Default hidden */
+        display: none;
+        /* Default hidden */
         width: 100% !important;
         background: #f8fafc !important;
         border: none !important;
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05) !important;
         margin: 0 !important;
         padding: 0 !important;
     }
-    
+
     /* When active (overriding JS inline style 'display: table-row') */
     .table tr[id^="details-"][style*="display: table-row"],
     .table tr[id^="details-"][style*="display: block"] {
@@ -2167,14 +2319,16 @@
 
     /* FIX: Ensure content is aligned left/top and overrides first-child rules */
     .table tr[id^="details-"] td,
-    .admin-table tr[id^="details-"] td:first-child, /* Specific override for nth-child(1) collision */
+    .admin-table tr[id^="details-"] td:first-child,
+    /* Specific override for nth-child(1) collision */
     .table tr[id^="details-"] td:first-child {
         display: block !important;
         width: 100% !important;
         text-align: left !important;
-        padding: 0.5rem 0.5rem 0.5rem 0 !important; 
+        padding: 0.5rem 0.5rem 0.5rem 0 !important;
         background-color: transparent !important;
-        position: static !important; /* Prevent absolute positioning */
+        position: static !important;
+        /* Prevent absolute positioning */
         font-weight: normal !important;
         font-size: 0.9rem !important;
         margin: 0 !important;
@@ -2186,7 +2340,7 @@
         margin-left: 0 !important;
         padding-left: 0 !important;
     }
-    
+
     .details-content {
         text-align: left !important;
         padding-left: 0 !important;
@@ -2195,10 +2349,13 @@
     /* Admin Header Actions - Single Row - Forced Specificity */
     .admin-header .admin-actions-group {
         display: flex !important;
-        flex-direction: row !important; /* Force Row */
-        gap: 1.5rem !important; /* INCREASED GAP AS REQUESTED */
+        flex-direction: row !important;
+        /* Force Row */
+        gap: 1.5rem !important;
+        /* INCREASED GAP AS REQUESTED */
         width: 100% !important;
-        margin-top: 1rem !important; /* ADDED MORE SPACE ABOVE BUTTONS */
+        margin-top: 1rem !important;
+        /* ADDED MORE SPACE ABOVE BUTTONS */
     }
 
     .admin-header .admin-actions-group .btn {
@@ -2214,7 +2371,8 @@
 
     /* FIX: Admin Product List Mobile */
     .admin-product-table tr {
-        padding-right: 0 !important; /* Managed by individual cells */
+        padding-right: 0 !important;
+        /* Managed by individual cells */
         min-height: auto !important;
         justify-content: flex-start !important;
         flex-direction: column !important;
@@ -2228,15 +2386,18 @@
         font-weight: 600 !important;
         margin-bottom: 0.1rem !important;
         width: 100% !important;
-        padding-right: 110px !important; /* Increased buffer from buttons */
+        padding-right: 110px !important;
+        /* Increased buffer from buttons */
         white-space: normal !important;
         line-height: 1.3 !important;
         display: block !important;
-        word-break: normal !important; /* Reset break-all */
-        word-wrap: break-word !important; /* Break long words only if needed */
+        word-break: normal !important;
+        /* Reset break-all */
+        word-wrap: break-word !important;
+        /* Break long words only if needed */
         overflow-wrap: break-word !important;
     }
-    
+
     /* Category: Hidden */
     .admin-product-table td:nth-child(2) {
         display: none !important;
@@ -2246,7 +2407,7 @@
     .admin-product-table td:nth-child(3) {
         display: none !important;
     }
-    
+
     /* Actions: Icons Top Right */
     .admin-product-table td:last-child {
         position: absolute !important;
@@ -2261,7 +2422,7 @@
         margin: 0 !important;
         background: transparent !important;
     }
-    
+
     .btn-icon-only {
         width: 32px !important;
         height: 32px !important;
@@ -2270,7 +2431,7 @@
         justify-content: center;
         border-radius: 8px;
     }
-    
+
     .btn-icon-only i {
         font-size: 0.9rem !important;
     }
@@ -2286,66 +2447,74 @@
 
     /* Special Handling for Order Details Row */
     tr[id^="details-"] {
-        display: none; 
+        display: none;
         flex-direction: column;
         width: 100% !important;
         max-width: 100% !important;
         border: 1px solid #e2e8f0;
         border-top: none;
         background: #f8fafc;
-        margin-top: -0.5rem !important; /* Pull higher up */
+        margin-top: -0.5rem !important;
+        /* Pull higher up */
         border-radius: 0 0 8px 8px;
-        padding: 0 !important; /* Zero padding on wrapper TR */
+        padding: 0 !important;
+        /* Zero padding on wrapper TR */
         box-sizing: border-box !important;
         overflow: hidden !important;
     }
-    
+
     tr[id^="details-"] td {
         padding: 0.75rem !important;
         width: 100% !important;
     }
 
     /* DETAILS CONTENT TYPOGRAPHY REDUCTION */
-    .details-title, h4.details-title {
+    .details-title,
+    h4.details-title {
         font-size: 0.75rem !important;
         margin-bottom: 0.5rem !important;
         margin-top: 1rem !important;
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
-    
+
     .details-content p {
         font-size: 0.7rem !important;
         margin-bottom: 0.25rem !important;
         line-height: 1.4 !important;
     }
-    
+
     .details-products li {
         font-size: 0.7rem !important;
         padding: 0.25rem 0 !important;
     }
-    
+
     .details-price {
         font-size: 0.7rem !important;
     }
 
     /* Fix Details Content Alignment - Small Text */
     td .order-details-wrapper {
-        width: 100% !important; 
+        width: 100% !important;
         max-width: 100% !important;
-        padding: 0 0.5rem 0.5rem 0 !important; /* Top padding 0 to pull higher, Left 0 to pull left */
-        margin: -0.25rem 0 0 0 !important; /* Negative margin to pull even higher */
-        position: static !important; 
+        padding: 0 0.5rem 0.5rem 0 !important;
+        /* Top padding 0 to pull higher, Left 0 to pull left */
+        margin: -0.25rem 0 0 0 !important;
+        /* Negative margin to pull even higher */
+        position: static !important;
         display: block !important;
         box-sizing: border-box !important;
         text-align: left !important;
     }
-    
+
     .order-details-wrapper .details-title,
     .details-content .details-title {
-        font-size: 0.85rem !important; /* Smaller Title */
-        margin-bottom: 0.1rem !important; /* Tighter title margin */
-        margin-top: 0.2rem !important; /* Pulled higher */
+        font-size: 0.85rem !important;
+        /* Smaller Title */
+        margin-bottom: 0.1rem !important;
+        /* Tighter title margin */
+        margin-top: 0.2rem !important;
+        /* Pulled higher */
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
@@ -2354,11 +2523,12 @@
     .order-details-wrapper li,
     .details-content p,
     .details-content li {
-        font-size: 0.75rem !important; /* Very small text as requested */
+        font-size: 0.75rem !important;
+        /* Very small text as requested */
         line-height: 1.3 !important;
         margin-bottom: 0.2rem !important;
     }
-    
+
     .details-products {
         margin-top: 0.5rem !important;
     }
@@ -2378,7 +2548,8 @@
 
     /* Admin Orders Specific Details Fixes */
     .admin-details-grid {
-        display: block !important; /* Stack vertically */
+        display: block !important;
+        /* Stack vertically */
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 !important;
@@ -2389,33 +2560,36 @@
         padding-bottom: 0.75rem !important;
         border-bottom: 1px solid #e2e8f0;
     }
-    
+
     .admin-details-grid .details-section:last-child {
         border-bottom: none !important;
         margin-bottom: 0 !important;
         padding-bottom: 0 !important;
     }
-    
+
     .admin-details-grid .details-section p,
     .admin-details-grid .details-section li,
     .admin-details-grid .details-section span {
-        font-size: 0.75rem !important; /* Smallest */
+        font-size: 0.75rem !important;
+        /* Smallest */
     }
 
     /* Fix Admin Search Bar & Header */
-    .admin-header > div:first-child,
-    .admin-orders-header { 
-        flex-direction: column-reverse !important; /* Button above title */
+    .admin-header>div:first-child,
+    .admin-orders-header {
+        flex-direction: column-reverse !important;
+        /* Button above title */
         align-items: flex-start !important;
         gap: 0.5rem !important;
     }
-    
+
     .admin-header .section-title,
     .admin-orders-header .section-title {
-        font-size: 1.25rem !important; /* Smaller Title */
+        font-size: 1.25rem !important;
+        /* Smaller Title */
         align-self: flex-start;
     }
-    
+
     /* Smaller Search Bar in Admin Orders */
     #adminOrderSearch {
         padding: 0.5rem 0.75rem 0.5rem 2.25rem !important;
@@ -2423,7 +2597,7 @@
         height: auto !important;
         width: 100% !important;
     }
-    
+
     /* Admin/Orders Card Content Styling - Labels */
     .table td::before {
         /* Optional: content: attr(data-label); if maintained in HTML */
@@ -2436,60 +2610,71 @@
 
     /* Stores/Products Page Mobile Fixes */
     .shop-hero {
-        padding-bottom: 1.5rem !important; /* Reduce gap between text and search bar */
+        padding-bottom: 1.5rem !important;
+        /* Reduce gap between text and search bar */
         min-height: auto !important;
         padding-top: 5rem !important;
         position: relative !important;
-        z-index: 1 !important; /* Lower z-index for hero to let search bar overlap */
+        z-index: 1 !important;
+        /* Lower z-index for hero to let search bar overlap */
     }
 
     .shop-section {
         position: relative !important;
-        z-index: 10 !important; /* Higher than hero */
+        z-index: 10 !important;
+        /* Higher than hero */
     }
 
     .filter-container {
-        margin-top: -1.5rem !important; /* Pull up more visible */
+        margin-top: -1.5rem !important;
+        /* Pull up more visible */
         margin-bottom: 2rem !important;
         position: relative !important;
-        z-index: 200 !important; /* Ensure it floats above */
+        z-index: 200 !important;
+        /* Ensure it floats above */
     }
-    
+
     .filter-bar {
-        padding: 0.5rem !important; /* Smaller search bar container */
+        padding: 0.5rem !important;
+        /* Smaller search bar container */
     }
 
     /* About Page Text Fixes */
     .section p {
-        font-size: 0.9rem !important; /* Smaller paragraph text globally on mobile */
+        font-size: 0.9rem !important;
+        /* Smaller paragraph text globally on mobile */
         line-height: 1.6 !important;
     }
-    
+
     /* Checkout & Profile Fixes */
     .checkout-form h3 {
-        font-size: 1.1rem !important; /* Smaller "Permbledhja" */
+        font-size: 1.1rem !important;
+        /* Smaller "Permbledhja" */
     }
-    
+
     /* Admin Products Page Fixes */
     #adminProductSearch {
-        padding: 0.75rem 1rem 0.75rem 2.5rem !important; /* Smaller compressed padding */
+        padding: 0.75rem 1rem 0.75rem 2.5rem !important;
+        /* Smaller compressed padding */
         font-size: 0.9rem !important;
         height: auto !important;
     }
-    
+
     .search-box-admin i {
         font-size: 0.9rem !important;
         left: 1rem !important;
     }
 
     /* Smaller/Compressed items in Admin Product Table */
-    .admin-table td, 
+    .admin-table td,
     .admin-table th {
-        font-size: 0.75rem !important; /* Significantly smaller text */
-        padding: 0.4rem 0.25rem !important; /* Tighter padding */
+        font-size: 0.75rem !important;
+        /* Significantly smaller text */
+        padding: 0.4rem 0.25rem !important;
+        /* Tighter padding */
         white-space: normal !important;
     }
-    
+
     .admin-table .btn {
         padding: 0.3rem 0.6rem !important;
         font-size: 0.7rem !important;
@@ -2498,21 +2683,25 @@
 
     /* FIX: Product Details Mobile Spacing */
     .product-detail-grid {
-        gap: 0.5rem !important; /* drastically reduce gap between image and text */
-        margin-top: -1rem !important; /* Pull up */
+        gap: 0.5rem !important;
+        /* drastically reduce gap between image and text */
+        margin-top: -1rem !important;
+        /* Pull up */
     }
 
     /* Reduce White Space in Image Container */
     .detail-carousel-container .product-image {
-        padding: 0.5rem !important; /* Reduce internal padding so image is bigger */
+        padding: 0.5rem !important;
+        /* Reduce internal padding so image is bigger */
     }
-    
+
     /* Make Indicators tighter and closer */
     .carousel-indicators {
-        bottom: 5px !important; /* Pull dots down */
+        bottom: 5px !important;
+        /* Pull dots down */
         gap: 4px !important;
     }
-    
+
     .indicator-dot {
         width: 5px !important;
         height: 5px !important;
@@ -2524,16 +2713,17 @@
         padding-top: 0.75rem !important;
         margin-top: 0 !important;
     }
-    
+
     /* Pull Info Column Up */
     .product-info-column {
         margin-top: 0 !important;
         padding-top: 0 !important;
     }
-    
+
     /* Category Name specific spacing */
-    .product-info-column > div:first-child {
-        margin-bottom: 0.5rem !important; /* Reduce gap below category */
+    .product-info-column>div:first-child {
+        margin-bottom: 0.5rem !important;
+        /* Reduce gap below category */
     }
 
     /* Checkout & Profile Grid logic integrated into main media query */
@@ -2541,7 +2731,7 @@
     .profile-grid-2 {
         grid-template-columns: 1fr !important;
     }
-    
+
     .profile-grid-2 .form-group,
     .checkout-grid-2 .form-group {
         width: 100% !important;
@@ -2570,18 +2760,20 @@
    NEW CART MOBILE OVERRIDES (GRID SYSTEM)
    ========================================= */
 @media (max-width: 768px) {
+
     .cart-header-row-grid,
     .desktop-only,
     .cart-col-price.desktop-only {
         display: none !important;
     }
-    
+
     .cart-grid-container {
         gap: 1rem;
     }
 
     .cart-item-card {
-        grid-template-columns: 1fr; /* Stack everything */
+        grid-template-columns: 1fr;
+        /* Stack everything */
         position: relative;
         padding: 1rem;
         gap: 1rem;
@@ -2590,8 +2782,9 @@
 
     .cart-col-product {
         width: 100%;
-        padding-right: 3rem; /* Make space for delete button */
-        flex-direction: row; 
+        padding-right: 3rem;
+        /* Make space for delete button */
+        flex-direction: row;
         align-items: flex-start;
         gap: 1rem;
     }
@@ -2599,7 +2792,8 @@
     .cart-item-image {
         width: 70px;
         height: 70px;
-        min-width: 70px; /* Prevent shrink */
+        min-width: 70px;
+        /* Prevent shrink */
     }
 
     .cart-item-details {
@@ -2607,7 +2801,7 @@
         width: 100%;
         gap: 0.1rem;
     }
-    
+
     .cart-item-name {
         font-size: 0.95rem;
         line-height: 1.2;
@@ -2630,7 +2824,7 @@
         border-top: 1px dashed #e2e8f0;
         margin-top: 0.5rem;
     }
-    
+
     .quantity-control {
         margin: 0;
         display: flex !important;
@@ -2639,19 +2833,21 @@
     }
 
     .qty-btn {
-        width: 36px !important; 
+        width: 36px !important;
         height: 36px !important;
         background: #ffffff !important;
-        border: 1px solid #d1d5db !important; /* Gray outline */
-        border-radius: 10px !important; /* Rounded corners */
+        border: 1px solid #d1d5db !important;
+        /* Gray outline */
+        border-radius: 10px !important;
+        /* Rounded corners */
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         color: var(--text-main) !important;
         padding: 0 !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
     }
-    
+
     .qty-input {
         width: 32px !important;
         border: none !important;
@@ -2671,12 +2867,12 @@
         padding-top: 0.75rem;
         margin-top: 0;
     }
-    
+
     /* We can actually put total next to quantity or below */
     .cart-col-total {
         width: auto;
     }
-    
+
     .mobile-label {
         display: inline;
         font-size: 0.9rem;
@@ -2689,14 +2885,16 @@
         top: 0.75rem !important;
         right: 0.75rem !important;
         width: auto !important;
-        z-index: 50 !important; /* Ensure it's above other elements */
+        z-index: 50 !important;
+        /* Ensure it's above other elements */
     }
-    
+
     .delete-btn {
         width: 36px !important;
         height: 36px !important;
         font-size: 1rem !important;
-        background: #fee2e2 !important; /* Soft red background */
+        background: #fee2e2 !important;
+        /* Soft red background */
         color: #ef4444 !important;
         border: none !important;
         border-radius: 8px !important;
@@ -2707,7 +2905,7 @@
         cursor: pointer !important;
         box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1) !important;
     }
-    
+
     .delete-btn:active {
         background: #fecaca !important;
         transform: scale(0.9) !important;
@@ -2720,19 +2918,20 @@
         text-align: center;
         margin-top: 1.5rem;
     }
-    
+
     .cart-total-box {
         flex-direction: column;
         gap: 0.5rem;
         width: 100%;
     }
-    
+
     .cart-footer-actions {
         width: 100%;
-        flex-direction: column-reverse; /* Put Checkout on top */
+        flex-direction: column-reverse;
+        /* Put Checkout on top */
         gap: 1rem;
     }
-    
+
     .btn-block-mobile {
         width: 100%;
         justify-content: center;
@@ -2745,16 +2944,19 @@
     /* Reduce header padding on mobile */
     .cart-page-header {
         margin-bottom: 1rem;
-        flex-direction: row; /* Ensure row to keep Left/Right alignment */
+        flex-direction: row;
+        /* Ensure row to keep Left/Right alignment */
     }
 
     .cart-page-header .section-title {
-        font-size: 1.25rem !important; /* Smaller title to fit */
+        font-size: 1.25rem !important;
+        /* Smaller title to fit */
     }
 
     .cart-back-btn {
         padding: 0.6rem 1rem !important;
-        font-size: 1rem !important; /* Bigger Font */
+        font-size: 1rem !important;
+        /* Bigger Font */
         display: flex !important;
         align-items: center;
         gap: 0.5rem;
@@ -2762,11 +2964,12 @@
 
     .cart-footer-actions {
         width: 100%;
-        flex-direction: row; /* Side by side buttons */
+        flex-direction: row;
+        /* Side by side buttons */
         gap: 1rem;
         justify-content: space-between;
     }
-    
+
     .checkout-btn {
         width: 100%;
         justify-content: center;
@@ -2779,7 +2982,8 @@
     }
 
     .desktop-text {
-        display: inline !important; /* Show text on mobile now */
+        display: inline !important;
+        /* Show text on mobile now */
     }
 }
 
@@ -2789,7 +2993,7 @@
         font-size: 1.5rem !important;
         line-height: 1.2;
     }
-    
+
     .sub-title {
         font-size: 0.75rem !important;
         margin-bottom: 0.25rem !important;
@@ -2800,7 +3004,7 @@
         flex-direction: row !important;
         align-items: center !important;
     }
-    
+
     /* Make buttons in section headers smaller */
     .section-header .btn {
         padding: 0.5rem 1rem !important;
@@ -2845,31 +3049,36 @@
         padding: 0 !important;
         margin: 0 !important;
         max-width: 100% !important;
-        height: auto !important; /* Let aspect ratio define height */
+        height: auto !important;
+        /* Let aspect ratio define height */
         background: #fff !important;
     }
-    
+
     .hero-inner-wrapper {
         aspect-ratio: auto !important;
         height: auto !important;
         border-radius: 0 !important;
         width: 100% !important;
-        padding: 0 !important; /* Removed padding so it stays edge-to-edge */
+        padding: 0 !important;
+        /* Removed padding so it stays edge-to-edge */
         background: #fff !important;
     }
 
     .hero-carousel {
-        height: auto !important; /* Allow height to be determined by image */
+        height: auto !important;
+        /* Allow height to be determined by image */
         border-radius: 0 !important;
         position: relative;
     }
 
     .hero-carousel::after {
-        display: none !important; /* Removed gray gradient overlay */
+        display: none !important;
+        /* Removed gray gradient overlay */
     }
 
     .hero-img {
-        height: auto !important; /* Change to auto to allow natural height */
+        height: auto !important;
+        /* Change to auto to allow natural height */
         width: 100% !important;
         object-fit: contain !important;
         object-position: center;
@@ -2886,7 +3095,7 @@
     }
 
     .hero-dots .dot {
-        background: rgba(255,255,255,0.5) !important;
+        background: rgba(255, 255, 255, 0.5) !important;
         width: 10px !important;
         height: 10px !important;
     }
@@ -2897,18 +3106,20 @@
         border-radius: 10px !important;
     }
 
-    .hero-prev, .hero-next {
+    .hero-prev,
+    .hero-next {
         width: 40px !important;
         height: 40px !important;
-        background: rgba(255,255,255,0.3) !important;
-        backdrop-filter: blur(4px);
+        background: rgba(255, 255, 255, 0.6) !important;
+        backdrop-filter: blur(8px);
         font-size: 1rem !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
     }
 
     /* Load More Button Mobile Scaling */
     .btn-load-more {
-        padding: 0.6rem 1.4rem !important; 
-        font-size: 0.85rem !important; 
+        padding: 0.6rem 1.4rem !important;
+        font-size: 0.85rem !important;
         width: auto !important;
         min-width: 160px;
     }
@@ -2923,7 +3134,8 @@
 
 /* Cart Page Mobile Spacing Fix */
 .mobile-cart-page-wrapper {
-    padding-top: 2rem !important; /* Replaces the inline 1rem */
+    padding-top: 2rem !important;
+    /* Replaces the inline 1rem */
 }
 
 .back-btn-wrapper {
@@ -2932,9 +3144,10 @@
 
 @media (max-width: 768px) {
     .mobile-cart-page-wrapper {
-        padding-top: 4.5rem !important; /* Extra space to avoid overlapping fixed header */
+        padding-top: 4.5rem !important;
+        /* Extra space to avoid overlapping fixed header */
     }
-    
+
     .back-btn-wrapper {
         margin-bottom: 1.5rem;
     }

@@ -10,13 +10,13 @@ class Product:
 
         # Clean _id for json serialization if needed, or just return cursor list
 
-        return list(mongo.db.products.find())
+        return list(mongo.db.products.find({"is_deleted": {"$ne": True}}))
 
 
 
     @staticmethod
-    def get_paginated(page=1, per_page=20, category=None, search_query=None, subcategory=None, sort=None, brand=None, min_price=None, max_price=None, discount_only=False, best_seller_only=False, no_discount=False):
-        query = {}
+    def get_paginated(page=1, per_page=20, category=None, search_query=None, subcategory=None, sort=None, brand=None, min_price=None, max_price=None, discount_only=False, best_seller_only=False, no_discount=False, pharmacist_choice=False):
+        query = {"is_deleted": {"$ne": True}}
         if category and category != 'all':
             query["category"] = category
         
@@ -39,6 +39,9 @@ class Product:
 
         if best_seller_only:
             query["is_best_seller"] = True
+
+        if pharmacist_choice:
+            query["is_pharmacist_choice"] = True
 
         if min_price is not None or max_price is not None:
             # Match against effective_price instead of just price
@@ -154,7 +157,7 @@ class Product:
 
     def get_by_category(category):
 
-        return list(mongo.db.products.find({"category": category}))
+        return list(mongo.db.products.find({"category": category, "is_deleted": {"$ne": True}}))
 
 
 
@@ -180,13 +183,14 @@ class Product:
 
         return list(mongo.db.products.find({
 
-            "discount_price": {"$ne": None, "$gt": 0}
+            "discount_price": {"$ne": None, "$gt": 0},
+            "is_deleted": {"$ne": True}
 
         }).limit(limit))
 
     @staticmethod
     def get_best_sellers(limit=15):
-        return list(mongo.db.products.find({"is_best_seller": True}).limit(limit))
+        return list(mongo.db.products.find({"is_best_seller": True, "is_deleted": {"$ne": True}}).limit(limit))
 
     @staticmethod
     def get_regular(limit=20):
@@ -197,7 +201,8 @@ class Product:
                 {"discount_price": {"$exists": False}},
                 {"discount_price": None},
                 {"discount_price": 0}
-            ]
+            ],
+            "is_deleted": {"$ne": True}
         }).sort([('_id', -1)]).limit(limit))
 
     @staticmethod
@@ -207,7 +212,8 @@ class Product:
                 {"discount_price": {"$exists": False}},
                 {"discount_price": None},
                 {"discount_price": 0}
-            ]
+            ],
+            "is_deleted": {"$ne": True}
         })
 
     @staticmethod
@@ -219,7 +225,7 @@ class Product:
             return list(mongo.db.products.find({
 
                 "category": category,
-
+                "is_deleted": {"$ne": True},
                 "_id": {"$ne": ObjectId(exclude_id)}
 
             }).limit(limit))
@@ -310,7 +316,11 @@ class Product:
 
     @staticmethod
     def delete(product_id):
-        return mongo.db.products.delete_one({"_id": ObjectId(product_id)})
+        # Perform soft delete for safety
+        return mongo.db.products.update_one(
+            {"_id": ObjectId(product_id)},
+            {"$set": {"is_deleted": True}}
+        )
 
     @staticmethod
     def revert_expired_offers():

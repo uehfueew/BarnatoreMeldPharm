@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container section product-detail-container" style="padding-top: 0.5rem;">
     <div style="margin-bottom: 1.5rem;">
-        <a href="{{ url_for('main.products') }}" class="btn-back-standard">
+        <a href="#" onclick="history.back(); return false;" class="btn-back-standard">
             <i class="fas fa-arrow-left"></i> Kthehu
         </a>
     </div>
@@ -12,37 +12,43 @@
     <nav class="product-breadcrumbs" style="margin-bottom: 2rem; font-size: 0.9rem; color: #64748b;">
         <a href="{{ url_for('main.index') }}" style="color: #64748b;">Ballina</a>
         <span style="margin: 0 0.5rem;">/</span>
-        <a href="{{ url_for('main.products', category=product.category) }}" style="color: #64748b;">{{ product.category }}</a>
+        <a href="{{ url_for('main.products', category=product.category) }}" style="color: #64748b;">{{ product.category
+            }}</a>
         {% if product.subcategory %}
         <span style="margin: 0 0.5rem;">/</span>
-        <a href="{{ url_for('main.products', category=product.category, subcategory=product.subcategory) }}" style="color: #64748b;">{{ product.subcategory }}</a>
+        <a href="{{ url_for('main.products', category=product.category, subcategory=product.subcategory) }}"
+            style="color: #64748b;">{{ product.subcategory }}</a>
         {% endif %}
         <span style="margin: 0 0.5rem;">/</span>
         <span style="color: var(--text-main); font-weight: 500;">{{ product.name }}</span>
     </nav>
 
     <div class="product-detail-grid">
-        
+
         <!-- Image Section -->
         <div class="product-gallery">
             <div class="carousel-container detail-carousel-container" data-index="0" style="aspect-ratio: 1.1/1;">
                 <div class="carousel-track-container" style="height: 100%;">
                     <div class="carousel-track" style="height: 100%;">
                         {% if product.images %}
-                            {% for img in product.images %}
-                            <img src="{{ img }}" alt="{{ product.name }}" class="product-image" style="padding: 1.5rem; object-fit: contain; cursor: pointer;" onclick="openImageModal(this.src)">
-                            {% endfor %}
+                        {% for img in product.images %}
+                        <img src="{{ img }}" alt="{{ product.name }}" class="product-image"
+                            style="padding: 1.5rem; object-fit: contain; cursor: pointer;"
+                            onclick="openImageModal(this.src)">
+                        {% endfor %}
                         {% else %}
-                            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image" style="padding: 1.5rem; object-fit: contain; cursor: pointer;" onclick="openImageModal(this.src)">
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image"
+                            style="padding: 1.5rem; object-fit: contain; cursor: pointer;"
+                            onclick="openImageModal(this.src)">
                         {% endif %}
                     </div>
                 </div>
 
                 <div class="carousel-indicators">
                     {% if product.images and product.images|length > 1 %}
-                        {% for img in product.images %}
-                        <div class="indicator-dot {{ 'active' if loop.first else '' }}"></div>
-                        {% endfor %}
+                    {% for img in product.images %}
+                    <div class="indicator-dot {{ 'active' if loop.first else '' }}"></div>
+                    {% endfor %}
                     {% endif %}
                 </div>
 
@@ -55,19 +61,21 @@
                 </button>
                 {% endif %}
 
-                <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" 
-                        onclick="toggleFavorite(this, '{{ product._id }}')" 
-                        style="top: 0.75rem; right: 0.75rem; width: 50px; height: 50px; font-size: 1.25rem; z-index: 10;">
-                    <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
+                <button
+                    class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}"
+                    onclick="toggleFavorite(this, '{{ product._id }}')"
+                    style="top: 0.75rem; right: 0.75rem; width: 50px; height: 50px; font-size: 1.25rem; z-index: 10;">
+                    <i
+                        class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
                 </button>
             </div>
 
             {% if product.images and product.images|length > 1 %}
             <div class="thumbnails-container" style="display: flex; gap: 1rem; overflow-x: auto; padding-top: 1.5rem;">
                 {% for img in product.images %}
-                <div class="thumbnail" onclick="goToSlide(this.closest('.product-gallery').querySelector('.carousel-container'), {{ loop.index0 }})" 
-                     style="cursor: pointer; border-radius: 12px; overflow: hidden; border: 2px solid {{ 'var(--primary)' if loop.first else 'transparent' }}; min-width: 80px; width: 80px; height: 80px; opacity: {{ '1' if loop.first else '0.7' }}; transition: all 0.3s ease; background: white; flex-shrink: 0;">
-                    <img src="{{ img }}" alt="View {{ loop.index }}" style="width: 100%; height: 100%; object-fit: contain; padding: 5px;">
+                <div class="thumbnail {{ 'active' if loop.first else '' }}" data-index="{{ loop.index0 }}"
+                    onclick="handleThumbClick(this)">
+                    <img src="{{ img }}" alt="View {{ loop.index }}">
                 </div>
                 {% endfor %}
             </div>
@@ -77,50 +85,69 @@
         <!-- Info Section -->
         <div class="product-info-column" style="animation: slideUp 0.6s ease-out;">
             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
-                <span class="product-category" style="font-size: 0.8rem; font-weight: 800; color: #64748b;">{{ product.category }}</span>
+                <span class="product-category" style="font-size: 0.8rem; font-weight: 800; color: #64748b;">{{
+                    product.category }}</span>
                 {% if product.is_best_seller %}
-                    <span style="background: #f59e0b; color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Më i Shituri</span>
+                <span
+                    style="background: #f59e0b; color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Më
+                    i Shituri</span>
                 {% endif %}
                 <span style="width: 4px; height: 4px; background: #cbd5e1; border-radius: 50%;"></span>
-                <span style="color: {{ 'var(--primary)' if product.in_stock != False else '#ef4444' }}; font-size: 0.8rem; font-weight: 700;">
+                <span class="stock-status {{ 'in-stock' if product.in_stock != False else 'out-of-stock' }}">
                     {{ 'Në Stok' if product.in_stock != False else 'Jashtë Stokut' }}
                 </span>
             </div>
-            
+
             {% if product.brand %}
-                <div class="product-brand" style="font-size: 1rem; font-weight: 600; color: var(--primary); margin-bottom: 0.25rem;">{{ product.brand }}</div>
+            <div class="product-brand"
+                style="font-size: 1rem; font-weight: 600; color: var(--primary); margin-bottom: 0.25rem;">{{
+                product.brand }}</div>
             {% endif %}
 
             {% if product.size %}
-                <div class="product-size-detail" style="font-size: 0.9rem; color: #64748b; margin-top: -0.25rem; margin-bottom: 0.5rem; font-weight: 500;">
-                    Sasia: <span style="font-weight: 700;">{{ product.size }}</span>
-                </div>
+            <div class="product-size-detail"
+                style="font-size: 0.9rem; color: #64748b; margin-top: -0.25rem; margin-bottom: 0.5rem; font-weight: 500;">
+                Sasia: <span style="font-weight: 700;">{{ product.size }}</span>
+            </div>
             {% endif %}
 
-            <h1 class="product-title-detail" style="margin-bottom: 0.5rem; line-height: 1.1; font-size: 1.5rem;">{{ product.name }}</h1>
-            
-            <div class="price-container mobile-price-fix" style="display: flex; align-items: flex-end; gap: 0.75rem; margin-bottom: 1.5rem;">
+            <h1 class="product-title-detail" style="margin-bottom: 0.5rem; line-height: 1.1; font-size: 1.5rem;">{{
+                product.name }}</h1>
+
+            <div class="price-container mobile-price-fix"
+                style="display: flex; align-items: flex-end; gap: 0.75rem; margin-bottom: 1.5rem;">
                 {% if product.discount_price %}
-                    <span class="price original" style="font-size: 1rem; text-decoration: line-through; color: #94a3b8; font-weight: 500;">€{{ product.price }}</span>
-                    <span class="price discounted" style="font-size: 1.8rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{ product.discount_price }}</span>
-                    <span class="discount-badge" style="background: #ef4444; color: white; padding: 0.35rem 0.6rem; border-radius: 8px; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; transform: translateY(-2px);">
-                        -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%
-                    </span>
+                <span class="price original"
+                    style="font-size: 1rem; text-decoration: line-through; color: #94a3b8; font-weight: 500;">€{{
+                    product.price }}</span>
+                <span class="price discounted"
+                    style="font-size: 1.8rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{
+                    product.discount_price }}</span>
+                <span class="discount-badge"
+                    style="background: #ef4444; color: white; padding: 0.35rem 0.6rem; border-radius: 8px; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; transform: translateY(-2px);">
+                    -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%
+                </span>
                 {% else %}
-                    <span class="price main-price" style="font-size: 1.8rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{ product.price }}</span>
+                <span class="price main-price"
+                    style="font-size: 1.8rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{
+                    product.price }}</span>
                 {% endif %}
             </div>
 
             <style>
                 @media (max-width: 768px) {
-                    .mobile-price-fix .price.discounted, 
+
+                    .mobile-price-fix .price.discounted,
                     .mobile-price-fix .price.main-price {
                         font-size: 1.4rem !important;
                     }
+
                     .mobile-price-fix .price.original {
-                        font-size: 0.85rem !important; /* Smaller old price */
+                        font-size: 0.85rem !important;
+                        /* Smaller old price */
                         margin-right: 0.25rem;
                     }
+
                     .mobile-price-fix .discount-badge {
                         font-size: 0.7rem !important;
                         padding: 0.2rem 0.35rem !important;
@@ -128,16 +155,92 @@
                 }
             </style>
 
-            <div style="background: white; padding: 2rem; border-radius: var(--radius-xl); margin-bottom: 2rem; border: 1px solid #f1f5f9; box-shadow: var(--shadow-sm);">
-                <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-main); font-weight: 700;">Përshkrimi i Produktit</h3>
-                <div class="product-description-content">
-                    {% for line in product.description.split('\n') %}
-                        {% set cleaned_line = line.strip().lstrip('•*- ') %}
-                        {% if cleaned_line %}
-                            <p style="font-size: 0.95rem; color: #475569; margin-bottom: 0.5rem; line-height: 1.5;">{{ cleaned_line }}</p>
-                        {% endif %}
-                    {% endfor %}
+            <div class="product-accordion" style="margin-top: 2rem; margin-bottom: 2.5rem;">
+                <!-- Description -->
+                <div class="accordion-item"
+                    style="background: white; border-radius: 16px; margin-bottom: 1rem; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden;">
+                    <div class="accordion-header"
+                        style="padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s;"
+                        onclick="toggleAccordion(this)">
+                        <h3
+                            style="font-size: 1rem; color: var(--text-main); font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.8rem;">
+                            <i class="fas fa-align-left"
+                                style="color: var(--primary); width: 22px; text-align: center;"></i> Përshkrimi i
+                            Produktit
+                        </h3>
+                        <i class="fas fa-chevron-down accordion-icon"
+                            style="transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: #94a3b8;"></i>
+                    </div>
+                    <div class="accordion-content"
+                        style="max-height: 0; overflow: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);">
+                        <div
+                            style="padding: 0 1.5rem 1.5rem 1.5rem; font-size: 0.95rem; color: #475569; line-height: 1.7;">
+                            {% for line in product.description.split('\n') %}
+                            {% set cleaned_line = line.strip().lstrip('•*- ') %}
+                            {% if cleaned_line %}<p style="margin-bottom: 0.75rem;">{{ cleaned_line }}</p>{% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
+
+                <!-- How to Use -->
+                {% if product.how_to_use %}
+                <div class="accordion-item"
+                    style="background: white; border-radius: 16px; margin-bottom: 1rem; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden;">
+                    <div class="accordion-header"
+                        style="padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s;"
+                        onclick="toggleAccordion(this)">
+                        <h3
+                            style="font-size: 1rem; color: var(--text-main); font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.8rem;">
+                            <i class="fas fa-hand-sparkles"
+                                style="color: var(--primary); width: 22px; text-align: center;"></i> Si të përdoret
+                        </h3>
+                        <i class="fas fa-chevron-down accordion-icon"
+                            style="transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: #94a3b8;"></i>
+                    </div>
+                    <div class="accordion-content"
+                        style="max-height: 0; overflow: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);">
+                        <div
+                            style="padding: 0 1.5rem 1.5rem 1.5rem; font-size: 0.95rem; color: #475569; line-height: 1.7;">
+                            {{ product.how_to_use | replace('\n', '<br>') | safe }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Key Ingredients -->
+                {% if product.key_ingredients %}
+                <div class="accordion-item"
+                    style="background: white; border-radius: 16px; margin-bottom: 1rem; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden;">
+                    <div class="accordion-header"
+                        style="padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s;"
+                        onclick="toggleAccordion(this)">
+                        <h3
+                            style="font-size: 1rem; color: var(--text-main); font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.8rem;">
+                            <i class="fas fa-vial" style="color: var(--primary); width: 22px; text-align: center;"></i>
+                            Përbërësit Kryesorë
+                        </h3>
+                        <i class="fas fa-chevron-down accordion-icon"
+                            style="transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: #94a3b8;"></i>
+                    </div>
+                    <div class="accordion-content"
+                        style="max-height: 0; overflow: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);">
+                        <div
+                            style="padding: 0 1.5rem 1.5rem 1.5rem; font-size: 0.95rem; color: #475569; line-height: 1.7;">
+                            <div class="ingredients-pills"
+                                style="display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem;">
+                                {% for ing in product.key_ingredients.split(',') %}
+                                {% if ing.strip() %}
+                                <span class="ingredient-pill"
+                                    style="background: #f1f5f9; color: var(--primary); padding: 0.4rem 0.9rem; border-radius: 30px; font-weight: 600; font-size: 0.85rem; border: 1px solid #e2e8f0;">{{
+                                    ing.strip() }}</span>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </div>
 
             <!-- Desktop Action Buttons -->
@@ -148,23 +251,30 @@
                         <input type="number" class="qty-input" value="1" min="1" readonly>
                         <button type="button" class="qty-btn plus"><i class="fas fa-plus"></i></button>
                     </div>
-                    
-                    <button type="button" onclick="buyNowWithQty('{{ product._id }}', this)" class="btn btn-primary btn-lg" style="flex: 1; min-width: 150px; padding: 0 1.5rem; height: 54px; font-size: 1rem; border-radius: 12px; font-weight: 700; background-color: #f15a24; border-color: #f15a24;" {% if product.in_stock == False %}disabled{% endif %}>
+
+                    <button type="button" onclick="buyNowWithQty('{{ product._id }}', this)"
+                        class="btn btn-primary btn-lg"
+                        style="flex: 1; min-width: 150px; padding: 0 1.5rem; height: 54px; font-size: 1rem; border-radius: 12px; font-weight: 700; background-color: #f15a24; border-color: #f15a24;"
+                        {% if product.in_stock==False %}disabled{% endif %}>
                         Blej Tani
                     </button>
 
-                    <button type="button" onclick="addToCartWithQty('{{ product._id }}', this)" class="btn btn-add-to-cart-light btn-lg" style="flex: 1; min-width: 200px; padding: 0 1.5rem; height: 54px; font-size: 1rem; border-radius: 12px; font-weight: 700; color: var(--primary); border: none; background: #f1f5f9; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;" {% if product.in_stock == False %}disabled{% endif %}>
+                    <button type="button" onclick="addToCartWithQty('{{ product._id }}', this)"
+                        class="btn btn-add-to-cart-light btn-lg"
+                        style="flex: 1; min-width: 200px; padding: 0 1.5rem; height: 54px; font-size: 1rem; border-radius: 12px; font-weight: 700; color: var(--primary); border: none; background: #f1f5f9; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;"
+                        {% if product.in_stock==False %}disabled{% endif %}>
                         {% if product.in_stock == False %}
-                            Jashtë Stokut
+                        Jashtë Stokut
                         {% else %}
-                            <i class="fas fa-shopping-cart"></i> Shto në Shportë
+                        <i class="fas fa-shopping-cart"></i> Shto në Shportë
                         {% endif %}
                     </button>
                 </div>
             </div>
-            
-            <form id="addToCartForm" action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST" style="display: none;">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+            <form id="addToCartForm" action="{{ url_for('cart.add_to_cart', product_id=product._id) }}" method="POST"
+                style="display: none;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <input type="hidden" name="quantity" value="1">
             </form>
         </div>
@@ -179,233 +289,670 @@
             <input type="number" class="qty-input" value="1" min="1" readonly>
             <button type="button" class="qty-btn plus"><i class="fas fa-plus"></i></button>
         </div>
-        
-        <button type="button" onclick="buyNowWithQty('{{ product._id }}', this)" class="btn btn-primary" style="flex: 2.5; height: 42px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; background-color: #f15a24; border: none; color: white;" {% if product.in_stock == False %}disabled{% endif %}>
+
+        <button type="button" onclick="buyNowWithQty('{{ product._id }}', this)" class="btn btn-primary"
+            style="flex: 2.5; height: 42px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; background-color: #f15a24; border: none; color: white;"
+            {% if product.in_stock==False %}disabled{% endif %}>
             Blej Tani
         </button>
 
-        <button type="button" onclick="addToCartWithQty('{{ product._id }}', this)" class="btn btn-add-to-cart-light" style="flex: 1.5; height: 42px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; color: var(--primary); border: none; background: #f1f5f9; display: flex; align-items: center; justify-content: center; gap: 0.4rem; transition: all 0.3s ease;" {% if product.in_stock == False %}disabled{% endif %}>
+        <button type="button" onclick="addToCartWithQty('{{ product._id }}', this)" class="btn btn-add-to-cart-light"
+            style="flex: 1.5; height: 42px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; color: var(--primary); border: none; background: #f1f5f9; display: flex; align-items: center; justify-content: center; gap: 0.4rem; transition: all 0.3s ease;"
+            {% if product.in_stock==False %}disabled{% endif %}>
             <i class="fas fa-shopping-cart"></i> <span style="font-size: 0.75rem;">Shto</span>
         </button>
     </div>
 </div>
 
 <script>
-function addToCartWithQty(productId, btn) {
-    const container = btn.closest('.desktop-action-container') || btn.closest('.mobile-action-bar');
-    const qty = container.querySelector('.qty-input').value;
-    window.addToCartAJAX(productId, qty);
-}
+    function addToCartWithQty(productId, btn) {
+        const container = btn.closest('.desktop-action-container') || btn.closest('.mobile-action-bar');
+        const qty = container.querySelector('.qty-input').value;
+        window.addToCartAJAX(productId, qty);
+    }
 
-function buyNowWithQty(productId, btn) {
-    const container = btn.closest('.desktop-action-container') || btn.closest('.mobile-action-bar');
-    const qty = container.querySelector('.qty-input').value;
-    window.buyNow(productId, qty);
-}
+    function buyNowWithQty(productId, btn) {
+        const container = btn.closest('.desktop-action-container') || btn.closest('.mobile-action-bar');
+        const qty = container.querySelector('.qty-input').value;
+        window.buyNow(productId, qty);
+    }
 
-// Add class to body to adjust floating contact button position
-document.addEventListener('DOMContentLoaded', function() {
-    document.body.classList.add('has-sticky-bar');
-});
+    function toggleAccordion(header) {
+        const item = header.parentElement;
+        const content = item.querySelector('.accordion-content');
+        const icon = header.querySelector('.accordion-icon');
+        const isOpen = item.classList.contains('open');
+
+        if (isOpen) {
+            content.style.maxHeight = '0';
+            item.classList.remove('open');
+            icon.style.transform = 'rotate(0deg)';
+        } else {
+            content.style.maxHeight = content.scrollHeight + 'px';
+            item.classList.add('open');
+            icon.style.transform = 'rotate(180deg)';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const firstHeader = document.querySelector('.accordion-header');
+        if (firstHeader) {
+            // Slight timeout to ensure layout is ready for scrollHeight calculation
+            setTimeout(() => toggleAccordion(firstHeader), 100);
+        }
+    });
+
+    function handleThumbClick(btn) {
+        const index = parseInt(btn.dataset.index);
+        const gallery = btn.closest('.product-gallery');
+        const container = gallery.querySelector('.carousel-container');
+        if (typeof goToSlide === 'function') {
+            goToSlide(container, index);
+        }
+    }
+
+    // Add class to body to adjust floating contact button position
+    document.addEventListener('DOMContentLoaded', function () {
+        document.body.classList.add('has-sticky-bar');
+    });
 </script>
 
 {% block footer %}{% endblock %}
 
 <style>
-/* Product Card Link Fix for Detail Page Related Products */
-.product-card { position: relative; }
-.product-card-link-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-}
-.btn-favorite, button, a.btn { z-index: 5 !important; }
+    /* Product Card Link Fix for Detail Page Related Products */
+    .product-card {
+        position: relative;
+    }
 
-.btn-add-to-cart-light:hover:not(:disabled) {
-    background: #a7f3d0 !important; /* Slightly darker Emerald 200 */
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.btn-add-to-cart-light:active:not(:disabled) {
-    transform: translateY(0);
-}
-
-/* Responsive Action Bar */
-.mobile-action-bar {
-    display: none;
-}
-
-@media (max-width: 768px) {
-    .mobile-action-bar {
-        display: flex;
-        position: fixed;
-        bottom: 70px; /* Above bottom navigation */
+    .product-card-link-overlay {
+        position: absolute;
+        top: 0;
         left: 0;
         width: 100%;
-        background: white;
-        padding: 0.6rem 1rem;
-        box-shadow: 0 -8px 20px rgba(0,0,0,0.1);
-        z-index: 3000;
-        border-top: 1px solid #f1f5f9;
-        padding-bottom: calc(0.6rem + env(safe-area-inset-bottom));
-        align-items: center;
-        justify-content: space-between;
+        height: 100%;
+        z-index: 2;
     }
 
-    .desktop-action-container {
-        display: none !important;
+    .btn-favorite,
+    button,
+    a.btn {
+        z-index: 5 !important;
     }
 
-    /* Add padding to body to prevent content being hidden behind bar */
-    body {
-        padding-bottom: 80px !important;
+    @media (hover: hover) {
+        .btn-add-to-cart-light:hover:not(:disabled) {
+            background: #a7f3d0 !important;
+            /* Slightly darker Emerald 200 */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
     }
-}
+
+    .btn-add-to-cart-light:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    /* Responsive Action Bar */
+    .mobile-action-bar {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .mobile-action-bar {
+            display: flex;
+            position: fixed;
+            bottom: 70px;
+            /* Above bottom navigation */
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 0.6rem 1rem;
+            box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.1);
+            z-index: 3000;
+            border-top: 1px solid #f1f5f9;
+            padding-bottom: calc(0.6rem + env(safe-area-inset-bottom));
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .desktop-action-container {
+            display: none !important;
+        }
+
+        /* Add padding to body to prevent content being hidden behind bar */
+        body {
+            padding-bottom: 80px !important;
+        }
+    }
 </style>
 
 
-    {% if related_products %}
-    <div class="container container-wide">
-        <div class="related-products-section">
-            <h2 class="section-title" style="margin-bottom: 3rem;">Produkte të Ngjashme</h2>
-            <div class="product-grid">
-                {% for related in related_products %}
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="{{ related.image_url }}" alt="{{ related.name }}">
-                        {% if related.discount_price %}
-                            <div class="special-offer-badge red-badge">Oferta Speciale</div>
-                        {% endif %}
+{% if related_products %}
+<div class="container container-wide">
+    <div class="related-products-section">
+        <h2 class="section-title" style="margin-bottom: 3rem;">Produkte të Ngjashme</h2>
+        <div class="product-grid">
+            {% for related in related_products %}
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="{{ related.image_url }}" alt="{{ related.name }}">
+                    {% if related.discount_price %}
+                    <div class="special-offer-badge red-badge">Oferta Speciale</div>
+                    {% endif %}
+                    {% if related.is_best_seller %}
+                    <div class="best-seller-badge">Më i Shituri</div>
+                    {% endif %}
+                    {% if related.is_pharmacist_choice %}
+                    <div class="pharmacist-badge"><i class="fas fa-user-md"></i> Farmacisti</div>
+                    {% endif %}
 
-                        {% if related.in_stock == False %}
-                            <div class="out-of-stock-overlay">
-                                <span>Jashtë Stokut</span>
-                            </div>
-                        {% endif %}
-
-                        <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and related.favorites and current_user.id in related.favorites) or (not current_user.is_authenticated and related._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ related._id }}')">
-                            <i class="{{ 'fas' if (current_user.is_authenticated and related.favorites and current_user.id in related.favorites) or (not current_user.is_authenticated and related._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
-                        </button>
-                        <a href="{{ url_for('main.product_detail', product_id=related._id) }}" class="product-card-link-overlay"></a>
+                    {% if related.in_stock == False %}
+                    <div class="out-of-stock-overlay">
+                        <span>Jashtë Stokut</span>
                     </div>
-                    <div class="product-info">
-                        <span class="product-category">{{ related.category }}</span>
-                        <h3 class="product-title">{{ related.name }}</h3>
-                        {% if related.size %}<span class="product-size">{{ related.size }}</span>{% endif %}
-                        <div class="price-container" style="margin-top: 0.75rem;">
-                            {% if related.discount_price %}
-                                <span class="price discounted">€{{ related.discount_price }}</span>
-                                <span class="price original">€{{ related.price }}</span>
-                            {% else %}
-                                <span class="price">€{{ related.price }}</span>
-                            {% endif %}
-                        </div>
+                    {% endif %}
+
+                    <button
+                        class="btn-favorite {{ 'active' if (current_user.is_authenticated and related.favorites and current_user.id in related.favorites) or (not current_user.is_authenticated and related._id|string in session.get('liked_products', [])) else '' }}"
+                        onclick="toggleFavorite(this, '{{ related._id }}')">
+                        <i
+                            class="{{ 'fas' if (current_user.is_authenticated and related.favorites and current_user.id in related.favorites) or (not current_user.is_authenticated and related._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
+                    </button>
+                    <a href="{{ url_for('main.product_detail', product_id=related._id) }}"
+                        class="product-card-link-overlay"></a>
+                </div>
+                <div class="product-info">
+                    <span class="product-category">{{ related.category }}</span>
+                    <h3 class="product-title">{{ related.name }}</h3>
+                    {% if related.size %}<span class="product-size">{{ related.size }}</span>{% endif %}
+                    <div class="price-container" style="margin-top: 0.75rem;">
+                        {% if related.discount_price %}
+                        <span class="price discounted">€{{ related.discount_price }}</span>
+                        <span class="price original">€{{ related.price }}</span>
+                        {% else %}
+                        <span class="price">€{{ related.price }}</span>
+                        {% endif %}
                     </div>
                 </div>
-                {% endfor %}
             </div>
+            {% endfor %}
         </div>
     </div>
-    {% endif %}
+</div>
+{% endif %}
 </div>
 
-<!-- Image Modal -->
-<div id="imageModal" class="image-modal" onclick="closeImageModal()">
-    <span class="close-modal" onclick="closeImageModal()">&times;</span>
-    <img class="modal-content" id="img01">
+<!-- Premium Product Lightbox -->
+<div id="imageModal" class="image-modal">
+    <div class="modal-overlay" onclick="closeImageModal()"></div>
+
+    <div class="modal-controls">
+        <button class="modal-btn zoom-btn" onclick="toggleZoom(event)" title="Zmadho">
+            <i class="fas fa-search-plus"></i>
+        </button>
+        <button class="modal-btn close-btn" onclick="closeImageModal()" title="Mbyll">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="modal-main-container">
+        <button class="modal-nav-arrow prev" onclick="navigateModal(-1)" id="modalPrev">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <div class="modal-image-wrapper" id="modalImageWrapper">
+            <img class="modal-content" id="modalImg" src="" alt="Product view">
+        </div>
+
+        <button class="modal-nav-arrow next" onclick="navigateModal(1)" id="modalNext">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <div class="modal-thumbnails-wrapper">
+        <div class="modal-thumbnails" id="modalThumbnails">
+            <!-- Thumbnails injected by JS -->
+        </div>
+    </div>
 </div>
 
 <script>
-function openImageModal(src) {
-    const modal = document.getElementById("imageModal");
-    const modalImg = document.getElementById("img01");
-    modal.style.display = "flex";
-    modalImg.src = src;
-    document.body.style.overflow = "hidden"; // Prevent scrolling
-}
+    let currentImages = [];
+    let currentModalIndex = 0;
+    let isZoomed = false;
 
-function closeImageModal() {
-    const modal = document.getElementById("imageModal");
-    modal.style.display = "none";
-    document.body.style.overflow = ""; // Restore scrolling
-}
+    function openImageModal(clickedSrc) {
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImg");
+        const thumbContainer = document.getElementById("modalThumbnails");
 
-// Close on Escape key
-document.addEventListener('keydown', function(event) {
-    if (event.key === "Escape") {
-        closeImageModal();
+        // Collect all images from the gallery
+        const galleryImages = document.querySelectorAll('.product-gallery .product-image');
+        currentImages = Array.from(galleryImages).map(img => img.src);
+
+        // Find index of clicked image
+        currentModalIndex = currentImages.indexOf(clickedSrc);
+        if (currentModalIndex === -1) currentModalIndex = 0;
+
+        // Populate thumbnails
+        thumbContainer.innerHTML = currentImages.map((src, index) => `
+            <div class="modal-thumb ${index === currentModalIndex ? 'active' : ''}" 
+                 onclick="setModalImage(${index})">
+                <img src="${src}" alt="Thumb ${index + 1}">
+            </div>
+        `).join('');
+
+        updateModalDisplay();
+
+        modal.classList.add('active');
+        document.body.style.overflow = "hidden";
+        resetZoom();
     }
-});
+
+    function setModalImage(index) {
+        currentModalIndex = index;
+        updateModalDisplay();
+        resetZoom();
+    }
+
+    function updateModalDisplay() {
+        const modalImg = document.getElementById("modalImg");
+        const prevBtn = document.getElementById("modalPrev");
+        const nextBtn = document.getElementById("modalNext");
+        const thumbWrapper = document.querySelector('.modal-thumbnails-wrapper');
+        const thumbs = document.querySelectorAll('.modal-thumb');
+
+        modalImg.src = currentImages[currentModalIndex];
+
+        // Update active thumbnail
+        thumbs.forEach((t, i) => {
+            t.classList.toggle('active', i === currentModalIndex);
+            if (i === currentModalIndex) {
+                t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        });
+
+        // Hide UI elements if only one image
+        if (currentImages.length <= 1) {
+            if (prevBtn) prevBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'none';
+            if (thumbWrapper) thumbWrapper.style.display = 'none';
+        } else {
+            if (prevBtn) prevBtn.style.display = 'flex';
+            if (nextBtn) nextBtn.style.display = 'flex';
+            if (thumbWrapper) thumbWrapper.style.display = 'flex';
+        }
+    }
+
+    function navigateModal(step) {
+        if (currentImages.length <= 1) return;
+        currentModalIndex = (currentModalIndex + step + currentImages.length) % currentImages.length;
+        updateModalDisplay();
+        resetZoom();
+    }
+
+    let zoomTimeout;
+    function toggleZoom(e) {
+        if (e) e.stopPropagation();
+        const wrapper = document.getElementById('modalImageWrapper');
+        const img = document.getElementById('modalImg');
+        const zoomBtn = document.querySelector('.zoom-btn i');
+
+        isZoomed = !isZoomed;
+        wrapper.classList.toggle('zoomed', isZoomed);
+
+        clearTimeout(zoomTimeout);
+        if (isZoomed) {
+            // Enable raw tracking after zoom animation finishes
+            zoomTimeout = setTimeout(() => {
+                if (isZoomed) img.classList.add('panning');
+            }, 400);
+        } else {
+            img.classList.remove('panning');
+            img.style.transformOrigin = 'center center';
+        }
+
+        if (zoomBtn) {
+            if (isZoomed) {
+                zoomBtn.classList.replace('fa-search-plus', 'fa-search-minus');
+            } else {
+                zoomBtn.classList.replace('fa-search-minus', 'fa-search-plus');
+            }
+        }
+    }
+
+    // Free Zoom: Throttled Mouse Tracking logic
+    let ticking = false;
+    document.getElementById('modalImageWrapper').addEventListener('mousemove', function (e) {
+        if (!isZoomed || ticking) return;
+
+        ticking = true;
+        requestAnimationFrame(() => {
+            const img = document.getElementById('modalImg');
+            const r = this.getBoundingClientRect();
+
+            const x = e.clientX - r.left;
+            const y = e.clientY - r.top;
+
+            const xPercent = (x / r.width) * 100;
+            const yPercent = (y / r.height) * 100;
+
+            img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+            ticking = false;
+        });
+    });
+
+    // Add click-to-zoom on the image itself
+    document.getElementById('modalImg').addEventListener('click', toggleZoom);
+
+    function resetZoom() {
+        isZoomed = false;
+        const wrapper = document.getElementById('modalImageWrapper');
+        const zoomBtn = document.querySelector('.zoom-btn i');
+        if (wrapper) wrapper.classList.remove('zoomed');
+        if (zoomBtn) zoomBtn.classList.replace('fa-search-minus', 'fa-search-plus');
+    }
+
+    function closeImageModal() {
+        const modal = document.getElementById("imageModal");
+        modal.classList.remove('active');
+        document.body.style.overflow = "";
+        resetZoom();
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function (e) {
+        const modal = document.getElementById("imageModal");
+        if (!modal.classList.contains('active')) return;
+
+        if (e.key === "Escape") closeImageModal();
+        if (e.key === "ArrowLeft") navigateModal(-1);
+        if (e.key === "ArrowRight") navigateModal(1);
+    });
+
+    // Touch swipe support
+    let touchStartX = 0;
+    document.getElementById('modalImageWrapper').addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.getElementById('modalImageWrapper').addEventListener('touchend', e => {
+        const touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) navigateModal(1);
+            else navigateModal(-1);
+        }
+    }, { passive: true });
 </script>
 
 <style>
-/* Image Modal Styles */
-.image-modal {
-    display: none;
-    position: fixed;
-    z-index: 99999; /* Highest priority */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.9);
-    cursor: zoom-out;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
+    /* Premium Lightbox Styles */
+    .image-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(8px);
+    }
 
-.modal-content {
-    margin: auto;
-    display: block;
-    width: auto;
-    height: auto;
-    max-width: 95%;
-    max-height: 90vh;
-    object-fit: contain;
-    border-radius: 8px;
-    animation: zoom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 30px rgba(0,0,0,0.5);
-    background: white;
-}
+    .image-modal.active {
+        opacity: 1;
+        visibility: visible;
+    }
 
-@keyframes zoom {
-  from {transform: scale(0.7); opacity: 0;}
-  to {transform: scale(1); opacity: 1;}
-}
+    .modal-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+    }
 
-.close-modal {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-    color: #ffffff;
-    font-size: 50px;
-    font-weight: 300;
-    transition: 0.3s;
-    cursor: pointer;
-    z-index: 100000;
-    line-height: 1;
-}
+    .modal-controls {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        display: flex;
+        gap: 1rem;
+        z-index: 100000;
+        /* Higher than image */
+    }
 
-.close-modal:hover {
-    color: #cccccc;
-    transform: scale(1.1);
-}
+    .modal-btn {
+        background: rgba(15, 23, 42, 0.6) !important;
+        /* Darker background for visibility */
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        width: 54px;
+        /* Slightly bigger */
+        height: 54px;
+        border-radius: 50%;
+        /* Circular looks more premium */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
 
-@media only screen and (max-width: 768px){
+    .modal-btn:hover {
+        background: var(--primary) !important;
+        border-color: var(--primary);
+        transform: scale(1.1);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    .modal-main-container {
+        flex: 1;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 2rem;
+        max-height: calc(100vh - 150px);
+    }
+
+    .modal-image-wrapper {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease;
+        overflow: hidden;
+    }
+
+    .modal-image-wrapper.zoomed {
+        cursor: zoom-out;
+        touch-action: none;
+    }
+
+    .modal-image-wrapper.zoomed .modal-content {
+        transform: scale(2.5);
+        cursor: crosshair;
+    }
+
     .modal-content {
-        max-width: 100%;
-        max-height: 80vh;
+        max-width: 90%;
+        max-height: 85vh;
+        object-fit: contain;
+        border-radius: 12px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        background: white;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        user-select: none;
+        transform-origin: center center;
+        will-change: transform, transform-origin;
     }
-    .close-modal {
-        right: 20px;
-        top: 15px;
-        font-size: 40px;
+
+    .modal-content.panning {
+        transition: none !important;
     }
-}
+
+    .modal-nav-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 10;
+    }
+
+    .modal-nav-arrow:hover {
+        background: white;
+        color: var(--primary);
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .modal-nav-arrow.prev {
+        left: 2rem;
+    }
+
+    .modal-nav-arrow.next {
+        right: 2rem;
+    }
+
+    .modal-thumbnails-wrapper {
+        width: 100%;
+        padding: 1.5rem;
+        display: flex;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-thumbnails {
+        display: flex;
+        gap: 1rem;
+        max-width: 90%;
+        overflow-x: auto;
+        padding: 4px;
+        scrollbar-width: none;
+    }
+
+    .modal-thumbnails::-webkit-scrollbar {
+        display: none;
+    }
+
+    .modal-thumb {
+        width: 64px;
+        height: 64px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 2px solid transparent;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        background: white;
+    }
+
+    .modal-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 4px;
+    }
+
+    .modal-thumb.active {
+        opacity: 1;
+        border-color: var(--primary);
+        transform: scale(1.1);
+    }
+
+    /* Detailed Page Thumbnails */
+    .product-gallery .thumbnail {
+        cursor: pointer;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 2px solid transparent;
+        min-width: 80px;
+        width: 80px;
+        height: 80px;
+        opacity: 0.7;
+        transition: all 0.3s ease;
+        background: white;
+        flex-shrink: 0;
+    }
+
+    .product-gallery .thumbnail.active {
+        border-color: var(--primary);
+        opacity: 1;
+    }
+
+    .product-gallery .thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 5px;
+    }
+
+    .stock-status {
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    .stock-status.in-stock {
+        color: var(--primary);
+    }
+
+    .stock-status.out-of-stock {
+        color: #ef4444;
+    }
+
+    @media (max-width: 768px) {
+        .modal-controls {
+            top: 1rem;
+            right: 1rem;
+        }
+
+        .modal-nav-arrow {
+            width: 44px;
+            height: 44px;
+            font-size: 1.1rem;
+        }
+
+        .modal-nav-arrow.prev {
+            left: 0.5rem;
+        }
+
+        .modal-nav-arrow.next {
+            right: 0.5rem;
+        }
+
+        .modal-content {
+            max-width: 100%;
+            border-radius: 0;
+        }
+
+        .modal-main-container {
+            padding: 1rem;
+        }
+
+        .modal-btn {
+            width: 44px;
+            height: 44px;
+        }
+    }
 </style>
 {% endblock %}
