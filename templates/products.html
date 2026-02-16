@@ -4,13 +4,14 @@
 <section class="section shop-section">
     <!-- Sidebar Filters (Moved out of layout for global stacking context) -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    
+
     <div class="container container-wide">
         <div class="shop-layout">
             <!-- Sidebar Filters -->
             <aside class="shop-sidebar" id="shopSidebar">
                 <div class="sidebar-mobile-header">
-                    <button class="btn-close-sidebar" id="closeSidebar"><i class="fas fa-times"></i></button>
+                    <button class="btn-close-sidebar" id="closeSidebar" onclick="closeShopSidebar()"><i
+                            class="fas fa-times"></i></button>
                     <h3>Filtroni Produktet</h3>
                 </div>
                 <div class="sidebar-content-wrapper">
@@ -25,14 +26,16 @@
                         <div class="filter-switch-row mb-3">
                             <span class="switch-label">Shfaq vetëm ofertat</span>
                             <label class="switch">
-                                <input type="checkbox" id="discount-only-filter" {% if discount_only %}checked{% endif %} onchange="updateShop()">
+                                <input type="checkbox" id="discount-only-filter" {% if discount_only %}checked{% endif
+                                    %} onchange="updateShop()">
                                 <span class="slider round"></span>
                             </label>
                         </div>
                         <div class="filter-switch-row">
                             <span class="switch-label">Më të shiturit</span>
                             <label class="switch">
-                                <input type="checkbox" id="best-seller-filter" {% if best_sellers %}checked{% endif %} onchange="updateShop()">
+                                <input type="checkbox" id="best-seller-filter" {% if best_sellers %}checked{% endif %}
+                                    onchange="updateShop()">
                                 <span class="slider round"></span>
                             </label>
                         </div>
@@ -42,8 +45,10 @@
                         <h3 class="sidebar-title">Kategoritë</h3>
                         <ul class="sidebar-cat-list">
                             <li>
-                                <a href="#" onclick="filterByCategory(event, 'all')" class="sidebar-cat-link {% if current_category == 'all' %}active{% endif %}">
-                                    <i class="fas fa-th-large" style="width: 20px; margin-right: 10px; opacity: 0.7;"></i>
+                                <a href="#" onclick="filterByCategory(event, 'all')"
+                                    class="sidebar-cat-link {% if current_category == 'all' %}active{% endif %}">
+                                    <i class="fas fa-th-large"
+                                        style="width: 20px; margin-right: 10px; opacity: 0.7;"></i>
                                     <span>Të Gjitha</span>
                                 </a>
                             </li>
@@ -51,21 +56,27 @@
                             <li>
                                 <div class="sidebar-cat-group">
                                     <div class="sidebar-cat-row">
-                                        <a href="#" onclick="filterByCategory(event, '{{ cat_name }}')" class="sidebar-cat-link {% if current_category == cat_name %}active{% endif %}">
+                                        <a href="#" onclick="filterByCategory(event, '{{ cat_name }}')"
+                                            class="sidebar-cat-link {% if current_category == cat_name %}active{% endif %}">
                                             <span>{{ cat_name }}</span>
                                             {% if subcats %}
-                                            <button class="subcat-toggle-btn" onclick="toggleSubcats(event, this)" title="Shfaq nënkategoritë">
-                                                <i class="fas fa-chevron-right toggle-icon {% if current_category == cat_name %}rotated{% endif %}"></i>
+                                            <button class="subcat-toggle-btn" onclick="toggleSubcats(event, this)"
+                                                title="Shfaq nënkategoritë">
+                                                <i
+                                                    class="fas fa-chevron-right toggle-icon {% if current_category == cat_name %}rotated{% endif %}"></i>
                                             </button>
                                             {% endif %}
                                         </a>
                                     </div>
-                                    
+
                                     {% if subcats %}
-                                    <ul class="sidebar-subcat-list {% if current_category == cat_name %}show{% endif %}">
+                                    <ul
+                                        class="sidebar-subcat-list {% if current_category == cat_name %}show{% endif %}">
                                         {% for sub in subcats %}
                                         <li style="margin-bottom: 2px;">
-                                            <a href="#" onclick="filterBySubcategory(event, '{{ cat_name }}', '{{ sub }}')" class="sidebar-subcat-link {% if current_subcategory == sub %}active{% endif %}">
+                                            <a href="#"
+                                                onclick="filterBySubcategory(event, '{{ cat_name }}', '{{ sub }}')"
+                                                class="sidebar-subcat-link {% if current_subcategory == sub %}active{% endif %}">
                                                 {{ sub }}
                                             </a>
                                         </li>
@@ -84,13 +95,15 @@
                         <div class="brand-filter-container">
                             <ul class="brand-list">
                                 <li>
-                                    <a href="#" onclick="filterByBrand(event, 'all')" class="brand-link-item {% if current_brand == 'all' %}active{% endif %}">
+                                    <a href="#" onclick="filterByBrand(event, 'all')"
+                                        class="brand-link-item {% if current_brand == 'all' %}active{% endif %}">
                                         Të gjitha
                                     </a>
                                 </li>
                                 {% for brand in brands %}
                                 <li>
-                                    <a href="#" onclick="filterByBrand(event, '{{ brand }}')" class="brand-link-item {% if current_brand == brand %}active{% endif %}">
+                                    <a href="#" onclick="filterByBrand(event, '{{ brand }}')"
+                                        class="brand-link-item {% if current_brand == brand %}active{% endif %}">
                                         {{ brand }}
                                     </a>
                                 </li>
@@ -105,14 +118,17 @@
                             <div class="price-inputs-wrapper" style="margin-bottom: 1rem;">
                                 <div class="input-with-label">
                                     <span>Min</span>
-                                    <input type="number" placeholder="0" id="min-price" class="price-input" value="{{ request.args.get('min_price', '') }}">
+                                    <input type="number" placeholder="0" id="min-price" class="price-input"
+                                        value="{{ request.args.get('min_price', '') }}">
                                 </div>
                                 <div class="input-with-label">
                                     <span>Max</span>
-                                    <input type="number" placeholder="1000" id="max-price" class="price-input" value="{{ request.args.get('max_price', '') }}">
+                                    <input type="number" placeholder="1000" id="max-price" class="price-input"
+                                        value="{{ request.args.get('max_price', '') }}">
                                 </div>
                             </div>
-                            <button id="apply-price-filter" class="btn btn-sm btn-primary w-100 d-none-mobile">Apliko Çmimin</button>
+                            <button id="apply-price-filter" class="btn btn-sm btn-primary w-100 d-none-mobile"
+                                onclick="updateShop()">Apliko Çmimin</button>
                         </div>
                     </div>
                 </div> <!-- End sidebar-content-wrapper -->
@@ -120,17 +136,18 @@
                     <button class="btn btn-primary w-100" id="closeSidebarAlt">Shiko Produktet</button>
                 </div>
             </aside>
-            
+
             <!-- Main Shop Content -->
             <main class="shop-main-content">
-                <div class="shop-controls-container">
+                <div class="shop-controls-container sticky-mobile-controls">
                     <div class="results-count">
                         Gjithsej <span id="current-count">{{ total_count }}</span> produkte
                     </div>
                     <div class="shop-sorting" style="display: flex; gap: 0.5rem; align-items: center;">
                         <div class="dropdown" id="sortDropdown">
                             <button class="btn btn-outline-secondary order-button" type="button" id="sortTrigger">
-                                Rendit: <span id="current-sort-label">Relevanca</span> <i class="fas fa-chevron-down ml-2"></i>
+                                <i class="fas fa-sort-amount-down-alt mr-1"></i> <span
+                                    id="current-sort-label">Radhit</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" id="sortMenu">
                                 <a class="dropdown-item sort-trigger active" data-sort="relevance">
@@ -150,57 +167,64 @@
                                 </a>
                             </div>
                         </div>
-                        <button class="btn btn-outline-secondary filter-mobile-toggle" id="openSidebar" onclick="openShopSidebar()">
-                             <i class="fas fa-sliders-h"></i> <span>Filtro</span>
+                        <button class="btn btn-outline-secondary filter-mobile-toggle" onclick="openShopSidebar()">
+                            <i class="fas fa-sliders-h"></i> <span>Filtro</span>
                         </button>
                     </div>
                 </div>
 
                 <div id="productGrid" class="product-grid">
                     {% for product in products %}
-                        <div class="product-card fade-in-section">
-                            <div class="product-image">
+                    <div class="product-card fade-in-section">
+                        <div class="product-image">
+                            {% if product.discount_price %}
+                            <div class="special-offer-badge red-badge">Oferta Speciale</div>
+                            {% endif %}
+                            {% if product.is_best_seller %}
+                            <div class="best-seller-badge">Më i Shituri</div>
+                            {% endif %}
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                            <button
+                                class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}"
+                                onclick="toggleFavorite(this, '{{ product._id }}')">
+                                <i
+                                    class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
+                            </button>
+                            <a href="{{ url_for('main.product_detail', product_id=product._id) }}"
+                                class="product-card-link-overlay"></a>
+                        </div>
+                        <div class="product-info">
+                            <span class="product-category">{{ product.category }}</span>
+                            <h3 class="product-title">{{ product.name }}</h3>
+                            {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
+                            <div class="price-container">
                                 {% if product.discount_price %}
-                                    <div class="special-offer-badge red-badge">Oferta Speciale</div>
+                                <span class="price discounted">€{{ product.discount_price }}</span>
+                                <span class="price original">€{{ product.price }}</span>
+                                <span class="discount-badge">-{{ ((product.price - product.discount_price) /
+                                    product.price * 100)|round|int }}%</span>
+                                {% else %}
+                                <span class="price">€{{ product.price }}</span>
                                 {% endif %}
-                                {% if product.is_best_seller %}
-                                    <div class="best-seller-badge">Më i Shituri</div>
-                                {% endif %}
-                                <img src="{{ product.image_url }}" alt="{{ product.name }}">
-                                <button class="btn-favorite {{ 'active' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else '' }}" onclick="toggleFavorite(this, '{{ product._id }}')">
-                                    <i class="{{ 'fas' if (current_user.is_authenticated and product.favorites and current_user.id in product.favorites) or (not current_user.is_authenticated and product._id|string in session.get('liked_products', [])) else 'far' }} fa-heart"></i>
-                                </button>
-                                <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
-                            </div>
-                            <div class="product-info">
-                                <span class="product-category">{{ product.category }}</span>
-                                <h3 class="product-title">{{ product.name }}</h3>
-                                {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
-                                <div class="price-container">
-                                    {% if product.discount_price %}
-                                        <span class="price discounted">€{{ product.discount_price }}</span>
-                                        <span class="price original">€{{ product.price }}</span>
-                                        <span class="discount-badge">-{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%</span>
-                                    {% else %}
-                                        <span class="price">€{{ product.price }}</span>
-                                    {% endif %}
-                                </div>
                             </div>
                         </div>
+                    </div>
                     {% endfor %}
 
-                    
+
                     {% if not products %}
-                        <div class="empty-state" style="grid-column: 1/-1; padding: 4rem; text-align: center;">
-                            <i class="fas fa-search fa-3x mb-3" style="color: #cbd5e1;"></i>
-                            <p>Nuk u gjetën produkte në këtë kategori.</p>
-                            <a href="{{ url_for('main.products') }}" class="btn btn-primary mt-3">Shiko të gjitha</a>
-                        </div>
+                    <div class="empty-state" style="grid-column: 1/-1; padding: 4rem; text-align: center;">
+                        <i class="fas fa-search fa-3x mb-3" style="color: #cbd5e1;"></i>
+                        <p>Nuk u gjetën produkte në këtë kategori.</p>
+                        <a href="{{ url_for('main.products') }}" class="btn btn-primary mt-3">Shiko të gjitha</a>
+                    </div>
                     {% endif %}
                 </div>
 
-                <div class="load-more-container text-center {{ 'd-none' if not total_pages or total_pages <= 1 else '' }}" style="margin-top: 4rem; margin-bottom: 4rem;">
-                    <button id="load-more-products" class="btn btn-load-more" data-page="1" onclick="window.updateShop(true)">
+                <div class="load-more-container text-center {{ 'd-none' if not total_pages or total_pages <= 1 else '' }}"
+                    style="margin-top: 4rem; margin-bottom: 4rem;">
+                    <button id="load-more-products" class="btn btn-load-more" data-page="1"
+                        onclick="window.updateShop(true)">
                         Shiko të gjitha <i class="fas fa-chevron-down ml-2"></i>
                     </button>
                 </div>

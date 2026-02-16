@@ -2,11 +2,13 @@ import os
 import logging
 from datetime import timedelta
 from dotenv import load_dotenv
-from flask import Flask, render_template, session, request
+from flask import Flask, render_template, request, jsonify, session
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, current_user
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.middleware.proxy_fix import ProxyFix
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 from models.db import init_db, mongo
 from bson import ObjectId
@@ -54,17 +56,20 @@ def load_user(user_id):
 @app.context_processor
 def inject_cart_count():
     from flask import session
+    cart = session.get('cart', {})
     from models.categories import CATEGORIES
     from flask_login import current_user
     import logging
     
     try:
         cart = session.get('cart', {})
-        
         cart_items = []
         total_price = 0
         total_savings = 0
         actual_cart_count = 0
+        
+        # Log session status for debugging
+        # logging.info(f"Context Processor session['cart']: {cart}")
         
         if cart:
             # Ensure mongo.db is available
@@ -75,15 +80,14 @@ def inject_cart_count():
                         product_ids.append(ObjectId(str(pid)))
                         
                 if product_ids:
-                    # Using a list to ensure we can iterate multiple times or just to be safe with the cursor
                     products_cursor = list(mongo.db.products.find({"_id": {"$in": product_ids}}))
+                    # logging.info(f"Found {len(products_cursor)} products in DB for cart")
                     products_db = {str(p['_id']): p for p in products_cursor}
                     
                     for pid, qty in cart.items():
                         product = products_db.get(str(pid))
                         if product:
                             try:
-                                # Ensure _id is a string for Jinja
                                 product['_id'] = str(product['_id'])
                                 p_price = product.get('discount_price') or product.get('price') or 0
                                 original_price = product.get('price') or 0
@@ -100,8 +104,11 @@ def inject_cart_count():
                                 product['item_savings'] = item_savings
                                 cart_items.append(product)
                                 actual_cart_count += qty_int
-                            except (ValueError, TypeError):
+                            except (ValueError, TypeError) as ve:
+                                logging.warning(f"Error processing cart item {pid}: {ve}")
                                 continue
+            else:
+                logging.error("mongo.db is NOT available in context processor!")
 
         # Calculate Delivery Fee (Global context processor version)
         from routes.cart import calculate_shipping
@@ -113,12 +120,11 @@ def inject_cart_count():
         wish_count = 0
         try:
             if current_user.is_authenticated:
-                # Count products where user_id is in favorites list
                 wish_count = mongo.db.products.count_documents({"favorites": str(current_user.id)})
             else:
                 wish_count = len(session.get('liked_products', []))
-        except:
-            pass
+        except Exception as we:
+            logging.error(f"Error calculating wishlist count: {we}")
 
         return dict(
             cart_count=int(actual_cart_count), 
@@ -141,7 +147,7 @@ def inject_cart_count():
             cart_savings=0,
             delivery_fee=0,
             grand_total=0,
-            wishlist_count=0,
+            wishlist_count=0, 
             global_categories=CATEGORIES
         )
 

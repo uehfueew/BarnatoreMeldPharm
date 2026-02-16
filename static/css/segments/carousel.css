@@ -53,8 +53,13 @@
     color: white;
 }
 
-.carousel-arrow.prev { left: 8px; }
-.carousel-arrow.next { right: 8px; }
+.carousel-arrow.prev {
+    left: 8px;
+}
+
+.carousel-arrow.next {
+    right: 8px;
+}
 
 .carousel-indicators {
     position: absolute;
@@ -70,7 +75,7 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
 }
 
@@ -164,9 +169,10 @@
 /* --- Hero Carousel --- */
 .hero-carousel-container {
     position: relative;
-    height: auto; 
+    height: auto;
     min-height: 500px;
-    background: #ffffff; /* White bg for clean look */
+    background: #ffffff;
+    /* White bg for clean look */
     overflow: hidden;
     margin-top: 0;
     padding-bottom: 2rem;
@@ -174,10 +180,13 @@
 
 .hero-inner-wrapper {
     position: relative;
-    max-width: 100%; /* Spans full width of its container (which is grid-adjusted in responsive.css) */
+    max-width: 100%;
+    /* Spans full width of its container (which is grid-adjusted in responsive.css) */
     margin: 0;
-    height: auto; /* Changed from 550px to auto to support the vertical mobile banners */
-    min-height: 480px; /* Kept for desktop appearance */
+    height: auto;
+    /* Changed from 550px to auto to support the vertical mobile banners */
+    min-height: 480px;
+    /* Kept for desktop appearance */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -188,7 +197,8 @@
     width: 100%;
     position: relative;
     border-radius: var(--radius-lg);
-    overflow: visible; /* Allow content to be seen if needed, but mainly for consistent box model */
+    overflow: visible;
+    /* Allow content to be seen if needed, but mainly for consistent box model */
 }
 
 .hero-slide {
@@ -199,8 +209,8 @@
     height: 100%;
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
-    background: #fff; /* Ensure it's not transparent/gray */
-    
+    background: #fff;
+    /* Ensure it's not transparent/gray */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -210,18 +220,21 @@
 /* Explicitly set container height to accommodate banner images approx aspect ratio */
 .hero-carousel-container {
     width: 100%;
-    background-color: #fff; /* Ensure clean background behind contained image */
+    background-color: #fff;
+    /* Ensure clean background behind contained image */
     padding-bottom: 2rem;
 }
 
 .hero-img {
     height: 100%;
-    width: 100%; /* Restore full width usage */
+    width: 100%;
+    /* Restore full width usage */
     max-width: 100%;
-    object-fit: contain; /* Keeps dimensions good/full */
+    object-fit: contain;
+    /* Keeps dimensions good/full */
     background: #fff;
-}
-    object-position: center; /* Ensures center alignment */
+    object-position: center;
+    /* Ensures center alignment */
     display: block;
 }
 
@@ -229,12 +242,14 @@
 .hero-overlay-text {
     position: absolute;
     left: 50%;
-    bottom: 2rem; /* Show at bottom */
+    bottom: 2rem;
+    /* Show at bottom */
     top: auto;
     transform: translateX(-50%);
-    
+
     text-align: center;
-    background: transparent; /* Remove background box */
+    background: transparent;
+    /* Remove background box */
     backdrop-filter: none;
     padding: 0;
     box-shadow: none;
@@ -246,38 +261,50 @@
 @media (max-width: 900px) {
     .hero-inner-wrapper {
         width: 100%;
-        max-width: 100%; 
-        height: auto !important; 
-        aspect-ratio: 16/9; /* Changed from 1/1 to make it shorter/smaller */
+        max-width: 100%;
+        height: auto !important;
+        aspect-ratio: 16/9;
+        /* Changed from 1/1 to make it shorter/smaller */
         max-height: none;
         min-height: 300px;
         padding-bottom: 1rem;
     }
+
     .hero-img {
-        object-fit: contain; 
-        max-height: 100%; /* Don't overflow the container */
+        object-fit: contain;
+        max-height: 100%;
+        /* Don't overflow the container */
     }
+
     .hero-carousel-container {
-        padding-bottom: 0.5rem; /* Remove extra padding below */
+        padding-bottom: 0.5rem;
+        /* Remove extra padding below */
     }
+
     .hero-dots {
-        bottom: 5px; /* Bring dots much closer */
+        bottom: 5px;
+        /* Bring dots much closer */
     }
+
     .hero-overlay-text {
-        bottom: 2rem; /* Adjust button position to be above dots */
-        width: 100%; 
+        bottom: 2rem;
+        /* Adjust button position to be above dots */
+        width: 100%;
     }
-    
+
     .hero-overlay-text .btn-primary {
-        padding: 0.6rem 1.5rem; /* Smaller button */
+        padding: 0.6rem 1.5rem;
+        /* Smaller button */
         font-size: 0.9rem;
-        width: auto; /* Allow natural width */
+        width: auto;
+        /* Allow natural width */
         min-width: 120px;
     }
 }
 
 .hero-overlay-text .btn-primary {
-    padding: 0.8rem 2.5rem; /* Bigger button mostly horizontal */
+    padding: 0.8rem 2.5rem;
+    /* Bigger button mostly horizontal */
     font-size: 1.1rem;
     font-weight: 600;
     box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.4);
@@ -290,7 +317,8 @@
 }
 
 /* Arrows inside wrapper but flanking setup */
-.hero-prev, .hero-next {
+.hero-prev,
+.hero-next {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -309,28 +337,36 @@
     transition: var(--transition);
 }
 
-.hero-prev:hover, .hero-next:hover {
-    background: white; /* Don't change background on hover/click to avoid clash */
+.hero-prev:hover,
+.hero-next:hover {
+    background: white;
+    /* Don't change background on hover/click to avoid clash */
     color: var(--primary);
     transform: translateY(-50%) scale(1.1);
     box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.3);
 }
 
-.hero-prev:active, .hero-next:active {
+.hero-prev:active,
+.hero-next:active {
     transform: translateY(-50%) scale(0.95);
-    background: #f8fafc; /* Subtle click effect */
+    background: #f8fafc;
+    /* Subtle click effect */
 }
 
 /* Position arrows at the edge of the wrapper (flanking the image) */
 .hero-prev {
-    left: 20%; /* Adjusted to be not too close, not too far */
+    left: 20%;
+    /* Adjusted to be not too close, not too far */
 }
+
 .hero-next {
-    right: 20%; /* Adjusted to be not too close, not too far */
+    right: 20%;
+    /* Adjusted to be not too close, not too far */
 }
 
 .hero-dots {
-    bottom: 1rem; /* Adjust dots position */
+    bottom: 1rem;
+    /* Adjust dots position */
 }
 
 
@@ -344,16 +380,23 @@
     .hero-inner-wrapper {
         max-width: 90%;
     }
-    .hero-prev { left: 10px; }
-    .hero-next { right: 10px; }
+
+    .hero-prev {
+        left: 10px;
+    }
+
+    .hero-next {
+        right: 10px;
+    }
 }
 
 @media (max-width: 768px) {
     .hero-inner-wrapper {
-        height: 60vw; /* Keep proportional */
+        height: 60vw;
+        /* Keep proportional */
         min-height: 250px;
     }
-    
+
     /* Removed conflicting hero-overlay-text background */
 
 }
@@ -361,60 +404,187 @@
 
 /* Remove old definitions if they exist below... but this replaces the block */
 
+/* --- Hero Content Overlay --- */
 .hero-content {
-    position: relative;
-    z-index: 3;
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+    z-index: 10;
     width: 100%;
-    max-width: 1320px;
-    margin: 0 auto;
-    padding: 0 2rem;
+    max-width: 600px;
+    padding: 2rem;
+    pointer-events: none;
+    text-align: left;
+}
+
+.hero-text {
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+}
+
+.hero-slide.active .hero-text {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hero-label {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    background: rgba(var(--primary-rgb), 0.1);
+    padding: 4px 12px;
+    border-radius: 50px;
 }
 
 .hero-text h1 {
-    font-size: 4.5rem;
-    margin-bottom: 1.5rem;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--text-main);
     line-height: 1.1;
+    margin-bottom: 1.5rem;
+    letter-spacing: -1px;
+}
+
+.hero-text p {
+    font-size: 1.15rem;
+    color: #475569;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    max-width: 500px;
+}
+
+.btn-hero {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--primary);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    box-shadow: 0 10px 20px rgba(var(--primary-rgb), 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-hero:hover {
+    background: var(--primary-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(var(--primary-rgb), 0.4);
+}
+
+.btn-hero i {
+    transition: transform 0.3s ease;
+}
+
+.btn-hero:hover i {
+    transform: translateX(5px);
+}
+
+/* Hero Carousel Controls Fixes */
+.hero-prev,
+.hero-next {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--text-main);
+    font-size: 1.2rem;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-prev {
+    left: 30px;
+}
+
+.hero-next {
+    right: 30px;
+}
+
+.hero-prev:hover,
+.hero-next:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
 }
 
 .hero-dots {
-    position: absolute;
     bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 0.5rem;
-    z-index: 10;
+    gap: 8px;
 }
 
 .hero-dots .dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.2);
-    cursor: pointer;
-    transition: var(--transition);
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
 }
 
 .hero-dots .dot.active {
     background: var(--primary);
-    transform: scale(1.2);
+    width: 60px;
 }
 
-.hero-search-overlay {
-    position: absolute;
-    bottom: 5rem;
-    left: 0;
-    width: 100%;
-    z-index: 5;
-    pointer-events: none;
-}
-.hero-search-overlay .hero-search-container {
-    pointer-events: all;
-    background: white;
-    padding: 1.5rem;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-xl);
-    max-width: 700px;
-    margin: 0 auto;
+/* Responsive Adjustments for Hero */
+@media (max-width: 1200px) {
+    .hero-text h1 {
+        font-size: 2.8rem;
+    }
 }
 
+@media (max-width: 992px) {
+    .hero-content {
+        left: 0;
+        top: auto;
+        bottom: 0;
+        transform: none;
+        padding: 3rem 2rem;
+        background: linear-gradient(to top, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%);
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .hero-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-text h1 {
+        font-size: 2.2rem;
+    }
+
+    .hero-text p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-prev,
+    .hero-next {
+        display: none;
+    }
+
+    /* Hide arrows on mobile for cleaner look */
+}
+
+@media (max-width: 768px) {
+    .hero-inner-wrapper {
+        height: 120vw;
+        /* Taller on mobile for better visibility */
+    }
+
+    .hero-img {
+        object-fit: cover !important;
+    }
+}
