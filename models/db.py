@@ -5,9 +5,13 @@ import ssl
 mongo = PyMongo()
 
 def init_db(app):
-    app.config["MONGO_TLSCAFILE"] = certifi.where()
-    # Explicitly set tls=True and tlsAllowInvalidCertificates=True only if you are stuck in dev env with bad certs, 
-    # but normally certifi.where() is enough. 
-    # However, sometimes on macOS python environments, SSL context needs to be passed explicitly or allowed invalid.
-    # For now, let's stick to certifi. But ensure URI has params.
-    mongo.init_app(app, tlsCAFile=certifi.where())
+    uri = app.config.get('MONGO_URI', '')
+    
+    is_cloud = 'mongodb+srv' in uri
+    is_explicit_tls = 'tls=true' in uri.lower() or 'ssl=true' in uri.lower()
+    
+    if is_cloud or is_explicit_tls:
+        mongo.init_app(app, tlsCAFile=certifi.where())
+    else:
+        # Explicitly pass tls=False to ensure no SSL handshake is attempted on localhost
+        mongo.init_app(app, tls=False)
