@@ -1,7 +1,7 @@
 CATEGORIES = {
     "Dermokozmetikë": [
         "Kujdesi për Fytyrën", 
-        "Pastrues & Tonikë", 
+        "Pastrues për fytyrë", 
         "Hidratues", 
         "Serume & Trajtime", 
         "Anti-aging & Rrudhat", 
@@ -11,8 +11,10 @@ CATEGORIES = {
         "Kremra Dielli (SPF)", 
         "Kujdesi i Syve", 
         "Kujdesi i Trupit", 
-        "Riparsus & Balma", 
-        "Duart & Këmbët", 
+        "Riparues & Balma", 
+        "Mirëmbajtje për duar dhe këmbë", 
+        "Kujdes për Buzët",
+        "Kujdes për flokët",
         "Kujdes për Meshkuj", 
         "Make-up farmaceutik"
     ],

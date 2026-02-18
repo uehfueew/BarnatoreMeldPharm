@@ -247,18 +247,26 @@
         width: 100%;
         max-width: 100%; 
         height: auto !important; 
-        aspect-ratio: 1/1; /* Changed from 16/9 to 1/1 to show full vertical/square image on mobile */
+        aspect-ratio: 1/1 !important; /* Forces square space */
         max-height: none;
-        min-height: 350px;
-        padding-bottom: 0.5rem;
+        min-height: auto !important;
+        padding-bottom: 0 !important;
+    }
+    .hero-carousel {
+        height: 100% !important;
+        aspect-ratio: 1/1 !important;
     }
     .hero-img {
-        object-fit: cover; /* Use cover to ensure it fills the square fully without white bars */
+        object-fit: contain !important; /* Shows whole image without cropping */
         width: 100% !important;
         height: 100% !important;
+        background: #fff;
     }
     .hero-carousel-container {
-        padding-bottom: 0.5rem; /* Remove extra padding below */
+        padding-bottom: 0 !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     .hero-dots {
         bottom: 5px; /* Bring dots much closer */

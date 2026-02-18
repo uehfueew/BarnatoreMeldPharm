@@ -59,10 +59,9 @@
     .quick-view-details {
         padding: 1.5rem;
     }
-    /* Adjusted Hero Container for Mobile */
+    /* Reduce Hero Container Gap for Mobile */
     .hero-carousel-container {
-        height: auto;
-        margin-top: 2rem;
+        margin-top: 0;
     }
 
     /* Trust Indicators VISIBLE BUT UNSTYLED on Mobile */
@@ -397,20 +396,22 @@
         padding-bottom: 0 !important;
         margin-top: 0 !important; 
         background: #fff !important;
+        display: block !important;
+        visibility: visible !important;
     }
     .hero-inner-wrapper { 
         border-radius: 0; 
         width: 100% !important;
         max-width: 100% !important;
         height: auto !important;
-        min-height: auto !important; /* Removed fixed min-height to allow full image scaling */
+        aspect-ratio: 1/1 !important; 
         background: #fff !important;
     }
     .hero-img { 
         height: 100% !important; 
         width: 100% !important;
-        aspect-ratio: auto !important; 
-        object-fit: cover !important; /* Fill full width and container */
+        aspect-ratio: 1/1 !important; 
+        object-fit: contain !important; 
         background: #fff !important;
     }
 }
@@ -982,12 +983,18 @@
 }
 
 @media (max-width: 992px) {
+    /* Hide menus when sidebar is open */
+    body.sidebar-open .mobile-header,
+    body.sidebar-open .mobile-bottom-nav {
+        display: none !important;
+    }
+
     .shop-controls-container {
         position: sticky !important;
-        top: 70px !important; /* Adjusted to sit right under scrolled header */
-        z-index: 1100 !important; /* Above page content but below main header (10000) */
+        top: 60px !important; /* Move higher up to fit closer to the compressed header */
+        z-index: 999 !important; /* High enough to stick on top of products */
         background: #fff !important; 
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
         flex-direction: row !important;
         justify-content: space-between !important;
         gap: 0.5rem !important;
