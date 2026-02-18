@@ -20,7 +20,7 @@ window.createProductCardHtml = function(p) {
                 <a href="/product/${p.id}" class="product-card-link-overlay"></a>
             </div>
             <div class="product-info">
-                <span class="product-category">${p.category}</span>
+                <span class="product-category" style="color: var(--primary); font-weight: 700;">${p.brand || p.category}</span>
                 <h3 class="product-title">${p.name}</h3>
                 ${p.size ? `<span class="product-size">${p.size}</span>` : ''}
                 <div class="price-container">
@@ -66,14 +66,13 @@ window.loadMoreHome = function() {
     const grid = document.getElementById('recommended-grid');
     if (!btn || !grid) return;
     
-    const nextPage = (parseInt(btn.getAttribute('data-page')) || 1) + 1;
-    const category = btn.getAttribute('data-category') || 'all';
-    
+    // Set all=true to load everything
     const originalText = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = 'Duke u ngarkuar... <i class="fas fa-spinner fa-spin ml-2"></i>';
 
-    let url = `/products?page=${nextPage}&ajax=1`;
+    const category = btn.getAttribute('data-category') || 'all';
+    let url = `/products?ajax=1&all=true`;
     if (category !== 'all') {
         url += `&category=${encodeURIComponent(category)}`;
     }
@@ -82,11 +81,12 @@ window.loadMoreHome = function() {
         .then(res => res.json())
         .then(data => {
             if (data.products && data.products.length > 0) {
+                // Clear and re-render to avoid duplicates if some are already there
+                // or just append only the new ones. 
+                // But the user said "show all", so replacing is safer if we want to ensure we don't have first 20 twice
+                grid.innerHTML = ''; 
                 window.appendProducts(data.products, grid);
-                btn.setAttribute('data-page', nextPage);
-                if (nextPage >= data.total_pages) {
-                    btn.parentElement.classList.add('d-none');
-                }
+                btn.parentElement.classList.add('d-none');
             } else {
                 btn.parentElement.classList.add('d-none');
             }
@@ -107,24 +107,19 @@ window.openShopSidebar = function() {
 
     if (sidebar) sidebar.classList.add('active');
     if (overlay) overlay.classList.add('active');
-    if (mobileHeader) mobileHeader.style.transform = 'translateY(-100%)';
-    if (mobileBottomNav) mobileBottomNav.style.transform = 'translateY(100%)';
     
-    document.body.style.overflow = 'hidden';
+    // Disable scrolling but don't hide menus yet to avoid jitter
+    document.body.classList.add('sidebar-open');
 };
 
 window.closeShopSidebar = function() {
     const sidebar = document.getElementById('shopSidebar');
     const overlay = document.getElementById('sidebarOverlay');
-    const mobileHeader = document.querySelector('.mobile-header');
-    const mobileBottomNav = document.querySelector('.mobile-bottom-nav');
 
     if (sidebar) sidebar.classList.remove('active');
     if (overlay) overlay.classList.remove('active');
-    if (mobileHeader) mobileHeader.style.transform = '';
-    if (mobileBottomNav) mobileBottomNav.style.transform = '';
     
-    document.body.style.overflow = '';
+    document.body.classList.remove('sidebar-open');
 };
 
 // Toggle Filter Sections (Collapsible)
@@ -301,17 +296,20 @@ window.toggleSortMenu = function(e) {
     }
 };
 
-window.updateShop = function(isLoadMore = false) {
+window.updateShop = function(isLoadMore = false, loadAll = false) {
     const productGrid = document.getElementById('productGrid');
     if (!productGrid) return;
     
     const loadMoreBtn = document.getElementById('load-more-products');
     let page = 1;
-    if (isLoadMore && loadMoreBtn) {
+    if (isLoadMore && loadMoreBtn && !loadAll) {
         page = (parseInt(loadMoreBtn.getAttribute('data-page')) || 1) + 1;
     }
 
     const urlParams = new URLSearchParams(window.location.search);
+    if (loadAll) {
+        urlParams.set('all', 'true');
+    }
     
     // Set search if exists in input
     const searchInput = document.getElementById('adminOrderSearch') || document.getElementById('productSearch');
@@ -339,14 +337,14 @@ window.updateShop = function(isLoadMore = false) {
     urlParams.set('ajax', '1');
     urlParams.set('page', page);
     
-    if (!isLoadMore) {
+    if (!isLoadMore && !loadAll) {
         productGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 5rem;"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
         productGrid.style.opacity = '1';
     }
 
     // Show loading state on button
     let originalBtnText = '';
-    if (isLoadMore && loadMoreBtn) {
+    if ((isLoadMore || loadAll) && loadMoreBtn) {
         originalBtnText = loadMoreBtn.innerHTML;
         loadMoreBtn.disabled = true;
         loadMoreBtn.innerHTML = 'Duke u ngarkuar... <i class="fas fa-spinner fa-spin ml-2"></i>';
@@ -357,8 +355,9 @@ window.updateShop = function(isLoadMore = false) {
     fetch(`${currentPath}?${urlParams.toString()}`)
         .then(res => res.json())
         .then(data => {
-            if (isLoadMore) {
+            if (isLoadMore || loadAll) {
                 if (data.products && data.products.length > 0) {
+                    if (loadAll) productGrid.innerHTML = '';
                     appendProducts(data.products, productGrid);
                     if (loadMoreBtn) loadMoreBtn.setAttribute('data-page', page);
                 }
@@ -372,7 +371,7 @@ window.updateShop = function(isLoadMore = false) {
             if (loadMoreBtn) {
                 const totalPages = data.total_pages || 1;
                 const currentPage = isLoadMore ? page : 1;
-                if (currentPage >= totalPages) {
+                if (currentPage >= totalPages || loadAll) {
                     loadMoreBtn.parentElement.classList.add('d-none');
                 } else {
                     loadMoreBtn.parentElement.classList.remove('d-none');
@@ -380,7 +379,7 @@ window.updateShop = function(isLoadMore = false) {
                 }
             }
             
-            if (!isLoadMore) {
+            if (!isLoadMore && !loadAll) {
                 urlParams.delete('ajax');
                 window.history.pushState({}, '', `${currentPath}?${urlParams.toString()}`);
             }
@@ -390,7 +389,7 @@ window.updateShop = function(isLoadMore = false) {
             productGrid.style.opacity = '1';
             const sortMenu = document.getElementById('sortMenu');
             if (sortMenu) sortMenu.classList.remove('show');
-            if (isLoadMore && loadMoreBtn) {
+            if ((isLoadMore || loadAll) && loadMoreBtn) {
                 loadMoreBtn.disabled = false;
                 loadMoreBtn.innerHTML = originalBtnText;
             }
@@ -443,14 +442,16 @@ window.filterHomeCategory = function(category, btnElement) {
 
 document.addEventListener('DOMContentLoaded', () => {
     // Clickable rows handler (e.g. in cart)
-    document.addEventListener('click', e => {
-        const row = e.target.closest('.clickable-row');
-        if (row && row.dataset.href && !e.target.closest('button, a, form, .quantity-selector')) {
-            window.location.href = row.dataset.href;
-        }
-    });
+    const sidebar = document.getElementById('shopSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const closeBtn = document.getElementById('closeSidebar');
+    const closeBtnAlt = document.getElementById('closeSidebarAlt');
 
-    // Check if IntersectionObserver is supported
+    if (closeBtn) closeBtn.onclick = function() { window.closeShopSidebar(); };
+    if (closeBtnAlt) closeBtnAlt.onclick = function() { window.closeShopSidebar(); };
+    if (overlay) overlay.onclick = function() { window.closeShopSidebar(); };
+
+    // Clickable rows handler (e.g. in cart)
     const hasIntersectionObserver = 'IntersectionObserver' in window;
     
     // --- FADE-IN ANIMATION OBSERVER ---
@@ -561,10 +562,10 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             
-            // Front-end filter for current page
-            if (typeof filterHomeProducts === 'function') {
-                filterHomeProducts(term, getActiveCategory());
-            }
+            // REMOVED: Front-end filter for current page (only filter when clicking enter or view all)
+            // if (typeof filterHomeProducts === 'function') {
+            //     filterHomeProducts(term, getActiveCategory());
+            // }
 
             // Live search preview
             clearTimeout(searchTimeout);
@@ -576,18 +577,27 @@ document.addEventListener('DOMContentLoaded', () => {
                         const products = await response.json();
                         
                         if (searchPreview && products.length > 0) {
-                            searchPreview.innerHTML = products.map(p => `
-                                <a href="/product/${p.id}" class="preview-item">
-                                    <div class="preview-image" style="width: 40px; height: 40px; flex-shrink: 0; background: #fff; border-radius: 6px; overflow: hidden; border: 1px solid #f1f5f9;">
-                                        <img src="${p.image_url}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: contain; padding: 2px;">
-                                    </div>
-                                    <div class="preview-info">
-                                        <span class="preview-name">${p.name}</span>
-                                        ${p.size ? `<span class="preview-size" style="font-size: 0.7rem; color: #64748b; display: block;">${p.size}</span>` : ''}
-                                        <span class="preview-price" style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">€${p.discount_price || p.price}</span>
-                                    </div>
-                                </a>
-                            `).join('') + `
+                            searchPreview.innerHTML = products.map(p => {
+                                const hasDiscount = p.discount_price && p.discount_price < p.price;
+                                const priceDisplay = hasDiscount ? 
+                                    `<span class="preview-price-old" style="text-decoration: line-through; color: #94a3b8; font-size: 0.7rem; margin-right: 5px;">€${p.price}</span><span class="preview-price" style="color: #10b981;">€${p.discount_price}</span>` :
+                                    `<span class="preview-price">€${p.price}</span>`;
+                                
+                                return `
+                                    <a href="/product/${p.id}" class="preview-item">
+                                        <div class="preview-image" style="width: 40px; height: 40px; flex-shrink: 0; background: #fff; border-radius: 6px; overflow: hidden; border: 1px solid #f1f5f9;">
+                                            <img src="${p.image_url}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: contain; padding: 2px;">
+                                        </div>
+                                        <div class="preview-info">
+                                            <span class="preview-name">${p.name}</span>
+                                            ${p.size ? `<span class="preview-size" style="font-size: 0.7rem; color: #64748b; display: block;">${p.size}</span>` : ''}
+                                            <div class="preview-price-wrapper" style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">
+                                                ${priceDisplay}
+                                            </div>
+                                        </div>
+                                    </a>
+                                `;
+                            }).join('') + `
                                 <a href="/products?q=${encodeURIComponent(term)}" class="preview-item view-all-search">
                                     <span style="width: 100%; text-align: center; color: var(--primary); font-weight: 600; font-size: 0.85rem; padding: 5px 0;">Shiko të gjitha</span>
                                 </a>
@@ -1076,9 +1086,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const openSidebarBtn = document.getElementById('openSidebar');
     const closeSidebarBtn = document.getElementById('closeSidebar');
     const closeSidebarBtnAlt = document.getElementById('closeSidebarAlt');
-    const sidebar = document.getElementById('shopSidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-
+    // Using existing sidebar and overlay variables from outer scope if they exist, 
+    // but they are already declared at the top of this DOMContentLoaded block.
+    
     if (openSidebarBtn && sidebar && overlay) {
         openSidebarBtn.addEventListener('click', (e) => {
             e.preventDefault();

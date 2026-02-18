@@ -3,14 +3,10 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    width: 100%;
-    padding: 10px;
+    width: auto;
     background-color: #fef2f2;
     color: #ef4444;
     border: 1px solid #fee2e2;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -411,10 +407,10 @@
         background: #fff !important;
     }
     .hero-img { 
-        height: auto !important; 
+        height: 100% !important; 
         width: 100% !important;
-        aspect-ratio: auto !important; /* Allow image height to dictate size */
-        object-fit: contain !important; 
+        aspect-ratio: auto !important; 
+        object-fit: cover !important; /* Fill full width and container */
         background: #fff !important;
     }
 }
@@ -436,15 +432,28 @@
 }
 
 .shop-sidebar {
-    width: 100%;
+    width: 280px;
     background: #fff;
     padding: 1.5rem;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     border: 1px solid #f1f5f9;
-    z-index: 50;
+    z-index: 100;
     position: sticky;
-    top: 100px;
+    top: 80px;
+    align-self: start;
+    height: calc(100vh - 120px) !important;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.shop-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.shop-sidebar::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
 }
 
 /* On mobile, override layout */
@@ -734,23 +743,25 @@
 
     /* Brands Section - Stacked on Mobile */
     .brand-grid {
-        display: grid !important;
-        grid-template-columns: 1fr !important;
-        gap: 1.5rem !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1rem !important;
         padding: 0 !important;
+        width: 100% !important;
         overflow-x: visible !important;
     }
 
     .brand-card {
-        height: 200px !important;
+        width: 100% !important;
+        height: 180px !important;
+        margin: 0 !important;
     }
 
     .brand-card {
-        flex: 0 0 280px !important;
-        min-width: 280px !important;
+        width: 100% !important;
+        min-width: 100% !important;
         height: 180px !important;
+        flex: none !important;
     }
 }
 
@@ -802,6 +813,13 @@
 }
 
 @media (max-width: 992px) {
+    body.sidebar-open {
+        overflow: hidden !important;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+    }
+
     .shop-sidebar {
         position: fixed !important;
         top: 0 !important;
@@ -811,16 +829,17 @@
         height: 100vh !important;
         height: 100dvh !important;
         background: #fff !important;
-        z-index: 1000001 !important;
+        z-index: 10000000 !important; /* Extremely high to beat any other overlay */
         display: flex !important;
         flex-direction: column !important;
-        transform: translateX(100%) !important;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transform: translateX(105%) !important; /* Slightly more to hide shadow */
+        transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
         box-shadow: -10px 0 30px rgba(0,0,0,0.1) !important;
         padding: 0 !important;
         left: auto !important;
         border-radius: 0 !important;
         pointer-events: auto !important;
+        visibility: visible !important;
     }
 
     .shop-sidebar.active {
@@ -833,13 +852,15 @@
         left: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        background: rgba(0,0,0,0.5) !important;
-        z-index: 1000000 !important;
+        background: rgba(0,0,0,0.6) !important;
+        z-index: 9999999 !important; /* Just below sidebar */
         display: block !important;
         opacity: 0 !important;
         visibility: hidden !important;
-        transition: opacity 0.3s ease, visibility 0.3s !important;
+        transition: opacity 0.4s ease, visibility 0.4s !important;
         pointer-events: auto !important;
+        backdrop-filter: none !important; /* REMOVED BLUR to fix user issue */
+        -webkit-backdrop-filter: none !important;
     }
 
     .sidebar-overlay.active {
@@ -963,18 +984,18 @@
 @media (max-width: 992px) {
     .shop-controls-container {
         position: sticky !important;
-        top: 64px !important; /* Sticks right below the collapsed mobile header */
-        z-index: 990 !important;
-        background: var(--bg-body) !important; /* Use body background to blend in */
+        top: 70px !important; /* Adjusted to sit right under scrolled header */
+        z-index: 1100 !important; /* Above page content but below main header (10000) */
+        background: #fff !important; 
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
         flex-direction: row !important;
         justify-content: space-between !important;
         gap: 0.5rem !important;
         align-items: center !important;
         padding: 0.75rem 1rem !important;
-        margin: 0 -1rem 1rem -1rem !important; /* Removed negative top margin to stop overlap */
+        margin: 0 !important;
         border-radius: 0 !important;
-        border: none !important; /* Removed border */
-        box-shadow: none !important; /* Removed shadow container look */
+        border-bottom: 1px solid #f1f5f9 !important;
     }
     
     .shop-sorting {

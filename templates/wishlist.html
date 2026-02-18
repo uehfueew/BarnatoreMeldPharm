@@ -34,7 +34,7 @@
                         <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
                     </div>
                         <div class="product-info">
-                            <span class="product-category">{{ product.category }}</span>
+                            <span class="product-category" style="color: var(--primary); font-weight: 700;">{{ product.brand if product.brand else product.category }}</span>
                             <h3 class="product-title">{{ product.name }}</h3>
                             {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
                             <div class="price-container">

@@ -16,23 +16,23 @@
                 <div class="sidebar-content-wrapper">
                     <!-- Switch Filters (Now First) -->
                     <div class="sidebar-block">
-                        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 1.5rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 1.5rem;">
                             <h3 class="sidebar-title no-line" style="margin: 0; font-size: 1.4rem;">Filtro</h3>
-                            <button onclick="resetFilters(event)" class="btn-reset-filters-v2">
-                                <i class="fas fa-undo-alt"></i> Reseto te gjitha
+                            <button onclick="resetFilters(event)" class="btn-reset-filters-v2" style="width: auto; padding: 12px 18px; margin: 0; background: #fee2e2; border: 1px solid #fee2e2; color: #ef4444; border-radius: 14px; font-size: 1.1rem;" title="Reseto të gjitha">
+                                <i class="fas fa-undo-alt" style="margin: 0;"></i>
                             </button>
                         </div>
                         <div class="filter-switch-row mb-3">
                             <span class="switch-label">Shfaq vetëm ofertat</span>
                             <label class="switch">
-                                <input type="checkbox" id="discount-only-filter" {% if discount_only %}checked{% endif %} onchange="updateShop()">
+                                <input type="checkbox" id="discount-only-filter" {% if discount_only %}checked{% endif %} onchange="window.updateShop()">
                                 <span class="slider round"></span>
                             </label>
                         </div>
                         <div class="filter-switch-row">
                             <span class="switch-label">Më të shiturit</span>
                             <label class="switch">
-                                <input type="checkbox" id="best-seller-filter" {% if best_sellers %}checked{% endif %} onchange="updateShop()">
+                                <input type="checkbox" id="best-seller-filter" {% if best_sellers %}checked{% endif %} onchange="window.updateShop()">
                                 <span class="slider round"></span>
                             </label>
                         </div>
@@ -112,7 +112,7 @@
                                     <input type="number" placeholder="1000" id="max-price" class="price-input" value="{{ request.args.get('max_price', '') }}">
                                 </div>
                             </div>
-                            <button id="apply-price-filter" class="btn btn-sm btn-primary w-100 d-none-mobile">Apliko Çmimin</button>
+                            <button id="apply-price-filter" class="btn btn-sm btn-primary w-100 d-none-mobile" style="color: white !important; font-weight: 700; background-color: var(--primary); border-color: var(--primary);">Apliko Çmimin</button>
                         </div>
                     </div>
                 </div> <!-- End sidebar-content-wrapper -->
@@ -173,7 +173,7 @@
                                 <a href="{{ url_for('main.product_detail', product_id=product._id) }}" class="product-card-link-overlay"></a>
                             </div>
                             <div class="product-info">
-                                <span class="product-category">{{ product.category }}</span>
+                                <span class="product-category" style="color: var(--primary); font-weight: 700;">{{ product.brand if product.brand else product.category }}</span>
                                 <h3 class="product-title">{{ product.name }}</h3>
                                 {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
                                 <div class="price-container">
@@ -200,8 +200,8 @@
                 </div>
 
                 <div class="load-more-container text-center {{ 'd-none' if not total_pages or total_pages <= 1 else '' }}" style="margin-top: 4rem; margin-bottom: 4rem;">
-                    <button id="load-more-products" class="btn btn-load-more" data-page="1" onclick="window.updateShop(true)">
-                        Shiko të gjitha <i class="fas fa-chevron-down ml-2"></i>
+                    <button id="load-more-products" class="btn btn-load-more" data-page="1" onclick="window.updateShop(true, true)">
+                        <span>Shiko të gjitha produktet</span> <i class="fas fa-arrow-right ml-2"></i>
                     </button>
                 </div>
             </main>

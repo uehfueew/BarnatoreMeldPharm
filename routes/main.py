@@ -52,6 +52,8 @@ def products():
     no_discount = request.args.get('no_discount') == 'true'
     best_sellers = request.args.get('best_sellers') == 'true'
     per_page = 20
+    if request.args.get('all') == 'true':
+        per_page = 1000 # Show all products
     
     products, total_pages, total_count = Product.get_paginated(
         page, per_page, category, search_query, subcategory, 
@@ -61,9 +63,15 @@ def products():
     )
     
     # Get all unique brands for the filter sidebar
-    # For performance, we could hardcode or pre-calculate this, but let's try to get it dynamically or use a known list
-    available_brands = mongo.db.products.distinct("brand")
-    available_brands = [b for b in available_brands if b] # filter out None
+    raw_brands = mongo.db.products.distinct("brand")
+    brand_map = {}
+    for rb in raw_brands:
+        if rb:
+            normalized = rb.strip().lower()
+            # If we see multiple versions, prefer the one with most capital letters or just the first one
+            if normalized not in brand_map:
+                brand_map[normalized] = rb.strip()
+    available_brands = sorted(brand_map.values(), key=lambda x: x.lower())
     
     # If it's an AJAX request (from our new filter system)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.args.get('ajax') == '1':
@@ -250,7 +258,9 @@ def search_api():
             'discount_price': p.get('discount_price'),
             'image_url': p.get('image_url'),
             'category': p.get('category'),
-            'subcategory': p.get('subcategory')
+            'subcategory': p.get('subcategory'),
+            'brand': p.get('brand', ''),
+            'size': p.get('size', '')
         })
     
     return jsonify(results)

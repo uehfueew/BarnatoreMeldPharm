@@ -13,6 +13,10 @@
         <a href="{{ url_for('main.index') }}" style="color: #64748b;">Ballina</a>
         <span style="margin: 0 0.5rem;">/</span>
         <a href="{{ url_for('main.products', category=product.category) }}" style="color: #64748b;">{{ product.category }}</a>
+        {% if product.subcategory %}
+        <span style="margin: 0 0.5rem;">/</span>
+        <a href="{{ url_for('main.products', category=product.category, subcategory=product.subcategory) }}" style="color: #64748b;">{{ product.subcategory }}</a>
+        {% endif %}
         <span style="margin: 0 0.5rem;">/</span>
         <span style="color: var(--text-main); font-weight: 500;">{{ product.name }}</span>
     </nav>
@@ -85,6 +89,12 @@
             
             {% if product.brand %}
                 <div class="product-brand" style="font-size: 1rem; font-weight: 600; color: var(--primary); margin-bottom: 0.25rem;">{{ product.brand }}</div>
+            {% endif %}
+
+            {% if product.size %}
+                <div class="product-size-detail" style="font-size: 0.9rem; color: #64748b; margin-top: -0.25rem; margin-bottom: 0.5rem; font-weight: 500;">
+                    Sasia: <span style="font-weight: 700;">{{ product.size }}</span>
+                </div>
             {% endif %}
 
             <h1 class="product-title-detail" style="margin-bottom: 0.5rem; line-height: 1.1; font-size: 1.5rem;">{{ product.name }}</h1>

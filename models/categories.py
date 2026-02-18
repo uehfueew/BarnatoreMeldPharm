@@ -1,10 +1,19 @@
 CATEGORIES = {
     "Dermokozmetikë": [
-        "Kujdes fytyre", 
-        "Kundër akneve", 
-        "Anti-aging", 
-        "Kremra dielli", 
-        "Produkte për lëkurë sensitive", 
+        "Kujdesi për Fytyrën", 
+        "Pastrues & Tonikë", 
+        "Hidratues", 
+        "Serume & Trajtime", 
+        "Anti-aging & Rrudhat", 
+        "Lëkurë Sensitive", 
+        "Kundër Akneve", 
+        "Pigmentim & Njolla", 
+        "Kremra Dielli (SPF)", 
+        "Kujdesi i Syve", 
+        "Kujdesi i Trupit", 
+        "Riparsus & Balma", 
+        "Duart & Këmbët", 
+        "Kujdes për Meshkuj", 
         "Make-up farmaceutik"
     ],
     "Suplemente & Vitamina": [
@@ -17,11 +26,13 @@ CATEGORIES = {
         "Omega 3 & produkte natyrale"
     ],
     "Kujdes Personal & Higjienë": [
-        "Sapunë & xhele dushi", 
-        "Shampo & kujdes flokësh", 
-        "Dezinfektues", 
-        "Produkte intime", 
-        "Kujdes oral (furça, pasta, shpëlarës)"
+        "Sapunë & Xhele dushi", 
+        "Lotion & Kremra trupi", 
+        "Shampo & Kujdes flokësh", 
+        "Deodorantë & Antiperspirantë", 
+        "Higjienë Intime", 
+        "Kujdes Oral", 
+        "Dezinfektues & Mbrojtje"
     ],
     "Pajisje Mjekësore": [
         "Matës tensioni", 

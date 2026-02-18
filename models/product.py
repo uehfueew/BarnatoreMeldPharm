@@ -21,10 +21,12 @@ class Product:
             query["category"] = category
         
         if subcategory and subcategory != 'all':
-            query["subcategory"] = subcategory
+            # Use case-insensitive regex for subcategories to handle inconsistencies
+            query["subcategory"] = {"$regex": f"^{subcategory}$", "$options": "i"}
 
         if brand and brand != 'all':
-            query["brand"] = brand
+            # Use case-insensitive regex for brands to handle inconsistent casing
+            query["brand"] = {"$regex": f"^{brand}$", "$options": "i"}
 
         if discount_only:
             query["discount_price"] = {"$ne": None, "$gt": 0}
