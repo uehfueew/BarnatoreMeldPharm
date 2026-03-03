@@ -34,8 +34,19 @@
     <header class="hero-carousel-container">
         <div class="hero-inner-wrapper">
             <div class="hero-carousel">
+                <!-- Dynamic Offer Banners -->
+                {% for offer in offer_banners %}
+                <a href="{{ url_for('main.products', on_offer='1') }}"
+                    class="hero-slide {{ 'active' if loop.first else '' }}">
+                    <div class="hero-content-wrapper banner-only">
+                        <img src="{{ offer.banner }}" alt="{{ offer._id }}" class="hero-img-full">
+                    </div>
+                </a>
+                {% endfor %}
+
                 <!-- Slide 1: Eucerin Banner -->
-                <a href="{{ url_for('main.products', brand='Eucerin') }}" class="hero-slide active">
+                <a href="{{ url_for('main.products', brand='Eucerin') }}"
+                    class="hero-slide {{ 'active' if not offer_banners else '' }}">
                     <div class="hero-content-wrapper banner-only">
                         <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659727/IMG_4312_ul0exk.jpg"
                             alt="Eucerin Banner" class="hero-img-full">
@@ -64,9 +75,9 @@
         </div>
 
         <div class="hero-dots">
-            <span class="dot active" onclick="currentSlide(1)"></span>
-            <span class="dot" onclick="currentSlide(2)"></span>
-            <span class="dot" onclick="currentSlide(3)"></span>
+            {% for i in range(offer_banners|length + 3) %}
+            <span class="dot {{ 'active' if loop.first else '' }}" onclick="currentSlide('{{ loop.index }}')"></span>
+            {% endfor %}
         </div>
     </header>
 
@@ -113,16 +124,16 @@
     }
 
     .advisor-card-v3 {
-        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
         border-radius: 2rem;
         display: flex;
         align-items: center;
         padding: 2.5rem 4rem;
-        color: #065f46;
+        color: #0c4a6e;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 10px 30px -5px rgba(6, 95, 70, 0.1);
-        border: 1px solid rgba(16, 185, 129, 0.1);
+        box-shadow: 0 10px 30px -5px rgba(2, 132, 199, 0.1);
+        border: 1px solid rgba(14, 165, 233, 0.1);
     }
 
     .advisor-content {
@@ -138,7 +149,7 @@
         font-weight: 700;
         display: inline-block;
         margin-bottom: 1.5rem;
-        color: #059669;
+        color: #0284c7;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     }
 
@@ -147,12 +158,12 @@
         font-weight: 800;
         line-height: 1.2;
         margin-bottom: 1rem;
-        color: #064e3b !important;
+        color: #082f49 !important;
     }
 
     .advisor-description {
         font-size: 1.1rem;
-        color: #374151;
+        color: #334155;
         max-width: 500px;
         margin-bottom: 2rem;
         line-height: 1.5;
@@ -170,12 +181,12 @@
         gap: 0.75rem;
         font-size: 1rem;
         font-weight: 600;
-        color: #065f46;
+        color: #0c4a6e;
     }
 
     .feat-item i {
         color: white;
-        background: #059669;
+        background: #0284c7;
         width: 28px;
         height: 28px;
         display: flex;
@@ -186,7 +197,7 @@
     }
 
     .btn-advisor-v3 {
-        background: #059669 !important;
+        background: #0284c7 !important;
         color: white !important;
         padding: 1rem 2.5rem;
         border-radius: 50px;
@@ -197,13 +208,13 @@
         align-items: center;
         gap: 0.8rem;
         transition: all 0.3s ease;
-        box-shadow: 0 8px 15px rgba(5, 150, 105, 0.2);
+        box-shadow: 0 8px 15px rgba(2, 132, 199, 0.2);
     }
 
     .btn-advisor-v3:hover {
         transform: translateY(-3px);
-        box-shadow: 0 12px 25px rgba(5, 150, 105, 0.3);
-        background: #047857 !important;
+        box-shadow: 0 12px 25px rgba(2, 132, 199, 0.3);
+        background: #0369a1 !important;
     }
 
     .advisor-illustration {
@@ -490,6 +501,16 @@
                             {% endif %}
                         </div>
                     </div>
+                </div>
+                {% else %}
+                <div class="no-offers-container"
+                    style="width: 100%; text-align: center; padding: 4rem 2rem; background: #f8fafc; border-radius: 2rem; border: 2px dashed #e2e8f0; grid-column: 1 / -1;">
+                    <div style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;">
+                        <i class="fas fa-tag"></i>
+                    </div>
+                    <h3 style="color: #64748b; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Nuk ka
+                        oferta për momentin</h3>
+                    <p style="color: #94a3b8;">Kontrolloni sërish së shpejti për zbritje të reja ekskluzive.</p>
                 </div>
                 {% endfor %}
             </div>

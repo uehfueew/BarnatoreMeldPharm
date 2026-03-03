@@ -575,13 +575,10 @@
 
 @media (max-width: 768px) {
     .hero-inner-wrapper {
-        height: 60vw;
-        /* Keep proportional */
-        min-height: 250px;
+        height: 110vw !important;
+        /* Taller for mobile banners */
+        min-height: 400px !important;
     }
-
-    /* Removed conflicting hero-overlay-text background */
-
 }
 
 

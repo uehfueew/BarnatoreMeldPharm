@@ -624,10 +624,10 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
 
-            // REMOVED: Front-end filter for current page (only filter when clicking enter or view all)
-            // if (typeof filterHomeProducts === 'function') {
-            //     filterHomeProducts(term, getActiveCategory());
-            // }
+            // RE-ENABLED: Front-end filter for current home page results
+            if (typeof filterHomeProducts === 'function' && window.location.pathname === '/') {
+                filterHomeProducts(term, getActiveCategory ? getActiveCategory() : 'all');
+            }
 
             // Live search preview
             clearTimeout(searchTimeout);
@@ -685,9 +685,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
+                e.preventDefault(); // Stop form submission if inside a form
                 const term = searchInput.value;
-                if (term.length >= 2) {
+                if (term.length >= 2 && window.location.pathname !== '/') {
                     window.location.href = `/products?q=${encodeURIComponent(term)}`;
+                } else if (searchPreview) {
+                    searchPreview.classList.remove('active');
                 }
             }
         });
@@ -1305,11 +1308,12 @@ window.updateGlobalBadges = function (data) {
     }
 
     // 2. Update Wishlist Badges
-    if (data.wishlist_count !== undefined) {
+    const wishCount = data.wishlist_count !== undefined ? data.wishlist_count : (data.count !== undefined ? data.count : undefined);
+    if (wishCount !== undefined) {
         const wishBadges = document.querySelectorAll('.wishlist-count, .cart-badge-wish');
         wishBadges.forEach(badge => {
-            badge.textContent = data.wishlist_count;
-            if (data.wishlist_count > 0) {
+            badge.textContent = wishCount;
+            if (wishCount > 0) {
                 badge.classList.remove('d-none');
                 badge.style.setProperty('display', 'flex', 'important');
             } else {
@@ -1948,8 +1952,9 @@ function addToCart(productId) {
             if (data.success) {
                 // Use the unified global update function
                 window.updateGlobalBadges({
-                    cart_count: data.count,
-                    total_price: data.total_price // Assuming total_price is returned
+                    cart_count: data.cart_count,
+                    wishlist_count: data.wishlist_count,
+                    total_price: data.total_price || data.grand_total
                 });
 
                 // Refresh modal lists
@@ -1984,3 +1989,10 @@ function addToCart(productId) {
 // Global Refresh to fix any badge visibility blockers removed as it causes delay
 // Relying on server-side rendering for initial load.
 
+document.addEventListener('DOMContentLoaded', () => {
+    // Global Refresh to fix any badge visibility blockers
+    if (typeof window.refreshMiniCart === 'function') {
+        // Delay slightly to ensure server-rendered view is ready
+        setTimeout(() => window.refreshMiniCart(), 500);
+    }
+});

@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}{{ 'Ndrysho Produktin' if product else 'Shto Produkt Të Ri' }}{% endblock %}
-
 {% block content %}
 <div class="admin-page-container">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/segments/admin.css') }}">
     <!-- Admin Navigation -->
     <nav class="admin-v3-nav">
         <div class="nav-brand">
@@ -26,7 +25,7 @@
         <div class="nav-right-spacer"></div>
     </nav>
 
-    <div class="admin-header">
+    <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center;">
         <div class="admin-header-content">
             <h2 class="admin-title">
                 <i class="fas fa-box-open"></i>
@@ -35,6 +34,9 @@
             <p class="admin-subtitle text-muted">Plotësoni të dhënat më poshtë për të menaxhuar katalogun e produkteve.
             </p>
         </div>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn-close-form" title="Mbyll">
+            <i class="fas fa-times"></i>
+        </a>
     </div>
 
     <form method="POST" class="premium-product-form">
@@ -94,6 +96,16 @@
                             <label for="size">Sasia / Madhësia</label>
                             <input type="text" id="size" name="size" class="form-control premium-input"
                                 value="{{ product.size if product else '' }}" placeholder="Psh: 50ml, 100g, 30 Kapsula">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="variant_group">Kodi i Grupit (Varianti)</label>
+                            <input type="text" id="variant_group" name="variant_group"
+                                class="form-control premium-input"
+                                value="{{ product.variant_group if product else '' }}"
+                                placeholder="Psh: eucerin-night-group (Lidh produkte me këtë kod)">
+                            <small class="helper-text"><i class="fas fa-link"></i> Vendosni të njëjtin kod për të lidhur
+                                produkte si variante (psh: madhësi të ndryshme).</small>
                         </div>
                     </div>
                 </div>
@@ -264,59 +276,30 @@
         padding: 0 1.5rem;
     }
 
-    /* Admin Nav Centered Styles - V4 Upgraded */
-    .admin-v3-nav {
-        background: white;
-        padding: 1.2rem 2.5rem;
-        border-radius: 1.5rem;
-        display: flex;
-        align-items: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        border: 1px solid #f1f5f9;
-        margin-bottom: 3rem;
-        position: relative;
-    }
-
-    .nav-brand {
-        font-weight: 900;
-        font-size: 1.4rem;
-        color: #059669;
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        position: absolute;
-        left: 2.5rem;
-    }
-
-    .nav-links {
-        display: flex;
-        gap: 1.25rem;
-        margin: 0 auto;
-    }
-
-    .admin-nav-item {
-        padding: 1rem 2.5rem;
-        border-radius: 14px;
-        text-decoration: none !important;
-        font-weight: 800;
-        color: #64748b;
-        font-size: 1.1rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-    }
-
-    .admin-nav-item:hover {
-        background: #f8fafc;
-        color: #10b981;
-        transform: translateY(-2px);
-    }
-
     .admin-nav-item.active {
         background: #059669;
         color: white !important;
         box-shadow: 0 8px 20px rgba(5, 150, 105, 0.25);
+    }
+
+    .btn-close-form {
+        width: 45px;
+        height: 45px;
+        background: #f1f5f9;
+        color: #64748b;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        transition: all 0.3s;
+        text-decoration: none !important;
+    }
+
+    .btn-close-form:hover {
+        background: #ef4444;
+        color: white;
+        transform: rotate(90deg);
     }
 
     .admin-header {

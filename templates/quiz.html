@@ -158,7 +158,7 @@
         align-items: center;
         justify-content: center;
         padding: 3rem 1.5rem;
-        background: radial-gradient(circle at top right, #f8fafc, #ffffff);
+        background: radial-gradient(circle at top right, #ecfeff, #ffffff);
     }
 
     .quiz-wrapper {
@@ -186,7 +186,7 @@
     .quiz-progress-bar {
         height: 100%;
         width: 0%;
-        background: var(--primary);
+        background: #0ea5e9;
         transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -219,8 +219,8 @@
     .quiz-icon-wrapper {
         width: 90px;
         height: 90px;
-        background: #f0fdf4;
-        color: var(--primary);
+        background: #ecfeff;
+        color: #0ea5e9;
         border-radius: 24px;
         display: flex;
         align-items: center;
@@ -232,8 +232,8 @@
     .quiz-step-indicator {
         display: inline-block;
         padding: 0.6rem 1.2rem;
-        background: #f0fdf4;
-        color: var(--primary);
+        background: #ecfeff;
+        color: #0ea5e9;
         border-radius: 50px;
         font-weight: 800;
         font-size: 0.9rem;
@@ -274,10 +274,10 @@
     }
 
     .quiz-option:hover {
-        border-color: var(--primary);
-        background: #f0fdf4;
+        border-color: #0ea5e9;
+        background: #f0f9ff;
         transform: scale(1.02);
-        box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.1);
+        box-shadow: 0 10px 20px -5px rgba(2, 132, 199, 0.1);
     }
 
     .option-icon {
@@ -295,8 +295,8 @@
     }
 
     .quiz-option:hover .option-icon {
-        color: var(--primary);
-        border-color: var(--primary);
+        color: #0ea5e9;
+        border-color: #0ea5e9;
     }
 
     .option-text h3 {
@@ -313,21 +313,21 @@
     }
 
     .btn-quiz-primary {
-        background: var(--primary);
+        background: #0284c7;
         color: white;
         padding: 1.25rem 3.5rem;
         border-radius: 50px;
         font-weight: 800;
         font-size: 1.2rem;
         border: none;
-        box-shadow: 0 12px 24px rgba(16, 185, 129, 0.25);
+        box-shadow: 0 12px 24px rgba(2, 132, 199, 0.25);
         transition: all 0.4s;
     }
 
     .btn-quiz-primary:hover {
         transform: translateY(-3px);
-        box-shadow: 0 18px 36px rgba(16, 185, 129, 0.35);
-        background: #059669;
+        box-shadow: 0 18px 36px rgba(2, 132, 199, 0.35);
+        background: #0369a1;
     }
 
     .quiz-meta {
@@ -351,7 +351,7 @@
         width: 100%;
         height: 100%;
         border: 5px solid #f1f5f9;
-        border-top-color: var(--primary);
+        border-top-color: #0284c7;
         border-radius: 50%;
         animation: spin 1.2s linear infinite;
     }
@@ -362,7 +362,7 @@
         left: 50%;
         transform: translate(-50%, -50%);
         font-size: 2.5rem;
-        color: var(--primary);
+        color: #0284c7;
     }
 
     @keyframes spin {
@@ -372,25 +372,64 @@
     }
 
     @media (max-width: 600px) {
+        .quiz-page-container {
+            padding: 1rem 1rem !important;
+            /* Smaller top padding */
+            min-height: 80vh !important;
+        }
+
         .quiz-wrapper {
-            padding: 3rem 1.5rem;
-            border-radius: 28px;
+            padding: 1.5rem !important;
+            /* Much smaller padding */
+            border-radius: 20px !important;
+        }
+
+        .quiz-header {
+            margin-bottom: 1.5rem !important;
         }
 
         .quiz-header h1,
         .quiz-header h2 {
-            font-size: 1.8rem;
+            font-size: 1.4rem !important;
+            /* Smaller title */
+        }
+
+        .quiz-header p {
+            font-size: 0.95rem !important;
+            margin-bottom: 0 !important;
         }
 
         .quiz-option {
-            padding: 1.25rem;
-            gap: 1.25rem;
+            padding: 0.85rem 1rem !important;
+            /* Compact options */
+            gap: 1rem !important;
+            border-radius: 16px !important;
         }
 
         .option-icon {
-            width: 50px;
-            height: 50px;
-            font-size: 1.4rem;
+            width: 40px !important;
+            height: 40px !important;
+            font-size: 1.2rem !important;
+        }
+
+        .option-text h3 {
+            font-size: 0.95rem !important;
+        }
+
+        .option-text p {
+            font-size: 0.8rem !important;
+        }
+
+        .quiz-icon-wrapper {
+            width: 60px !important;
+            height: 60px !important;
+            font-size: 1.8rem !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .btn-quiz-primary {
+            padding: 1rem 2rem !important;
+            font-size: 1.1rem !important;
         }
     }
 </style>

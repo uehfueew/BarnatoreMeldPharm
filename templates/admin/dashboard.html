@@ -4,13 +4,14 @@
 
 {% block content %}
 <div class="admin-dashboard-container">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/segments/admin.css') }}">
     <!-- Admin Navigation -->
     <nav class="admin-v3-nav">
         <div class="nav-brand">
             <i class="fas fa-user-shield"></i> Admin Paneli
         </div>
         <div class="nav-links">
-            <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-item active">
+            <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-item active" id="nav-dashboard">
                 <i class="fas fa-th-large"></i> Dashboard
             </a>
             <a href="{{ url_for('admin.orders') }}" class="admin-nav-item">
@@ -19,7 +20,7 @@
             <a href="{{ url_for('admin.bulk_offers') }}" class="admin-nav-item">
                 <i class="fas fa-tags"></i> Ofertat në Masë
             </a>
-            <a href="javascript:void(0)" onclick="toggleAnalytics()" class="admin-nav-item">
+            <a href="javascript:void(0)" onclick="toggleAnalytics()" class="admin-nav-item" id="nav-analytics">
                 <i class="fas fa-chart-pie"></i> Analitika
             </a>
         </div>
@@ -302,62 +303,8 @@
     </div>
 </div>
 
+
 <style>
-    .admin-dashboard-container {
-        max-width: 1400px;
-        margin: 2rem auto;
-        padding: 0 1.5rem;
-    }
-
-    /* Admin Nav Centered Styles - V4 Upgraded */
-    .admin-v3-nav {
-        background: white;
-        padding: 1.2rem 2.5rem;
-        border-radius: 1.5rem;
-        display: flex;
-        align-items: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        border: 1px solid #f1f5f9;
-        margin-bottom: 3rem;
-        position: relative;
-    }
-
-    .nav-brand {
-        font-weight: 900;
-        font-size: 1.4rem;
-        color: #059669;
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        position: absolute;
-        left: 2.5rem;
-    }
-
-    .nav-links {
-        display: flex;
-        gap: 1.25rem;
-        margin: 0 auto;
-    }
-
-    .admin-nav-item {
-        padding: 1rem 2.5rem;
-        border-radius: 14px;
-        text-decoration: none !important;
-        font-weight: 800;
-        color: #64748b;
-        font-size: 1.1rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-    }
-
-    .admin-nav-item:hover {
-        background: #f8fafc;
-        color: #10b981;
-        transform: translateY(-2px);
-    }
-
     .admin-nav-item.active {
         background: #059669;
         color: white !important;
@@ -827,71 +774,98 @@
             font-size: 2rem;
         }
 
-        /* Table to Mobile Cards */
-        .premium-admin-table thead {
-            display: none;
+        /* Grid for Cards on Mobile */
+        .premium-admin-table tbody {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 1rem !important;
+            padding: 0.5rem !important;
         }
 
-        .premium-admin-table td {
-            display: block;
-            width: 100% !important;
-            text-align: left !important;
-            padding: 0.75rem 1.5rem;
-            border: none;
+        .premium-admin-table thead {
+            display: none !important;
         }
 
         .premium-admin-table tr {
-            display: block;
-            background: white;
-            border: 1px solid #f1f5f9;
-            border-radius: 16px;
-            margin-bottom: 1.5rem;
-            padding: 1rem 0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex !important;
+            flex-direction: column !important;
+            background: white !important;
+            border: 1px solid #f1f5f9 !important;
+            border-radius: 14px !important;
+            margin-bottom: 0 !important;
+            padding: 0.75rem !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+            height: 100% !important;
         }
 
-        .premium-admin-table td:first-child {
-            display: flex;
-            justify-content: center;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #f8fafc;
-            margin-bottom: 0.5rem;
+        .premium-admin-table td {
+            display: block !important;
+            width: 100% !important;
+            padding: 0.25rem 0 !important;
+            border: none !important;
         }
 
         .table-product-img {
-            width: 120px;
-            height: 120px;
+            width: 100% !important;
+            height: 100px !important;
+            margin-bottom: 0.5rem !important;
         }
 
         .table-product-info {
-            align-items: center;
-            text-align: center;
+            text-align: left !important;
+            gap: 0.1rem !important;
+        }
+
+        .table-name {
+            font-size: 0.85rem !important;
+            height: 2.1rem !important;
+            overflow: hidden !important;
+            display: -webkit-box !important;
+            -webkit-line-clamp: 2 !important;
+            line-clamp: 2 !important;
+            -webkit-box-orient: vertical !important;
+        }
+
+        .table-brand {
+            font-size: 0.65rem !important;
         }
 
         .table-price-info {
-            align-items: center;
-            flex-direction: row;
-            justify-content: center;
-            gap: 1rem;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 0.1rem !important;
+            margin: 0.4rem 0 !important;
+        }
+
+        .price-new,
+        .price-normal {
+            font-size: 0.9rem !important;
         }
 
         .status-badges {
-            flex-direction: row;
-            justify-content: center;
-            flex-wrap: wrap;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 0.2rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .status-badge {
+            font-size: 0.65rem !important;
         }
 
         .table-actions {
-            justify-content: center;
-            padding-top: 1rem;
-            border-top: 1px solid #f8fafc;
-            margin-top: 0.5rem;
+            justify-content: flex-start !important;
+            padding-top: 0.5rem !important;
+            border-top: 1px solid #f1f5f9 !important;
+            margin-top: auto !important;
+            gap: 0.5rem !important;
         }
 
         .action-btn {
-            width: 48px;
-            height: 48px;
-            font-size: 1.2rem;
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 0.9rem !important;
+            border-radius: 8px !important;
         }
     }
 </style>
@@ -989,11 +963,27 @@
 
     function toggleAnalytics() {
         const section = document.getElementById('analytics-section');
+        const actionsBar = document.querySelector('.admin-actions-bar');
+        const tableCard = document.querySelector('.admin-table-card');
+        const navDashboard = document.getElementById('nav-dashboard');
+        const navAnalytics = document.getElementById('nav-analytics');
+
         if (section.style.display === 'none') {
             section.style.display = 'block';
+            if (actionsBar) actionsBar.style.display = 'none';
+            if (tableCard) tableCard.style.display = 'none';
+
+            navDashboard.classList.remove('active');
+            navAnalytics.classList.add('active');
+
             section.scrollIntoView({ behavior: 'smooth' });
         } else {
             section.style.display = 'none';
+            if (actionsBar) actionsBar.style.display = 'flex';
+            if (tableCard) tableCard.style.display = 'block';
+
+            navDashboard.classList.add('active');
+            navAnalytics.classList.remove('active');
         }
     }
 

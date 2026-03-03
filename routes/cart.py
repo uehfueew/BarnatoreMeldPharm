@@ -44,6 +44,23 @@ def calculate_cart_totals(cart, country='Kosova'):
     
     return total_price, total_items, total_savings, delivery_fee, grand_total
 
+def get_wishlist_count():
+    from flask import session
+    from models.db import mongo
+    from flask_login import current_user
+    count = 0
+    try:
+        if current_user.is_authenticated:
+            count = mongo.db.products.count_documents({
+                "favorites": str(current_user.id),
+                "is_deleted": {"$ne": True}
+            })
+        else:
+            count = len(session.get('liked_products', []))
+    except:
+        pass
+    return count
+
 @cart_bp.route('/')
 def view_cart():
     # session['cart'] structure: {'product_id': quantity, ...}
@@ -102,7 +119,8 @@ def add_to_cart(product_id):
         return jsonify({
             'success': True,
             'message': 'Produkti u shtua në shportë.',
-            'cart_count': total_items
+            'cart_count': total_items,
+            'wishlist_count': get_wishlist_count()
         })
         
     flash('Produkti u shtua në shportë në mënyrë të sigurt.', 'success')
@@ -168,7 +186,7 @@ def get_mini_cart_data():
         'cart_items': cart_items,
         'total_price': total_price,
         'cart_count': sum(int(v) for v in cart.values()) if cart else 0,
-        'wishlist_count': wish_count
+        'wishlist_count': get_wishlist_count()
     })
 
 @cart_bp.route('/clear', methods=['POST'])
@@ -230,7 +248,8 @@ def update_quantity(product_id, action):
             'item_savings': item_savings,
             'quantity': new_item_qty,
             'action': action,
-            'product_id': product_id
+            'product_id': product_id,
+            'wishlist_count': get_wishlist_count()
         })
 
     return redirect(url_for('cart.view_cart'))
@@ -273,7 +292,8 @@ def set_quantity(product_id):
             'cart_count': total_items,
             'item_total': item_total,
             'item_savings': item_savings,
-            'quantity': new_qty
+            'quantity': new_qty,
+            'wishlist_count': get_wishlist_count()
         })
         
     return redirect(url_for('cart.view_cart'))
@@ -298,7 +318,8 @@ def remove_from_cart(product_id):
                 'delivery_fee': delivery_fee,
                 'grand_total': grand_total,
                 'cart_count': total_items,
-                'removed': True
+                'removed': True,
+                'wishlist_count': get_wishlist_count()
             })
             
         flash('Produkti u largua nga shporta.', 'info')

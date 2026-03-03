@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Menaxhimi i Porosive - Meld Pharm{% endblock %}
-
 {% block content %}
 <div class="admin-orders-container">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/segments/admin.css') }}">
     <!-- Admin Navigation -->
     <nav class="admin-v3-nav">
         <div class="nav-brand">
@@ -189,55 +188,6 @@
         max-width: 1400px;
         margin: 2rem auto;
         padding: 0 1.5rem;
-    }
-
-    /* Admin Nav Centered Styles - V4 Upgraded */
-    .admin-v3-nav {
-        background: white;
-        padding: 1.2rem 2.5rem;
-        border-radius: 1.5rem;
-        display: flex;
-        align-items: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        border: 1px solid #f1f5f9;
-        margin-bottom: 3rem;
-        position: relative;
-    }
-
-    .nav-brand {
-        font-weight: 900;
-        font-size: 1.4rem;
-        color: #059669;
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        position: absolute;
-        left: 2.5rem;
-    }
-
-    .nav-links {
-        display: flex;
-        gap: 1.25rem;
-        margin: 0 auto;
-    }
-
-    .admin-nav-item {
-        padding: 1rem 2.5rem;
-        border-radius: 14px;
-        text-decoration: none !important;
-        font-weight: 800;
-        color: #64748b;
-        font-size: 1.1rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-    }
-
-    .admin-nav-item:hover {
-        background: #f8fafc;
-        color: #10b981;
-        transform: translateY(-2px);
     }
 
     .admin-nav-item.active {

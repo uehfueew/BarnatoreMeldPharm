@@ -18,12 +18,20 @@ def index():
     # Changed from get_regular to get_paginated(page=1) to include all products and match store logic
     regular_products, total_pages_regular, total_regular = Product.get_paginated(page=1, per_page=20)
     
+    # Get active offer banners
+    offer_banners_cursor = mongo.db.products.aggregate([
+        {"$match": {"offer_banner": {"$ne": None}, "is_deleted": {"$ne": True}}},
+        {"$group": {"_id": "$offer_name", "banner": {"$first": "$offer_banner"}}}
+    ])
+    offer_banners = list(offer_banners_cursor)
+    
     return render_template('index.html', 
                             featured_products=featured_products, 
                             best_sellers=best_sellers,
                             regular_products=regular_products,
                             total_pages_regular=total_pages_regular,
-                            categories=CATEGORIES)
+                            categories=CATEGORIES,
+                            offer_banners=offer_banners)
 
 @main.route('/guest_login')
 def guest_login():
@@ -158,7 +166,21 @@ def product_detail(product_id):
     related_products = Product.get_related(product.get('category'), product.get('_id'))
     if related_products:
         related_products = related_products[:4]
-    return render_template('product_detail.html', product=product, related_products=related_products, favorite_usernames=favorite_usernames)
+
+    # Fetch variants if they exist (By Group ID or Name fallback)
+    variant_lookup = product.get('variant_group') or (product.get('name') if product.get('name') else None)
+    variants = []
+    if variant_lookup:
+        # Filter: only show if there's more than one (itself + others)
+        all_variants = Product.get_variants(variant_lookup)
+        if len(all_variants) > 1:
+            variants = all_variants
+
+    return render_template('product_detail.html', 
+                            product=product, 
+                            related_products=related_products, 
+                            favorite_usernames=favorite_usernames,
+                            variants=variants)
 
 @main.route('/about')
 def about():

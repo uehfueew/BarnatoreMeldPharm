@@ -104,7 +104,50 @@
                 product.brand }}</div>
             {% endif %}
 
-            {% if product.size %}
+            {% if variants and variants|length > 1 %}
+            <div class="product-variants-container" style="margin-bottom: 1.5rem;">
+                <label
+                    style="display: block; font-size: 0.85rem; font-weight: 700; color: #64748b; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Zgjidhni
+                    Madhësinë / Sasinë:</label>
+                <div class="variant-pills" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                    {% for v in variants %}
+                    <a href="{{ url_for('main.product_detail', product_id=v._id) }}"
+                        class="variant-pill {{ 'active' if v._id|string == product._id|string else '' }}"
+                        style="text-decoration: none !important;">
+                        {{ v.size if v.size else 'Sasi tjetër' }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <style>
+                .variant-pill {
+                    padding: 0.6rem 1.2rem;
+                    border: 2px solid #f1f5f9;
+                    border-radius: 12px;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    color: #475569;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    background: white;
+                    display: inline-block;
+                }
+
+                .variant-pill:hover {
+                    border-color: var(--primary);
+                    color: var(--primary);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.1);
+                }
+
+                .variant-pill.active {
+                    background: var(--primary);
+                    border-color: var(--primary);
+                    color: white !important;
+                    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+                }
+            </style>
+            {% elif product.size %}
             <div class="product-size-detail"
                 style="font-size: 0.9rem; color: #64748b; margin-top: -0.25rem; margin-bottom: 0.5rem; font-weight: 500;">
                 Sasia: <span style="font-weight: 700;">{{ product.size }}</span>
@@ -594,7 +637,10 @@
 
     let zoomTimeout;
     function toggleZoom(e) {
-        if (e) e.stopPropagation();
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
         const wrapper = document.getElementById('modalImageWrapper');
         const img = document.getElementById('modalImg');
         const zoomBtn = document.querySelector('.zoom-btn i');
@@ -602,23 +648,17 @@
         isZoomed = !isZoomed;
         wrapper.classList.toggle('zoomed', isZoomed);
 
-        clearTimeout(zoomTimeout);
         if (isZoomed) {
-            // Enable raw tracking after zoom animation finishes
-            zoomTimeout = setTimeout(() => {
-                if (isZoomed) img.classList.add('panning');
-            }, 400);
+            // For mobile, we use touch-action: none to allow custom panning
+            wrapper.style.touchAction = 'none';
         } else {
-            img.classList.remove('panning');
+            wrapper.style.touchAction = 'auto';
+            img.style.transform = '';
             img.style.transformOrigin = 'center center';
         }
 
         if (zoomBtn) {
-            if (isZoomed) {
-                zoomBtn.classList.replace('fa-search-plus', 'fa-search-minus');
-            } else {
-                zoomBtn.classList.replace('fa-search-minus', 'fa-search-plus');
-            }
+            zoomBtn.className = isZoomed ? 'fas fa-search-minus' : 'fas fa-search-plus';
         }
     }
 
@@ -952,6 +992,12 @@
         .modal-btn {
             width: 44px;
             height: 44px;
+        }
+
+        .product-gallery .thumbnail {
+            min-width: 60px !important;
+            width: 60px !important;
+            height: 60px !important;
         }
     }
 </style>

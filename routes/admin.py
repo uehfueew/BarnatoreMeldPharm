@@ -148,7 +148,8 @@ def new_product():
             "is_pharmacist_choice": request.form.get('is_pharmacist_choice') == 'on',
             "in_stock": request.form.get('in_stock') == 'on',
             "how_to_use": request.form.get('how_to_use'),
-            "key_ingredients": request.form.get('key_ingredients')
+            "key_ingredients": request.form.get('key_ingredients'),
+            "variant_group": request.form.get('variant_group', '').strip() or None
         }
         Product.create(product_data)
         flash('Produkti u krijua me sukses!', 'success')
@@ -192,7 +193,8 @@ def edit_product(product_id):
             "is_pharmacist_choice": request.form.get('is_pharmacist_choice') == 'on',
             "in_stock": request.form.get('in_stock') == 'on',
             "how_to_use": request.form.get('how_to_use'),
-            "key_ingredients": request.form.get('key_ingredients')
+            "key_ingredients": request.form.get('key_ingredients'),
+            "variant_group": request.form.get('variant_group', '').strip() or None
         }
         Product.update(product_id, product_data)
         flash('Produkti u përditësua me sukses!', 'success')
@@ -215,27 +217,30 @@ def bulk_offers():
     from bson import ObjectId
     
     if request.method == 'POST':
+        action = request.form.get('action', 'apply')
+        offer_name = request.form.get('offer_name', '').strip()
+        selected_ids = request.form.getlist('selected_products')
+        
+        # New: delete offer by name action (from the new Active Offers section)
+        if action == 'delete_named_offer':
+            target_name = request.form.get('target_name')
+            if target_name:
+                mongo.db.products.update_many(
+                    {"offer_name": target_name},
+                    {"$set": {"discount_price": None, "discount_until": None, "offer_name": None}}
+                )
+                flash(f'Oferta "{target_name}" u fshi me sukses.', 'success')
+            return redirect(url_for('admin.bulk_offers'))
+
+        # Check if products are selected for apply/remove
+        if not selected_ids:
+            flash('Gabim: Asnjë produkt nuk është zgjedhur. Ju lutem zgjidhni të paktën një produkt.', 'warning')
+            return redirect(url_for('admin.bulk_offers'))
+
         try:
-            action = request.form.get('action', 'apply')
             discount_percent = float(request.form.get('discount_percent', 0)) if action == 'apply' else 0
             discount_until = request.form.get('discount_until')
-            selected_ids = request.form.getlist('selected_products')
-            
-            # If specific products are selected, use them. Otherwise use filters.
-            if selected_ids:
-                query = {"_id": {"$in": [ObjectId(pid) for pid in selected_ids]}}
-            else:
-                target_brand = request.form.get('brand')
-                target_category = request.form.get('category')
-                target_subcategory = request.form.get('subcategory')
-                
-                query = {"is_deleted": {"$ne": True}}
-                if target_brand and target_brand != 'all':
-                    query["brand"] = target_brand
-                if target_category and target_category != 'all':
-                    query["category"] = target_category
-                if target_subcategory and target_subcategory != 'all':
-                    query["subcategory"] = target_subcategory
+            query = {"_id": {"$in": [ObjectId(pid) for pid in selected_ids]}}
                 
             products = list(mongo.db.products.find(query))
             count = 0
@@ -249,6 +254,8 @@ def bulk_offers():
                         update_data = {
                             "discount_price": round(discount_price, 2),
                             "discount_until": expiry_date,
+                            "offer_name": offer_name if offer_name else None,
+                            "offer_banner": request.form.get('banner_url') if request.form.get('banner_url') else None,
                             "updated_at": datetime.now()
                         }
                         mongo.db.products.update_one({"_id": p["_id"]}, {"$set": update_data})
@@ -256,20 +263,49 @@ def bulk_offers():
                 else: # remove action
                     mongo.db.products.update_one(
                         {"_id": p["_id"]}, 
-                        {"$set": {"discount_price": None, "discount_until": None, "updated_at": datetime.now()}}
+                        {"$set": {"discount_price": None, "discount_until": None, "offer_name": None, "offer_banner": None, "updated_at": datetime.now()}}
                     )
                     count += 1
             
             msg = f'Sukses! Oferta u aplikua për {count} produkte.' if action == 'apply' else f'Sukses! Ofertat u hoqën nga {count} produkte.'
             flash(msg, 'success')
-            return redirect(url_for('admin.dashboard'))
+            return redirect(url_for('admin.bulk_offers'))
         except Exception as e:
-            flash(f'Gabim gjatë aplikimit të ofertës: {str(e)}', 'danger')
+            flash(f'Gabim: {str(e)}', 'danger')
             return redirect(url_for('admin.bulk_offers'))
         
-    all_products = Product.get_all()
-    brands = sorted(list(set(p.get('brand') for p in all_products if p.get('brand'))))
+    # GET Logic
+    categories = mongo.db.products.distinct('category')
+    all_categories = {cat: list(mongo.db.products.distinct('subcategory', {'category': cat})) for cat in categories}
+    brands = sorted([b for b in mongo.db.products.distinct('brand') if b])
+    all_products = list(mongo.db.products.find({"is_deleted": {"$ne": True}}).sort("created_at", -1))
+    
+    # Enhanced Active Offers Aggregation
+    # We want Name, Discount (representative), Expiry (representative), Count, Banner
+    pipeline = [
+        {"$match": {"offer_name": {"$ne": None}, "is_deleted": {"$ne": True}}},
+        {"$group": {
+            "_id": "$offer_name",
+            "count": {"$sum": 1},
+            "expiry": {"$first": "$discount_until"},
+            "banner": {"$first": "$offer_banner"},
+            "discount_percent": {"$first": {"$round": [{"$multiply": [{"$subtract": [1, {"$divide": ["$discount_price", "$price"]}]}, 100]}, 0]}}
+        }},
+        {"$sort": {"_id": 1}}
+    ]
+    raw_active = list(mongo.db.products.aggregate(pipeline))
+    active_offers_info = []
+    for r in raw_active:
+        active_offers_info.append({
+            "name": r["_id"],
+            "count": r["count"],
+            "expiry": r["expiry"].strftime('%Y-%m-%d') if r["expiry"] else None,
+            "banner": r["banner"],
+            "discount": r["discount_percent"] or 0
+        })
+
     return render_template('admin/bulk_offers.html', 
-                         all_products=all_products,
+                         categories=all_categories, 
                          brands=brands, 
-                         categories=CATEGORIES)
+                         all_products=all_products,
+                         active_offers_info=active_offers_info)

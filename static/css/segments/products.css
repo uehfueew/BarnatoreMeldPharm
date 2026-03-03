@@ -181,19 +181,24 @@
     .product-grid {
         grid-template-columns: repeat(2, 1fr) !important;
         align-items: stretch !important;
-        gap: 0.75rem !important;
+        gap: 0.5rem !important;
+        /* Reduced gap to save space */
         padding: 0 !important;
+        width: 100% !important;
     }
 
     .container {
-        padding-left: 0.5rem !important;
-        /* Minimized side padding */
-        padding-right: 0.5rem !important;
+        padding-left: 0.25rem !important;
+        padding-right: 0.25rem !important;
     }
 
     .product-card {
-        padding: 0.6rem !important;
+        padding: 0.4rem !important;
+        /* Reduced padding */
         height: 100% !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        /* CRITICAL: prevents one card from being too big */
         display: flex !important;
         flex-direction: column !important;
     }

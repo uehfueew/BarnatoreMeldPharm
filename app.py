@@ -56,69 +56,23 @@ def load_user(user_id):
 @app.context_processor
 def inject_cart_count():
     from flask import session
-    cart = session.get('cart', {})
     from models.categories import CATEGORIES
     from flask_login import current_user
     import logging
     
+    # 1. Initialize Defaults
+    cart_count = 0
+    cart_items = []
+    cart_total = 0.0
+    cart_savings = 0.0
+    delivery_fee = 0.0
+    grand_total = 0.0
+    wish_count = 0
+
     try:
-        cart = session.get('cart', {})
-        cart_items = []
-        total_price = 0
-        total_savings = 0
-        actual_cart_count = 0
-        
-        # Log session status for debugging
-        # logging.info(f"Context Processor session['cart']: {cart}")
-        
-        if cart:
-            # Ensure mongo.db is available
-            if mongo and mongo.db:
-                product_ids = []
-                for pid in cart.keys():
-                    if pid and ObjectId.is_valid(str(pid)):
-                        product_ids.append(ObjectId(str(pid)))
-                        
-                if product_ids:
-                    products_cursor = list(mongo.db.products.find({"_id": {"$in": product_ids}}))
-                    # logging.info(f"Found {len(products_cursor)} products in DB for cart")
-                    products_db = {str(p['_id']): p for p in products_cursor}
-                    
-                    for pid, qty in cart.items():
-                        product = products_db.get(str(pid))
-                        if product:
-                            try:
-                                product['_id'] = str(product['_id'])
-                                p_price = product.get('discount_price') or product.get('price') or 0
-                                original_price = product.get('price') or 0
-                                qty_int = int(qty)
-                                
-                                item_total = float(p_price) * qty_int
-                                item_savings = (float(original_price) - float(p_price)) * qty_int if product.get('discount_price') else 0
-                                
-                                total_price += item_total
-                                total_savings += item_savings
-                                
-                                product['quantity'] = qty_int
-                                product['item_total'] = item_total
-                                product['item_savings'] = item_savings
-                                cart_items.append(product)
-                                actual_cart_count += qty_int
-                            except (ValueError, TypeError) as ve:
-                                logging.warning(f"Error processing cart item {pid}: {ve}")
-                                continue
-            else:
-                logging.error("mongo.db is NOT available in context processor!")
-
-        # Calculate Delivery Fee (Global context processor version)
-        from routes.cart import calculate_shipping
-        country = current_user.country if current_user.is_authenticated and current_user.country else 'Kosova'
-        delivery_fee = calculate_shipping(total_price, country)
-        grand_total = total_price + delivery_fee
-
-        # Calculate Wishlist Count
-        wish_count = 0
+        # 2. Calculate Wishlist Count FIRST (Standalone block)
         try:
+            from models.db import mongo
             if current_user.is_authenticated:
                 wish_count = mongo.db.products.count_documents({
                     "favorites": str(current_user.id),
@@ -127,32 +81,65 @@ def inject_cart_count():
             else:
                 wish_count = len(session.get('liked_products', []))
         except Exception as we:
-            logging.error(f"Error calculating wishlist count: {we}")
+            logging.error(f"Wishlist calculation failed: {we}")
 
-        return dict(
-            cart_count=int(actual_cart_count), 
-            cart_items=cart_items,
-            cart_total=float(total_price),
-            cart_savings=float(total_savings),
-            delivery_fee=float(delivery_fee),
-            grand_total=float(grand_total),
-            wishlist_count=int(wish_count), 
-            global_categories=CATEGORIES
-        )
+        # 3. Process Cart (Independent block)
+        try:
+            cart = session.get('cart', {})
+            if cart and mongo and mongo.db:
+                from bson import ObjectId
+                product_ids = []
+                for pid in cart.keys():
+                    if pid and ObjectId.is_valid(str(pid)):
+                        product_ids.append(ObjectId(str(pid)))
+                        
+                if product_ids:
+                    products_cursor = list(mongo.db.products.find({"_id": {"$in": product_ids}}))
+                    products_db = {str(p['_id']): p for p in products_cursor}
+                    
+                    for pid, qty in cart.items():
+                        product = products_db.get(str(pid))
+                        if product:
+                            try:
+                                product['_id'] = str(product['_id'])
+                                p_price = float(product.get('discount_price') or product.get('price') or 0.0)
+                                original_price = float(product.get('price') or 0.0)
+                                qty_int = int(qty)
+                                
+                                item_total = p_price * qty_int
+                                item_savings = (original_price - p_price) * qty_int if product.get('discount_price') else 0.0
+                                
+                                cart_total += item_total
+                                cart_savings += item_savings
+                                cart_count += qty_int
+                                
+                                product['quantity'] = qty_int
+                                product['item_total'] = item_total
+                                product['item_savings'] = item_savings
+                                cart_items.append(product)
+                            except: continue
+
+                # 4. Delivery
+                from routes.cart import calculate_shipping
+                country = current_user.country if current_user.is_authenticated and current_user.country else 'Kosova'
+                delivery_fee = calculate_shipping(cart_total, country)
+                grand_total = cart_total + delivery_fee
+        except Exception as ce:
+            logging.error(f"Cart processing failed: {ce}")
+
     except Exception as e:
-        import traceback
-        logging.error(f"Error in inject_cart_count: {e}")
-        logging.error(traceback.format_exc())
-        return dict(
-            cart_count=0, 
-            cart_items=[],
-            cart_total=0,
-            cart_savings=0,
-            delivery_fee=0,
-            grand_total=0,
-            wishlist_count=0, 
-            global_categories=CATEGORIES
-        )
+        logging.error(f"Critical error in context processor: {e}")
+
+    return dict(
+        cart_count=int(cart_count), 
+        cart_items=cart_items,
+        cart_total=float(cart_total),
+        cart_savings=float(cart_savings),
+        delivery_fee=float(delivery_fee),
+        grand_total=float(grand_total),
+        wishlist_count=int(wish_count), 
+        global_categories=CATEGORIES
+    )
 
 # Register Blueprints
 app.register_blueprint(main)

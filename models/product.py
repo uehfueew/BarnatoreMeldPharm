@@ -162,18 +162,29 @@ class Product:
 
 
     @staticmethod
-
     def get_by_id(product_id):
-
         try:
-
             return mongo.db.products.find_one({"_id": ObjectId(product_id)})
-
         except:
-
             return None
 
-    
+    @staticmethod
+    def get_variants(variant_group):
+        if not variant_group:
+            return []
+        try:
+            # Fetch all products with the same variant_group, excluding deleted ones
+            variants = list(mongo.db.products.find({
+                "variant_group": variant_group,
+                "is_deleted": {"$ne": True}
+            }).sort("size", 1)) # Sort by size if possible
+            
+            for v in variants:
+                v["_id"] = str(v["_id"])
+            return variants
+        except Exception as e:
+            print(f"Error fetching variants: {e}")
+            return []
 
     @staticmethod
 
@@ -363,4 +374,28 @@ class Product:
             return products
         except Exception as e:
             print(f"Error in get_by_ids: {e}")
+            return []
+
+    @staticmethod
+    def get_variants(group_id_or_name):
+        if not group_id_or_name:
+            return []
+        try:
+            # Try finding by variant_group first
+            variants = list(mongo.db.products.find({
+                "variant_group": group_id_or_name,
+                "is_deleted": {"$ne": True}
+            }))
+            
+            # Fallback: if no variant group, try matching by name (for products that share a name but differ in size)
+            if not variants:
+                variants = list(mongo.db.products.find({
+                    "name": group_id_or_name,
+                    "is_deleted": {"$ne": True}
+                }))
+
+            for v in variants:
+                v["_id"] = str(v["_id"])
+            return variants
+        except:
             return []
