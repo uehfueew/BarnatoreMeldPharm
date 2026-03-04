@@ -158,6 +158,12 @@
         padding-bottom: 60px;
     }
 
+    .main-content {
+        margin-top: 130px;
+        /* Reduced from 150px to remove blank space */
+        padding-bottom: 140px;
+    }
+
     .quick-view-overlay .btn-quick-view {
         pointer-events: auto;
         padding: 0.5rem 1rem;
@@ -481,6 +487,20 @@
     height: calc(100vh - 120px) !important;
     overflow-y: auto;
     scrollbar-width: thin;
+}
+
+@media (max-width: 992px) {
+    .shop-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100vh !important;
+        background: white !important;
+        z-index: 20000 !important;
+        padding: 5rem 1.5rem !important;
+        overflow-y: auto !important;
+    }
 }
 
 .shop-sidebar::-webkit-scrollbar {

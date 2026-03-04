@@ -274,10 +274,24 @@ def bulk_offers():
             flash(f'Gabim: {str(e)}', 'danger')
             return redirect(url_for('admin.bulk_offers'))
         
-    # GET Logic
-    categories = mongo.db.products.distinct('category')
-    all_categories = {cat: list(mongo.db.products.distinct('subcategory', {'category': cat})) for cat in categories}
-    brands = sorted([b for b in mongo.db.products.distinct('brand') if b])
+    # GET Logic (Normalize duplicates)
+    raw_categories = mongo.db.products.distinct('category')
+    all_categories = {}
+    for cat in raw_categories:
+        if cat:
+            subcats = list(mongo.db.products.distinct('subcategory', {'category': cat}))
+            all_categories[cat] = [s for s in subcats if s]
+
+    # Normalize brands to avoid duplicates like "Brand", "brand", " BRAND"
+    raw_brands = mongo.db.products.distinct('brand')
+    brand_map = {}
+    for b in raw_brands:
+        if b:
+            norm = b.strip().lower()
+            if norm not in brand_map:
+                brand_map[norm] = b.strip()
+    brands = sorted(brand_map.values(), key=lambda x: x.lower())
+    
     all_products = list(mongo.db.products.find({"is_deleted": {"$ne": True}}).sort("created_at", -1))
     
     # Enhanced Active Offers Aggregation

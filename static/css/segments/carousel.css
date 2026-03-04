@@ -448,7 +448,7 @@
     .hero-img-full {
         object-fit: contain !important;
         width: 100% !important;
-        height: auto !important;
+        height: 100% !important;
         background: #fff;
     }
 
@@ -575,9 +575,10 @@
 
 @media (max-width: 768px) {
     .hero-inner-wrapper {
-        height: 110vw !important;
-        /* Taller for mobile banners */
-        min-height: 400px !important;
+        height: auto !important;
+        aspect-ratio: 16/9;
+        /* Maintain standard banner ratio or adjust as needed */
+        min-height: 250px !important;
     }
 }
 

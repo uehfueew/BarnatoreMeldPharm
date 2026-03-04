@@ -649,8 +649,8 @@
         wrapper.classList.toggle('zoomed', isZoomed);
 
         if (isZoomed) {
-            // For mobile, we use touch-action: none to allow custom panning
-            wrapper.style.touchAction = 'none';
+            // For mobile, we use touch-action: pinch-zoom to allow browser-native gestures
+            wrapper.style.touchAction = 'pinch-zoom';
         } else {
             wrapper.style.touchAction = 'auto';
             img.style.transform = '';
@@ -815,7 +815,7 @@
 
     .modal-image-wrapper.zoomed {
         cursor: zoom-out;
-        touch-action: none;
+        touch-action: pinch-zoom;
     }
 
     .modal-image-wrapper.zoomed .modal-content {
@@ -844,9 +844,10 @@
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        background: rgba(255, 255, 255, 0.1);
-        border: none;
-        color: white;
+        background: rgba(0, 0, 0, 0.4);
+        /* Darker background for visibility */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white !important;
         width: 60px;
         height: 60px;
         border-radius: 50%;

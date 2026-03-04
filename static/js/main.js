@@ -1685,20 +1685,40 @@ window.confirmDelete = function (formElement) {
 window.showToast = function (message, type = 'success') {
     const container = document.getElementById('toast-container');
     if (!container) return;
+
     const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+    toast.className = `toast toast-v4 toast-${type}`;
+
+    let icon = 'fa-check-circle';
+    if (type === 'error' || type === 'danger') icon = 'fa-exclamation-circle';
+    else if (type === 'warning') icon = 'fa-exclamation-triangle';
+    else if (type === 'info') icon = 'fa-info-circle';
+
     toast.innerHTML = `
-        <i class="fas ${icon}"></i>
-        <span>${message}</span>
-        <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+        <div class="toast-icon-v4">
+            <i class="fas ${icon}"></i>
+        </div>
+        <div class="toast-content-v4">
+            <span class="toast-message-v4">${message}</span>
+        </div>
+        <button class="toast-close-v4" onclick="this.parentElement.classList.add('hide'); setTimeout(() => this.parentElement.remove(), 400)">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="toast-progress-v4"></div>
     `;
+
     container.appendChild(toast);
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(100%)';
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
+
+    // Auto-remove after 4 seconds
+    const timeout = setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
+
+    // Pause on hover
+    toast.onmouseenter = () => {
+        toast.querySelector('.toast-progress-v4').style.animationPlayState = 'paused';
+    };
 };
 
 window.toggleFavorite = async function (btn, productId) {
