@@ -816,12 +816,20 @@
     }
 
     .mobile-profile-links li.admin-item a {
-        border-left: 4px solid #f59e0b;
+        border-left: none !important;
+        justify-content: flex-start !important;
+        color: var(--text-muted) !important;
+        font-weight: 500 !important;
     }
 
     .mobile-profile-links li.admin-item a i {
-        color: #f59e0b;
+        color: var(--primary) !important;
+        font-size: 1.2rem !important;
+        width: 24px !important;
+        text-align: center !important;
+        margin-right: 0 !important;
     }
+
 
     .mobile-profile-links li:last-child a {
         color: #ef4444;
@@ -1093,6 +1101,8 @@
         color: var(--text-muted);
         box-shadow: var(--shadow-sm);
         transition: transform 0.2s;
+        justify-content: flex-start !important;
+        text-align: left !important;
     }
 
     .mobile-profile-links a:active {

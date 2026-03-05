@@ -636,7 +636,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     try {
                         // Show skeletons while loading
                         if (searchPreview) {
-                            searchPreview.style.display = 'block';
+                            searchPreview.style.display = ''; // Clear any inline styles that break CSS
+                            searchPreview.classList.add('active');
                             searchPreview.innerHTML = Array(4).fill(0).map(() => window.createSearchSkeletonHtml()).join('');
                         }
 
@@ -644,42 +645,59 @@ document.addEventListener('DOMContentLoaded', () => {
                         const response = await fetch(`/api/search?q=${encodeURIComponent(term)}&limit=${limit}`);
                         const products = await response.json();
 
-                        if (searchPreview && products.length > 0) {
-                            searchPreview.innerHTML = products.map(p => {
-                                const hasDiscount = p.discount_price && p.discount_price < p.price;
-                                const priceDisplay = hasDiscount ?
-                                    `<span class="preview-price-old" style="text-decoration: line-through; color: #94a3b8; font-size: 0.7rem; margin-right: 5px;">€${p.price}</span><span class="preview-price" style="color: #10b981;">€${p.discount_price}</span>` :
-                                    `<span class="preview-price">€${p.price}</span>`;
+                        if (searchPreview) {
+                            if (products.length > 0) {
+                                searchPreview.innerHTML = products.map(p => {
+                                    const hasDiscount = p.discount_price && p.discount_price < p.price;
+                                    const priceDisplay = hasDiscount ?
+                                        `<span class="preview-price-old" style="text-decoration: line-through; color: #94a3b8; font-size: 0.7rem; margin-right: 5px;">€${p.price}</span><span class="preview-price" style="color: #10b981;">€${p.discount_price}</span>` :
+                                        `<span class="preview-price">€${p.price}</span>`;
 
-                                return `
-                                    <a href="/product/${p.id}" class="preview-item">
-                                        <div class="preview-image" style="width: 40px; height: 40px; flex-shrink: 0; background: #fff; border-radius: 6px; overflow: hidden; border: 1px solid #f1f5f9;">
-                                            <img src="${p.image_url}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: contain; padding: 2px;">
-                                        </div>
-                                        <div class="preview-info">
-                                            <span class="preview-name">${p.name}</span>
-                                            ${p.size ? `<span class="preview-size" style="font-size: 0.7rem; color: #64748b; display: block;">${p.size}</span>` : ''}
-                                            <div class="preview-price-wrapper" style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">
-                                                ${priceDisplay}
+                                    return `
+                                        <a href="/product/${p.id}" class="preview-item">
+                                            <div class="preview-image" style="width: 40px; height: 40px; flex-shrink: 0; background: #fff; border-radius: 6px; overflow: hidden; border: 1px solid #f1f5f9;">
+                                                <img src="${p.image_url}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: contain; padding: 2px;">
                                             </div>
-                                        </div>
+                                            <div class="preview-info">
+                                                <span class="preview-name">${p.name}</span>
+                                                ${p.size ? `<span class="preview-size" style="font-size: 0.7rem; color: #64748b; display: block;">${p.size}</span>` : ''}
+                                                <div class="preview-price-wrapper" style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">
+                                                    ${priceDisplay}
+                                                </div>
+                                            </div>
+                                        </a>
+                                    `;
+                                }).join('') + `
+                                    <a href="/products?q=${encodeURIComponent(term)}" class="preview-item view-all-search">
+                                        <span style="width: 100%; text-align: center; color: var(--primary); font-weight: 600; font-size: 0.85rem; padding: 5px 0;">Shiko të gjitha</span>
                                     </a>
                                 `;
-                            }).join('') + `
-                                <a href="/products?q=${encodeURIComponent(term)}" class="preview-item view-all-search">
-                                    <span style="width: 100%; text-align: center; color: var(--primary); font-weight: 600; font-size: 0.85rem; padding: 5px 0;">Shiko të gjitha</span>
-                                </a>
-                            `;
+                            } else {
+                                // Show "no results" state instead of leaving skeletons
+                                searchPreview.innerHTML = `
+                                    <div style="padding: 2rem 1rem; text-align: center; color: #64748b;">
+                                        <i class="fas fa-search" style="font-size: 2rem; color: #cbd5e1; margin-bottom: 0.75rem; display: block;"></i>
+                                        <p style="margin: 0; font-size: 0.95rem; font-weight: 500;">Nuk u gjet asnjë rezultat për "${term}"</p>
+                                    </div>
+                                `;
+                            }
                             searchPreview.classList.add('active');
-                        } else if (searchPreview) {
-                            searchPreview.classList.remove('active');
                         }
                     } catch (err) {
                         console.error('Search error:', err);
+                        if (searchPreview) {
+                            searchPreview.innerHTML = `
+                                <div style="padding: 1rem; text-align: center; color: #ef4444;">
+                                    <p style="margin: 0; font-size: 0.9rem;">Pati një gabim gjatë kërkimit.</p>
+                                </div>
+                            `;
+                            searchPreview.classList.add('active');
+                        }
                     }
                 }, 300);
             } else if (searchPreview) {
                 searchPreview.classList.remove('active');
+                searchPreview.style.display = '';
             }
         });
 
@@ -691,6 +709,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = `/products?q=${encodeURIComponent(term)}`;
                 } else if (searchPreview) {
                     searchPreview.classList.remove('active');
+                    searchPreview.style.display = '';
                 }
             }
         });
@@ -698,6 +717,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             if (searchPreview && !searchInput.contains(e.target) && !searchPreview.contains(e.target)) {
                 searchPreview.classList.remove('active');
+                searchPreview.style.display = '';
             }
         });
     });

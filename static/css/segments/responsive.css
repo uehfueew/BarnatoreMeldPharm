@@ -469,8 +469,7 @@
     grid-template-columns: 280px 1fr !important;
     gap: 1.5rem !important;
     align-items: start;
-    max-width: 1350px;
-    margin: 0 auto;
+    width: 100%;
 }
 
 .shop-sidebar {
