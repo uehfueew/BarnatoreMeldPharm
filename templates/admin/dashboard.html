@@ -18,7 +18,7 @@
                 <i class="fas fa-shopping-bag"></i> Porositë
             </a>
             <a href="{{ url_for('admin.bulk_offers') }}" class="admin-nav-item">
-                <i class="fas fa-tags"></i> Ofertat në Masë
+                <i class="fas fa-tags"></i> Ofertat
             </a>
             <a href="javascript:void(0)" onclick="toggleAnalytics()" class="admin-nav-item" id="nav-analytics">
                 <i class="fas fa-chart-pie"></i> Analitika
@@ -180,12 +180,6 @@
                 <input type="text" id="adminProductSearch"
                     placeholder="Kërko produkte sipas emrit, brendit ose kategorisë...">
             </div>
-            <div class="quick-filters">
-                <a href="{{ url_for('admin.dashboard', on_offer=1) if not filter_on_offer else url_for('admin.dashboard') }}"
-                    class="filter-chip {{ 'active' if filter_on_offer else '' }}">
-                    <i class="fas fa-tag"></i> Vetëm Ofertat
-                </a>
-            </div>
         </div>
         <div class="primary-actions-v3" style="display: flex; align-items: center; gap: 1.5rem;">
             <div class="mini-stats-v3" style="display: flex; gap: 1rem;">
@@ -198,6 +192,11 @@
                     <span class="mini-stat-lbl">OFERTA</span>
                 </div>
             </div>
+            
+            <a href="{{ url_for('admin.dashboard', on_offer=1) if not filter_on_offer else url_for('admin.dashboard') }}"
+                    class="filter-chip {{ 'active' if filter_on_offer else '' }}">
+                    <i class="fas fa-tag"></i> Ofertat
+            </a>
             <a href="{{ url_for('admin.new_product') }}" class="btn-plus-admin" title="Shto Produkt">
                 <i class="fas fa-plus"></i>
             </a>
