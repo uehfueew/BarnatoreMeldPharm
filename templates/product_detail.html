@@ -638,8 +638,8 @@
     let zoomTimeout;
     function toggleZoom(e) {
         if (e) {
-            e.preventDefault();
-            e.stopPropagation();
+            if (typeof e.preventDefault === 'function') e.preventDefault();
+            if (typeof e.stopPropagation === 'function') e.stopPropagation();
         }
         const wrapper = document.getElementById('modalImageWrapper');
         const img = document.getElementById('modalImg');
@@ -649,8 +649,7 @@
         wrapper.classList.toggle('zoomed', isZoomed);
 
         if (isZoomed) {
-            // For mobile, we use touch-action: pinch-zoom to allow browser-native gestures
-            wrapper.style.touchAction = 'pinch-zoom';
+            wrapper.style.touchAction = 'none'; // Disable browser native zoom/pan to use our custom logic
         } else {
             wrapper.style.touchAction = 'auto';
             img.style.transform = '';
@@ -717,7 +716,28 @@
         touchStartX = e.changedTouches[0].screenX;
     }, { passive: true });
 
+    document.getElementById('modalImageWrapper').addEventListener('touchmove', function (e) {
+        if (!isZoomed || e.touches.length > 1) return;
+
+        // Prevent scrolling while panning image
+        if (e.cancelable) e.preventDefault();
+
+        const touch = e.touches[0];
+        const r = this.getBoundingClientRect();
+
+        const x = touch.clientX - r.left;
+        const y = touch.clientY - r.top;
+
+        const xPercent = Math.max(0, Math.min(100, (x / r.width) * 100));
+        const yPercent = Math.max(0, Math.min(100, (y / r.height) * 100));
+
+        const img = document.getElementById('modalImg');
+        img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+    }, { passive: false });
+
     document.getElementById('modalImageWrapper').addEventListener('touchend', e => {
+        if (isZoomed) return; // Prevent swipe navigation when zoomed
+
         const touchEndX = e.changedTouches[0].screenX;
         const diff = touchStartX - touchEndX;
         if (Math.abs(diff) > 50) {

@@ -547,7 +547,8 @@
 
     .details-item {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-start;
+        gap: 1rem;
         font-size: 0.95rem;
     }
 
@@ -559,6 +560,7 @@
         padding-top: 1rem;
         border-top: 1px solid #e2e8f0;
         font-size: 1.2rem;
+        justify-content: space-between !important;
     }
 
     .order-items-list {
@@ -619,85 +621,6 @@
         .details-grid {
             grid-template-columns: 1fr;
             gap: 2rem;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .admin-orders-container {
-            padding: 0 1rem;
-            margin: 1rem auto;
-        }
-
-        .admin-title-v2 {
-            font-size: 2rem;
-        }
-
-        .admin-actions-bar.wide-search-bar {
-            padding: 1rem;
-        }
-
-        /* Table to Mobile Cards */
-        .premium-admin-table thead {
-            display: none;
-        }
-
-        .premium-admin-table td {
-            display: block;
-            width: 100% !important;
-            text-align: left !important;
-            padding: 0.75rem 1.25rem;
-            border: none;
-        }
-
-        .premium-admin-table tr.order-parent-row {
-            display: block;
-            background: white;
-            border: 1px solid #f1f5f9;
-            border-radius: 16px;
-            margin-bottom: 1.5rem;
-            padding: 1rem 0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            position: relative;
-        }
-
-        .order-id-group {
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #f8fafc;
-            padding-bottom: 0.75rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .premium-status-select {
-            width: 100%;
-        }
-
-        .table-actions {
-            justify-content: center;
-            width: 100%;
-        }
-
-        .action-btn.toggle-details {
-            width: 100%;
-            height: 44px;
-            border-radius: 12px;
-        }
-
-        .order-expanded-details {
-            padding: 1.5rem 1rem;
-        }
-
-        .order-item-product {
-            flex-wrap: wrap;
-        }
-
-        .item-name {
-            width: 100%;
-            flex: none;
-            margin-top: 0.25rem;
-            font-size: 0.85rem;
-            order: 3;
         }
     }
 </style>

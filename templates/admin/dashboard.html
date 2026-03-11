@@ -765,106 +765,257 @@
 
     @media (max-width: 768px) {
         .admin-dashboard-container {
-            padding: 0 1rem;
+            padding: 0 0.75rem;
             margin: 1rem auto;
         }
 
         .admin-title-v2 {
-            font-size: 2rem;
+            font-size: 1.8rem;
+            gap: 0.75rem;
         }
 
-        /* Grid for Cards on Mobile */
+        .admin-actions-bar {
+            padding: 1rem 0.75rem !important;
+            flex-direction: column !important;
+            gap: 1.25rem !important;
+            align-items: center !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        .search-and-filter {
+            flex-direction: column !important;
+            gap: 0.75rem !important;
+            width: 100% !important;
+        }
+
+        .admin-search-wrapper {
+            max-width: 100% !important;
+            width: 100% !important;
+            flex: none !important;
+        }
+
+        .admin-search-wrapper input {
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        .quick-filters {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: center !important;
+        }
+
+        .filter-chip {
+            width: 100% !important;
+            justify-content: center !important;
+            padding: 0.6rem !important;
+            font-size: 0.85rem !important;
+        }
+
+        .primary-actions-v3 {
+            width: 100% !important;
+            justify-content: space-between !important;
+            gap: 0.75rem !important;
+        }
+
+        .mini-stats-v3 {
+            flex: 1 !important;
+            gap: 0.5rem !important;
+        }
+
+        .mini-stat-card {
+            min-width: 0 !important;
+            flex: 1 !important;
+            padding: 0.4rem 0.5rem !important;
+            border-radius: 10px !important;
+        }
+
+        .mini-stat-val {
+            font-size: 1.1rem !important;
+        }
+
+        .mini-stat-lbl {
+            font-size: 0.5rem !important;
+            margin-top: 0.15rem !important;
+        }
+
+        .btn-plus-admin {
+            width: 42px !important;
+            height: 42px !important;
+            font-size: 1.1rem !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* List View for Products on Mobile */
         .premium-admin-table tbody {
-            display: grid !important;
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 1rem !important;
-            padding: 0.5rem !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0.75rem !important;
+            padding: 0 !important;
         }
 
         .premium-admin-table thead {
             display: none !important;
         }
 
-        .premium-admin-table tr {
-            display: flex !important;
-            flex-direction: column !important;
+        .premium-admin-table tr.product-row {
+            display: grid !important;
+            grid-template-columns: 85px 1fr auto !important;
+            grid-template-areas:
+                "img info actions"
+                "img price actions"
+                "img status actions";
+            column-gap: 0.75rem !important;
+            row-gap: 0.15rem !important;
             background: white !important;
             border: 1px solid #f1f5f9 !important;
-            border-radius: 14px !important;
-            margin-bottom: 0 !important;
+            border-radius: 16px !important;
             padding: 0.75rem !important;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
-            height: 100% !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04) !important;
+            align-items: center !important;
+            height: auto !important;
+            margin-bottom: 0 !important;
         }
 
         .premium-admin-table td {
             display: block !important;
-            width: 100% !important;
-            padding: 0.25rem 0 !important;
+            width: auto !important;
+            padding: 0 !important;
             border: none !important;
         }
 
+        /* Cell area mapping */
+        .premium-admin-table td:nth-child(1) {
+            grid-area: img;
+        }
+
+        .premium-admin-table td:nth-child(2) {
+            grid-area: info;
+            align-self: start;
+        }
+
+        .premium-admin-table td:nth-child(4) {
+            grid-area: price;
+        }
+
+        .premium-admin-table td:nth-child(5) {
+            grid-area: status;
+        }
+
+        .premium-admin-table td:nth-child(6) {
+            grid-area: actions;
+        }
+
+        .premium-admin-table td:nth-child(3) {
+            display: none !important;
+        }
+
         .table-product-img {
+            width: 85px !important;
+            height: 85px !important;
+            border-radius: 10px !important;
+            margin: 0 !important;
+            background: #f8fafc;
+            overflow: hidden;
+        }
+
+        .table-product-img img {
             width: 100% !important;
-            height: 100px !important;
-            margin-bottom: 0.5rem !important;
+            height: 100% !important;
+            object-fit: contain !important;
+            padding: 4px;
         }
 
         .table-product-info {
             text-align: left !important;
-            gap: 0.1rem !important;
+            padding: 0 !important;
+        }
+
+        .table-brand {
+            font-size: 0.7rem !important;
+            font-weight: 800 !important;
+            margin: 0 !important;
         }
 
         .table-name {
-            font-size: 0.85rem !important;
-            height: 2.1rem !important;
-            overflow: hidden !important;
+            font-size: 0.95rem !important;
+            font-weight: 700 !important;
+            line-height: 1.25 !important;
+            height: auto !important;
+            margin: 0 0 0.1rem 0 !important;
             display: -webkit-box !important;
             -webkit-line-clamp: 2 !important;
             line-clamp: 2 !important;
             -webkit-box-orient: vertical !important;
+            overflow: hidden !important;
+            white-space: normal !important;
         }
 
-        .table-brand {
-            font-size: 0.65rem !important;
+        .table-size {
+            font-size: 0.75rem !important;
+            color: #64748b !important;
+            font-weight: 600 !important;
         }
 
         .table-price-info {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 0.1rem !important;
-            margin: 0.4rem 0 !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+            margin: 0 !important;
         }
 
         .price-new,
         .price-normal {
-            font-size: 0.9rem !important;
+            font-size: 0.95rem !important;
+            font-weight: 800 !important;
+        }
+
+        .price-old {
+            font-size: 0.75rem !important;
+        }
+
+        .discount-badge-mini {
+            font-size: 0.7rem !important;
+            padding: 0 0.3rem !important;
         }
 
         .status-badges {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 0.2rem !important;
-            margin-bottom: 0.5rem !important;
+            flex-direction: row !important;
+            gap: 0.5rem !important;
+            margin: 0 !important;
         }
 
         .status-badge {
             font-size: 0.65rem !important;
+            font-weight: 700 !important;
+            padding: 0.15rem 0.4rem !important;
+            border-radius: 6px !important;
+            background: #f1f5f9;
         }
 
         .table-actions {
-            justify-content: flex-start !important;
-            padding-top: 0.5rem !important;
-            border-top: 1px solid #f1f5f9 !important;
-            margin-top: auto !important;
-            gap: 0.5rem !important;
+            flex-direction: column !important;
+            gap: 0.6rem !important;
+            padding: 0 !important;
+            border: none !important;
+            margin: 0 !important;
+            justify-content: center !important;
+            align-items: center !important;
         }
 
         .action-btn {
-            width: 32px !important;
-            height: 32px !important;
+            width: 38px !important;
+            height: 38px !important;
             font-size: 0.9rem !important;
-            border-radius: 8px !important;
+            border-radius: 10px !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .btn-plus-admin {
+            width: 44px !important;
+            height: 44px !important;
+            font-size: 1.2rem !important;
         }
     }
 </style>

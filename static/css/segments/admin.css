@@ -419,11 +419,12 @@
         grid-template-columns: 1fr auto !important;
         grid-template-areas:
             "id actions"
+            "status status"
             "client total"
-            "location location"
-            "status status";
-        gap: 0.6rem 0.5rem !important;
+            "location location";
         padding: 1.25rem 1rem !important;
+        column-gap: 1rem !important;
+        row-gap: 0.8rem !important;
         border: 1px solid #f1f5f9 !important;
         border-radius: 14px !important;
         margin-bottom: 1rem !important;
@@ -441,8 +442,22 @@
     }
 
     .premium-admin-table tr.order-parent-row td:nth-child(1) {
-        /* ID */
+        /* ID & Date */
         grid-area: id;
+        width: 100% !important;
+        display: block !important;
+    }
+
+    .order-id-group {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+        padding-bottom: 0.5rem !important;
+    }
+
+    .order-id {
+        margin-right: 1.5rem !important;
     }
 
     .premium-admin-table tr.order-parent-row td:nth-child(2) {
@@ -470,7 +485,7 @@
         /* Status */
         grid-area: status;
         width: 100% !important;
-        margin-top: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
     }
 
     .premium-admin-table tr.order-parent-row td:nth-child(7) {
@@ -484,6 +499,13 @@
         display: block !important;
         padding: 0 !important;
         border: none !important;
+    }
+
+    .order-expanded-details {
+        max-height: 65vh !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding-bottom: 2rem !important;
     }
 
     .mini-stats-v3 {

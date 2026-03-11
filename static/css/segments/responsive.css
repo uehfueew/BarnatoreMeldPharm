@@ -464,6 +464,12 @@
     position: relative;
 }
 
+@media (max-width: 768px) {
+    .shop-section {
+        padding-top: 0 !important;
+    }
+}
+
 .shop-layout {
     display: grid !important;
     grid-template-columns: 280px 1fr !important;
@@ -1094,7 +1100,7 @@
 
     .shop-controls-container {
         position: sticky !important;
-        top: 55px !important;
+        top: 30px !important;
         /* Move higher to sit perfectly up below header Search Bar Row */
         z-index: 999 !important;
         /* High enough to stick on top of products */

@@ -15,20 +15,24 @@
                 </div>
             </div>
             <nav class="profile-nav">
-                <a href="{{ url_for('main.profile') }}" class="profile-nav-item {{ 'active' if request.endpoint == 'main.profile' }}">
+                <a href="{{ url_for('main.profile') }}"
+                    class="profile-nav-item {{ 'active' if request.endpoint == 'main.profile' }}">
                     <i class="fas fa-user-circle"></i> Të dhënat personale
                 </a>
-                <a href="{{ url_for('main.address') }}" class="profile-nav-item {{ 'active' if request.endpoint == 'main.address' }}">
+                <a href="{{ url_for('main.address') }}"
+                    class="profile-nav-item {{ 'active' if request.endpoint == 'main.address' }}">
                     <i class="fas fa-map-marker-alt"></i> Adresa
                 </a>
-                <a href="{{ url_for('main.orders') }}" class="profile-nav-item {{ 'active' if request.path.startswith('/orders') or request.endpoint == 'main.orders' }}">
+                <a href="{{ url_for('main.orders') }}"
+                    class="profile-nav-item {{ 'active' if request.path.startswith('/orders') or request.endpoint == 'main.orders' }}">
                     <i class="fas fa-box"></i> Porositë
                 </a>
-                <a href="{{ url_for('main.wishlist') }}" class="profile-nav-item {{ 'active' if request.endpoint == 'main.wishlist' }}">
+                <a href="{{ url_for('main.wishlist') }}"
+                    class="profile-nav-item {{ 'active' if request.endpoint == 'main.wishlist' }}">
                     <i class="far fa-heart"></i> Lista e dëshirave
                 </a>
                 {% if current_user.is_admin %}
-                <a href="{{ url_for('admin.dashboard') }}" class="profile-nav-item admin-nav-item">
+                <a href="{{ url_for('admin.dashboard') }}" class="profile-nav-item">
                     <i class="fas fa-shield-alt"></i> Admin Panel
                 </a>
                 {% endif %}
