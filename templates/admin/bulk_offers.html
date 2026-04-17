@@ -1204,7 +1204,11 @@
                     const subcategory = (row.getAttribute('data-subcategory') || "").toLowerCase();
                     const offer = (row.getAttribute('data-offer') || "").toLowerCase();
 
-                    const matchesSearch = !searchVal || name.includes(searchVal) || brand.includes(searchVal);
+                    let matchesSearch = true;
+                    if (searchVal) {
+                        const terms = searchVal.split(' ').filter(t => t);
+                        matchesSearch = terms.every(t => name.includes(t) || brand.includes(t));
+                    }
                     const matchesBrand = brandVal === 'all' || brand === brandVal;
                     const matchesCat = catVal === 'all' || category === catVal;
                     const matchesSub = subVal === 'all' || subcategory === subVal;

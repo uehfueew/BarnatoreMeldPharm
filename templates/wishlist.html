@@ -42,12 +42,12 @@
                     {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
                     <div class="price-container">
                         {% if product.discount_price %}
-                        <span class="price discounted">€{{ product.discount_price }}</span>
-                        <span class="price original">€{{ product.price }}</span>
+                        <span class="price discounted">€{{ "%.2f"|format(product.discount_price) }}</span>
+                        <span class="price original">€{{ "%.2f"|format(product.price) }}</span>
                         <span class="discount-badge">-{{ ((product.price - product.discount_price) / product.price *
                             100)|round|int }}%</span>
                         {% else %}
-                        <span class="price">€{{ product.price }}</span>
+                        <span class="price">€{{ "%.2f"|format(product.price) }}</span>
                         {% endif %}
                     </div>
                 </div>

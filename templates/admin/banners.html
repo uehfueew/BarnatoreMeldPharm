@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="admin-dashboard-container">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/segments/admin.css') }}">
+    <!-- Admin Navigation -->
+    <nav class="admin-v3-nav">
+        <div class="nav-brand">
+            <i class="fas fa-user-shield"></i> Admin Paneli
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-item">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a href="{{ url_for('admin.orders') }}" class="admin-nav-item">
+                <i class="fas fa-shopping-bag"></i> Porositë
+            </a>
+            <a href="{{ url_for('admin.bulk_offers') }}" class="admin-nav-item">
+                <i class="fas fa-tags"></i> Ofertat
+            </a>
+            <a href="{{ url_for('admin.manage_banners') }}" class="admin-nav-item active">
+                <i class="fas fa-images"></i> Banerët
+            </a>
+        </div>
+        <div class="nav-right-spacer"></div>
+    </nav>
+
+    <div class="admin-content-area" style="padding: 2rem; max-width: 1400px; margin: 0 auto; margin-top: 1rem;">
+    <div class="admin-header d-flex justify-content-between align-items-center" style="margin-bottom: 2rem;">
+        <div>
+            <h1 class="admin-title" style="font-size: 2rem; font-weight: 800; color: var(--text-main);">Menaxho Banerët</h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Shto, modifiko ose fshi banerët kryesorë në vitrinën e dyqanit.</p>
+        </div>
+        <button class="btn btn-primary" onclick="document.getElementById('addBannerModal').style.display='flex'">
+            <i class="fas fa-plus"></i> Shto Baner
+        </button>
+    </div>
+
+    <div class="admin-cards-grid row" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+        {% for banner in banners %}
+        <div class="admin-card" style="background: #fff; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-light); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <div style="height: 120px; overflow: hidden; border-radius: 8px; margin-bottom: 1rem; background: #f1f5f9; display: flex; align-items: center; justify-content: center;">
+                <img src="{{ banner.image_url }}" alt="Banner Image" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">
+                    {% if banner.link_type == 'category' %}
+                    Kategoria: {{ banner.link_value }}
+                    {% elif banner.link_type == 'brand' %}
+                    Brendi: {{ banner.link_value }}
+                    {% elif banner.link_type == 'custom_products' %}
+                    Produkte Specifike
+                    {% else %}
+                    Të Gjitha Ofertat
+                    {% endif %}
+                </h4>
+                <span class="badge" style="background: {{ '#10b981' if banner.is_active else '#ef4444' }}; color: #fff; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+                    {{ 'Aktiv' if banner.is_active else 'Jo Aktiv' }}
+                </span>
+            </div>
+            <div class="d-flex align-items-center" style="gap: 0.5rem;">
+                <button class="btn btn-outline" style="flex: 1; padding: 0.5rem; font-size: 0.9rem;" onclick="editBanner('{{ banner._id }}', '{{ banner.image_url }}', '{{ banner.link_type }}', '{{ banner.link_value }}', '{{ banner.is_active }}')">
+                    <i class="fas fa-edit"></i> Ndrysho
+                </button>
+                <form action="{{ url_for('admin.delete_banner', banner_id=banner._id) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Jeni i sigurt qe doni ta fshini kete baner?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-danger" style="padding: 0.5rem; font-size: 0.9rem;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Add Banner Modal -->
+<div id="addBannerModal" class="dashboard-modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1050; justify-content: center; align-items: center;">
+    <div class="dashboard-modal-content" style="background: #fff; border-radius: 16px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); position: relative; margin: 2rem auto;">
+        <button class="close-modal-btn" style="position: absolute; right: 1.5rem; top: 1.5rem; border: none; background: none; font-size: 1.25rem; color: #64748b; cursor: pointer; padding: 0.5rem;" onclick="document.getElementById('addBannerModal').style.display='none'">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <div class="modal-header" style="margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-light);">
+            <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-image" style="color: var(--primary-main);"></i> Shto Baner të Ri
+            </h3>
+        </div>
+
+        <form action="{{ url_for('admin.manage_banners') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label style="display: block; font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">URL e Imazhit</label>
+                <input type="url" name="image_url" required class="form-control" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; transition: all 0.3s ease;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label style="display: block; font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Ku dërgon ky baner kur klikohet?</label>
+                <select name="link_type" id="addLinkType" onchange="toggleAddLinkValue(this.value)" class="form-control" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; appearance: none; background-color: #fff; cursor: pointer;">
+                    <option value="all_offers">Tek të gjitha produktet me zbritje</option>
+                    <option value="brand">Tek produktet e një Brendi</option>
+                    <option value="category">Tek produktet e një Kategorie</option>
+                    <option value="custom_products">Tek produkte Specifike (manualisht)</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="addBrandGroup" style="display: none; margin-bottom: 1.5rem;">
+                <label style="display: block; font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Zgjidh Brendin</label>
+                <select name="link_value_brand" class="form-control" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-light); border-radius: 8px; font-size: 0.95rem;">
+                    {% for brand in brands %}
+                    <option value="{{ brand }}">{{ brand }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group" id="addCategoryGroup" style="display: none; margin-bottom: 1.5rem;">
+                <label style="display: block; font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Zgjidh Kategorinë</label>
+                <select name="link_value_category" class="form-control" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-light); border-radius: 8px; font-size: 0.95rem;">
+                    {% for cat in categories %}
+                    <option value="{{ cat }}">{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group" id="addCustomGroup" style="display: none; margin-bottom: 1.5rem;">
+                <label style="display: block; font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Zgjidhni produktet</label>
+                <input type="text" id="addCustomSearch" placeholder="Kërko produkte..." class="form-control" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; margin-bottom: 0.5rem;" oninput="filterProductsAdd()">
+                <div class="custom-products-list" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-light); border-radius: 8px; padding: 0.5rem;">
+                    {% for p in all_products %}
+                    <label class="product-checkbox-label" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; cursor: pointer; border-radius: 6px; transition: background 0.2s;" data-name="{{ p.name | lower }}">
+                        <input type="checkbox" value="{{ p.name }}" class="add-custom-product-cb" style="width: 16px; height: 16px; cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <img src="{{ p.image_url }}" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 4px;">
+                            <span style="font-size: 0.9rem;">{{ p.name }}</span>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <input type="hidden" name="link_value" id="addLinkValueFinal">
+
+            <div class="form-group" style="margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+                <input type="checkbox" name="is_active" id="addActive" checked style="width: 18px; height: 18px; accent-color: var(--primary-main); cursor: pointer;">
+                <label for="addActive" style="font-size: 0.95rem; font-weight: 500; color: var(--text-main); cursor: pointer; user-select: none;">Baneri është Aktiv</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; transition: all 0.3s ease;" onclick="prepareAddForm()">Ruaj Banerin</button>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Banner Modal -->
+<div id="editBannerModal" class="dashboard-modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1050; justify-content: center; align-items: center;">
+    <div class="dashboard-modal-content" style="background: #fff; border-radius: 16px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); position: relative; margin: 2rem auto;">
+        <button class="close-modal-btn" style="position: absolute; right: 1.5rem; top: 1.5rem; border: none; background: none; font-size: 1.25rem; color: #64748b; cursor: pointer; padding: 0.5rem;" onclick="document.getElementById('editBannerModal').style.display='none'">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <div class="modal-header" style="margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-light);">
+            <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-edit" style="color: var(--primary-main);"></i> Ndrysho Banerin
+            </h3>
+        </div>
+
+        <form id="editBannerForm" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label style="display: block; font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">URL e Imazhit</label>
+                <input type="url" name="image_url" id="editImageUrl" required class="form-control" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-light); border-radius: 8px; font-size: 0.95rem;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label style="display: block; font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Ku dërgon ky baner kur klikohet?</label>
+                <select name="link_type" id="editLinkType" onchange="toggleEditLinkValue(this.value)" class="form-control" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-light); border-radius: 8px; font-size: 0.95rem;">
+                    <option value="all_offers">Tek të gjitha produktet me zbritje</option>
+                    <option value="brand">Tek produktet e një Brendi</option>
+                    <option value="category">Tek produktet e një Kategorie</option>
+                    <option value="custom_products">Tek produkte Specifike (manualisht)</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="editBrandGroup" style="display: none; margin-bottom: 1.5rem;">
+                <label style="display: block; font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Zgjidh Brendin</label>
+                <select name="link_value_brand" id="editBrandSelect" class="form-control" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-light); border-radius: 8px; font-size: 0.95rem;">
+                    {% for brand in brands %}
+                    <option value="{{ brand }}">{{ brand }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group" id="editCategoryGroup" style="display: none; margin-bottom: 1.5rem;">
+                <label style="display: block; font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Zgjidh Kategorinë</label>
+                <select name="link_value_category" id="editCategorySelect" class="form-control" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-light); border-radius: 8px; font-size: 0.95rem;">
+                    {% for cat in categories %}
+                    <option value="{{ cat }}">{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group" id="editCustomGroup" style="display: none; margin-bottom: 1.5rem;">
+                <label style="display: block; font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Zgjidhni produktet</label>
+                <input type="text" id="editCustomSearch" placeholder="Kërko produkte..." class="form-control" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; margin-bottom: 0.5rem;" oninput="filterProductsEdit()">
+                <div class="custom-products-list" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-light); border-radius: 8px; padding: 0.5rem;">
+                    {% for p in all_products %}
+                    <label class="product-checkbox-label" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; cursor: pointer; border-radius: 6px; transition: background 0.2s;" data-name="{{ p.name | lower }}">
+                        <input type="checkbox" value="{{ p.name }}" class="edit-custom-product-cb" style="width: 16px; height: 16px; cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <img src="{{ p.image_url }}" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 4px;">
+                            <span style="font-size: 0.9rem;">{{ p.name }}</span>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <input type="hidden" name="link_value" id="editLinkValueFinal">
+
+            <div class="form-group" style="margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+                <input type="checkbox" name="is_active" id="editActive" style="width: 18px; height: 18px; accent-color: var(--primary-main); cursor: pointer;">
+                <label for="editActive" style="font-size: 0.95rem; font-weight: 500; color: var(--text-main); cursor: pointer; user-select: none;">Aktiv</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem; font-weight: 700; border-radius: 8px; border: none; cursor: pointer;" onclick="prepareEditForm()">Ruaj Ndryshimet</button>
+        </form>
+    </div>
+</div>
+
+<style>
+.form-control:focus {
+    outline: 2px solid var(--primary-main);
+    outline-offset: -1px;
+}
+.product-checkbox-label:hover {
+    background-color: #f8fafc;
+}
+</style>
+<script>
+function filterProductsAdd() {
+    const query = document.getElementById('addCustomSearch').value.toLowerCase();
+    const terms = query.split(' ').filter(t => t);
+    const labels = document.querySelectorAll('#addCustomGroup .product-checkbox-label');
+    labels.forEach(label => {
+        const name = label.getAttribute('data-name') || '';
+        const matches = terms.every(t => name.includes(t));
+        label.style.display = (terms.length === 0 || matches) ? 'flex' : 'none';
+    });
+}
+
+function filterProductsEdit() {
+    const query = document.getElementById('editCustomSearch').value.toLowerCase();
+    const terms = query.split(' ').filter(t => t);
+    const labels = document.querySelectorAll('#editCustomGroup .product-checkbox-label');
+    labels.forEach(label => {
+        const name = label.getAttribute('data-name') || '';
+        const matches = terms.every(t => name.includes(t));
+        label.style.display = (terms.length === 0 || matches) ? 'flex' : 'none';
+    });
+}
+
+function toggleAddLinkValue(type) {
+    document.getElementById('addBrandGroup').style.display = type === 'brand' ? 'block' : 'none';
+    document.getElementById('addCategoryGroup').style.display = type === 'category' ? 'block' : 'none';
+    document.getElementById('addCustomGroup').style.display = type === 'custom_products' ? 'block' : 'none';
+}
+
+function prepareAddForm() {
+    const type = document.getElementById('addLinkType').value;
+    let finalValue = '';
+    if (type === 'brand') finalValue = document.querySelector('select[name="link_value_brand"]').value;
+    else if (type === 'category') finalValue = document.querySelector('select[name="link_value_category"]').value;
+    else if (type === 'custom_products') {
+        const checked = Array.from(document.querySelectorAll('.add-custom-product-cb:checked')).map(cb => cb.value);
+        finalValue = checked.join(', ');
+    }
+    document.getElementById('addLinkValueFinal').value = finalValue;
+}
+
+function editBanner(id, url, type, value, active) {
+    document.getElementById('editBannerForm').action = "/admin/banners/edit/" + id;
+    document.getElementById('editImageUrl').value = url;
+    document.getElementById('editLinkType').value = type;
+    toggleEditLinkValue(type);
+    
+    if (type === 'brand') document.getElementById('editBrandSelect').value = value;
+    else if (type === 'category') document.getElementById('editCategorySelect').value = value;
+    else if (type === 'custom_products') {
+        const values = value.split(',').map(v => v.trim());
+        document.querySelectorAll('.edit-custom-product-cb').forEach(cb => {
+            cb.checked = values.includes(cb.value.trim());
+        });
+    }
+    
+    document.getElementById('editActive').checked = (active === 'True');
+    document.getElementById('editBannerModal').style.display = 'flex';
+}
+
+function toggleEditLinkValue(type) {
+    document.getElementById('editBrandGroup').style.display = type === 'brand' ? 'block' : 'none';
+    document.getElementById('editCategoryGroup').style.display = type === 'category' ? 'block' : 'none';
+    document.getElementById('editCustomGroup').style.display = type === 'custom_products' ? 'block' : 'none';
+}
+
+function prepareEditForm() {
+    const type = document.getElementById('editLinkType').value;
+    let finalValue = '';
+    if (type === 'brand') finalValue = document.getElementById('editBrandSelect').value;
+    else if (type === 'category') finalValue = document.getElementById('editCategorySelect').value;
+    else if (type === 'custom_products') {
+        const checked = Array.from(document.querySelectorAll('.edit-custom-product-cb:checked')).map(cb => cb.value);
+        finalValue = checked.join(', ');
+    }
+    document.getElementById('editLinkValueFinal').value = finalValue;
+}
+</script>
+    </div>
+{% endblock %}

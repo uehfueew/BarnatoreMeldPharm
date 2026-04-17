@@ -3054,10 +3054,12 @@
     }
 
     .hero-carousel-container {
-        margin-top: 0 !important;
+        margin-top: 1.5rem !important;
         width: 100% !important;
         padding: 0 !important;
-        margin: 0 !important;
+        margin-bottom: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
         max-width: 100% !important;
         height: auto !important;
         /* Let aspect ratio define height */
@@ -3086,7 +3088,7 @@
         /* Removed gray gradient overlay */
     }
 
-    .hero-img {
+    .hero-img-full {
         height: auto !important;
         /* Change to auto to allow natural height */
         width: 100% !important;
@@ -3162,3 +3164,19 @@
         margin-bottom: 1.5rem;
     }
 }
+/* Hide backToTop when modals are open on mobile */
+body.modal-open #backToTop {
+    display: none !important;
+}
+
+
+/* Mobile Brand Filter Fix */
+@media (max-width: 900px) {
+    .brand-filter-search {
+        margin-top: 10px;
+    }
+    .brand-filter-container {
+        max-height: 200px !important;
+    }
+}
+

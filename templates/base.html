@@ -273,10 +273,10 @@
                             <div class="item-price-row">
                                 <div class="price-stack">
                                     {% if item.discount_price %}
-                                    <span class="price-curr">€{{ item.discount_price }}</span>
-                                    <span class="price-old">€{{ item.price }}</span>
+                                    <span class="price-curr">€{{ "%.2f"|format(item.discount_price) }}</span>
+                                    <span class="price-old">€{{ "%.2f"|format(item.price) }}</span>
                                     {% else %}
-                                    <span class="price-curr">€{{ item.price }}</span>
+                                    <span class="price-curr">€{{ "%.2f"|format(item.price) }}</span>
                                     {% endif %}
                                 </div>
                                 <div class="item-qty-selector">

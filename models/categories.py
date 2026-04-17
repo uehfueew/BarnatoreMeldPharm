@@ -19,6 +19,7 @@ CATEGORIES = {
         "Make-up farmaceutik"
     ],
     "Suplemente & Vitamina": [
+        "Suplemente",
         "Vitamina (A, B, C, D, E)", 
         "Minerale (magnez, hekur, zink)", 
         "Imunitet", 

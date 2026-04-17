@@ -13,3 +13,19 @@
 @import 'segments/sections.css';
 @import 'segments/responsive.css';
 @import 'segments/badges.css';
+
+.brand-filter-container::-webkit-scrollbar {
+    width: 6px;
+}
+.brand-filter-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+.brand-filter-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+.brand-filter-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+

@@ -1,6 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from models.product import Product
+from models.db import mongo
+from models.banner import Banner
+
 from models.order import Order
 from models.categories import CATEGORIES
 from functools import wraps
@@ -323,3 +326,53 @@ def bulk_offers():
                          brands=brands, 
                          all_products=all_products,
                          active_offers_info=active_offers_info)
+
+
+@admin.route('/admin/banners', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def manage_banners():
+    if request.method == 'POST':
+        # Create
+        data = {
+            "image_url": request.form.get("image_url"),
+            "link_type": request.form.get("link_type"), # 'brand', 'category', 'custom_products', 'all_offers'
+            "link_value": request.form.get("link_value"), # 'Vichy', 'Dermokozmetikë', 'product_id_1,product_id_2'
+            "is_active": request.form.get("is_active") == 'on'
+        }
+        Banner.create(data)
+        flash("Baneri u shtua me sukses!", "success")
+        return redirect(url_for("admin.manage_banners"))
+        
+    banners = Banner.get_all()
+    # We should get existing brands and categories to populate the dropdowns
+    categories = list(CATEGORIES.keys())
+    raw_brands = mongo.db.products.distinct("brand")
+    brands = [b for b in raw_brands if b]
+    
+    # We need all products for the custom search dropdown
+    all_products = Product.get_all()
+    return render_template('admin/banners.html', banners=banners, categories=categories, brands=brands, all_products=all_products)
+
+@admin.route('/admin/banners/edit/<banner_id>', methods=['POST'])
+@login_required
+@admin_required
+def edit_banner(banner_id):
+    data = {
+        "image_url": request.form.get("image_url"),
+        "link_type": request.form.get("link_type"),
+        "link_value": request.form.get("link_value"),
+        "is_active": request.form.get("is_active") == 'on'
+    }
+    Banner.update(banner_id, data)
+    flash("Baneri u perditesua!", "success")
+    return redirect(url_for("admin.manage_banners"))
+
+@admin.route('/admin/banners/delete/<banner_id>', methods=['POST'])
+@login_required
+@admin_required
+def delete_banner(banner_id):
+    Banner.delete(banner_id)
+    flash("Baneri u fshi!", "info")
+    return redirect(url_for("admin.manage_banners"))
+

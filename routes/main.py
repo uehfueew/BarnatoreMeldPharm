@@ -4,6 +4,7 @@ from models.product import Product
 from models.order import Order
 from models.user import User
 from models.categories import CATEGORIES
+from models.banner import Banner
 from flask_login import current_user, login_required
 
 main = Blueprint('main', __name__)
@@ -19,11 +20,7 @@ def index():
     regular_products, total_pages_regular, total_regular = Product.get_paginated(page=1, per_page=20)
     
     # Get active offer banners
-    offer_banners_cursor = mongo.db.products.aggregate([
-        {"$match": {"offer_banner": {"$ne": None}, "is_deleted": {"$ne": True}}},
-        {"$group": {"_id": "$offer_name", "banner": {"$first": "$offer_banner"}}}
-    ])
-    offer_banners = list(offer_banners_cursor)
+    offer_banners = Banner.get_active()
     
     return render_template('index.html', 
                             featured_products=featured_products, 
@@ -52,6 +49,9 @@ def products():
     category = request.args.get('category', 'all')
     subcategory = request.args.get('subcategory', 'all')
     search_query = request.args.get('search') or request.args.get('q', '')
+    
+    # Custom products comma separated support
+    comma_searches = [s.strip() for s in search_query.split(',')] if ',' in search_query else None
     sort = request.args.get('sort', 'newest')
     brand = request.args.get('brand', 'all')
     min_price = request.args.get('min_price', type=float)
@@ -73,7 +73,14 @@ def products():
     )
     
     # Get all unique brands for the filter sidebar
-    raw_brands = mongo.db.products.distinct("brand")
+    filter_query = {"is_deleted": {"$ne": True}}
+    if category != 'all':
+        filter_query["category"] = category
+    if subcategory != 'all':
+        import re
+        escaped_sub = re.escape(subcategory.strip())
+        filter_query["subcategory"] = {"$regex": f"^\\s*{escaped_sub}\\s*$", "$options": "i"}
+    raw_brands = mongo.db.products.distinct("brand", filter_query)
     brand_map = {}
     for rb in raw_brands:
         if rb:
@@ -113,7 +120,8 @@ def products():
             'current_subcategory': subcategory,
             'current_brand': brand,
             'sort': sort,
-            'best_sellers': best_sellers
+            'best_sellers': best_sellers,
+            'available_brands': available_brands
         })
 
     return render_template('products.html', 
@@ -150,7 +158,7 @@ def product_detail(product_id):
     # Increment view count
     try:
         from bson import ObjectId
-        from .db import mongo
+        from models.db import mongo
         mongo.db.products.update_one({"_id": ObjectId(product_id)}, {"$inc": {"views": 1}})
     except Exception as e:
         print(f"Error incrementing views: {e}")
@@ -163,18 +171,17 @@ def product_detail(product_id):
             if u:
                 favorite_usernames.append(u.username)
 
-    related_products = Product.get_related(product.get('category'), product.get('_id'))
-    if related_products:
-        related_products = related_products[:4]
+    related_products = Product.get_related(product.get('category'), product.get('_id'), limit=12)
+    # The limit is set to 12 directly inside get_related
 
     # Fetch variants if they exist (By Group ID or Name fallback)
-    variant_lookup = product.get('variant_group') or (product.get('name') if product.get('name') else None)
     variants = []
-    if variant_lookup:
-        # Filter: only show if there's more than one (itself + others)
-        all_variants = Product.get_variants(variant_lookup)
-        if len(all_variants) > 1:
-            variants = all_variants
+    variant_group = product.get('variant_group')
+    product_name = product.get('name')
+    
+    all_variants = Product.get_variants(variant_group, product_name)
+    if all_variants and len(all_variants) > 1:
+        variants = all_variants
 
     return render_template('product_detail.html', 
                             product=product, 
@@ -271,14 +278,25 @@ def search_api():
     if not query or len(query) < 2:
         return jsonify([])
     
-    # Search in name, category, or subcategory
-    search_query = {
-        "$or": [
-            {"name": {"$regex": query, "$options": "i"}},
-            {"category": {"$regex": query, "$options": "i"}},
-            {"subcategory": {"$regex": query, "$options": "i"}}
-        ]
-    }
+    # Fuzzy search: require all terms in the query to be present
+    import re
+    terms = [t for t in query.split() if t]
+    search_query = {}
+    if terms:
+        and_parts = []
+        for t in terms:
+            escaped_term = re.escape(t)
+            and_parts.append({
+                "$or": [
+                    {"name": {"$regex": escaped_term, "$options": "i"}},
+                    {"brand": {"$regex": escaped_term, "$options": "i"}},
+                    {"category": {"$regex": escaped_term, "$options": "i"}},
+                    {"subcategory": {"$regex": escaped_term, "$options": "i"}}
+                ]
+            })
+        search_query = {"$and": and_parts, "is_deleted": {"$ne": True}}
+    else:
+        return jsonify([])
     
     products = list(mongo.db.products.find(search_query).limit(limit))
     
@@ -323,3 +341,24 @@ def quiz_results():
     # Fallback to general search if no direct subcategory match
     query = f"{skin_type} {concern}".strip()
     return redirect(url_for('main.products', category='Dermokozmetikë', q=query))
+
+@main.route('/banner/<banner_id>')
+def click_banner(banner_id):
+    from bson.objectid import ObjectId
+    banner = Banner.get_by_id(banner_id)
+    if not banner:
+        return redirect(url_for('main.index'))
+    
+    link_type = banner.get('link_type')
+    link_value = banner.get('link_value')
+    
+    if link_type == 'category':
+        return redirect(url_for('main.products', category=link_value))
+    elif link_type == 'brand':
+        return redirect(url_for('main.products', brand=link_value))
+    elif link_type == 'custom_products':
+        # we can use the search query parameter for multiple products by passing link_value as a search query
+        return redirect(url_for('main.products', q=link_value))
+    else:
+        # all_offers
+        return redirect(url_for('main.products', on_offer='1'))

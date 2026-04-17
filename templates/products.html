@@ -104,7 +104,11 @@
                     <!-- Brand Filter -->
                     <div class="sidebar-block" id="brandBlock">
                         <h3 class="sidebar-title">Brendet</h3>
-                        <div class="brand-filter-container">
+                                                <div class="brand-filter-search" style="margin-bottom: 10px; position: relative;">
+                            <input type="text" id="brandSearchInput" placeholder="Kërko brendin..." style="width: 100%; padding: 0.5rem 0.75rem 0.5rem 2rem; border-radius: 6px; border: 1px solid var(--border-light); font-size: 0.85rem;" onkeyup="filterBrandList()">
+                            <i class="fas fa-search" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.8rem;"></i>
+                        </div>
+                        <div class="brand-filter-container" style="max-height: 250px; overflow-y: auto; padding-right: 10px;">
                             <ul class="brand-list">
                                 <li>
                                     <a href="#" onclick="filterByBrand(event, 'all')"
@@ -217,12 +221,12 @@
                             {% if product.size %}<span class="product-size">{{ product.size }}</span>{% endif %}
                             <div class="price-container">
                                 {% if product.discount_price %}
-                                <span class="price discounted">€{{ product.discount_price }}</span>
-                                <span class="price original">€{{ product.price }}</span>
+                                <span class="price discounted">€{{ "%.2f"|format(product.discount_price) }}</span>
+                                <span class="price original">€{{ "%.2f"|format(product.price) }}</span>
                                 <span class="discount-badge">-{{ ((product.price - product.discount_price) /
                                     product.price * 100)|round|int }}%</span>
                                 {% else %}
-                                <span class="price">€{{ product.price }}</span>
+                                <span class="price">€{{ "%.2f"|format(product.price) }}</span>
                                 {% endif %}
                             </div>
                         </div>

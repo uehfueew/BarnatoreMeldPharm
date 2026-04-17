@@ -3,7 +3,7 @@
     background: #f8fafc;
     padding: 5rem 0 7rem;
     position: relative;
-    overflow: visible !important;
+    overflow: hidden !important;
     z-index: 10;
 }
 

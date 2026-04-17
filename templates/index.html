@@ -34,40 +34,26 @@
     <header class="hero-carousel-container">
         <div class="hero-inner-wrapper">
             <div class="hero-carousel">
-                <!-- Dynamic Offer Banners -->
+                <!-- Dynamic Banners from Database -->
                 {% for offer in offer_banners %}
-                <a href="{{ url_for('main.products', on_offer='1') }}"
+                <a href="{% if offer.link_type == 'all_offers' %}{{ url_for('main.products', on_offer='1') }}{% elif offer.link_type == 'brand' %}{{ url_for('main.products', brand=offer.link_value) }}{% elif offer.link_type == 'category' %}{{ url_for('main.products', category=offer.link_value) }}{% elif offer.link_type == 'custom_products' %}{{ url_for('main.products', search=offer.link_value) }}{% else %}{{ url_for('main.products') }}{% endif %}"
                     class="hero-slide {{ 'active' if loop.first else '' }}">
                     <div class="hero-content-wrapper banner-only">
-                        <img src="{{ offer.banner }}" alt="{{ offer._id }}" class="hero-img-full">
+                        <img src="{{ offer.image_url }}" alt="Banner" class="hero-img-full">
                     </div>
                 </a>
                 {% endfor %}
-
-                <!-- Slide 1: Eucerin Banner -->
+                
+                {% if not offer_banners %}
+                <!-- Fallback Banner if none exist in DB -->
                 <a href="{{ url_for('main.products', brand='Eucerin') }}"
-                    class="hero-slide {{ 'active' if not offer_banners else '' }}">
+                    class="hero-slide active">
                     <div class="hero-content-wrapper banner-only">
                         <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659727/IMG_4312_ul0exk.jpg"
                             alt="Eucerin Banner" class="hero-img-full">
                     </div>
                 </a>
-
-                <!-- Slide 2: CeraVe Banner -->
-                <a href="{{ url_for('main.products', brand='CeraVe') }}" class="hero-slide">
-                    <div class="hero-content-wrapper banner-only">
-                        <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1771111803/cerave_image_rjyyra.jpg"
-                            alt="CeraVe Banner" class="hero-img-full">
-                    </div>
-                </a>
-
-                <!-- Slide 3: Vichy Banner -->
-                <a href="{{ url_for('main.products', brand='Vichy') }}" class="hero-slide">
-                    <div class="hero-content-wrapper banner-only">
-                        <img src="https://res.cloudinary.com/drljgepgy/image/upload/v1770659726/IMG_4310_eria9y.jpg"
-                            alt="Vichy Banner" class="hero-img-full">
-                    </div>
-                </a>
+                {% endif %}
             </div>
 
             <button class="hero-prev" onclick="plusSlides(-1)"><i class="fas fa-chevron-left"></i></button>
@@ -75,9 +61,12 @@
         </div>
 
         <div class="hero-dots">
-            {% for i in range(offer_banners|length + 3) %}
-            <span class="dot {{ 'active' if loop.first else '' }}" onclick="currentSlide('{{ loop.index }}')"></span>
+            {% for offer in offer_banners %}
+            <span class="hero-dot {{ 'active' if loop.first else '' }}" onclick="currentSlide({{ loop.index }})"></span>
             {% endfor %}
+            {% if not offer_banners %}
+            <span class="hero-dot active" onclick="currentSlide(1)"></span>
+            {% endif %}
         </div>
     </header>
 

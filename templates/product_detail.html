@@ -161,19 +161,16 @@
                 style="display: flex; align-items: flex-end; gap: 0.75rem; margin-bottom: 1.5rem;">
                 {% if product.discount_price %}
                 <span class="price original"
-                    style="font-size: 1rem; text-decoration: line-through; color: #94a3b8; font-weight: 500;">€{{
-                    product.price }}</span>
+                    style="font-size: 1rem; text-decoration: line-through; color: #94a3b8; font-weight: 500;">€{{ "%.2f"|format(product.price) }}</span>
                 <span class="price discounted"
-                    style="font-size: 1.8rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{
-                    product.discount_price }}</span>
+                    style="font-size: 1.8rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{ "%.2f"|format(product.discount_price) }}</span>
                 <span class="discount-badge"
                     style="background: #ef4444; color: white; padding: 0.35rem 0.6rem; border-radius: 8px; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; transform: translateY(-2px);">
                     -{{ ((product.price - product.discount_price) / product.price * 100)|round|int }}%
                 </span>
                 {% else %}
                 <span class="price main-price"
-                    style="font-size: 1.8rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{
-                    product.price }}</span>
+                    style="font-size: 1.8rem; color: var(--primary); font-weight: 800; line-height: 1;">€{{ "%.2f"|format(product.price) }}</span>
                 {% endif %}
             </div>
 
@@ -511,15 +508,20 @@
                     {% if related.size %}<span class="product-size">{{ related.size }}</span>{% endif %}
                     <div class="price-container" style="margin-top: 0.75rem;">
                         {% if related.discount_price %}
-                        <span class="price discounted">€{{ related.discount_price }}</span>
-                        <span class="price original">€{{ related.price }}</span>
+                        <span class="price discounted">€{{ "%.2f"|format(related.discount_price) }}</span>
+                        <span class="price original">€{{ "%.2f"|format(related.price) }}</span>
                         {% else %}
-                        <span class="price">€{{ related.price }}</span>
+                        <span class="price">€{{ "%.2f"|format(related.price) }}</span>
                         {% endif %}
                     </div>
                 </div>
             </div>
             {% endfor %}
+        </div>
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="{{ url_for('main.products') }}" class="btn btn-outline" style="border: 2px solid var(--primary-main); color: var(--primary-main); padding: 0.75rem 2rem; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-block; transition: all 0.3s ease;">
+                Shiko të Gjitha Produktet
+            </a>
         </div>
     </div>
 </div>

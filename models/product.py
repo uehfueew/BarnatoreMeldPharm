@@ -21,12 +21,15 @@ class Product:
             query["category"] = category
         
         if subcategory and subcategory != 'all':
-            # Use case-insensitive regex for subcategories to handle inconsistencies
-            query["subcategory"] = {"$regex": f"^{subcategory}$", "$options": "i"}
+            import re
+            escaped_sub = re.escape(subcategory.strip())
+            query["subcategory"] = {"$regex": f"^\\s*{escaped_sub}\\s*$", "$options": "i"}
 
         if brand and brand != 'all':
-            # Use case-insensitive regex for brands to handle inconsistent casing
-            query["brand"] = {"$regex": f"^{brand}$", "$options": "i"}
+            import re
+            # Use case-insensitive regex, allow leading/trailing spaces, and escape special characters
+            escaped_brand = re.escape(brand.strip())
+            query["brand"] = {"$regex": f"^\\s*{escaped_brand}\\s*$", "$options": "i"}
 
         if discount_only:
             query["discount_price"] = {"$ne": None, "$gt": 0}
@@ -51,23 +54,55 @@ class Product:
                 pass
 
         if search_query:
-            search_filter = {
-                "$or": [
-                    {"name": {"$regex": search_query, "$options": "i"}},
-                    {"brand": {"$regex": search_query, "$options": "i"}},
-                    {"category": {"$regex": search_query, "$options": "i"}},
-                    {"subcategory": {"$regex": search_query, "$options": "i"}}
-                ]
-            }
-            if "$or" in query:
-                # If we already have an $or (from no_discount), we must use $and to combine them
-                if "$and" not in query: query["$and"] = []
-                # Move existing $or to $and if it's there
-                existing_or = query.pop("$or")
-                query["$and"].append({"$or": existing_or})
-                query["$and"].append(search_filter)
+            import re
+            
+            # Fuzzy match: split by spaces and require all parts to be present somewhere
+            if ',' in search_query: # Multi-query support (e.g. "Vichy 89, CeraVe cleanser")
+                full_terms = [t.strip() for t in search_query.split(',') if t.strip()]
+                or_conditions = []
+                for full_t in full_terms:
+                    parts = [p for p in full_t.split() if p]
+                    and_parts = []
+                    for part in parts:
+                        escaped_part = re.escape(part)
+                        part_cond = {
+                            "$or": [
+                                {"name": {"$regex": escaped_part, "$options": "i"}},
+                                {"brand": {"$regex": escaped_part, "$options": "i"}},
+                                {"category": {"$regex": escaped_part, "$options": "i"}},
+                                {"subcategory": {"$regex": escaped_part, "$options": "i"}}
+                            ]
+                        }
+                        and_parts.append(part_cond)
+                    or_conditions.append({"$and": and_parts})
+                search_filter = {"$or": or_conditions}
             else:
-                query.update(search_filter)
+                parts = [p for p in search_query.split() if p]
+                if parts:
+                    and_parts = []
+                    for part in parts:
+                        escaped_part = re.escape(part)
+                        part_cond = {
+                            "$or": [
+                                {"name": {"$regex": escaped_part, "$options": "i"}},
+                                {"brand": {"$regex": escaped_part, "$options": "i"}},
+                                {"category": {"$regex": escaped_part, "$options": "i"}},
+                                {"subcategory": {"$regex": escaped_part, "$options": "i"}}
+                            ]
+                        }
+                        and_parts.append(part_cond)
+                    search_filter = {"$and": and_parts}
+                else:
+                    search_filter = {}
+
+            if search_filter:
+                if "$and" not in query:
+                    query["$and"] = []
+                # if there is already an active $or (like from no_discount), move it to $and
+                if "$or" in query:
+                    existing_or = query.pop("$or")
+                    query["$and"].append({"$or": existing_or})
+                query["$and"].append(search_filter)
             
         # Determine sort order
         # Default sort
@@ -167,24 +202,6 @@ class Product:
             return mongo.db.products.find_one({"_id": ObjectId(product_id)})
         except:
             return None
-
-    @staticmethod
-    def get_variants(variant_group):
-        if not variant_group:
-            return []
-        try:
-            # Fetch all products with the same variant_group, excluding deleted ones
-            variants = list(mongo.db.products.find({
-                "variant_group": variant_group,
-                "is_deleted": {"$ne": True}
-            }).sort("size", 1)) # Sort by size if possible
-            
-            for v in variants:
-                v["_id"] = str(v["_id"])
-            return variants
-        except Exception as e:
-            print(f"Error fetching variants: {e}")
-            return []
 
     @staticmethod
 
@@ -377,22 +394,24 @@ class Product:
             return []
 
     @staticmethod
-    def get_variants(group_id_or_name):
-        if not group_id_or_name:
-            return []
+    def get_variants(variant_group, name=None):
         try:
-            # Try finding by variant_group first
-            variants = list(mongo.db.products.find({
-                "variant_group": group_id_or_name,
-                "is_deleted": {"$ne": True}
-            }))
-            
-            # Fallback: if no variant group, try matching by name (for products that share a name but differ in size)
-            if not variants:
+            if variant_group:
+                # Try finding by variant_group first
                 variants = list(mongo.db.products.find({
-                    "name": group_id_or_name,
+                    "variant_group": variant_group,
                     "is_deleted": {"$ne": True}
                 }))
+            elif name:
+                # Fallback: if no variant group, try matching by name (for products that share a name but differ in size)
+                # Ensure they don't have a variant group assigned to avoid mixing
+                variants = list(mongo.db.products.find({
+                    "name": name,
+                    "variant_group": {"$in": [None, ""]},
+                    "is_deleted": {"$ne": True}
+                }))
+            else:
+                return []
 
             for v in variants:
                 v["_id"] = str(v["_id"])

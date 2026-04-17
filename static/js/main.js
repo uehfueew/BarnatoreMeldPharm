@@ -26,10 +26,10 @@ window.createProductCardHtml = function (p) {
                 ${p.size ? `<span class="product-size">${p.size}</span>` : ''}
                 <div class="price-container">
                     ${p.discount_price ? `
-                        <span class="price discounted">€${p.discount_price}</span>
-                        <span class="price original">€${p.price}</span>
+                        <span class="price discounted">€${parseFloat(p.discount_price).toFixed(2)}</span>
+                        <span class="price original">€${parseFloat(p.price).toFixed(2)}</span>
                         <span class="discount-badge">-${discountPercentage}%</span>
-                    ` : `<span class="price">€${p.price}</span>`}
+                    ` : `<span class="price">€${parseFloat(p.price).toFixed(2)}</span>`}
                 </div>
             </div>
         </div>
@@ -225,8 +225,10 @@ window.resetFilters = function (e) {
     const bestSellers = document.getElementById('best-seller-filter');
     if (bestSellers) bestSellers.checked = false;
 
-    const productSearch = document.getElementById('productSearch') || document.getElementById('productSearchMobile');
+    const productSearch = document.getElementById('productSearch');
+    const productSearchMobile = document.getElementById('productSearchMobile');
     if (productSearch) productSearch.value = '';
+    if (productSearchMobile) productSearchMobile.value = '';
 
     // Reset URL and call update
     const url = new URL(window.location.href);
@@ -249,15 +251,34 @@ window.filterByCategory = function (e, cat) {
         urlParams.set('category', cat);
     }
     urlParams.delete('subcategory');
+    urlParams.delete('brand');
     urlParams.delete('page');
 
-    window.history.pushState({}, '', `${window.location.pathname}?${urlParams.toString()}`);
+    // Clear custom programmatic search injected by banners so regular browsing isn't stuck
+    const productSearch = document.getElementById('productSearch');
+    const productSearchMobile = document.getElementById('productSearchMobile');
+    let hasAdvancedSearch = false;
+    if (productSearch && productSearch.value.includes(',')) hasAdvancedSearch = true;
+    if (productSearchMobile && productSearchMobile.value.includes(',')) hasAdvancedSearch = true;
+    
+    if (hasAdvancedSearch) {
+        if (productSearch) productSearch.value = '';
+        if (productSearchMobile) productSearchMobile.value = '';
+        urlParams.delete('search');
+    }
+
+    // Also clear it cleanly from the URL so it dies when we pushState
+    const cleanParams = new URLSearchParams(urlParams.toString());
+    window.history.pushState({}, '', `${window.location.pathname}?${cleanParams.toString()}`);
 
     // Update active classes
     document.querySelectorAll('.sidebar-cat-link').forEach(link => {
-        const onclick = link.getAttribute('onclick');
-        if (onclick) {
-            link.classList.toggle('active', onclick.includes(`'${cat}'`));
+        const onclick = link.getAttribute('onclick') || '';
+        const escaped = cat.replace(/'/g, "\\'");
+        if (onclick.includes(`'${escaped}'`) || onclick.includes(`'${cat}'`)) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
         }
     });
     document.querySelectorAll('.sidebar-subcat-list').forEach(list => {
@@ -290,13 +311,28 @@ window.filterBySubcategory = function (e, cat, sub) {
     urlParams.set('subcategory', sub);
     urlParams.delete('page');
 
+        // Clear custom programmatic search injected by banners so regular browsing isn't stuck
+    const productSearch = document.getElementById('productSearch');
+    const productSearchMobile = document.getElementById('productSearchMobile');
+    let hasAdvancedSearch = false;
+    if (productSearch && productSearch.value.includes(',')) hasAdvancedSearch = true;
+    if (productSearchMobile && productSearchMobile.value.includes(',')) hasAdvancedSearch = true;
+    
+    if (hasAdvancedSearch) {
+        if (productSearch) productSearch.value = '';
+        if (productSearchMobile) productSearchMobile.value = '';
+        urlParams.delete('search');
+    }
     window.history.pushState({}, '', `${window.location.pathname}?${urlParams.toString()}`);
 
     // Update active classes
     document.querySelectorAll('.sidebar-cat-link').forEach(link => {
-        const onclick = link.getAttribute('onclick');
-        if (onclick) {
-            link.classList.toggle('active', onclick.includes(`'${cat}'`));
+        const onclick = link.getAttribute('onclick') || '';
+        const escaped = cat.replace(/'/g, "\\'");
+        if (onclick.includes(`'${escaped}'`) || onclick.includes(`'${cat}'`)) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
         }
     });
     document.querySelectorAll('.sidebar-subcat-link').forEach(link => {
@@ -319,13 +355,28 @@ window.filterByBrand = function (e, brand) {
     }
     urlParams.delete('page');
 
+        // Clear custom programmatic search injected by banners so regular browsing isn't stuck
+    const productSearch = document.getElementById('productSearch');
+    const productSearchMobile = document.getElementById('productSearchMobile');
+    let hasAdvancedSearch = false;
+    if (productSearch && productSearch.value.includes(',')) hasAdvancedSearch = true;
+    if (productSearchMobile && productSearchMobile.value.includes(',')) hasAdvancedSearch = true;
+    
+    if (hasAdvancedSearch) {
+        if (productSearch) productSearch.value = '';
+        if (productSearchMobile) productSearchMobile.value = '';
+        urlParams.delete('search');
+    }
     window.history.pushState({}, '', `${window.location.pathname}?${urlParams.toString()}`);
 
     // Update active classes
     document.querySelectorAll('.brand-link-item').forEach(link => {
-        const onclick = link.getAttribute('onclick');
-        if (onclick) {
-            link.classList.toggle('active', onclick.includes(`'${brand}'`));
+        const onclick = link.getAttribute('onclick') || '';
+        const escapedForDisplay = brand.replace(/'/g, "\\'");
+        if (onclick.includes(`'${escapedForDisplay}'`) || onclick.includes(`"${brand.replace(/\"/g, '\\"')}”`)) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
         }
     });
 
@@ -368,9 +419,15 @@ window.updateShop = function (isLoadMore = false, loadAll = false) {
         urlParams.set('all', 'true');
     }
 
-    // Set search if exists in input
+    // Set search if exists in input, or delete it if input is empty (so clearing search clears the query)
     const searchInput = document.getElementById('adminOrderSearch') || document.getElementById('productSearch');
-    if (searchInput && searchInput.value) urlParams.set('search', searchInput.value);
+    if (searchInput) {
+        if (searchInput.value) {
+            urlParams.set('search', searchInput.value);
+        } else {
+            urlParams.delete('search');
+        }
+    }
 
     const minPrice = document.getElementById('min-price'), maxPrice = document.getElementById('max-price');
     if (minPrice && minPrice.value) {
@@ -414,6 +471,11 @@ window.updateShop = function (isLoadMore = false, loadAll = false) {
 
     const currentPath = window.location.pathname.includes('/products') ? window.location.pathname : '/products';
 
+    const mobileBtn = document.getElementById('closeSidebarAlt');
+    if (mobileBtn) {
+        mobileBtn.innerHTML = 'Duke u ngarkuar... <i class="fas fa-spinner fa-spin ml-2"></i>';
+    }
+
     fetch(`${currentPath}?${urlParams.toString()}`)
         .then(res => res.json())
         .then(data => {
@@ -432,7 +494,27 @@ window.updateShop = function (isLoadMore = false, loadAll = false) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
-            updateResultsCount(data.total_count);
+            window.updateResultsCount(data.total_count);
+            // Update mobile sidebar button to reflect loading
+            const mobileBtn = document.getElementById('closeSidebarAlt');
+            if (mobileBtn) {
+                mobileBtn.innerHTML = `Shiko ${data.total_count || 0} Produkte`;
+            }
+
+            // Update Brands Filter UI
+            if (data.available_brands) {
+                const brandList = document.querySelector('.brand-list');
+                if (brandList) {
+                    const currentBrand = new URLSearchParams(window.location.search).get('brand') || 'all';
+                    let brandHtml = `<li><a href="#" onclick="filterByBrand(event, 'all')" class="brand-link-item ${currentBrand === 'all' ? 'active' : ''}">Të gjitha brendet <i class="fas fa-check"></i></a></li>`;
+                    data.available_brands.forEach(brand => {
+                        const escapedBrand = brand.replace(/'/g, "\\'");
+                        const isActive = currentBrand === brand;
+                        brandHtml += `<li><a href="#" onclick="filterByBrand(event, '${escapedBrand}')" class="brand-link-item ${isActive ? 'active' : ''}">${brand} ${isActive ? '<i class="fas fa-check"></i>' : ''}</a></li>`;
+                    });
+                    brandList.innerHTML = brandHtml;
+                }
+            }
 
             if (loadMoreBtn) {
                 const totalPages = data.total_pages || 1;
@@ -650,8 +732,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 searchPreview.innerHTML = products.map(p => {
                                     const hasDiscount = p.discount_price && p.discount_price < p.price;
                                     const priceDisplay = hasDiscount ?
-                                        `<span class="preview-price-old" style="text-decoration: line-through; color: #94a3b8; font-size: 0.7rem; margin-right: 5px;">€${p.price}</span><span class="preview-price" style="color: #10b981;">€${p.discount_price}</span>` :
-                                        `<span class="preview-price">€${p.price}</span>`;
+                                        `<span class="preview-price-old" style="text-decoration: line-through; color: #94a3b8; font-size: 0.7rem; margin-right: 5px;">€${parseFloat(p.price).toFixed(2)}</span><span class="preview-price" style="color: #10b981;">€${parseFloat(p.discount_price).toFixed(2)}</span>` :
+                                        `<span class="preview-price">€${parseFloat(p.price).toFixed(2)}</span>`;
 
                                     return `
                                         <a href="/product/${p.id}" class="preview-item">
@@ -1612,6 +1694,7 @@ window.openCategoriesModal = function () {
     if (modal) {
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+        document.body.classList.add('modal-open');
     }
 };
 
@@ -1620,6 +1703,7 @@ window.closeCategoriesModal = function () {
     if (modal) {
         modal.classList.remove('active');
         document.body.style.overflow = '';
+        document.body.classList.remove('modal-open');
     }
 };
 
@@ -1634,6 +1718,7 @@ window.openCartModal = function () {
         }
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+        document.body.classList.add('modal-open');
     }
 };
 
@@ -1642,6 +1727,7 @@ window.closeCartModal = function () {
     if (modal) {
         modal.classList.remove('active');
         document.body.style.overflow = '';
+        document.body.classList.remove('modal-open');
     }
 };
 
@@ -1675,6 +1761,7 @@ window.openProfileModal = function () {
     if (modal) {
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+        document.body.classList.add('modal-open');
     }
 };
 
@@ -1683,6 +1770,7 @@ window.closeProfileModal = function () {
     if (modal) {
         modal.classList.remove('active');
         document.body.style.overflow = '';
+        document.body.classList.remove('modal-open');
     }
 };
 
@@ -2034,5 +2122,43 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof window.refreshMiniCart === 'function') {
         // Delay slightly to ensure server-rendered view is ready
         setTimeout(() => window.refreshMiniCart(), 500);
+    }
+});
+
+window.filterBrandList = function() {
+    const input = document.getElementById('brandSearchInput');
+    if (!input) return;
+    const filter = input.value.toUpperCase();
+    const ul = document.querySelector('.brand-list');
+    if (!ul) return;
+    const li = ul.getElementsByTagName('li');
+    for (let i = 0; i < li.length; i++) {
+        const a = li[i].getElementsByTagName('a')[0];
+        if (a) {
+            const txtValue = a.textContent || a.innerText;
+            if (txtValue.trim().toUpperCase() === 'TË GJITHA') {
+                li[i].style.display = '';
+                continue;
+            }
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = '';
+            } else {
+                li[i].style.display = 'none';
+            }
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Pre-fill search inputs if 'search' is in URL so user knows they are restricting view
+    const params = new URLSearchParams(window.location.search);
+    const searchVal = params.get('search');
+    if (searchVal) {
+        const desktopSearch = document.getElementById('productSearch');
+        const mobileSearch = document.getElementById('productSearchMobile');
+        const adminSearch = document.getElementById('adminOrderSearch');
+        if (desktopSearch) desktopSearch.value = searchVal;
+        if (mobileSearch) mobileSearch.value = searchVal;
+        if (adminSearch) adminSearch.value = searchVal;
     }
 });
