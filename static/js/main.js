@@ -6,6 +6,9 @@ window.updateResultsCount = function (count) {
 
 window.createProductCardHtml = function (p) {
     const discountPercentage = p.discount_price ? Math.round(((p.price - p.discount_price) / p.price) * 100) : 0;
+    const discountBadgeText = p.offer_badge_text && !String(p.offer_badge_text).startsWith('-')
+        ? p.offer_badge_text
+        : (p.discount_price ? `-${discountPercentage}%` : '');
     const isFav = p.is_favorite ? 'active' : '';
     const heartIconClass = p.is_favorite ? 'fas' : 'far';
     return `
@@ -28,7 +31,7 @@ window.createProductCardHtml = function (p) {
                     ${p.discount_price ? `
                         <span class="price discounted">€${parseFloat(p.discount_price).toFixed(2)}</span>
                         <span class="price original">€${parseFloat(p.price).toFixed(2)}</span>
-                        <span class="discount-badge">-${discountPercentage}%</span>
+                        <span class="discount-badge">${discountBadgeText}</span>
                     ` : `<span class="price">€${parseFloat(p.price).toFixed(2)}</span>`}
                 </div>
             </div>

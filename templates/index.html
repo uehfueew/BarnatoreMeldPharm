@@ -534,8 +534,12 @@
                             {% elif product.discount_price %}
                             <span class="price discounted">€{{ "%.2f"|format(product.discount_price) }}</span>
                             <span class="price original">€{{ "%.2f"|format(product.price) }}</span>
-                            <span class="discount-badge">{{ ((product.price - product.discount_price) / product.price *
+                            {% if product.offer_badge_text and not product.offer_badge_text.startswith('-') %}
+                            <span class="discount-badge">{{ product.offer_badge_text }}</span>
+                            {% else %}
+                            <span class="discount-badge">-{{ ((product.price - product.discount_price) / product.price *
                                 100) | round | int }}%</span>
+                            {% endif %}
                             {% else %}
                             <span class="price">€{{ "%.2f"|format(product.price) }}</span>
                             {% endif %}
@@ -615,8 +619,12 @@
                         {% elif product.discount_price %}
                         <span class="price discounted">€{{ "%.2f"|format(product.discount_price) }}</span>
                         <span class="price original">€{{ "%.2f"|format(product.price) }}</span>
+                        {% if product.offer_badge_text and not product.offer_badge_text.startswith('-') %}
+                        <span class="discount-badge">{{ product.offer_badge_text }}</span>
+                        {% else %}
                         <span class="discount-badge">-{{ ((product.price - product.discount_price) / product.price *
                             100)|round|int }}%</span>
+                        {% endif %}
                         {% else %}
                         <span class="price">€{{ "%.2f"|format(product.price) }}</span>
                         {% endif %}
